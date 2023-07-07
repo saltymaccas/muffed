@@ -34,21 +34,6 @@ interface class LemmyApi {
 
       for (Map<String, dynamic> post in decodedResponse) {
 
-        ContentType? contentType;
-
-        if(post['post']['url'] != null){
-          final headers = await client.head(Uri.parse(post['post']['url']!));
-          if(headers.headers['content-type'] != null) {
-            if (RegExp('image/*.').hasMatch(
-                headers.headers['content-type']!)) {
-              contentType = ContentType.image;
-
-            }
-          }
-
-
-        }
-
 
         posts.add(
           LemmyPost(
@@ -56,7 +41,6 @@ interface class LemmyApi {
             url: post['post']['url'],
             id: post['post']['id'],
             name: post['post']['name'],
-            contentType: contentType,
             timePublished: DateTime.parse(
                 post['post']['published'] + 'Z'), // Z added to mark as UTC time
             nsfw: post['post']['nsfw'],

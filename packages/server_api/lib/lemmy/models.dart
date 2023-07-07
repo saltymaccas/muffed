@@ -49,7 +49,6 @@ class LemmyPost extends Equatable {
   final String? url;
   final String? thumbnailUrl;
   final String? body;
-  final ContentType? contentType;
 
 
   final DateTime timePublished;
@@ -74,7 +73,6 @@ class LemmyPost extends Equatable {
     this.body,
     this.url,
     this.thumbnailUrl,
-    this.contentType,
     required this.id,
     required this.name,
     required this.timePublished,

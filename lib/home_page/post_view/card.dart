@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
@@ -134,25 +136,7 @@ class _CardLemmyPostItemContentView extends StatelessWidget {
     return Column(
       children: [
         if (post.url != null) ...[
-          if (post.contentType == ContentType.image) ...[
-            Image.network(
-
-              post.url!,
-              fit: BoxFit.fill,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                );
-              },
-            ),
-          ]
+          UrlDisplay(post.url!)
         ],
         if (post.body != null) ...[
           Padding(
@@ -195,25 +179,17 @@ class _UrlDisplayState extends State<UrlDisplay>
   String? type;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
     if (type == null) {
       return FutureBuilder(
         future: http.head(Uri.parse(widget.url)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container();
+            return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
-            CachedNetworkImage(
-              imageUrl: widget.url,
-              progressIndicatorBuilder:
-                  (context, String string, DownloadProgress progress) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: progress.progress,
-                  ),
-                );
-              },
-            );
             return const ErrorComponentTransparent(message: 'Future Error');
           } else if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data!.headers['content-type'] != null) {
@@ -231,6 +207,8 @@ class _UrlDisplayState extends State<UrlDisplay>
                     );
                   },
                 );
+              }else {
+                type = 'other';
               }
             }
           }
@@ -256,6 +234,5 @@ class _UrlDisplayState extends State<UrlDisplay>
     }
   }
 
-  @override
-  bool get wantKeepAlive => true;
+
 }
