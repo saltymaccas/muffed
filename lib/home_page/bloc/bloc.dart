@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:server_api/lemmy/models.dart';
 import 'package:server_api/server_api.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -40,7 +41,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       log('[HomePageBloc] Loaded page ${state.pagesLoaded}');
 
-    });
+
+    }, transformer: droppable());
   }
 
   final ServerApi api;

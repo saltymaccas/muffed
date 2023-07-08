@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
               : (state.status == HomePageStatus.failure)
                   ? const ErrorComponentTransparent()
                   : (state.status == HomePageStatus.success)
-                      ? FeedView(state)
+                      ? FeedView()
                       : Container();
         },
       ),
@@ -39,40 +39,17 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class FeedView extends StatefulWidget {
-  FeedView(
-    this.state, {
+class FeedView extends StatelessWidget {
+  FeedView({
     super.key,
   });
 
-  final HomePageState state;
-
-  @override
-  State<FeedView> createState() => _FeedViewState();
-}
-
-class _FeedViewState extends State<FeedView> {
   late ScrollController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = ScrollController()..addListener(handleScrolling);
-  }
-
-  void handleScrolling() {
-    print(controller.offset);
-    if (controller.offset + 40 >= controller.position.maxScrollExtent &&
-        !context.read<HomePageBloc>().state.isLoadingMore) {
-      context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
       floatHeaderSlivers: true,
-      controller: controller,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           SliverAppBar(
@@ -92,19 +69,25 @@ class _FeedViewState extends State<FeedView> {
             return false;
           });
         },
-        child: ListView.builder(
-          cacheExtent: 100000,
-
-            itemCount: widget.state.posts!.length,
-            itemBuilder: (context, index) {
-              return CardLemmyPostItem(widget.state.posts![index] as LemmyPost);
-            }),
+        child: NotificationListener(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels ==
+                    scrollInfo.metrics.maxScrollExtent) {
+              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+            }
+            return true;
+          },
+          child: ListView.builder(
+              cacheExtent: 100000,
+              itemCount: context.read<HomePageBloc>().state.posts!.length,
+              itemBuilder: (context, index) {
+                return CardLemmyPostItem(context
+                    .read<HomePageBloc>()
+                    .state
+                    .posts![index] as LemmyPost);
+              }),
+        ),
       ),
     );
-  }
-  @override
-  void dispose() {
-    controller.removeListener(handleScrolling);
-    super.dispose();
   }
 }
