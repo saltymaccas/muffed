@@ -61,7 +61,8 @@ class _FeedViewState extends State<FeedView> {
   }
 
   void handleScrolling() {
-    if (controller.offset >= controller.position.maxScrollExtent &&
+    print(controller.offset);
+    if (controller.offset + 40 >= controller.position.maxScrollExtent &&
         !context.read<HomePageBloc>().state.isLoadingMore) {
       context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
     }
@@ -92,11 +93,18 @@ class _FeedViewState extends State<FeedView> {
           });
         },
         child: ListView.builder(
+          cacheExtent: 100000,
+
             itemCount: widget.state.posts!.length,
             itemBuilder: (context, index) {
               return CardLemmyPostItem(widget.state.posts![index] as LemmyPost);
             }),
       ),
     );
+  }
+  @override
+  void dispose() {
+    controller.removeListener(handleScrolling);
+    super.dispose();
   }
 }

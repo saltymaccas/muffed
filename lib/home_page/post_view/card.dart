@@ -1,4 +1,4 @@
-
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:muffed/components/error.dart';
@@ -8,6 +8,9 @@ import 'package:muffed/utils/utils.dart';
 import '../post_more_actions_sheet/post_more_actions_sheet.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:any_link_preview/any_link_preview.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 class CardLemmyPostItem extends StatelessWidget {
   final LemmyPost post;
@@ -135,9 +138,7 @@ class _CardLemmyPostItemContentView extends StatelessWidget {
 
     return Column(
       children: [
-        if (post.url != null) ...[
-          UrlDisplay(post.url!)
-        ],
+        if (post.url != null) ...[UrlDisplay(post.url!)],
         if (post.body != null) ...[
           Padding(
             padding: EdgeInsets.all(4),
@@ -175,20 +176,62 @@ class UrlDisplay extends StatefulWidget {
 }
 
 class _UrlDisplayState extends State<UrlDisplay>
-    with AutomaticKeepAliveClientMixin {
-  String? type;
-
+    with AutomaticKeepAliveClientMixin<UrlDisplay> {
   @override
   bool get wantKeepAlive => true;
 
+  String? type;
+
   @override
   Widget build(BuildContext context) {
+    return Center(
+      child: Image.network(
+        widget.url,
+        fit: BoxFit.fill,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+              child: SizedBox(
+                  height: MediaQuery.of(context).size.width,
+                  child: LoadingComponentTransparentLogo()));
+        },
+        errorBuilder: (context, _, __) {
+          return Padding(
+            padding: EdgeInsets.all(4),
+            child: AnyLinkPreview(
+              errorWidget: GestureDetector(
+                onTap: () => launchUrl(Uri.parse(widget.url)),
+                child: Container(
+                  color: Theme.of(context).colorScheme.background,
+                  padding: EdgeInsets.all(4),
+                  child: Text(
+                    widget.url,
+                    style:
+                        const TextStyle(decoration: TextDecoration.underline),
+                  ),
+                ),
+              ),
+              bodyTextOverflow: TextOverflow.fade,
+              removeElevation: true,
+              borderRadius: 10,
+              boxShadow: [],
+              link: widget.url,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              displayDirection: UIDirection.uiDirectionHorizontal,
+              titleStyle: Theme.of(context).textTheme.titleSmall,
+            ),
+          );
+        },
+      ),
+    );
+
     if (type == null) {
       return FutureBuilder(
         future: http.head(Uri.parse(widget.url)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const ErrorComponentTransparent(message: 'Future Error');
           } else if (snapshot.connectionState == ConnectionState.done) {
@@ -196,43 +239,102 @@ class _UrlDisplayState extends State<UrlDisplay>
               if (RegExp('image/*.')
                   .hasMatch(snapshot.data!.headers['content-type']!)) {
                 type = 'image';
-                return CachedNetworkImage(
-                  imageUrl: widget.url,
-                  progressIndicatorBuilder:
-                      (context, String string, DownloadProgress progress) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: progress.progress,
-                      ),
-                    );
-                  },
+                return Center(
+                  child: Image.network(
+                    widget.url,
+                    fit: BoxFit.fill,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
                 );
-              }else {
+              } else {
                 type = 'other';
+                return Padding(
+                  padding: EdgeInsets.all(4),
+                  child: AnyLinkPreview(
+                    errorWidget: GestureDetector(
+                      onTap: () => launchUrl(Uri.parse(widget.url)),
+                      child: Container(
+                        color: Theme.of(context).colorScheme.background,
+                        padding: EdgeInsets.all(4),
+                        child: Text(
+                          widget.url,
+                          style: const TextStyle(
+                              decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ),
+                    bodyTextOverflow: TextOverflow.fade,
+                    removeElevation: true,
+                    borderRadius: 10,
+                    boxShadow: [],
+                    link: widget.url,
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    displayDirection: UIDirection.uiDirectionHorizontal,
+                    titleStyle: Theme.of(context).textTheme.titleSmall,
+                  ),
+                );
               }
             }
           }
           return Container();
         },
       );
-    } else {
-      if (type == 'image') {
-        return CachedNetworkImage(
-          imageUrl: widget.url,
-          progressIndicatorBuilder:
-              (context, String string, DownloadProgress progress) {
+    }
+    if (type == 'image') {
+      return Center(
+        child: Image.network(
+          widget.url,
+          fit: BoxFit.fill,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
             return Center(
               child: CircularProgressIndicator(
-                value: progress.progress,
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
               ),
             );
           },
-        );
-      } else {
-        return Text(widget.url);
-      }
+        ),
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.all(4),
+        child: AnyLinkPreview(
+          errorWidget: GestureDetector(
+            onTap: () => launchUrl(Uri.parse(widget.url)),
+            child: Container(
+              color: Theme.of(context).colorScheme.background,
+              padding: EdgeInsets.all(4),
+              child: Text(
+                widget.url,
+                style: const TextStyle(decoration: TextDecoration.underline),
+              ),
+            ),
+          ),
+          bodyTextOverflow: TextOverflow.fade,
+          removeElevation: true,
+          borderRadius: 10,
+          boxShadow: [],
+          link: widget.url,
+          backgroundColor: Theme.of(context).colorScheme.background,
+          displayDirection: UIDirection.uiDirectionHorizontal,
+          titleStyle: Theme.of(context).textTheme.titleSmall,
+        ),
+      );
     }
   }
-
-
 }
