@@ -26,19 +26,19 @@ enum LemmySortType {
 }
 
 Map<LemmySortType, String> lemmySortTypeEnumToApiCompatible = {
-  LemmySortType.active : 'Active',
-  LemmySortType.hot : 'Hot',
+  LemmySortType.active: 'Active',
+  LemmySortType.hot: 'Hot',
   LemmySortType.latest: 'New',
-  LemmySortType.old : 'Old',
-  LemmySortType.topDay : 'TopDay',
-  LemmySortType.topWeek : 'TopWeek',
-  LemmySortType.topMonth : "TopMonth",
-  LemmySortType.topYear : "TopYear",
-  LemmySortType.topAll : "TopAll",
-  LemmySortType.mostComments : 'MostComments',
-  LemmySortType.newComments : 'NewComments',
-  LemmySortType.topHour : 'TopHour',
-  LemmySortType.topSixHour : 'TopSixHour',
+  LemmySortType.old: 'Old',
+  LemmySortType.topDay: 'TopDay',
+  LemmySortType.topWeek: 'TopWeek',
+  LemmySortType.topMonth: "TopMonth",
+  LemmySortType.topYear: "TopYear",
+  LemmySortType.topAll: "TopAll",
+  LemmySortType.mostComments: 'MostComments',
+  LemmySortType.newComments: 'NewComments',
+  LemmySortType.topHour: 'TopHour',
+  LemmySortType.topSixHour: 'TopSixHour',
   LemmySortType.topTwelveHour: 'TopTwelveHour',
 };
 
@@ -49,7 +49,6 @@ class LemmyPost extends Equatable {
   final String? url;
   final String? thumbnailUrl;
   final String? body;
-
 
   final DateTime timePublished;
   final bool nsfw;
@@ -92,6 +91,31 @@ class LemmyPost extends Equatable {
 
   @override
   List<Object> get props => [id];
+}
 
+class LemmyComment extends Equatable {
+  final String creator;
+  final String content;
+  final String id;
+  final String postId;
+  final String creatorId;
+  final int childCount;
+  final int upVotes;
+  final int downVotes;
+  final int score;
 
+  const LemmyComment({
+    required this.creator,
+    required this.content,
+    required this.id,
+    required this.postId,
+    required this.creatorId,
+    required this.childCount,
+    required this.upVotes,
+    required this.downVotes,
+    required this.score,
+  });
+
+  @override
+  List<Object?> get props => [id];
 }
