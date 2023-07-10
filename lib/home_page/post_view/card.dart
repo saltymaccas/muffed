@@ -220,17 +220,3 @@ class CardLemmyPostItem extends StatelessWidget {
     );
   }
 }
-
-class _ImageDisplay extends StatefulWidget {
-  const _ImageDisplay({super.key});
-
-  @override
-  State<_ImageDisplay> createState() => _ImageDisplayState();
-}
-
-class _ImageDisplayState extends State<_ImageDisplay> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
