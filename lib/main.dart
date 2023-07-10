@@ -72,7 +72,7 @@ final _router = GoRouter(
             GoRoute(
                 path: '/home',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const HomePage();
+                  return HomePage();
                 },
                 routes: [
                   GoRoute(
