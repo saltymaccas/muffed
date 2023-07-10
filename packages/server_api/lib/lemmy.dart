@@ -68,4 +68,26 @@ interface class LemmyApi {
       return Future.error('Bad response format');
     }
   }
+
+  Future getComments(String postId) async {
+    try{
+      final response = await client.get(
+        Uri.https(
+          'lemmy.ml',
+          'api/v3/comment/list',
+          {
+            'post_id': postId,
+          },
+        ),
+      );
+
+    }on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+
+  }
 }
