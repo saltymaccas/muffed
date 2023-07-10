@@ -96,9 +96,9 @@ class LemmyPost extends Equatable {
 class LemmyComment extends Equatable {
   final String creatorName;
   final String content;
-  final String id;
-  final String postId;
-  final String creatorId;
+  final int id;
+  final int postId;
+  final int creatorId;
   final int childCount;
   final int upVotes;
   final int downVotes;

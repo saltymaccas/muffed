@@ -68,7 +68,7 @@ interface class LemmyRepo {
     }
   }
 
-  Future<List<LemmyComment>> getComments(String postId) async {
+  Future<List<LemmyComment>> getComments(int postId) async {
     try {
       final response = await client.get(
         Uri.https(
