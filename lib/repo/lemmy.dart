@@ -75,7 +75,7 @@ interface class LemmyRepo {
           'lemmy.ml',
           'api/v3/comment/list',
           {
-            'post_id': postId,
+            'post_id': postId.toString(),
           },
         ),
       );
@@ -90,6 +90,7 @@ interface class LemmyRepo {
       List<LemmyComment> comments = [];
 
       for (final comment in decodedResponse) {
+        print(comment);
         comments.add(
             LemmyComment(
               creatorName: comment['creator']['name'],
