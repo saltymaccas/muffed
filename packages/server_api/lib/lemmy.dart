@@ -81,6 +81,10 @@ interface class LemmyApi {
         ),
       );
 
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+
     }on SocketException {
       return Future.error('No Internet');
     } on HttpException {
