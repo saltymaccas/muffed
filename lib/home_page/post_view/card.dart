@@ -10,7 +10,6 @@ import '../post_more_actions_sheet/post_more_actions_sheet.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:muffed/components/measure_size.dart';
 
 class CardLemmyPostItem extends StatelessWidget {
   final LemmyPost post;
