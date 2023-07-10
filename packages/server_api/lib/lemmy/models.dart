@@ -94,7 +94,7 @@ class LemmyPost extends Equatable {
 }
 
 class LemmyComment extends Equatable {
-  final String creator;
+  final String creatorName;
   final String content;
   final String id;
   final String postId;
@@ -106,11 +106,11 @@ class LemmyComment extends Equatable {
   final int hotRank;
 
   const LemmyComment({
-    required this.creator,
+    required this.creatorName,
+    required this.creatorId,
     required this.content,
     required this.id,
     required this.postId,
-    required this.creatorId,
     required this.childCount,
     required this.upVotes,
     required this.downVotes,
