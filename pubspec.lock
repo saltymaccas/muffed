@@ -432,13 +432,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
-  server_api:
-    dependency: "direct main"
-    description:
-      path: "packages/server_api"
-      relative: true
-    source: path
-    version: "0.0.1"
   shared_preferences:
     dependency: transitive
     description:
