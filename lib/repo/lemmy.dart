@@ -90,13 +90,13 @@ interface class LemmyRepo {
       List<LemmyComment> comments = [];
 
       for (final comment in decodedResponse) {
-        print(comment);
         comments.add(
             LemmyComment(
               creatorName: comment['creator']['name'],
                 creatorId: comment['creator']['id'],
                 content: comment['comment']['content'],
                 id: comment['comment']['id'],
+                timePublished: DateTime.parse(comment['comment']['published'] + 'Z'), // Z added to mark as UTC time
                 postId: postId,
                 childCount: comment['counts']['child_count'],
                 upVotes: comment['counts']['upvotes'],

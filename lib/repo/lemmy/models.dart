@@ -96,6 +96,7 @@ class LemmyPost extends Equatable {
 class LemmyComment extends Equatable {
   final String creatorName;
   final String content;
+  final DateTime timePublished;
   final int id;
   final int postId;
   final int creatorId;
@@ -109,6 +110,7 @@ class LemmyComment extends Equatable {
     required this.creatorName,
     required this.creatorId,
     required this.content,
+    required this.timePublished,
     required this.id,
     required this.postId,
     required this.childCount,
