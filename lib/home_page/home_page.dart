@@ -8,13 +8,14 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  late ScrollController controller;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      HomePageBloc(repo: context.read<ServerRepo>())
+      create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
         buildWhen: (previousState, state) {
@@ -24,78 +25,66 @@ class HomePage extends StatelessWidget {
           return false;
         },
         builder: (context, state) {
-          return (state.status == HomePageStatus.loading)
-              ? const LoadingComponentTransparent()
-              : (state.status == HomePageStatus.failure)
-              ? const ErrorComponentTransparent()
-              : (state.status == HomePageStatus.success)
-              ? FeedView()
-              : Container();
+          if (state.status == HomePageStatus.loading) {
+            return const LoadingComponentTransparent();
+          } else if (state.status == HomePageStatus.failure) {
+            return const ErrorComponentTransparent(
+              message: 'Load Failed',
+            );
+          } else if (state.status == HomePageStatus.success) {
+            return NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  const SliverAppBar(
+                    elevation: 2,
+                    floating: true,
+                    title: Text('Feed'),
+                  )
+                ];
+              },
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HomePageBloc>().add(PullDownRefresh());
+                  await context
+                      .read<HomePageBloc>()
+                      .stream
+                      .firstWhere((element) {
+                    if (element.isRefreshing == false) {
+                      return true;
+                    }
+                    return false;
+                  });
+                },
+                child: NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                      context
+                          .read<HomePageBloc>()
+                          .add(ReachedNearEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: ListView.builder(
+                      cacheExtent: 999999999999,
+                      itemCount:
+                          context.read<HomePageBloc>().state.posts!.length,
+                      itemBuilder: (context, index) {
+                        return CardLemmyPostItem(
+                            context.read<HomePageBloc>().state.posts![index]
+                                as LemmyPost, openContent: (post) {
+                          context.goNamed('contentScreen', extra: post);
+                        });
+                      }),
+                ),
+              ),
+            );
+          } else {
+            return Container();
+          }
         },
-      ),
-    );
-  }
-}
-
-class FeedView extends StatelessWidget {
-  FeedView({
-    super.key,
-  });
-
-  late ScrollController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            elevation: 2,
-            floating: true,
-            title: Text('Feed'),
-          )
-        ];
-      },
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<HomePageBloc>().add(PullDownRefresh());
-          await context
-              .read<HomePageBloc>()
-              .stream
-              .firstWhere((element) {
-            if (element.isRefreshing == false) {
-              return true;
-            }
-            return false;
-          });
-        },
-        child: NotificationListener(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                scrollInfo.metrics.maxScrollExtent) {
-              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-            }
-            return true;
-          },
-          child: ListView.builder(
-              cacheExtent: 999999999999,
-              itemCount: context
-                  .read<HomePageBloc>()
-                  .state
-                  .posts!
-                  .length,
-              itemBuilder: (context, index) {
-                return CardLemmyPostItem(context
-                    .read<HomePageBloc>()
-                    .state
-                    .posts![index] as LemmyPost,openContent: (post) {
-                  context.goNamed(
-                      'contentScreen', extra: post);
-                }
-                );
-              }),
-        ),
       ),
     );
   }
