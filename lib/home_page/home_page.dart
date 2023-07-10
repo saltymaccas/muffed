@@ -9,6 +9,7 @@ import 'bloc/bloc.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
+import 'content_screen/content_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,7 +17,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomePageBloc(api: context.read<ServerApi>())
+      create: (context) =>
+      HomePageBloc(api: context.read<ServerApi>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
         buildWhen: (previousState, state) {
@@ -29,10 +31,10 @@ class HomePage extends StatelessWidget {
           return (state.status == HomePageStatus.loading)
               ? const LoadingComponentTransparent()
               : (state.status == HomePageStatus.failure)
-                  ? const ErrorComponentTransparent()
-                  : (state.status == HomePageStatus.success)
-                      ? FeedView()
-                      : Container();
+              ? const ErrorComponentTransparent()
+              : (state.status == HomePageStatus.success)
+              ? FeedView()
+              : Container();
         },
       ),
     );
@@ -62,7 +64,10 @@ class FeedView extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<HomePageBloc>().add(PullDownRefresh());
-          await context.read<HomePageBloc>().stream.firstWhere((element) {
+          await context
+              .read<HomePageBloc>()
+              .stream
+              .firstWhere((element) {
             if (element.isRefreshing == false) {
               return true;
             }
@@ -72,19 +77,27 @@ class FeedView extends StatelessWidget {
         child: NotificationListener(
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels ==
-                    scrollInfo.metrics.maxScrollExtent) {
+                scrollInfo.metrics.maxScrollExtent) {
               context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
             }
             return true;
           },
           child: ListView.builder(
-              cacheExtent: 100000,
-              itemCount: context.read<HomePageBloc>().state.posts!.length,
+              cacheExtent: 999999999999,
+              itemCount: context
+                  .read<HomePageBloc>()
+                  .state
+                  .posts!
+                  .length,
               itemBuilder: (context, index) {
                 return CardLemmyPostItem(context
                     .read<HomePageBloc>()
                     .state
-                    .posts![index] as LemmyPost);
+                    .posts![index] as LemmyPost,openContent: (post) {
+                  context.goNamed(
+                      'contentScreen', extra: post);
+                }
+                );
               }),
         ),
       ),

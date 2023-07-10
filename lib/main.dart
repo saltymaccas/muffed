@@ -6,13 +6,24 @@ import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/new_post_page/new_post_page.dart';
+import 'package:server_api/lemmy/models.dart';
 import 'package:server_api/server_api.dart';
+import 'package:muffed/home_page/content_screen/content_screen.dart';
+
+Widget slideTransition(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+  return SlideTransition(
+    position: Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(animation),
+    child: child,
+  );
+}
 
 final _router = GoRouter(
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
-
       builder: (
         BuildContext context,
         GoRouterState state,
@@ -44,10 +55,10 @@ final _router = GoRouter(
               }
             },
             destinations: const [
-              NavigationDestination(icon: Icon(Icons.home), label: 'home'),
-
+              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.inbox), label: 'Inbox'),
-              NavigationDestination(icon: Icon(Icons.search), label: 'New Post'),
+              NavigationDestination(
+                  icon: Icon(Icons.search), label: 'New Post'),
               NavigationDestination(
                 icon: Icon(Icons.person),
                 label: 'Profile',
@@ -60,11 +71,18 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/home',
-              builder: (BuildContext context, GoRouterState state) {
-                return const HomePage();
-              },
-            )
+                path: '/home',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const HomePage();
+                },
+                routes: [
+                  GoRoute(
+                      name: 'contentScreen',
+                      path: 'content',
+                    pageBuilder: (context, state) => MaterialPage(child: ContentScreen(state.extra as LemmyPost)),
+                          )
+                  
+                ])
           ],
         ),
         StatefulShellBranch(
@@ -98,7 +116,7 @@ final _router = GoRouter(
           ],
         ),
       ],
-    )
+    ),
   ],
 );
 

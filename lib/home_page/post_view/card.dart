@@ -1,27 +1,34 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:server_api/lemmy/models.dart';
 import 'package:muffed/utils/utils.dart';
 import '../post_more_actions_sheet/post_more_actions_sheet.dart';
-import 'package:http/http.dart' as http;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:muffed/components/measure_size.dart';
 
 class CardLemmyPostItem extends StatelessWidget {
   final LemmyPost post;
+  final bool limitContentHeight;
+  final void Function(dynamic post)? openContent;
 
-  const CardLemmyPostItem(this.post, {super.key});
+  const CardLemmyPostItem(this.post,
+      {this.openContent, this.limitContentHeight = true, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (openContent != null) {
+            openContent!(post);
+          }
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,7 +46,7 @@ class CardLemmyPostItem extends StatelessWidget {
                           child: (post.communityIcon != null)
                               ? Image.network(
                                   post.communityIcon! + '?thumbnail=50')
-                              : Image.asset('assets/Lemmy_logo.png'),
+                              : SvgPicture.asset('assets/logo.svg'),
                         ),
                       ),
                       const VerticalDivider(),
@@ -71,7 +78,99 @@ class CardLemmyPostItem extends StatelessWidget {
                 ],
               ),
             ),
-            _CardLemmyPostItemContentView(post),
+            Builder(builder: (context) {
+              late Widget urlWidget;
+
+              if (post.url != null) {
+              } else {
+                urlWidget = Container();
+              }
+
+              return Column(
+                children: [
+                  if (post.url != null) ...[
+                    Builder(builder: (context) {
+                      if (post.url!.contains('.jpg') ||
+                          post.url!.contains('.png') ||
+                          post.url!.contains('.jpeg') ||
+                          post.url!.contains('.gif') ||
+                          post.url!.contains('.webp') ||
+                          post.url!.contains('.bmp')) {
+
+                        return SizedBox(
+                          height: 300,
+                            child: Center(
+                              child: CachedNetworkImage(
+                          fit: BoxFit.fitWidth,
+                          imageUrl: post.url!,
+                          placeholder: (context, url) =>
+                                Image.asset('assets/logo.png'),
+                          // Implement your custom placeholder widget here
+                          errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                        ),
+                            ));
+                      } else {
+                        return Padding(
+                          padding: EdgeInsets.all(4),
+                          child: SizedBox(
+                            height: 100,
+                            child: AnyLinkPreview(
+                              errorWidget: GestureDetector(
+                                onTap: () => launchUrl(Uri.parse(post.url!)),
+                                child: Container(
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  padding: EdgeInsets.all(4),
+                                  child: Text(
+                                    post.url!,
+                                    style: const TextStyle(
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ),
+                              bodyTextOverflow: TextOverflow.fade,
+                              removeElevation: true,
+                              borderRadius: 10,
+                              boxShadow: [],
+                              link: post.url!,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.background,
+                              displayDirection:
+                                  UIDirection.uiDirectionHorizontal,
+                              titleStyle:
+                                  Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ),
+                        );
+                      }
+                    })
+                  ],
+                  if (post.body != null) ...[
+                    Padding(
+                      padding: EdgeInsets.all(4),
+                      child: Container(
+                        width: double.maxFinite,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Text(
+                            post.body!,
+                            maxLines: (limitContentHeight) ? 8 : null,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                      ),
+                    )
+                  ]
+                ],
+              );
+            }),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               child: Row(
@@ -122,219 +221,16 @@ class CardLemmyPostItem extends StatelessWidget {
   }
 }
 
-class _CardLemmyPostItemContentView extends StatelessWidget {
-  final LemmyPost post;
-
-  const _CardLemmyPostItemContentView(this.post, {super.key});
+class _ImageDisplay extends StatefulWidget {
+  const _ImageDisplay({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    late Widget urlWidget;
-
-    if (post.url != null) {
-    } else {
-      urlWidget = Container();
-    }
-
-    return Column(
-      children: [
-        if (post.url != null) ...[UrlDisplay(post.url!)],
-        if (post.body != null) ...[
-          Padding(
-            padding: EdgeInsets.all(4),
-            child: Container(
-              width: double.maxFinite,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Text(
-                  post.body!,
-                  maxLines: 8,
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-            ),
-          )
-        ]
-      ],
-    );
-  }
+  State<_ImageDisplay> createState() => _ImageDisplayState();
 }
 
-class UrlDisplay extends StatefulWidget {
-  const UrlDisplay(this.url, {super.key});
-
-  final String url;
-
-  @override
-  State<UrlDisplay> createState() => _UrlDisplayState();
-}
-
-class _UrlDisplayState extends State<UrlDisplay>
-    with AutomaticKeepAliveClientMixin<UrlDisplay> {
-  @override
-  bool get wantKeepAlive => true;
-
-  String? type;
-
+class _ImageDisplayState extends State<_ImageDisplay> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Image.network(
-        widget.url,
-        fit: BoxFit.fill,
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-              child: SizedBox(
-                  height: MediaQuery.of(context).size.width,
-                  child: LoadingComponentTransparentLogo()));
-        },
-        errorBuilder: (context, _, __) {
-          return Padding(
-            padding: EdgeInsets.all(4),
-            child: AnyLinkPreview(
-              errorWidget: GestureDetector(
-                onTap: () => launchUrl(Uri.parse(widget.url)),
-                child: Container(
-                  color: Theme.of(context).colorScheme.background,
-                  padding: EdgeInsets.all(4),
-                  child: Text(
-                    widget.url,
-                    style:
-                        const TextStyle(decoration: TextDecoration.underline),
-                  ),
-                ),
-              ),
-              bodyTextOverflow: TextOverflow.fade,
-              removeElevation: true,
-              borderRadius: 10,
-              boxShadow: [],
-              link: widget.url,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              displayDirection: UIDirection.uiDirectionHorizontal,
-              titleStyle: Theme.of(context).textTheme.titleSmall,
-            ),
-          );
-        },
-      ),
-    );
-
-    if (type == null) {
-      return FutureBuilder(
-        future: http.head(Uri.parse(widget.url)),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const ErrorComponentTransparent(message: 'Future Error');
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.data!.headers['content-type'] != null) {
-              if (RegExp('image/*.')
-                  .hasMatch(snapshot.data!.headers['content-type']!)) {
-                type = 'image';
-                return Center(
-                  child: Image.network(
-                    widget.url,
-                    fit: BoxFit.fill,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else {
-                type = 'other';
-                return Padding(
-                  padding: EdgeInsets.all(4),
-                  child: AnyLinkPreview(
-                    errorWidget: GestureDetector(
-                      onTap: () => launchUrl(Uri.parse(widget.url)),
-                      child: Container(
-                        color: Theme.of(context).colorScheme.background,
-                        padding: EdgeInsets.all(4),
-                        child: Text(
-                          widget.url,
-                          style: const TextStyle(
-                              decoration: TextDecoration.underline),
-                        ),
-                      ),
-                    ),
-                    bodyTextOverflow: TextOverflow.fade,
-                    removeElevation: true,
-                    borderRadius: 10,
-                    boxShadow: [],
-                    link: widget.url,
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    displayDirection: UIDirection.uiDirectionHorizontal,
-                    titleStyle: Theme.of(context).textTheme.titleSmall,
-                  ),
-                );
-              }
-            }
-          }
-          return Container();
-        },
-      );
-    }
-    if (type == 'image') {
-      return Center(
-        child: Image.network(
-          widget.url,
-          fit: BoxFit.fill,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
-        ),
-      );
-    } else {
-      return Padding(
-        padding: EdgeInsets.all(4),
-        child: AnyLinkPreview(
-          errorWidget: GestureDetector(
-            onTap: () => launchUrl(Uri.parse(widget.url)),
-            child: Container(
-              color: Theme.of(context).colorScheme.background,
-              padding: EdgeInsets.all(4),
-              child: Text(
-                widget.url,
-                style: const TextStyle(decoration: TextDecoration.underline),
-              ),
-            ),
-          ),
-          bodyTextOverflow: TextOverflow.fade,
-          removeElevation: true,
-          borderRadius: 10,
-          boxShadow: [],
-          link: widget.url,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          displayDirection: UIDirection.uiDirectionHorizontal,
-          titleStyle: Theme.of(context).textTheme.titleSmall,
-        ),
-      );
-    }
+    return const Placeholder();
   }
 }
