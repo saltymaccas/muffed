@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'lemmy/models.dart';
 
-interface class LemmyApi {
+interface class LemmyRepo {
   final Client client;
 
-  LemmyApi() : client = Client();
+  LemmyRepo() : client = Client();
 
   Future getPosts(
       {LemmySortType sortType = LemmySortType.hot, int page = 1}) async {

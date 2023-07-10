@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:server_api/lemmy/models.dart';
-import 'package:server_api/server_api.dart';
+import 'package:muffed/repo/server_repo.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 part 'event.dart';
@@ -45,5 +44,5 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     }, transformer: droppable());
   }
 
-  final ServerApi api;
+  final ServerRepo api;
 }

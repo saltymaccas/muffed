@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:server_api/lemmy/models.dart';
+import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/utils.dart';
 import '../post_more_actions_sheet/post_more_actions_sheet.dart';
 import 'package:any_link_preview/any_link_preview.dart';

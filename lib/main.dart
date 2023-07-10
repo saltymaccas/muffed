@@ -6,9 +6,8 @@ import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/new_post_page/new_post_page.dart';
-import 'package:server_api/lemmy/models.dart';
-import 'package:server_api/server_api.dart';
 import 'package:muffed/home_page/content_screen/content_screen.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 Widget slideTransition(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
   return SlideTransition(
@@ -132,7 +131,7 @@ class MyApp extends StatelessWidget {
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return RepositoryProvider(
-        create: (context) => ServerApi(),
+        create: (context) => ServerRepo(),
         child: MaterialApp.router(
           routerConfig: _router,
           title: 'Muffed',

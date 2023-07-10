@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:server_api/lemmy/models.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 void showPostMoreActionsSheet(BuildContext context, LemmyPost post) {
   showModalBottomSheet(

@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'post_view/card.dart';
-import 'package:server_api/lemmy/models.dart';
-import 'package:server_api/server_api.dart';
 import 'bloc/bloc.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
 import 'content_screen/content_screen.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -18,7 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-      HomePageBloc(api: context.read<ServerApi>())
+      HomePageBloc(api: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
         buildWhen: (previousState, state) {
