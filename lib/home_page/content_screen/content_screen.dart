@@ -20,51 +20,48 @@ class ContentScreen extends StatelessWidget {
       child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
         builder: (context, state) {
           return NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                const SliverAppBar(
-                  elevation: 2,
-                  floating: true,
-                  title: Text('Comments'),
-                )
-              ];
-            },
-            body: RefreshIndicator(
-              onRefresh: () async {},
-              child: NotificationListener(
-                onNotification: (ScrollNotification scrollInfo) {
-                  return true;
-                },
-                child: Column(
-                  children: [
-                    CardLemmyPostItem(
-                      post,
-                      limitContentHeight: false,
-                    ),
-                    Builder(builder: (context) {
-                      if (state.status == ContentScreenStatus.loading) {
-                        return const LoadingComponentTransparent();
-                      } else if (state.status == ContentScreenStatus.failure) {
-                        return const ErrorComponentTransparent();
-                      } else if (state.status == ContentScreenStatus.success) {
-                        return Expanded(
-                          child: ListView.builder(
-                              itemCount: state.comments!.length,
-                              cacheExtent: 100000,
-                              itemBuilder: (context, index) {
-                                return Text(state.comments![index].content);
-                              }),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    })
-                  ],
-                ),
-              ),
-            ),
-          );
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  const SliverAppBar(
+                    elevation: 2,
+                    floating: true,
+                    title: Text('Comments'),
+                  )
+                ];
+              },
+              body: RefreshIndicator(
+                onRefresh: () async {},
+                child: NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      return true;
+                    },
+                    child: ListView(
+                      children: [
+                        CardLemmyPostItem(
+                          post,
+                          limitContentHeight: false,
+                        ),
+                        Builder(builder: (context) {
+                          if (state.status == ContentScreenStatus.loading) {
+                            return const LoadingComponentTransparent();
+                          } else if (state.status ==
+                              ContentScreenStatus.failure) {
+                            return const ErrorComponentTransparent();
+                          } else if (state.status ==
+                              ContentScreenStatus.success) {
+                            return Column(
+                                children: List.generate(state.comments!.length,
+                                    (index) {
+                              return Text(state.comments![index].content);
+                            }));
+                          } else {
+                            return Container();
+                          }
+                        }),
+                      ],
+                    )),
+              ));
         },
       ),
     );
