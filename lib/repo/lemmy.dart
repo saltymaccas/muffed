@@ -87,7 +87,7 @@ interface class LemmyRepo {
       var decodedResponse =
       (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['comments'];
 
-      List comments = [];
+      List<LemmyComment> comments = [];
 
       for (final comment in decodedResponse) {
         comments.add(
@@ -105,6 +105,8 @@ interface class LemmyRepo {
 
         );
       }
+
+      return comments;
     } on SocketException {
       return Future.error('No Internet');
     } on HttpException {
