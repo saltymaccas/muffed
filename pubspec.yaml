@@ -29,8 +29,6 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   progressive_image: ^2.0.0
-  server_api:
-    path: packages/server_api
   any_link_preview: ^3.0.1
   equatable: ^2.0.5
   flutter_bloc: ^8.1.3
