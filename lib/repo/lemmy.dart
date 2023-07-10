@@ -9,7 +9,7 @@ interface class LemmyRepo {
 
   LemmyRepo() : client = Client();
 
-  Future getPosts(
+  Future<List<LemmyPost>> getPosts(
       {LemmySortType sortType = LemmySortType.hot, int page = 1}) async {
     try {
       final response = await client.get(
@@ -68,7 +68,7 @@ interface class LemmyRepo {
     }
   }
 
-  Future getComments(String postId) async {
+  Future<List<LemmyComment>> getComments(String postId) async {
     try {
       final response = await client.get(
         Uri.https(
