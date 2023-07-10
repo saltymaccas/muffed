@@ -98,7 +98,7 @@ class LemmyComment extends Equatable {
   /// 1 is comment on a comment,
   /// 2 in comment on that comment that is on a comment and so on.
   final int level;
-  final int? parentId; // The parent comment
+  final int? parentCommentId; // The parent comment
   final List<LemmyComment> replies;
   final String creatorName;
   final String content;
@@ -114,7 +114,7 @@ class LemmyComment extends Equatable {
 
   const LemmyComment({
     this.replies = const [],
-    this.parentId,
+    this.parentCommentId,
     this.level = 0,
     required this.creatorName,
     required this.creatorId,
