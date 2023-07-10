@@ -178,8 +178,10 @@ class CardLemmyPostItem extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.mode_comment_outlined,
+                      IconButton(
+                        onPressed: (){},
+                        visualDensity: VisualDensity.compact,
+                        icon: const Icon(Icons.mode_comment_outlined),
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       SizedBox(
