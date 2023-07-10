@@ -94,6 +94,11 @@ class LemmyPost extends Equatable {
 }
 
 class LemmyComment extends Equatable {
+  /// Level that the comment is on where 0 is comment on a post,
+  /// 1 is comment on a comment,
+  /// 2 in comment on that comment that is on a comment and so on.
+  final int level;
+  final List<LemmyComment> replies;
   final String creatorName;
   final String content;
   final DateTime timePublished;
@@ -107,6 +112,8 @@ class LemmyComment extends Equatable {
   final int hotRank;
 
   const LemmyComment({
+    this.replies = const [],
+    this.level = 0,
     required this.creatorName,
     required this.creatorId,
     required this.content,
