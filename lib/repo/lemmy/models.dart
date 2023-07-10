@@ -123,3 +123,16 @@ class LemmyComment extends Equatable {
   @override
   List<Object?> get props => [id];
 }
+
+class LemmyCommentTree {
+  LemmyComment comment;
+  List<LemmyCommentTree> commentTree;
+  int level;
+
+  LemmyCommentTree({
+    required this.comment,
+    this.commentTree = const [],
+    this.level = 0,
+  });
+}
+
