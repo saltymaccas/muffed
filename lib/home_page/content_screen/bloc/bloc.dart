@@ -13,7 +13,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       List<LemmyComment> comments = await repo.lemmyRepo.getComments(postId, page: 1);
 
       emit(ContentScreenState(
-          status: ContentScreenStatus.success, comments: comments));
+          status: ContentScreenStatus.success, comments: comments, pagesLoaded: 1));
     });
   }
 
