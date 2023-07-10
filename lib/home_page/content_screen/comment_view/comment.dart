@@ -18,7 +18,7 @@ class CommentItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.outline,
             ),
           ],
-          SizedBox(
+          const SizedBox(
             width: 5,
           ),
           Expanded(
