@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-      HomePageBloc(api: context.read<ServerRepo>())
+      HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
         buildWhen: (previousState, state) {

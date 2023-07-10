@@ -10,19 +10,19 @@ part 'event.dart';
 part 'state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
-  HomePageBloc({required this.api})
+  HomePageBloc({required this.repo})
       : super(HomePageState(status: HomePageStatus.initial)) {
     on<LoadInitialPostsRequested>((event, emit) async {
       emit(HomePageState(status: HomePageStatus.loading));
 
-      List posts = await api.getPosts(page: 1);
+      List posts = await repo.getPosts(page: 1);
 
       emit(HomePageState(status: HomePageStatus.success, posts: posts));
     });
     on<PullDownRefresh>((event, emit) async {
       emit(state.copyWith(isRefreshing: true));
 
-      List posts = await api.getPosts();
+      List posts = await repo.getPosts();
 
       emit(state.copyWith(posts: posts, isRefreshing: false, pagesLoaded: 1));
     });
@@ -30,7 +30,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       log('[HomePageBloc] Loading page ${state.pagesLoaded + 1}');
       emit(state.copyWith(isLoadingMore: true));
 
-      List posts = await api.getPosts(page: state.pagesLoaded + 1);
+      List posts = await repo.getPosts(page: state.pagesLoaded + 1);
 
       emit(state.copyWith(
         posts: (state.posts! + posts),
@@ -44,5 +44,5 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     }, transformer: droppable());
   }
 
-  final ServerRepo api;
+  final ServerRepo repo;
 }
