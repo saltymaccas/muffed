@@ -5,11 +5,12 @@ enum ContentScreenStatus { initial, loading, success, failure }
 class ContentScreenState extends Equatable{
   final ContentScreenStatus status;
   final List<LemmyComment>? comments;
+  final int pagesLoaded;
 
 
-  ContentScreenState({required this.status, this.comments});
+  ContentScreenState({required this.status, this.comments, this.pagesLoaded = 0});
 
 
   @override
-  List<Object?> get props => [status, comments];
+  List<Object?> get props => [status, comments, pagesLoaded];
 }
