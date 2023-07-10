@@ -13,4 +13,16 @@ class ContentScreenState extends Equatable{
 
   @override
   List<Object?> get props => [status, comments, pagesLoaded];
+
+  ContentScreenState copyWith({
+    ContentScreenStatus? status,
+    List<LemmyComment>? comments,
+    int? pagesLoaded,
+  }) {
+    return ContentScreenState(
+      status: status ?? this.status,
+      comments: comments ?? this.comments,
+      pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+    );
+  }
 }
