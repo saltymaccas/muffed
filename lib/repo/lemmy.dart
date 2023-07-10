@@ -28,7 +28,7 @@ interface class LemmyRepo {
       }
 
       var decodedResponse =
-      (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['posts'];
+          (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['posts'];
 
       List<LemmyPost> posts = [];
 
@@ -39,8 +39,7 @@ interface class LemmyRepo {
             url: post['post']['url'],
             id: post['post']['id'],
             name: post['post']['name'],
-            timePublished: DateTime.parse(
-                post['post']['published'] + 'Z'),
+            timePublished: DateTime.parse(post['post']['published'] + 'Z'),
             // Z added to mark as UTC time
             nsfw: post['post']['nsfw'],
             creatorId: post['post']['creator_id'],
@@ -85,26 +84,88 @@ interface class LemmyRepo {
       }
 
       var decodedResponse =
-      (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['comments'];
+          (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['comments'];
+
+      // defines comment children and parent
+
+      Map<int, List> mapReplyToParent = {};
+      List<Map> baseLevelComments = [];
+
+      for (final comment in decodedResponse) {
+        final String p = comment['comment']['path'];
+        final List<String> parts = p.split('.');
+
+        if (parts.length == 2) {
+          baseLevelComments.add(comment);
+        } else {
+          final int parentId = int.parse(parts[parts.length - 2]);
+
+          if (!mapReplyToParent.containsKey(parentId)) {
+            mapReplyToParent[parentId] = [comment];
+          } else {
+            mapReplyToParent[parentId]!.add(comment);
+          }
+        }
+      }
+
+      LemmyComment mapToLemmyComment(
+          Map<String, dynamic> comment, int level, int parentId) {
+        final List<LemmyComment> replies = [];
+
+        if (mapReplyToParent.containsKey(comment['comment']['id'])) {
+          for (var element in mapReplyToParent[comment['comment']['id']]!) {
+            replies.add(mapToLemmyComment(
+                element, level + 1, comment['comment']['id']));
+          }
+        }
+
+        return LemmyComment(
+          parentCommentId: parentId,
+          replies: replies,
+          level: level + 1,
+          creatorName: comment['creator']['name'],
+          creatorId: comment['creator']['id'],
+          content: comment['comment']['content'],
+          id: comment['comment']['id'],
+          timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
+          // Z added to mark as UTC time
+          postId: postId,
+          childCount: comment['counts']['child_count'],
+          upVotes: comment['counts']['upvotes'],
+          downVotes: comment['counts']['downvotes'],
+          score: comment['counts']['score'],
+          hotRank: comment['counts']['hot_rank'],
+        );
+      }
 
       List<LemmyComment> comments = [];
 
-      for (final comment in decodedResponse) {
-        comments.add(
-            LemmyComment(
-              creatorName: comment['creator']['name'],
-                creatorId: comment['creator']['id'],
-                content: comment['comment']['content'],
-                id: comment['comment']['id'],
-                timePublished: DateTime.parse(comment['comment']['published'] + 'Z'), // Z added to mark as UTC time
-                postId: postId,
-                childCount: comment['counts']['child_count'],
-                upVotes: comment['counts']['upvotes'],
-                downVotes: comment['counts']['downvotes'],
-                score: comment['counts']['score'],
-                hotRank: comment['counts']['hot_rank'])
+      for (final comment in baseLevelComments) {
+        final List<LemmyComment> replies = [];
 
-        );
+        if (mapReplyToParent.containsKey(comment['comment']['id'])) {
+          for (var element in mapReplyToParent[comment['comment']['id']]!) {
+            replies
+                .add(mapToLemmyComment(element, 1, comment['comment']['id']));
+          }
+        }
+
+        comments.add(LemmyComment(
+          level: 0,
+          replies: replies,
+          creatorName: comment['creator']['name'],
+          creatorId: comment['creator']['id'],
+          content: comment['comment']['content'],
+          id: comment['comment']['id'],
+          timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
+          // Z added to mark as UTC time
+          postId: postId,
+          childCount: comment['counts']['child_count'],
+          upVotes: comment['counts']['upvotes'],
+          downVotes: comment['counts']['downvotes'],
+          score: comment['counts']['score'],
+          hotRank: comment['counts']['hot_rank'],
+        ));
       }
 
       return comments;
