@@ -103,6 +103,7 @@ class LemmyComment extends Equatable {
   final int upVotes;
   final int downVotes;
   final int score;
+  final int hotRank;
 
   const LemmyComment({
     required this.creator,
@@ -114,6 +115,7 @@ class LemmyComment extends Equatable {
     required this.upVotes,
     required this.downVotes,
     required this.score,
+    required this.hotRank,
   });
 
   @override
