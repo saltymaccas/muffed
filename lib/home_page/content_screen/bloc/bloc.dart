@@ -10,7 +10,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
   ContentScreenBloc({required this.repo, required this.postId})
       : super(ContentScreenState(status: ContentScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
-      List<LemmyComment> comments = await repo.lemmyRepo.getComments(postId, page: 0);
+      List<LemmyComment> comments = await repo.lemmyRepo.getComments(postId, page: 1);
 
       emit(ContentScreenState(
           status: ContentScreenStatus.success, comments: comments));
