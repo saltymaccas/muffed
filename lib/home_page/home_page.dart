@@ -6,6 +6,7 @@ import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/search_page/search_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -54,8 +55,7 @@ class HomePage extends StatelessWidget {
                   cacheExtent: 99999999,
                   slivers: [
                     SliverPersistentHeader(
-                      floating: true,
-                        delegate: TopBarDelegate()),
+                        floating: true, delegate: TopBarDelegate()),
                     SliverList(
                         delegate: SliverChildBuilderDelegate(
                             childCount: state.posts!.length, (context, index) {
@@ -78,7 +78,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
 class TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   double get minExtent => 200.0;
@@ -89,16 +88,20 @@ class TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SafeArea(child: Row(
+        child: SafeArea(
+            child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
-            IconButton(onPressed: (){}, icon: const Icon(Icons.sort)),
+            IconButton(
+                onPressed: () {
+                  context.goNamed('searchPage');
+                },
+                icon: const Icon(Icons.search)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
           ],
         )),
       ),
