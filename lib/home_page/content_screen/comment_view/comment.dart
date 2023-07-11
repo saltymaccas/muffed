@@ -55,13 +55,13 @@ class _CommentItemState extends State<CommentItem> {
                     children: [
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(Icons.arrow_upward_rounded),
+                        icon: const Icon(Icons.arrow_upward_rounded),
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(widget.comment.upVotes.toString()),
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(Icons.arrow_downward_rounded),
+                        icon: const Icon(Icons.arrow_downward_rounded),
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(widget.comment.downVotes.toString()),
