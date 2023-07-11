@@ -19,7 +19,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
           comments: comments,
           pagesLoaded: 1));
     });
-    on<ReachedNearEndOfList>(
+    on<ReachedNearEndOfScroll>(
       (event, emit) async {
         emit(state.copyWith(isLoadingMore: true));
 
