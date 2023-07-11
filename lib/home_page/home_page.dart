@@ -32,54 +32,40 @@ class HomePage extends StatelessWidget {
               message: 'Load Failed',
             );
           } else if (state.status == HomePageStatus.success) {
-            return Scaffold(
-              body: NestedScrollView(
-                floatHeaderSlivers: true,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return [
-                    const SliverAppBar(
-                      elevation: 2,
-                      floating: true,
-                      title: Text('Feed'),
-                    )
-                  ];
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<HomePageBloc>().add(PullDownRefresh());
+                await context.read<HomePageBloc>().stream.firstWhere((element) {
+                  if (element.isRefreshing == false) {
+                    return true;
+                  }
+                  return false;
+                });
+              },
+              child: NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent) {
+                    context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+                  }
+                  return true;
                 },
-                body: RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<HomePageBloc>().add(PullDownRefresh());
-                    await context
-                        .read<HomePageBloc>()
-                        .stream
-                        .firstWhere((element) {
-                      if (element.isRefreshing == false) {
-                        return true;
-                      }
-                      return false;
-                    });
-                  },
-                  child: NotificationListener(
-                    onNotification: (ScrollNotification scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent) {
-                        context
-                            .read<HomePageBloc>()
-                            .add(ReachedNearEndOfScroll());
-                      }
-                      return true;
-                    },
-                    child: ListView.builder(
-                        cacheExtent: 999999999999,
-                        itemCount:
-                            context.read<HomePageBloc>().state.posts!.length,
-                        itemBuilder: (context, index) {
-                          return CardLemmyPostItem(
-                              context.read<HomePageBloc>().state.posts![index]
-                                  as LemmyPost, openContent: (post) {
-                            context.goNamed('contentScreen', extra: post);
-                          });
-                        }),
-                  ),
+                child: CustomScrollView(
+                  cacheExtent: 99999999,
+                  slivers: [
+                    SliverPersistentHeader(
+                      floating: true,
+                        delegate: _MyDelegate()),
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            childCount: state.posts!.length, (context, index) {
+                      return CardLemmyPostItem(
+                          context.read<HomePageBloc>().state.posts![index]
+                              as LemmyPost, openContent: (post) {
+                        context.goNamed('contentScreen', extra: post);
+                      });
+                    }))
+                  ],
                 ),
               ),
             );
@@ -90,4 +76,35 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class _MyDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  double get minExtent => 200.0;
+
+  @override
+  double get maxExtent => 200.0;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SafeArea(child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
+            IconButton(onPressed: (){}, icon: const Icon(Icons.sort)),
+          ],
+        )),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_MyDelegate oldDelegate) => false;
 }
