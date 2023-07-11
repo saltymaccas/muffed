@@ -22,6 +22,11 @@ class _CommentItemState extends State<CommentItem> {
           isMinimised = !isMinimised;
         });
       },
+      onLongPress: () {
+        setState(() {
+          isMinimised = !isMinimised;
+        });
+      },
       child: IntrinsicHeight(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
