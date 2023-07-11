@@ -57,7 +57,7 @@ final _router = GoRouter(
               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.inbox), label: 'Inbox'),
               NavigationDestination(
-                  icon: Icon(Icons.search), label: 'New Post'),
+                  icon: Icon(Icons.add), label: 'New Post'),
               NavigationDestination(
                 icon: Icon(Icons.person),
                 label: 'Profile',
