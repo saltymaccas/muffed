@@ -20,39 +20,50 @@ class ContentScreen extends StatelessWidget {
             ..add(InitializeEvent()),
       child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
         builder: (context, state) {
-          return CustomScrollView(
-            slivers: [
-              const SliverAppBar(
-                title: Text('Comments'),
-              ),
-              SliverToBoxAdapter(
-                child: CardLemmyPostItem(
-                  post,
-                  limitContentHeight: false,
+          return NotificationListener(
+              onNotification: (ScrollNotification scrollInfo){
+                if (scrollInfo.metrics.pixels ==
+                    scrollInfo.metrics.maxScrollExtent) {
+                  context
+                      .read<ContentScreenBloc>()
+                      .add(ReachedNearEndOfScroll());
+                }
+                return true;
+              },
+            child: CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  title: Text('Comments'),
                 ),
-              ),
-              (state.status == ContentScreenStatus.loading)
-                  ? const SliverFillRemaining(
-                      child: LoadingComponentTransparent(),
-                    )
-                  : (state.status == ContentScreenStatus.failure)
-                      ? const SliverFillRemaining(
-                          child: ErrorComponentTransparent(
-                            message: 'Failed to load',
-                          ),
-                        )
-                      : (state.status == ContentScreenStatus.initial)
-                          ? SliverFillRemaining(
-                              child: Container(),
-                            )
-                          : SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                  childCount: state.comments!.length,
-                                  (context, index) {
-                                return CommentItem(state.comments![index]);
-                              }),
+                SliverToBoxAdapter(
+                  child: CardLemmyPostItem(
+                    post,
+                    limitContentHeight: false,
+                  ),
+                ),
+                (state.status == ContentScreenStatus.loading)
+                    ? const SliverFillRemaining(
+                        child: LoadingComponentTransparent(),
+                      )
+                    : (state.status == ContentScreenStatus.failure)
+                        ? const SliverFillRemaining(
+                            child: ErrorComponentTransparent(
+                              message: 'Failed to load',
                             ),
-            ],
+                          )
+                        : (state.status == ContentScreenStatus.initial)
+                            ? SliverFillRemaining(
+                                child: Container(),
+                              )
+                            : SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                    childCount: state.comments!.length,
+                                    (context, index) {
+                                  return CommentItem(state.comments![index]);
+                                }),
+                              ),
+              ],
+            ),
           );
         },
       ),
