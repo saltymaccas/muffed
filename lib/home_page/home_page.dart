@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
                   slivers: [
                     SliverPersistentHeader(
                       floating: true,
-                        delegate: _MyDelegate()),
+                        delegate: TopBarDelegate()),
                     SliverList(
                         delegate: SliverChildBuilderDelegate(
                             childCount: state.posts!.length, (context, index) {
@@ -79,7 +79,7 @@ class HomePage extends StatelessWidget {
 }
 
 
-class _MyDelegate extends SliverPersistentHeaderDelegate {
+class TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   double get minExtent => 200.0;
 
@@ -106,5 +106,5 @@ class _MyDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_MyDelegate oldDelegate) => false;
+  bool shouldRebuild(TopBarDelegate oldDelegate) => false;
 }
