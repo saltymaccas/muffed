@@ -34,6 +34,7 @@ class ContentScreen extends StatelessWidget {
               slivers: [
                 const SliverAppBar(
                   title: Text('Comments'),
+                  floating: true,
                 ),
                 SliverToBoxAdapter(
                   child: CardLemmyPostItem(
