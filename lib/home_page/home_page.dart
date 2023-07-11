@@ -32,52 +32,54 @@ class HomePage extends StatelessWidget {
               message: 'Load Failed',
             );
           } else if (state.status == HomePageStatus.success) {
-            return NestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  const SliverAppBar(
-                    elevation: 2,
-                    floating: true,
-                    title: Text('Feed'),
-                  )
-                ];
-              },
-              body: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<HomePageBloc>().add(PullDownRefresh());
-                  await context
-                      .read<HomePageBloc>()
-                      .stream
-                      .firstWhere((element) {
-                    if (element.isRefreshing == false) {
-                      return true;
-                    }
-                    return false;
-                  });
+            return Scaffold(
+              body: NestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return [
+                    const SliverAppBar(
+                      elevation: 2,
+                      floating: true,
+                      title: Text('Feed'),
+                    )
+                  ];
                 },
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
-                      context
-                          .read<HomePageBloc>()
-                          .add(ReachedNearEndOfScroll());
-                    }
-                    return true;
+                body: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<HomePageBloc>().add(PullDownRefresh());
+                    await context
+                        .read<HomePageBloc>()
+                        .stream
+                        .firstWhere((element) {
+                      if (element.isRefreshing == false) {
+                        return true;
+                      }
+                      return false;
+                    });
                   },
-                  child: ListView.builder(
-                      cacheExtent: 999999999999,
-                      itemCount:
-                          context.read<HomePageBloc>().state.posts!.length,
-                      itemBuilder: (context, index) {
-                        return CardLemmyPostItem(
-                            context.read<HomePageBloc>().state.posts![index]
-                                as LemmyPost, openContent: (post) {
-                          context.goNamed('contentScreen', extra: post);
-                        });
-                      }),
+                  child: NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                        context
+                            .read<HomePageBloc>()
+                            .add(ReachedNearEndOfScroll());
+                      }
+                      return true;
+                    },
+                    child: ListView.builder(
+                        cacheExtent: 999999999999,
+                        itemCount:
+                            context.read<HomePageBloc>().state.posts!.length,
+                        itemBuilder: (context, index) {
+                          return CardLemmyPostItem(
+                              context.read<HomePageBloc>().state.posts![index]
+                                  as LemmyPost, openContent: (post) {
+                            context.goNamed('contentScreen', extra: post);
+                          });
+                        }),
+                  ),
                 ),
               ),
             );
