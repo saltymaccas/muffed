@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/utils.dart';
@@ -94,19 +92,11 @@ class CardLemmyPostItem extends StatelessWidget {
                           post.url!.contains('.gif') ||
                           post.url!.contains('.webp') ||
                           post.url!.contains('.bmp')) {
-
                         return SizedBox(
-                          height: 300,
+                            height: 300,
                             child: Center(
-                              child: CachedNetworkImage(
-                          fit: BoxFit.fitWidth,
-                          imageUrl: post.url!,
-                          placeholder: (context, url) =>
-                                Image.asset('assets/logo.png'),
-                          // Implement your custom placeholder widget here
-                          errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                        ),
+                              child: Image.network(post.url!,
+                                  fit: BoxFit.fitWidth),
                             ));
                       } else {
                         return Padding(
@@ -177,7 +167,7 @@ class CardLemmyPostItem extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: (){},
+                        onPressed: () {},
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.mode_comment_outlined),
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
