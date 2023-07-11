@@ -22,20 +22,30 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
 
-        print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
+        if(!state.reachedEnd){
+          print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
 
-        emit(state.copyWith(isLoadingMore: true));
+          emit(state.copyWith(isLoadingMore: true));
 
-        List<LemmyComment> comments = await repo.lemmyRepo
-            .getComments(postId, page: state.pagesLoaded + 1);
+          List<LemmyComment> comments = await repo.lemmyRepo
+              .getComments(postId, page: state.pagesLoaded + 1);
 
-        emit(state.copyWith(
-            isLoadingMore: false,
-            pagesLoaded: state.pagesLoaded + 1,
-            comments: [...state.comments ?? [], ...comments]));
+          if(comments.isEmpty){
+            emit(state.copyWith(reachedEnd: true));
 
-        print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+            print('[ContentScreenBloc] end reached');
+          }else{
+            emit(state.copyWith(
+                isLoadingMore: false,
+                pagesLoaded: state.pagesLoaded + 1,
+                comments: [...state.comments ?? [], ...comments]));
 
+            print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+          }
+
+
+
+        }
       },
       transformer: droppable(),
     );
