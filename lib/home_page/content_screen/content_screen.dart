@@ -59,7 +59,12 @@ class ContentScreen extends StatelessWidget {
                                 delegate: SliverChildBuilderDelegate(
                                     childCount: state.comments!.length,
                                     (context, index) {
-                                  return CommentItem(state.comments![index]);
+                                  return Column(
+                                    children: [
+                                      CommentItem(state.comments![index]),
+                                      const Divider()
+                                    ],
+                                  );
                                 }),
                               ),
               ],
