@@ -9,16 +9,6 @@ import 'package:muffed/new_post_page/new_post_page.dart';
 import 'package:muffed/home_page/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-Widget slideTransition(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-  return SlideTransition(
-    position: Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(animation),
-    child: child,
-  );
-}
-
 final _router = GoRouter(
   initialLocation: '/home',
   routes: [
@@ -56,8 +46,7 @@ final _router = GoRouter(
             destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.inbox), label: 'Inbox'),
-              NavigationDestination(
-                  icon: Icon(Icons.add), label: 'New Post'),
+              NavigationDestination(icon: Icon(Icons.add), label: 'New Post'),
               NavigationDestination(
                 icon: Icon(Icons.person),
                 label: 'Profile',
@@ -76,11 +65,11 @@ final _router = GoRouter(
                 },
                 routes: [
                   GoRoute(
-                      name: 'contentScreen',
-                      path: 'content',
-                    pageBuilder: (context, state) => MaterialPage(child: ContentScreen(state.extra as LemmyPost)),
-                          )
-                  
+                    name: 'contentScreen',
+                    path: 'content',
+                    pageBuilder: (context, state) => MaterialPage(
+                        child: ContentScreen(state.extra as LemmyPost)),
+                  )
                 ])
           ],
         ),
