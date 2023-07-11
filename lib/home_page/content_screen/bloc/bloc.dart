@@ -28,6 +28,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
 
         emit(state.copyWith(
             isLoadingMore: false,
+            pagesLoaded: state.pagesLoaded + 1,
             comments: [...state.comments ?? [], ...comments]));
       },
       transformer: droppable(),
