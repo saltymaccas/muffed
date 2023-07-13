@@ -2,6 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
@@ -9,8 +10,13 @@ import 'package:muffed/new_post_page/new_post_page.dart';
 import 'package:muffed/home_page/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_page/search_page.dart';
+import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'dynamic_navigation_bar/bloc/bloc.dart';
+
+final _routerObserver = NavigatorObserver();
 
 final _router = GoRouter(
+  observers: [_routerObserver],
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
@@ -20,40 +26,8 @@ final _router = GoRouter(
         StatefulNavigationShell navigationShell,
       ) {
         return Scaffold(
+          bottomNavigationBar: DynamicNavigationBar(),
           body: navigationShell,
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: <String, int>{
-                  '/home': 0,
-                  '/inbox': 1,
-                  '/newPost': 2,
-                  '/profile': 3,
-                }[GoRouter.of(context)
-                    .routeInformationProvider
-                    .value
-                    .location] ??
-                0,
-            onDestinationSelected: (int index) {
-              switch (index) {
-                case 0:
-                  context.go('/home');
-                case 1:
-                  context.go('/inbox');
-                case 2:
-                  context.go('/newPost');
-                case 3:
-                  context.go('/profile');
-              }
-            },
-            destinations: const [
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-              NavigationDestination(icon: Icon(Icons.inbox), label: 'Inbox'),
-              NavigationDestination(icon: Icon(Icons.add), label: 'New Post'),
-              NavigationDestination(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
-          ),
         );
       },
       branches: <StatefulShellBranch>[
@@ -61,8 +35,9 @@ final _router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
                 path: '/home',
-                builder: (BuildContext context, GoRouterState state) {
-                  return HomePage();
+                pageBuilder: (context, state) {
+                  context.read<DynamicNavigationBarBloc>().add(GoneToNewMainPage(0));
+                  return MaterialPage(child: HomePage());
                 },
                 routes: [
                   GoRoute(
@@ -74,20 +49,19 @@ final _router = GoRouter(
                   GoRoute(
                     name: 'searchPage',
                     path: 'search',
-                    pageBuilder: (context, state) => MaterialPage(
-                        child: SearchPage()),
+                    pageBuilder: (context, state) =>
+                        MaterialPage(child: SearchPage()),
                   ),
-
                 ]),
-
           ],
         ),
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
               path: '/inbox',
-              builder: (BuildContext context, GoRouterState state) {
-                return const InboxPage();
+              pageBuilder: (context, state){
+                context.read<DynamicNavigationBarBloc>().add(GoneToNewMainPage(1));
+                return const MaterialPage(child: InboxPage());
               },
             )
           ],
@@ -117,6 +91,142 @@ final _router = GoRouter(
   ],
 );
 
+class _BottomAppBar extends StatefulWidget {
+  const _BottomAppBar({super.key});
+
+  @override
+  State<_BottomAppBar> createState() => _BottomAppBarState();
+}
+
+class _BottomAppBarState extends State<_BottomAppBar>
+    with SingleTickerProviderStateMixin {
+  String currentPage = '/home';
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 500),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0, 1.5),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeInOut,
+  ));
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final router =
+        GoRouter.of(context).routeInformationProvider.addListener(() {
+      String _page =
+          GoRouter.of(context).routeInformationProvider.value.uri.toString();
+
+      print(_page);
+
+      if (_controller.status == AnimationStatus.completed ||
+          _controller.status == AnimationStatus.forward &&
+              _page.contains('/home')) {
+        _controller.forward(from: 1);
+      }
+    });
+
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      elevation: 2,
+      child: Container(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            AnimatedContainer(
+              clipBehavior: Clip.hardEdge,
+              duration: Duration(milliseconds: 1000),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      context.go('/home');
+                    },
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home),
+                    visualDensity: VisualDensity.compact,
+                    iconSize: 24,
+                    padding: EdgeInsets.all(10),
+                    color: Theme.of(context).colorScheme.onSurface,
+                    focusColor: Theme.of(context).colorScheme.onSurface,
+                    isSelected: GoRouter.of(context)
+                            .routeInformationProvider
+                            .value
+                            .uri ==
+                        Uri.parse('/home'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Container(
+                      height: 10,
+                      width: 2,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.search),
+                    visualDensity: VisualDensity.compact,
+                    iconSize: 24,
+                    padding: EdgeInsets.all(10),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.sort),
+                    visualDensity: VisualDensity.compact,
+                    iconSize: 24,
+                    padding: EdgeInsets.all(10),
+                  ),
+                  SlideTransition(
+                    position: _offsetAnimation,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.more_vert),
+                      visualDensity: VisualDensity.compact,
+                      iconSize: 24,
+                      padding: EdgeInsets.all(10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                context.go('/inbox');
+              },
+              icon: Icon(Icons.inbox_outlined),
+              selectedIcon: Icon(Icons.inbox),
+              visualDensity: VisualDensity.compact,
+              iconSize: 24,
+              padding: EdgeInsets.all(10),
+              color: Theme.of(context).colorScheme.onSurface,
+              focusColor: Theme.of(context).colorScheme.onSurface,
+              isSelected:
+                  GoRouter.of(context).routeInformationProvider.value.uri ==
+                      Uri.parse('/inbox'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -130,15 +240,20 @@ class MyApp extends StatelessWidget {
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return RepositoryProvider(
         create: (context) => ServerRepo(),
-        child: MaterialApp.router(
-          routerConfig: _router,
-          title: 'Muffed',
-          theme: ThemeData(
-            colorScheme: lightDynamic,
-            useMaterial3: true,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => DynamicNavigationBarBloc())
+          ],
+          child: MaterialApp.router(
+            routerConfig: _router,
+            title: 'Muffed',
+            theme: ThemeData(
+              colorScheme: lightDynamic,
+              useMaterial3: true,
+            ),
+            darkTheme: ThemeData(colorScheme: darkDynamic, useMaterial3: true),
+            themeMode: ThemeMode.system,
           ),
-          darkTheme: ThemeData(colorScheme: darkDynamic, useMaterial3: true),
-          themeMode: ThemeMode.system,
         ),
       );
     });
