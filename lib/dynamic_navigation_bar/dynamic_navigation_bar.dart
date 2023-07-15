@@ -84,7 +84,12 @@ class _DynamicNavigationBarItemState extends State<DynamicNavigationBarItem> {
         child: Row(
           children: [
             widget.icon,
-            if (widget.selected)
+            if (widget.selected &&
+                context
+                    .read<DynamicNavigationBarBloc>()
+                    .state
+                    .actions[widget.itemIndex]!
+                    .isNotEmpty)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
                 child: Container(
