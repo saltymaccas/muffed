@@ -13,20 +13,28 @@ import 'package:muffed/search_page/search_page.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'dynamic_navigation_bar/bloc/bloc.dart';
 
-final _routerObserver = NavigatorObserver();
-
 final _router = GoRouter(
-  observers: [_routerObserver],
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
+      restorationScopeId: 'indexStack',
       builder: (
         BuildContext context,
         GoRouterState state,
         StatefulNavigationShell navigationShell,
       ) {
         return Scaffold(
-          bottomNavigationBar: DynamicNavigationBar(),
+          bottomNavigationBar: DynamicNavigationBar(onTap: (index) {
+
+            context
+                .read<DynamicNavigationBarBloc>()
+                .add(GoneToNewMainPage(index));
+
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
+          }),
           body: navigationShell,
         );
       },
@@ -36,18 +44,15 @@ final _router = GoRouter(
             GoRoute(
                 path: '/home',
                 pageBuilder: (context, state) {
-                  context.read<DynamicNavigationBarBloc>().add(GoneToNewMainPage(0));
                   return MaterialPage(child: HomePage());
                 },
                 routes: [
                   GoRoute(
-                    name: 'contentScreen',
-                    path: 'content',
-                    pageBuilder: (context, state) => MaterialPage(
-                        child: ContentScreen(state.extra as LemmyPost)),
-                  ),
+                      path: 'content',
+                      builder: (context, state) {
+                        return ContentScreen(state.extra as LemmyPost);
+                      }),
                   GoRoute(
-                    name: 'searchPage',
                     path: 'search',
                     pageBuilder: (context, state) =>
                         MaterialPage(child: SearchPage()),
@@ -59,8 +64,10 @@ final _router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: '/inbox',
-              pageBuilder: (context, state){
-                context.read<DynamicNavigationBarBloc>().add(GoneToNewMainPage(1));
+              pageBuilder: (context, state) {
+                context
+                    .read<DynamicNavigationBarBloc>()
+                    .add(GoneToNewMainPage(1));
                 return const MaterialPage(child: InboxPage());
               },
             )

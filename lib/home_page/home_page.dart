@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
+import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'post_view/card.dart';
 import 'bloc/bloc.dart';
 import 'package:muffed/components/loading.dart';
@@ -13,8 +15,11 @@ class HomePage extends StatelessWidget {
 
   late ScrollController controller;
 
+  List<Widget> actions = [Icon(Icons.abc), Icon(Icons.ac_unit)];
+
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider(
       create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
@@ -33,39 +38,43 @@ class HomePage extends StatelessWidget {
               message: 'Load Failed',
             );
           } else if (state.status == HomePageStatus.success) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<HomePageBloc>().add(PullDownRefresh());
-                await context.read<HomePageBloc>().stream.firstWhere((element) {
-                  if (element.isRefreshing == false) {
-                    return true;
-                  }
-                  return false;
-                });
-              },
-              child: NotificationListener(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
-                    context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-                  }
-                  return true;
+            return BottomNavigationBarActions(
+              itemIndex: 0,
+              actions: [Icon(Icons.ac_unit), Icon(Icons.access_alarm)],
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HomePageBloc>().add(PullDownRefresh());
+                  await context.read<HomePageBloc>().stream.firstWhere((element) {
+                    if (element.isRefreshing == false) {
+                      return true;
+                    }
+                    return false;
+                  });
                 },
-                child: CustomScrollView(
-                  cacheExtent: 99999999,
-                  slivers: [
-                    SliverPersistentHeader(
-                        floating: true, delegate: TopBarDelegate()),
-                    SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                            childCount: state.posts!.length, (context, index) {
-                      return CardLemmyPostItem(
-                          context.read<HomePageBloc>().state.posts![index]
-                              as LemmyPost, openContent: (post) {
-                        context.goNamed('contentScreen', extra: post);
-                      });
-                    }))
-                  ],
+                child: NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                      context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: CustomScrollView(
+                    cacheExtent: 99999999,
+                    slivers: [
+                      SliverPersistentHeader(
+                          floating: true, delegate: TopBarDelegate()),
+                      SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                              childCount: state.posts!.length, (context, index) {
+                        return CardLemmyPostItem(
+                            context.read<HomePageBloc>().state.posts![index]
+                                as LemmyPost, openContent: (post) {
+                          context.go('/home/content', extra: post);
+                        });
+                      }))
+                    ],
+                  ),
                 ),
               ),
             );
