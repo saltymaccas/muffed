@@ -153,13 +153,13 @@ class _BottomNavigationBarActionsState
     for (var i = 0; i < widget.actions.length; i++) {
       final Widget action = widget.actions[i];
       animatedActions.add(action
-          .animate(autoPlay: true, delay: Duration(milliseconds: 100 * i))
-          .moveY(
+          .animate(autoPlay: true)
+          .slideY(
               duration: 500.ms,
               curve: Curves.easeOutCubic,
-              begin: -30,
-              end: 0,
-              transformHitTests: false));
+              begin: -3,
+              delay: Duration(milliseconds: 200 * i),
+              end: 0,));
     }
 
     _bloc.add(AddActions(animatedActions, widget.itemIndex));
