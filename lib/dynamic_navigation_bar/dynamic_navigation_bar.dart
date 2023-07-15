@@ -47,7 +47,6 @@ class DynamicNavigationBar extends StatelessWidget {
                 selected: state.selectedItemIndex == 1,
               ),
             ];
-            print('item index: ${state.selectedItemIndex}');
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
@@ -80,11 +79,6 @@ class DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
-    print(context
-        .read<DynamicNavigationBarBloc>()
-        .state
-        .actions[widget.itemIndex]!);
-    print(widget.itemIndex);
     return AnimatedContainer(
         duration: Duration(milliseconds: 500),
         child: Row(
