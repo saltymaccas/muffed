@@ -13,13 +13,10 @@ import 'package:muffed/search_page/search_page.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  late ScrollController controller;
-
-  List<Widget> actions = [Icon(Icons.abc), Icon(Icons.ac_unit)];
+  late final ScrollController controller;
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider(
       create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
@@ -40,11 +37,16 @@ class HomePage extends StatelessWidget {
           } else if (state.status == HomePageStatus.success) {
             return BottomNavigationBarActions(
               itemIndex: 0,
-              actions: [Icon(Icons.ac_unit), Icon(Icons.access_alarm)],
+              actions: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.search_rounded), visualDensity: VisualDensity.compact,)
+              ],
               child: RefreshIndicator(
                 onRefresh: () async {
                   context.read<HomePageBloc>().add(PullDownRefresh());
-                  await context.read<HomePageBloc>().stream.firstWhere((element) {
+                  await context
+                      .read<HomePageBloc>()
+                      .stream
+                      .firstWhere((element) {
                     if (element.isRefreshing == false) {
                       return true;
                     }
@@ -55,7 +57,9 @@ class HomePage extends StatelessWidget {
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels ==
                         scrollInfo.metrics.maxScrollExtent) {
-                      context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+                      context
+                          .read<HomePageBloc>()
+                          .add(ReachedNearEndOfScroll());
                     }
                     return true;
                   },
@@ -66,7 +70,8 @@ class HomePage extends StatelessWidget {
                           floating: true, delegate: TopBarDelegate()),
                       SliverList(
                           delegate: SliverChildBuilderDelegate(
-                              childCount: state.posts!.length, (context, index) {
+                              childCount: state.posts!.length,
+                              (context, index) {
                         return CardLemmyPostItem(
                             context.read<HomePageBloc>().state.posts![index]
                                 as LemmyPost, openContent: (post) {
