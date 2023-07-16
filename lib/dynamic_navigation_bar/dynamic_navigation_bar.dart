@@ -1,7 +1,5 @@
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'bloc/bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -70,8 +68,7 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 
   const _DynamicNavigationBarItem({required this.icon,
     required this.selected,
-    required this.itemIndex,
-    super.key});
+    required this.itemIndex});
 
   @override
   State<_DynamicNavigationBarItem> createState() =>
