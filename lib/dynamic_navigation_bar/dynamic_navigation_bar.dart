@@ -13,14 +13,17 @@ class DynamicNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.surface,
+       color: Theme
+          .of(context)
+          .colorScheme
+          .surface,
       elevation: 2,
       child: Container(
         height: 60,
         child: BlocBuilder<DynamicNavigationBarBloc, DynamicNavigationBarState>(
           builder: (context, state) {
-            List<DynamicNavigationBarItem> items = [
-              DynamicNavigationBarItem(
+            List<_DynamicNavigationBarItem> items = [
+              _DynamicNavigationBarItem(
                 itemIndex: 0,
                 icon: IconButton(
                   onPressed: () {
@@ -33,7 +36,7 @@ class DynamicNavigationBar extends StatelessWidget {
                 ),
                 selected: state.selectedItemIndex == 0,
               ),
-              DynamicNavigationBarItem(
+              _DynamicNavigationBarItem(
                 itemIndex: 1,
                 icon: IconButton(
                   onPressed: () {
@@ -60,23 +63,22 @@ class DynamicNavigationBar extends StatelessWidget {
   }
 }
 
-class DynamicNavigationBarItem extends StatefulWidget {
+class _DynamicNavigationBarItem extends StatefulWidget {
   final Widget icon;
   final bool selected;
   final int itemIndex;
 
-  const DynamicNavigationBarItem(
-      {required this.icon,
-      required this.selected,
-      required this.itemIndex,
-      super.key});
+  const _DynamicNavigationBarItem({required this.icon,
+    required this.selected,
+    required this.itemIndex,
+    super.key});
 
   @override
-  State<DynamicNavigationBarItem> createState() =>
+  State<_DynamicNavigationBarItem> createState() =>
       _DynamicNavigationBarItemState();
 }
 
-class _DynamicNavigationBarItemState extends State<DynamicNavigationBarItem> {
+class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -96,7 +98,10 @@ class _DynamicNavigationBarItemState extends State<DynamicNavigationBarItem> {
                   width: 2,
                   height: 10,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.outline),
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .outline),
                 ),
               ),
             if (widget.selected &&
@@ -117,12 +122,12 @@ class _DynamicNavigationBarItemState extends State<DynamicNavigationBarItem> {
   }
 }
 
+
 class BottomNavigationBarActions extends StatefulWidget {
-  const BottomNavigationBarActions(
-      {required this.itemIndex,
-      required this.actions,
-      required this.child,
-      super.key});
+  const BottomNavigationBarActions({required this.itemIndex,
+    required this.actions,
+    required this.child,
+    super.key});
 
   final int itemIndex;
   final List<Widget> actions;
@@ -154,11 +159,11 @@ class _BottomNavigationBarActionsState
       animatedActions.add(action
           .animate(autoPlay: true)
           .slideY(
-              duration: 500.ms,
-              curve: Curves.easeOutCubic,
-              begin: -3,
-              delay: Duration(milliseconds: 200 * i),
-              end: 0,));
+        duration: 500.ms,
+        curve: Curves.easeOutCubic,
+        begin: -3,
+        delay: Duration(milliseconds: 200 * i),
+        end: 0,));
     }
 
     _bloc.add(AddActions(animatedActions, widget.itemIndex));
