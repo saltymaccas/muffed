@@ -77,15 +77,20 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedSize(
-      reverseDuration: 500.ms,
-      curve: Curves.easeInOutCubic,
-      duration: 500.ms,
-      child: AnimatedContainer(
-          clipBehavior: Clip.hardEdge,
+    return Container(
+        clipBehavior: Clip.hardEdge,
+
+        decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceVariant,
-          duration: Duration(milliseconds: 500),
+          borderRadius: BorderRadius.circular(10)
+
+        ),
+        child: AnimatedSize(
+          reverseDuration: 500.ms,
+          curve: Curves.easeInOutCubic,
+          duration: 500.ms,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               widget.icon,
               if (widget.selected &&
@@ -109,20 +114,26 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                       .state
                       .actions[widget.itemIndex]!
                       .isNotEmpty)
-                Row(
-                  // key needs to be set so the actions get animated in when page
-                  // is pushed
-                  key: Key(
-                      'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
-                  children: context
-                      .read<DynamicNavigationBarBloc>()
-                      .state
-                      .actions[widget.itemIndex]!
-                      .last,
+                AnimatedSwitcher(
+                  duration: 500.ms,
+                  reverseDuration: 500.ms,
+                  switchInCurve: Curves.easeInOutCubic,
+                  switchOutCurve: Curves.easeInOutCubic,
+                  child: Row(
+                    // key needs to be set so the actions get animated in when page
+                    // is pushed
+                    key: Key(
+                        'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                    children: context
+                        .read<DynamicNavigationBarBloc>()
+                        .state
+                        .actions[widget.itemIndex]!
+                        .last,
+                  ),
                 )
             ],
-          )),
-    );
+          ),
+        ));
   }
 }
 
