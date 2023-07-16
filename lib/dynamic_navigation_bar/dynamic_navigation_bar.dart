@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'bloc/bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+const Duration animDur = Duration(milliseconds: 500);
+const int animInterval = 200;
+const Curve animCurve = Curves.easeInOutCubic;
+
 class DynamicNavigationBar extends StatelessWidget {
   const DynamicNavigationBar({required this.onTap, super.key});
 
@@ -49,8 +53,8 @@ class DynamicNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
                 return AnimatedSize(
-                    curve: Curves.easeInOutCubic,
-                    duration: 500.ms,
+                    curve: animCurve,
+                    duration: animDur,
                     child: items[index]);
               }),
             );
@@ -79,58 +83,65 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   Widget build(BuildContext context) {
     return Container(
         clipBehavior: Clip.hardEdge,
-
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(10)
-
-        ),
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius: BorderRadius.circular(10)),
         child: AnimatedSize(
-          reverseDuration: 500.ms,
-          curve: Curves.easeInOutCubic,
-          duration: 500.ms,
+          reverseDuration: animDur,
+          curve: animCurve,
+          duration: animDur,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               widget.icon,
-              if (widget.selected &&
-                  context
-                      .read<DynamicNavigationBarBloc>()
-                      .state
-                      .actions[widget.itemIndex]!
-                      .isNotEmpty)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
-                  child: Container(
-                    width: 2,
-                    height: 10,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.outline),
-                  ),
-                ),
-              if (widget.selected &&
-                  context
-                      .read<DynamicNavigationBarBloc>()
-                      .state
-                      .actions[widget.itemIndex]!
-                      .isNotEmpty)
-                AnimatedSwitcher(
-                  duration: 500.ms,
-                  reverseDuration: 500.ms,
-                  switchInCurve: Curves.easeInOutCubic,
-                  switchOutCurve: Curves.easeInOutCubic,
-                  child: Row(
-                    // key needs to be set so the actions get animated in when page
-                    // is pushed
-                    key: Key(
-                        'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
-                    children: context
-                        .read<DynamicNavigationBarBloc>()
-                        .state
-                        .actions[widget.itemIndex]!
-                        .last,
-                  ),
-                )
+              AnimatedSize(
+                curve: animCurve,
+                duration: animDur,
+                child: (widget.selected &&
+                        context
+                            .read<DynamicNavigationBarBloc>()
+                            .state
+                            .actions[widget.itemIndex]!
+                            .isNotEmpty)
+                    ? Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4),
+                            child: Container(
+                              width: 2,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.outline),
+                            ),
+                          ).animate().fadeIn(
+                              duration: animDur,
+                              curve: animCurve,
+                              begin: 0),
+                          AnimatedSize(
+                            duration: animDur,
+                            curve: animCurve,
+                            child: AnimatedSwitcher(
+                              duration: animDur,
+                              reverseDuration: animDur,
+                              switchInCurve: animCurve,
+                              switchOutCurve: animCurve,
+                              child: Row(
+                                // key needs to be set so the actions get animated in when page
+                                // is pushed
+                                key: Key(
+                                    'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                                children: context
+                                    .read<DynamicNavigationBarBloc>()
+                                    .state
+                                    .actions[widget.itemIndex]!
+                                    .last,
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : SizedBox(),
+              ),
             ],
           ),
         ));
@@ -171,13 +182,20 @@ class _BottomNavigationBarActionsState
 
     for (var i = 0; i < widget.actions.length; i++) {
       final Widget action = widget.actions[i];
-      animatedActions.add(action.animate(autoPlay: true).slideY(
-            duration: 500.ms,
-            curve: Curves.easeOutCubic,
-            begin: -3,
-            delay: Duration(milliseconds: 200 * i),
+      animatedActions.add(action
+          .animate(autoPlay: true)
+          .slideY(
+            duration: animDur,
+            curve: animCurve,
+            begin: 3,
+            delay: Duration(milliseconds: animInterval * i),
             end: 0,
-          ));
+          )
+          .fadeIn(
+              duration: animDur,
+              begin: 0,
+              curve: animCurve,
+              delay: Duration(milliseconds: animInterval * i)));
     }
 
     _bloc.add(AddActions(animatedActions, widget.itemIndex));
