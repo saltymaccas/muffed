@@ -48,7 +48,10 @@ class DynamicNavigationBar extends StatelessWidget {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
-                return items[index];
+                return AnimatedSize(
+                    curve: Curves.easeInOutCubic,
+                    duration: 500.ms,
+                    child: items[index]);
               }),
             );
           },
@@ -74,43 +77,52 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-        duration: Duration(milliseconds: 500),
-        child: Row(
-          children: [
-            widget.icon,
-            if (widget.selected &&
-                context
-                    .read<DynamicNavigationBarBloc>()
-                    .state
-                    .actions[widget.itemIndex]!
-                    .isNotEmpty)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4),
-                child: Container(
-                  width: 2,
-                  height: 10,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.outline),
+    return AnimatedSize(
+      reverseDuration: 500.ms,
+      curve: Curves.easeInOutCubic,
+      duration: 500.ms,
+      child: AnimatedContainer(
+          clipBehavior: Clip.hardEdge,
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          duration: Duration(milliseconds: 500),
+          child: Row(
+            children: [
+              widget.icon,
+              if (widget.selected &&
+                  context
+                      .read<DynamicNavigationBarBloc>()
+                      .state
+                      .actions[widget.itemIndex]!
+                      .isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Container(
+                    width: 2,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.outline),
+                  ),
                 ),
-              ),
-            if (widget.selected &&
-                context
-                    .read<DynamicNavigationBarBloc>()
-                    .state
-                    .actions[widget.itemIndex]!
-                    .isNotEmpty)
-              Row(
-                key: Key(
-                    'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
-                children: context
-                    .read<DynamicNavigationBarBloc>()
-                    .state
-                    .actions[widget.itemIndex]!
-                    .last,
-              )
-          ],
-        ));
+              if (widget.selected &&
+                  context
+                      .read<DynamicNavigationBarBloc>()
+                      .state
+                      .actions[widget.itemIndex]!
+                      .isNotEmpty)
+                Row(
+                  // key needs to be set so the actions get animated in when page
+                  // is pushed
+                  key: Key(
+                      'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                  children: context
+                      .read<DynamicNavigationBarBloc>()
+                      .state
+                      .actions[widget.itemIndex]!
+                      .last,
+                )
+            ],
+          )),
+    );
   }
 }
 
