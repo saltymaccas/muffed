@@ -11,10 +11,7 @@ class DynamicNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-       color: Theme
-          .of(context)
-          .colorScheme
-          .surface,
+      color: Theme.of(context).colorScheme.surface,
       elevation: 2,
       child: Container(
         height: 60,
@@ -66,9 +63,8 @@ class _DynamicNavigationBarItem extends StatefulWidget {
   final bool selected;
   final int itemIndex;
 
-  const _DynamicNavigationBarItem({required this.icon,
-    required this.selected,
-    required this.itemIndex});
+  const _DynamicNavigationBarItem(
+      {required this.icon, required this.selected, required this.itemIndex});
 
   @override
   State<_DynamicNavigationBarItem> createState() =>
@@ -95,10 +91,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                   width: 2,
                   height: 10,
                   decoration: BoxDecoration(
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .outline),
+                      color: Theme.of(context).colorScheme.outline),
                 ),
               ),
             if (widget.selected &&
@@ -108,6 +101,8 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                     .actions[widget.itemIndex]!
                     .isNotEmpty)
               Row(
+                key: Key(
+                    'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
                 children: context
                     .read<DynamicNavigationBarBloc>()
                     .state
@@ -119,12 +114,12 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   }
 }
 
-
 class BottomNavigationBarActions extends StatefulWidget {
-  const BottomNavigationBarActions({required this.itemIndex,
-    required this.actions,
-    required this.child,
-    super.key});
+  const BottomNavigationBarActions(
+      {required this.itemIndex,
+      required this.actions,
+      required this.child,
+      super.key});
 
   final int itemIndex;
   final List<Widget> actions;
@@ -153,14 +148,13 @@ class _BottomNavigationBarActionsState
 
     for (var i = 0; i < widget.actions.length; i++) {
       final Widget action = widget.actions[i];
-      animatedActions.add(action
-          .animate(autoPlay: true)
-          .slideY(
-        duration: 500.ms,
-        curve: Curves.easeOutCubic,
-        begin: -3,
-        delay: Duration(milliseconds: 200 * i),
-        end: 0,));
+      animatedActions.add(action.animate(autoPlay: true).slideY(
+            duration: 500.ms,
+            curve: Curves.easeOutCubic,
+            begin: -3,
+            delay: Duration(milliseconds: 200 * i),
+            end: 0,
+          ));
     }
 
     _bloc.add(AddActions(animatedActions, widget.itemIndex));
