@@ -7,6 +7,8 @@ import '../post_more_actions_sheet/post_more_actions_sheet.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CardLemmyPostItem extends StatelessWidget {
   final LemmyPost post;
@@ -75,13 +77,6 @@ class CardLemmyPostItem extends StatelessWidget {
               ),
             ),
             Builder(builder: (context) {
-              late Widget urlWidget;
-
-              if (post.url != null) {
-              } else {
-                urlWidget = Container();
-              }
-
               return Column(
                 children: [
                   if (post.url != null) ...[
@@ -134,7 +129,7 @@ class CardLemmyPostItem extends StatelessWidget {
                       }
                     })
                   ],
-                  if (post.body != null) ...[
+                  if (post.body != '' && post.body != null) ...[
                     Padding(
                       padding: EdgeInsets.all(4),
                       child: Container(
@@ -147,14 +142,22 @@ class CardLemmyPostItem extends StatelessWidget {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: Text(
-                            post.body!,
-                            maxLines: (limitContentHeight) ? 8 : null,
-                            overflow: TextOverflow.fade,
-                          ),
+                          child: (limitContentHeight)
+                              ? Text(
+                                  post.body!,
+                                  maxLines: 10,
+                                )
+                              : MarkdownBody(
+                                  data: post.body!,
+                                  shrinkWrap: true,
+                                  onTapLink: (text, link, title) {
+                                    launchUrl(Uri.parse(link!));
+                                  },
+                                  selectable: true,
+                                ),
                         ),
                       ),
-                    )
+                    ),
                   ]
                 ],
               );
