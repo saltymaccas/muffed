@@ -25,6 +25,15 @@ enum LemmySortType {
   topTwelveHour,
 }
 
+enum LemmySearchType {
+  all,
+  comments,
+  posts,
+  communities,
+  users,
+  url,
+}
+
 Map<LemmySortType, String> lemmySortTypeEnumToApiCompatible = {
   LemmySortType.active: 'Active',
   LemmySortType.hot: 'Hot',
