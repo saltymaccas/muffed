@@ -169,13 +169,8 @@ class CardLemmyPostItem extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        visualDensity: VisualDensity.compact,
-                        icon: const Icon(Icons.mode_comment_outlined),
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      SizedBox(
+                      const Icon(Icons.mode_comment_outlined),
+                      const SizedBox(
                         width: 5,
                       ),
                       Text('${post.commentCount}'),
@@ -184,19 +179,19 @@ class CardLemmyPostItem extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_upward_outlined),
+                        icon: const Icon(Icons.arrow_upward_outlined),
                         onPressed: () {},
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(post.upVotes.toString()),
                       IconButton(
-                        icon: Icon(Icons.arrow_downward_outlined),
+                        icon: const Icon(Icons.arrow_downward_outlined),
                         onPressed: () {},
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(post.downVotes.toString()),
                       IconButton(
-                        icon: Icon(Icons.more_vert),
+                        icon: const Icon(Icons.more_vert),
                         onPressed: () {
                           showPostMoreActionsSheet(context, post);
                         },
