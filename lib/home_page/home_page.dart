@@ -38,7 +38,11 @@ class HomePage extends StatelessWidget {
             return BottomNavigationBarActions(
               itemIndex: 0,
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.search_rounded), visualDensity: VisualDensity.compact,)
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.search_rounded),
+                  visualDensity: VisualDensity.compact,
+                ),
               ],
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -67,7 +71,7 @@ class HomePage extends StatelessWidget {
                     cacheExtent: 99999999,
                     slivers: [
                       SliverPersistentHeader(
-                          floating: true, delegate: TopBarDelegate()),
+                          floating: false, delegate: TopBarDelegate()),
                       SliverList(
                           delegate: SliverChildBuilderDelegate(
                               childCount: state.posts!.length,
@@ -106,18 +110,6 @@ class TopBarDelegate extends SliverPersistentHeaderDelegate {
       color: Theme.of(context).colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SafeArea(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-                onPressed: () {
-                  context.goNamed('searchPage');
-                },
-                icon: const Icon(Icons.search)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-          ],
-        )),
       ),
     );
   }
