@@ -25,15 +25,6 @@ enum LemmySortType {
   topTwelveHour,
 }
 
-enum LemmySearchType {
-  all,
-  comments,
-  posts,
-  communities,
-  users,
-  url,
-}
-
 Map<LemmySortType, String> lemmySortTypeEnumToApiCompatible = {
   LemmySortType.active: 'Active',
   LemmySortType.hot: 'Hot',
@@ -49,6 +40,24 @@ Map<LemmySortType, String> lemmySortTypeEnumToApiCompatible = {
   LemmySortType.topHour: 'TopHour',
   LemmySortType.topSixHour: 'TopSixHour',
   LemmySortType.topTwelveHour: 'TopTwelveHour',
+};
+
+enum LemmySearchType {
+  all,
+  comments,
+  posts,
+  communities,
+  users,
+  url,
+}
+
+Map<LemmySearchType, String> lemmySearchTypeToApiCompatible = {
+  LemmySearchType.all: 'All',
+  LemmySearchType.comments: 'Comments',
+  LemmySearchType.posts: 'Posts',
+  LemmySearchType.communities: 'Communities',
+  LemmySearchType.users: 'Users',
+  LemmySearchType.url: 'Url',
 };
 
 class LemmyPost extends Equatable {
