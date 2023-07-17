@@ -8,7 +8,7 @@ import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/search_page/search_page.dart';
+import 'package:muffed/search_dialog/search_dialog.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});

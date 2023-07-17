@@ -9,7 +9,6 @@ import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/new_post_page/new_post_page.dart';
 import 'package:muffed/home_page/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/search_page/search_page.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'dynamic_navigation_bar/bloc/bloc.dart';
 
@@ -52,11 +51,6 @@ final _router = GoRouter(
                       builder: (context, state) {
                         return ContentScreen(state.extra as LemmyPost);
                       }),
-                  GoRoute(
-                    path: 'search',
-                    pageBuilder: (context, state) =>
-                        MaterialPage(child: SearchPage()),
-                  ),
                 ]),
           ],
         ),
