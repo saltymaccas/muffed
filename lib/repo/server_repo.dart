@@ -8,7 +8,10 @@ interface class ServerRepo {
 
   ServerRepo() : lemmyRepo = LemmyRepo();
 
-  Future<List> getPosts({LemmySortType sortType = LemmySortType.hot, int page = 1}) async {
+  Future<List> getPosts(
+      {LemmySortType sortType = LemmySortType.hot, int page = 1}) async {
     return await lemmyRepo.getPosts(sortType: sortType, page: page);
   }
 }
+
+

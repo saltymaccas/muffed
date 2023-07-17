@@ -60,6 +60,12 @@ Map<LemmySearchType, String> lemmySearchTypeToApiCompatible = {
   LemmySearchType.url: 'Url',
 };
 
+enum LemmySubscribedType {
+  subscribed,
+  notSubscribed,
+  Pending,
+}
+
 class LemmyPost extends Equatable {
   final int id;
   final String name;
@@ -151,15 +157,132 @@ class LemmyComment extends Equatable {
   List<Object?> get props => [id];
 }
 
-class LemmyCommentTree {
-  LemmyComment comment;
-  List<LemmyCommentTree> commentTree;
-  int level;
+class LemmyCommunity extends Equatable {
+  final int id;
+  final String actorId;
+  final String? banner;
+  final bool deleted;
+  final String? description;
+  final bool hidden;
+  final String? icon;
+  final String name;
+  final bool local;
+  final int instanceId;
+  final bool nsfw;
+  final bool postingRestrictedToMods;
+  final DateTime published;
+  final bool removed;
+  final String title;
+  final String? updated;
 
-  LemmyCommentTree({
-    required this.comment,
-    this.commentTree = const [],
-    this.level = 0,
+  final int comments;
+  final int hotRank;
+  final int posts;
+  final int subscribers;
+  final int usersActiveDaily;
+  final int usersActiveHalfYear;
+  final int usersActiveMonth;
+  final int usersActiveWeek;
+
+  final bool blocked;
+
+  final LemmySubscribedType subscribed;
+
+  LemmyCommunity({
+    required this.id,
+    required this.actorId,
+    this.banner,
+    required this.deleted,
+    this.description,
+    required this.hidden,
+    this.icon,
+    required this.name,
+    required this.local,
+    required this.instanceId,
+    required this.nsfw,
+    required this.postingRestrictedToMods,
+    required this.published,
+    required this.removed,
+    required this.title,
+    this.updated,
+    required this.comments,
+    required this.hotRank,
+    required this.posts,
+    required this.subscribers,
+    required this.usersActiveDaily,
+    required this.usersActiveHalfYear,
+    required this.usersActiveMonth,
+    required this.usersActiveWeek,
+    required this.blocked,
+    required this.subscribed,
   });
+
+  @override
+  List<Object?> get props => [id];
 }
 
+class LemmyPerson extends Equatable {
+  final String actorId;
+  final bool admin;
+  final String? avatar;
+  final DateTime? banExpires;
+  final bool banned;
+  final String? banner;
+  final String? bio;
+  final bool botAccount;
+  final bool deleted;
+  final String? displayName;
+  final int id;
+  final int instanceId;
+  final bool local;
+  final String? matrixUserId;
+  final String name;
+  final DateTime published;
+  final String? updated;
+
+  final int commentCount;
+  final int commentScore;
+  final int postCount;
+  final int postScore;
+
+  LemmyPerson({
+    required this.actorId,
+    required this.admin,
+    this.avatar,
+    this.banExpires,
+    required this.banned,
+    this.banner,
+    this.bio,
+    required this.botAccount,
+    required this.deleted,
+    this.displayName,
+    required this.id,
+    required this.instanceId,
+    required this.local,
+    this.matrixUserId,
+    required this.name,
+    required this.published,
+    this.updated,
+    required this.commentCount,
+    required this.commentScore,
+    required this.postCount,
+    required this.postScore,
+  });
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class LemmySearchResponse {
+  final List<LemmyPost>? lemmyPosts;
+  final List<LemmyCommunity>? lemmyCommunities;
+  final List<LemmyComment>? lemmyComments;
+  final List<LemmyPerson>? lemmyPersons;
+
+  LemmySearchResponse({
+    this.lemmyComments,
+    this.lemmyCommunities,
+    this.lemmyPersons,
+    this.lemmyPosts,
+  });
+}
