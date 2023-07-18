@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'post_view/card.dart';
+import 'package:muffed/content_view/post_view/card.dart';
 import 'bloc/bloc.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/error.dart';

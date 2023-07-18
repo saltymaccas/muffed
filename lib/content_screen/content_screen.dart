@@ -4,7 +4,7 @@ import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/home_page/post_view/card.dart';
+import 'package:muffed/content_view/post_view/card.dart';
 import '../../dynamic_navigation_bar/bloc/bloc.dart';
 import 'bloc/bloc.dart';
 import 'comment_view/comment.dart';
