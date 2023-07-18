@@ -179,7 +179,7 @@ class LemmyCommunity extends Equatable {
   final int hotRank;
   final int posts;
   final int subscribers;
-  final int usersActiveDaily;
+  final int usersActiveDay;
   final int usersActiveHalfYear;
   final int usersActiveMonth;
   final int usersActiveWeek;
@@ -209,7 +209,7 @@ class LemmyCommunity extends Equatable {
     required this.hotRank,
     required this.posts,
     required this.subscribers,
-    required this.usersActiveDaily,
+    required this.usersActiveDay,
     required this.usersActiveHalfYear,
     required this.usersActiveMonth,
     required this.usersActiveWeek,
