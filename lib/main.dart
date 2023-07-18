@@ -58,9 +58,6 @@ final _router = GoRouter(
             GoRoute(
               path: '/inbox',
               pageBuilder: (context, state) {
-                context
-                    .read<DynamicNavigationBarBloc>()
-                    .add(GoneToNewMainPage(1));
                 return const MaterialPage(child: InboxPage());
               },
             )

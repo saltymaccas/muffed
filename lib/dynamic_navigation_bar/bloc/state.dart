@@ -8,7 +8,7 @@ final class DynamicNavigationBarState extends Equatable {
   final Map<int, List<List<Widget>>> actions;
 
   const DynamicNavigationBarState(
-      {this.selectedItemIndex = 0, this.actions = const {0: [], 1: []}});
+      {this.selectedItemIndex = 0, this.actions = const {0: [], 1: [], 2: []}});
 
   @override
   List<Object?> get props => [selectedItemIndex, actions];

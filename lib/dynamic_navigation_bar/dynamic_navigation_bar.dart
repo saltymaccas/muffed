@@ -48,14 +48,25 @@ class DynamicNavigationBar extends StatelessWidget {
                 ),
                 selected: state.selectedItemIndex == 1,
               ),
+              _DynamicNavigationBarItem(
+                icon: IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () {
+                    onTap(2);
+                  },
+                  icon: Icon(Icons.person_outline),
+                  selectedIcon: Icon(Icons.person),
+                  isSelected: state.selectedItemIndex == 2,
+                ),
+                selected: state.selectedItemIndex == 2,
+                itemIndex: 2,
+              )
             ];
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
                 return AnimatedSize(
-                    curve: animCurve,
-                    duration: animDur,
-                    child: items[index]);
+                    curve: animCurve, duration: animDur, child: items[index]);
               }),
             );
           },
@@ -114,9 +125,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                                   color: Theme.of(context).colorScheme.outline),
                             ),
                           ).animate().fadeIn(
-                              duration: animDur,
-                              curve: animCurve,
-                              begin: 0),
+                              duration: animDur, curve: animCurve, begin: 0),
                           AnimatedSize(
                             duration: animDur,
                             curve: animCurve,
