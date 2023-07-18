@@ -8,7 +8,7 @@ import 'package:muffed/home_page/post_view/card.dart';
 import '../../dynamic_navigation_bar/bloc/bloc.dart';
 import 'bloc/bloc.dart';
 import 'comment_view/comment.dart';
-import '';
+import 'content_screen.dart';
 
 class ContentScreen extends StatelessWidget {
   const ContentScreen(this.post, {super.key});
