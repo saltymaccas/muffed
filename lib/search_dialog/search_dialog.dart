@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import '../repo/server_repo.dart';
 import 'bloc/bloc.dart';
 
@@ -33,44 +34,59 @@ void openSearchDialog(BuildContext context) {
                                   SizedBox(
                                     height: 8,
                                   ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 12,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(45),
-                                          child: (state.communities[index].icon !=
-                                                  null)
-                                              ? Image.network(
-                                                  state.communities[index].icon! +
-                                                      '?thumbnail=50')
-                                              : SvgPicture.asset(
-                                                  'assets/logo.svg'),
+                                InkWell(
+                                  onTap: () {
+                                    context.pop();
+
+                                    context.go(Uri(
+                                        path: '/home/community',
+                                        queryParameters: {
+                                          'id': state.communities[index].id
+                                              .toString()
+                                        }).toString());
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 12,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(45),
+                                            child: (state.communities[index]
+                                                        .icon !=
+                                                    null)
+                                                ? Image.network(state
+                                                        .communities[index]
+                                                        .icon! +
+                                                    '?thumbnail=50')
+                                                : SvgPicture.asset(
+                                                    'assets/logo.svg'),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 8,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(state.communities[index].name),
-                                          Text(
-                                            '${state.communities[index].subscribers} subscribers',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(state.communities[index].name),
+                                            Text(
+                                              '${state.communities[index].subscribers} subscribers',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Divider(),

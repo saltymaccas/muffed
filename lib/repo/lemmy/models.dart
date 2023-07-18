@@ -186,6 +186,7 @@ class LemmyCommunity extends Equatable {
   final bool removed;
   final String title;
   final String? updated;
+  final List<LemmyPerson>? moderators;
 
   final int comments;
   final int hotRank;
@@ -201,6 +202,7 @@ class LemmyCommunity extends Equatable {
   final LemmySubscribedType subscribed;
 
   LemmyCommunity({
+    this.moderators,
     required this.id,
     required this.actorId,
     this.banner,

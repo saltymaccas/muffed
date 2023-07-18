@@ -10,7 +10,7 @@ interface class LemmyRepo {
   LemmyRepo() : client = Client();
 
   Future<List<LemmyPost>> getPosts(
-      {LemmySortType sortType = LemmySortType.hot, int page = 1}) async {
+      {LemmySortType sortType = LemmySortType.hot, int page = 1, int? communityId}) async {
     try {
       final response = await client.get(
         Uri.https(
@@ -19,6 +19,7 @@ interface class LemmyRepo {
           {
             'page': page.toString(),
             'sort': lemmySortTypeEnumToApiCompatible[sortType],
+            if (communityId != null )'community_id': communityId.toString(),
           },
         ),
       );
@@ -189,19 +190,6 @@ interface class LemmyRepo {
     int? creatorId,
   }) async {
     try {
-
-      print(Uri.https(
-        'lemmy.ml',
-        'api/v3/search',
-        {
-          'q': query,
-          'type_': lemmySearchTypeToApiCompatible[searchType],
-          'sort': lemmySortTypeEnumToApiCompatible[sortType],
-          if (communityId != null)'community_id': communityId.toString(),
-          if (creatorId != null)'creator_id': creatorId.toString(),
-        },
-      ));
-
       final response = await client.get(
         Uri.https(
           'lemmy.ml',
@@ -210,8 +198,8 @@ interface class LemmyRepo {
             'q': query,
             'type_': lemmySearchTypeToApiCompatible[searchType],
             'sort': lemmySortTypeEnumToApiCompatible[sortType],
-            if (communityId != null)'community_id': communityId.toString(),
-            if (creatorId != null)'creator_id': creatorId.toString(),
+            if (communityId != null) 'community_id': communityId.toString(),
+            if (creatorId != null) 'creator_id': creatorId.toString(),
           },
         ),
       );
@@ -312,7 +300,8 @@ interface class LemmyRepo {
           usersActiveMonth: community['counts']['users_active_month'],
           usersActiveWeek: community['counts']['users_active_week'],
           blocked: community['blocked'],
-          subscribed: apiCompatibleToLemmySubscribedType[community['subscribed']]!,
+          subscribed:
+              apiCompatibleToLemmySubscribedType[community['subscribed']]!,
         ));
       }
 
@@ -321,6 +310,60 @@ interface class LemmyRepo {
         lemmyCommunities: communities,
         lemmyPersons: people,
         lemmyPosts: posts,
+      );
+    } on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+  }
+
+  Future<LemmyCommunity> communityFromId(int id) async {
+    try {
+      final response = await client.get(
+        Uri.https(
+          'lemmy.ml',
+          'api/v3/community',
+          {
+            'id': id.toString(),
+          },
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+
+      var community = (jsonDecode(utf8.decode(response.bodyBytes))
+          as Map)['community_view'];
+
+      return LemmyCommunity(
+        id: community['community']['id'],
+        actorId: community['community']['actor_id'],
+        deleted: community['community']['deleted'],
+        hidden: community['community']['hidden'],
+        name: community['community']['name'],
+        local: community['community']['local'],
+        instanceId: community['community']['instance_id'],
+        nsfw: community['community']['nsfw'],
+        postingRestrictedToMods: community['community']
+            ['posting_restricted_to_mods'],
+        published: DateTime.parse(community['community']['published'] + 'Z'),
+        removed: community['community']['removed'],
+        title: community['community']['title'],
+        comments: community['counts']['comments'],
+        hotRank: community['counts']['hot_rank'],
+        posts: community['counts']['posts'],
+        subscribers: community['counts']['subscribers'],
+        usersActiveDay: community['counts']['users_active_day'],
+        usersActiveHalfYear: community['counts']['users_active_half_year'],
+        usersActiveMonth: community['counts']['users_active_month'],
+        usersActiveWeek: community['counts']['users_active_week'],
+        blocked: community['blocked'],
+        subscribed:
+            apiCompatibleToLemmySubscribedType[community['subscribed']]!,
       );
     } on SocketException {
       return Future.error('No Internet');
