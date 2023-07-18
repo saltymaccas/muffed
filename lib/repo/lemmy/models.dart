@@ -63,8 +63,20 @@ Map<LemmySearchType, String> lemmySearchTypeToApiCompatible = {
 enum LemmySubscribedType {
   subscribed,
   notSubscribed,
-  Pending,
+  pending,
 }
+
+Map<LemmySubscribedType, String> lemmySubscribedTypeToApiCompatible = {
+  LemmySubscribedType.subscribed: 'Subscribed',
+  LemmySubscribedType.pending: 'Pending',
+  LemmySubscribedType.notSubscribed: 'NotSubscribed',
+};
+
+Map<String, LemmySubscribedType> apiCompatibleToLemmySubscribedType = {
+  'Subscribed': LemmySubscribedType.subscribed,
+  'Pending': LemmySubscribedType.pending,
+  'NotSubscribed': LemmySubscribedType.notSubscribed,
+};
 
 class LemmyPost extends Equatable {
   final int id;

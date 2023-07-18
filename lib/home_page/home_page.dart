@@ -39,7 +39,9 @@ class HomePage extends StatelessWidget {
               itemIndex: 0,
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    openSearchDialog(context);
+                  },
                   icon: Icon(Icons.search_rounded),
                   visualDensity: VisualDensity.compact,
                 ),

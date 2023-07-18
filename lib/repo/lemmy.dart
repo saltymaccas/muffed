@@ -189,6 +189,19 @@ interface class LemmyRepo {
     int? creatorId,
   }) async {
     try {
+
+      print(Uri.https(
+        'lemmy.ml',
+        'api/v3/search',
+        {
+          'q': query,
+          'type_': lemmySearchTypeToApiCompatible[searchType],
+          'sort': lemmySortTypeEnumToApiCompatible[sortType],
+          if (communityId != null)'community_id': communityId.toString(),
+          if (creatorId != null)'creator_id': creatorId.toString(),
+        },
+      ));
+
       final response = await client.get(
         Uri.https(
           'lemmy.ml',
@@ -197,8 +210,8 @@ interface class LemmyRepo {
             'q': query,
             'type_': lemmySearchTypeToApiCompatible[searchType],
             'sort': lemmySortTypeEnumToApiCompatible[sortType],
-            'community_id': communityId.toString(),
-            'creator_id': creatorId.toString(),
+            if (communityId != null)'community_id': communityId.toString(),
+            if (creatorId != null)'creator_id': creatorId.toString(),
           },
         ),
       );
@@ -277,7 +290,7 @@ interface class LemmyRepo {
 
       for (final community in decodedResponse['communities']) {
         communities.add(LemmyCommunity(
-          id: community['community'],
+          id: community['community']['id'],
           actorId: community['community']['actor_id'],
           deleted: community['community']['deleted'],
           hidden: community['community']['hidden'],
@@ -294,12 +307,12 @@ interface class LemmyRepo {
           hotRank: community['counts']['hot_rank'],
           posts: community['counts']['posts'],
           subscribers: community['counts']['subscribers'],
-          usersActiveDaily: community['counts']['users_active_daily'],
+          usersActiveDay: community['counts']['users_active_day'],
           usersActiveHalfYear: community['counts']['users_active_half_year'],
           usersActiveMonth: community['counts']['users_active_month'],
           usersActiveWeek: community['counts']['users_active_week'],
           blocked: community['blocked'],
-          subscribed: community['subscribed'],
+          subscribed: apiCompatibleToLemmySubscribedType[community['subscribed']]!,
         ));
       }
 
