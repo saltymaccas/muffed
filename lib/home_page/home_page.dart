@@ -9,6 +9,7 @@ import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_dialog.dart';
+import 'package:muffed/content_view/content_view.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -59,33 +60,16 @@ class HomePage extends StatelessWidget {
                     return false;
                   });
                 },
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
-                      context
-                          .read<HomePageBloc>()
-                          .add(ReachedNearEndOfScroll());
-                    }
-                    return true;
+                child: ContentView(
+                  reachedEnd: () {
+                    context
+                        .read<HomePageBloc>()
+                        .add(ReachedNearEndOfScroll());
                   },
-                  child: CustomScrollView(
-                    cacheExtent: 99999999,
-                    slivers: [
-                      SliverPersistentHeader(
-                          floating: false, delegate: TopBarDelegate()),
-                      SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                              childCount: state.posts!.length,
-                              (context, index) {
-                        return CardLemmyPostItem(
-                            context.read<HomePageBloc>().state.posts![index]
-                                as LemmyPost, openContent: (post) {
-                          context.go('/home/content', extra: post);
-                        });
-                      }))
-                    ],
-                  ),
+                  onPressedPost: (post) {context.go('/home/content', extra: post);},
+                  posts: context.read<HomePageBloc>().state.posts!,
+                  floatingHeader: false,
+                  headerDelegate: TopBarDelegate(),
                 ),
               ),
             );
