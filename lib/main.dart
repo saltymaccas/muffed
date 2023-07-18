@@ -6,7 +6,6 @@ import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
-import 'package:muffed/new_post_page/new_post_page.dart';
 import 'package:muffed/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -63,16 +62,6 @@ final _router = GoRouter(
                     .read<DynamicNavigationBarBloc>()
                     .add(GoneToNewMainPage(1));
                 return const MaterialPage(child: InboxPage());
-              },
-            )
-          ],
-        ),
-        StatefulShellBranch(
-          routes: <RouteBase>[
-            GoRoute(
-              path: '/newPost',
-              builder: (BuildContext context, GoRouterState state) {
-                return const NewPostPage();
               },
             )
           ],
