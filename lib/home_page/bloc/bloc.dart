@@ -7,6 +7,7 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 part 'event.dart';
+
 part 'state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
@@ -15,9 +16,14 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<LoadInitialPostsRequested>((event, emit) async {
       emit(HomePageState(status: HomePageStatus.loading));
 
-      List posts = await repo.getPosts(page: 1);
+      try {
+        List posts = await repo.getPosts(page: 1);
+        emit(HomePageState(status: HomePageStatus.success, posts: posts));
+      }catch (err){
+        emit(HomePageState(status: HomePageStatus.failure));
+      }
 
-      emit(HomePageState(status: HomePageStatus.success, posts: posts));
+
     });
     on<PullDownRefresh>((event, emit) async {
       emit(state.copyWith(isRefreshing: true));
@@ -39,8 +45,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       ));
 
       log('[HomePageBloc] Loaded page ${state.pagesLoaded}');
-
-
     }, transformer: droppable());
   }
 
