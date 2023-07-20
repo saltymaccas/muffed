@@ -23,52 +23,79 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SetPageInfo(
-      actions: [
-        MenuAnchor(
-            childFocusNode: FocusNode(),
-            onOpen: () {
-              setState(() {
-                menuOpen = true;
-              });
-            },
-            onClose: () {
-              setState(() {
-                menuOpen = false;
-              });
-            },
-            menuChildren: [
-              MenuItemButton(
-                child: Text('test'),
-                onPressed: () {},
-              )
+    return BlocProvider(
+      create: (context) => CommunityScreenBloc(
+          communityId: widget.communityId,
+          community: widget.community,
+          repo: context.read<ServerRepo>())
+        ..add(Initialize()),
+      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+        builder: (context, state) {
+
+          final blocContext = context;
+
+          return SetPageInfo(
+            actions: [
+              MenuAnchor(
+                  childFocusNode: FocusNode(),
+                  onOpen: () {
+                    setState(() {
+                      menuOpen = true;
+                    });
+                  },
+                  onClose: () {
+                    setState(() {
+                      menuOpen = false;
+                    });
+                  },
+                  menuChildren: [
+                    MenuItemButton(
+                      child: Text('about'),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return BlocProvider.value(
+                                value: BlocProvider.of<CommunityScreenBloc>(
+                                    blocContext),
+                                child: BlocBuilder<CommunityScreenBloc,
+                                        CommunityScreenState>(
+                                    builder: (context, state) {
+                                  if (state.communityInfo != null) {
+                                    return Dialog(
+                                      child: Text(
+                                          state.communityInfo!.description ??
+                                              'no description'),
+                                    );
+                                  } else {
+                                    return Dialog(child: Text('community still loading'));
+                                  }
+                                }),
+                              );
+                              final state =
+                                  context.read<CommunityScreenBloc>().state;
+                            });
+                      },
+                    )
+                  ],
+                  builder: (context, controller, child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (!controller.isOpen) {
+                          controller.open();
+                        } else {
+                          controller.close();
+                        }
+                      },
+                      icon: Icon(Icons.more_vert),
+                      visualDensity: VisualDensity.compact,
+                    );
+                  }),
             ],
-            builder: (context, controller, child) {
-              return IconButton(
-                onPressed: () {
-                  if (!controller.isOpen) {
-                    controller.open();
-                  } else {
-                    controller.close();
-                  }
-                },
-                icon: Icon(Icons.more_vert),
-                visualDensity: VisualDensity.compact,
-              );
-            }),
-      ],
-      itemIndex: 0,
-      child: AbsorbPointer(
-        absorbing: menuOpen,
-        child: BlocProvider(
-          create: (context) => CommunityScreenBloc(
-              communityId: widget.communityId,
-              community: widget.community,
-              repo: context.read<ServerRepo>())
-            ..add(Initialize()),
-          child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-            builder: (context, state) {
-              return ContentView(
+            itemIndex: 0,
+            child: AbsorbPointer(
+              absorbing: menuOpen,
+              child: ContentView(
                 headerDelegate:
                     (state.communityInfoStatus == ScreenStatus.success)
                         ? _TopBarDelegate(community: state.communityInfo!)
@@ -86,10 +113,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 reachedEnd: () {
                   context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
                 },
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
