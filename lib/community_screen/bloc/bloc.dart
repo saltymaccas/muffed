@@ -55,7 +55,7 @@ class CommunityScreenBloc
             page: state.pagesLoaded + 1, communityId: state.communityId);
 
         emit(state.copyWith(
-            posts: [...state.posts, ...newPosts], loadingMorePosts: false));
+            posts: [...state.posts, ...newPosts], loadingMorePosts: false, pagesLoaded: state.pagesLoaded + 1));
       } catch (err) {
         print(err);
         emit(state.copyWith(loadingMorePosts: false));

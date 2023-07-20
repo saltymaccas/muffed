@@ -65,6 +65,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   if (state.communityInfo != null) {
                                     return Dialog(
                                       child: Markdown(
+                                        shrinkWrap: true,
                                           data: state
                                                   .communityInfo!.description ??
                                               'no description',
