@@ -78,6 +78,15 @@ Map<String, LemmySubscribedType> apiCompatibleToLemmySubscribedType = {
   'NotSubscribed': LemmySubscribedType.notSubscribed,
 };
 
+enum LemmyListingType { all, local, community, subscribed }
+
+Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
+  LemmyListingType.all: 'All',
+  LemmyListingType.community: 'Community',
+  LemmyListingType.subscribed: 'Subscribed',
+  LemmyListingType.local: 'local',
+};
+
 class LemmyPost extends Equatable {
   final int id;
   final String name;

@@ -23,16 +23,24 @@ final _router = GoRouter(
         StatefulNavigationShell navigationShell,
       ) {
         return Scaffold(
-          bottomNavigationBar: DynamicNavigationBar(onTap: (index) {
+          bottomNavigationBar:
+              DynamicNavigationBar(onTap: (index, currentContext) {
+            if (index == navigationShell.currentIndex) {
+              if (currentContext != null) {
+                if (currentContext.canPop()) {
+                  Navigator.pop(currentContext);
+                }
+              }
+            } else {
+              context
+                  .read<DynamicNavigationBarBloc>()
+                  .add(GoneToNewMainPage(index));
 
-            context
-                .read<DynamicNavigationBarBloc>()
-                .add(GoneToNewMainPage(index));
-
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
-            );
+              navigationShell.goBranch(
+                index,
+                initialLocation: false,
+              );
+            }
           }),
           body: navigationShell,
         );
@@ -54,7 +62,9 @@ final _router = GoRouter(
                   GoRoute(
                       path: 'community',
                       builder: (context, state) {
-                        return CommunityScreen(communityId: int.parse(state.queryParameters['id']!));
+                        return CommunityScreen(
+                            communityId:
+                                int.parse(state.queryParameters['id']!));
                       })
                 ]),
           ],

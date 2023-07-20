@@ -188,6 +188,7 @@ interface class LemmyRepo {
     LemmySortType sortType = LemmySortType.topAll,
     int? communityId,
     int? creatorId,
+    LemmyListingType listingType = LemmyListingType.all,
   }) async {
     try {
       final response = await client.get(
@@ -200,6 +201,7 @@ interface class LemmyRepo {
             'sort': lemmySortTypeEnumToApiCompatible[sortType],
             if (communityId != null) 'community_id': communityId.toString(),
             if (creatorId != null) 'creator_id': creatorId.toString(),
+            'listing_type': lemmyListingTypeToApiCompatible[listingType],
           },
         ),
       );

@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
               message: 'Load Failed',
             );
           } else if (state.status == HomePageStatus.success) {
-            return BottomNavigationBarActions(
+            return SetPageInfo(
               itemIndex: 0,
               actions: [
                 IconButton(
@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
                   onPressedPost: (post) {context.go('/home/content', extra: post);},
                   posts: context.read<HomePageBloc>().state.posts!,
                   floatingHeader: false,
-                  headerDelegate: TopBarDelegate(),
+                  headerDelegate: _TopBarDelegate(),
                 ),
               ),
             );
@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class TopBarDelegate extends SliverPersistentHeaderDelegate {
+class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   double get minExtent => 200.0;
 
@@ -101,5 +101,5 @@ class TopBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(TopBarDelegate oldDelegate) => false;
+  bool shouldRebuild(_TopBarDelegate oldDelegate) => false;
 }

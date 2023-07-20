@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/community_screen/community_screen.dart';
 import '../repo/server_repo.dart';
 import 'bloc/bloc.dart';
 
@@ -37,7 +38,6 @@ void openSearchDialog(BuildContext context) {
                                 InkWell(
                                   onTap: () {
                                     context.pop();
-
                                     context.go(Uri(
                                         path: '/home/community',
                                         queryParameters: {

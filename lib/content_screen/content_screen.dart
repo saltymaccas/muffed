@@ -17,50 +17,59 @@ class ContentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBarActions(
-      itemIndex: 0,
-      actions: [Icon(Icons.add_alarm_rounded), Icon(Icons.accessible_outlined)],
-      child: BlocProvider(
-        create: (context) =>
-            ContentScreenBloc(repo: context.read<ServerRepo>(), postId: post.id)
-              ..add(InitializeEvent()),
-        child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
-          builder: (context, state) {
-            return NotificationListener(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels ==
-                    scrollInfo.metrics.maxScrollExtent) {
-                  context.read<ContentScreenBloc>().add(ReachedNearEndOfScroll());
-                }
-                return true;
-              },
-              child: CustomScrollView(
-                slivers: [
-                  const SliverAppBar(
-                    title: Text('Comments'),
-                    floating: true,
+    return BlocProvider(
+      create: (context) =>
+          ContentScreenBloc(repo: context.read<ServerRepo>(), postId: post.id)
+            ..add(InitializeEvent()),
+      child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
+        builder: (context, state) {
+          return NotificationListener(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels ==
+                  scrollInfo.metrics.maxScrollExtent) {
+                context.read<ContentScreenBloc>().add(ReachedNearEndOfScroll());
+              }
+              return true;
+            },
+            child: CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  title: Text('Comments'),
+                  floating: true,
+                ),
+                SliverToBoxAdapter(
+                  child: CardLemmyPostItem(
+                    post,
+                    limitContentHeight: false,
                   ),
-                  SliverToBoxAdapter(
-                    child: CardLemmyPostItem(
-                      post,
-                      limitContentHeight: false,
-                    ),
-                  ),
-                  (state.status == ContentScreenStatus.loading)
-                      ? const SliverFillRemaining(
-                          child: LoadingComponentTransparent(),
-                        )
-                      : (state.status == ContentScreenStatus.failure)
-                          ? const SliverFillRemaining(
-                              child: ErrorComponentTransparent(
-                                message: 'Failed to load',
-                              ),
-                            )
-                          : (state.status == ContentScreenStatus.initial)
-                              ? SliverFillRemaining(
-                                  child: Container(),
-                                )
-                              : SliverList(
+                ),
+                (state.status == ContentScreenStatus.loading)
+                    ? const SliverFillRemaining(
+                        child: LoadingComponentTransparent(),
+                      )
+                    : (state.status == ContentScreenStatus.failure)
+                        ? const SliverFillRemaining(
+                            child: ErrorComponentTransparent(
+                              message: 'Failed to load',
+                            ),
+                          )
+                        : (state.status == ContentScreenStatus.initial)
+                            ? SliverFillRemaining(
+                                child: Container(),
+                              )
+                            : SetPageInfo(
+                                itemIndex: 0,
+                                actions: [
+                                  IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () {},
+                                      icon: Icon(Icons.add)),
+                                  IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () {},
+                                      icon: Icon(Icons.sort))
+                                ],
+                                child: SliverList(
                                   delegate: SliverChildBuilderDelegate(
                                       childCount: state.comments!.length,
                                       (context, index) {
@@ -72,11 +81,11 @@ class ContentScreen extends StatelessWidget {
                                     );
                                   }),
                                 ),
-                ],
-              ),
-            );
-          },
-        ),
+                              ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

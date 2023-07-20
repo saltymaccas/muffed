@@ -10,7 +10,7 @@ const Curve animCurve = Curves.easeInOutCubic;
 class DynamicNavigationBar extends StatelessWidget {
   const DynamicNavigationBar({required this.onTap, super.key});
 
-  final Function(int index) onTap;
+  final Function(int index, BuildContext? currentContext) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,11 @@ class DynamicNavigationBar extends StatelessWidget {
                 itemIndex: 0,
                 icon: IconButton(
                   onPressed: () {
-                    onTap(0);
+                    onTap(
+                        0,
+                        (state.pageStackInfo[0]!.isNotEmpty)
+                            ? state.pageStackInfo[0]!.last.context
+                            : null);
                   },
                   visualDensity: VisualDensity.compact,
                   icon: Icon(Icons.home_outlined),
@@ -39,7 +43,11 @@ class DynamicNavigationBar extends StatelessWidget {
                 itemIndex: 1,
                 icon: IconButton(
                   onPressed: () {
-                    onTap(1);
+                    onTap(
+                        1,
+                        (state.pageStackInfo[1]!.isNotEmpty)
+                            ? state.pageStackInfo[1]!.last.context
+                            : null);
                   },
                   visualDensity: VisualDensity.compact,
                   icon: Icon(Icons.inbox_outlined),
@@ -52,7 +60,11 @@ class DynamicNavigationBar extends StatelessWidget {
                 icon: IconButton(
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    onTap(2);
+                    onTap(
+                        2,
+                        (state.pageStackInfo[2]!.isNotEmpty)
+                            ? state.pageStackInfo[2]!.last.context
+                            : null);
                   },
                   icon: Icon(Icons.person_outline),
                   selectedIcon: Icon(Icons.person),
@@ -92,6 +104,21 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
+    final _bloc = context.read<DynamicNavigationBarBloc>();
+
+    late final hasActions;
+
+    if (_bloc.state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
+      if (_bloc
+          .state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {
+        hasActions = true;
+      } else {
+        hasActions = false;
+      }
+    } else {
+      hasActions = false;
+    }
+
     return Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
@@ -108,12 +135,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
               AnimatedSize(
                 curve: animCurve,
                 duration: animDur,
-                child: (widget.selected &&
-                        context
-                            .read<DynamicNavigationBarBloc>()
-                            .state
-                            .actions[widget.itemIndex]!
-                            .isNotEmpty)
+                child: (widget.selected && hasActions)
                     ? Row(
                         children: [
                           Padding(
@@ -138,12 +160,12 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                                 // key needs to be set so the actions get animated in when page
                                 // is pushed
                                 key: Key(
-                                    'actionRow ${context.read<DynamicNavigationBarBloc>().state.actions[widget.itemIndex]!.length} ${widget.itemIndex}'),
-                                children: context
-                                    .read<DynamicNavigationBarBloc>()
+                                    'actionRow ${_bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                                children: _bloc
                                     .state
-                                    .actions[widget.itemIndex]!
-                                    .last,
+                                    .pageStackInfo[widget.itemIndex]!
+                                    .last
+                                    .actions,
                               ),
                             ),
                           )
@@ -157,8 +179,8 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   }
 }
 
-class BottomNavigationBarActions extends StatefulWidget {
-  const BottomNavigationBarActions(
+class SetPageInfo extends StatefulWidget {
+  const SetPageInfo(
       {required this.itemIndex,
       required this.actions,
       required this.child,
@@ -169,12 +191,10 @@ class BottomNavigationBarActions extends StatefulWidget {
   final Widget child;
 
   @override
-  State<BottomNavigationBarActions> createState() =>
-      _BottomNavigationBarActionsState();
+  State<SetPageInfo> createState() => _SetPageInfoState();
 }
 
-class _BottomNavigationBarActionsState
-    extends State<BottomNavigationBarActions> {
+class _SetPageInfoState extends State<SetPageInfo> {
   late DynamicNavigationBarBloc _bloc;
   final List<Widget> animatedActions = [];
 
@@ -207,13 +227,14 @@ class _BottomNavigationBarActionsState
               delay: Duration(milliseconds: animInterval * i)));
     }
 
-    _bloc.add(AddActions(animatedActions, widget.itemIndex));
+    _bloc.add(PageAdded(PageInfo(context: context, actions: animatedActions),
+        widget.itemIndex));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _bloc.add(RemoveActions(widget.itemIndex));
+    _bloc.add(PageRemoved(widget.itemIndex));
   }
 
   @override
