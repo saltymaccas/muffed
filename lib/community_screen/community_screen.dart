@@ -7,6 +7,8 @@ import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import '../enums.dart';
 import 'bloc/bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({required this.communityId, this.community, super.key});
@@ -31,7 +33,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
         ..add(Initialize()),
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
-
           final blocContext = context;
 
           return SetPageInfo(
@@ -63,12 +64,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     builder: (context, state) {
                                   if (state.communityInfo != null) {
                                     return Dialog(
-                                      child: Text(
-                                          state.communityInfo!.description ??
-                                              'no description'),
+                                      child: Markdown(
+                                          data: state
+                                                  .communityInfo!.description ??
+                                              'no description',
+                                          selectable: true,
+                                          onTapLink: (text, url, title) {
+                                            launchUrl(Uri.parse(url!));
+                                          }),
                                     );
                                   } else {
-                                    return Dialog(child: Text('community still loading'));
+                                    return Dialog(
+                                        child: Text('community still loading'));
                                   }
                                 }),
                               );
