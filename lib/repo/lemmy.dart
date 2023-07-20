@@ -10,7 +10,9 @@ interface class LemmyRepo {
   LemmyRepo() : client = Client();
 
   Future<List<LemmyPost>> getPosts(
-      {LemmySortType sortType = LemmySortType.hot, int page = 1, int? communityId}) async {
+      {LemmySortType sortType = LemmySortType.hot,
+      int page = 1,
+      int? communityId}) async {
     try {
       final response = await client.get(
         Uri.https(
@@ -19,7 +21,7 @@ interface class LemmyRepo {
           {
             'page': page.toString(),
             'sort': lemmySortTypeEnumToApiCompatible[sortType],
-            if (communityId != null )'community_id': communityId.toString(),
+            if (communityId != null) 'community_id': communityId.toString(),
           },
         ),
       );
@@ -304,6 +306,9 @@ interface class LemmyRepo {
           blocked: community['blocked'],
           subscribed:
               apiCompatibleToLemmySubscribedType[community['subscribed']]!,
+          icon: community['community']['icon'],
+          description: community['community']['description'],
+          banner: community['community']['banner'],
         ));
       }
 
@@ -366,6 +371,9 @@ interface class LemmyRepo {
         blocked: community['blocked'],
         subscribed:
             apiCompatibleToLemmySubscribedType[community['subscribed']]!,
+        icon: community['community']['icon'],
+        description: community['community']['description'],
+        banner: community['community']['banner'],
       );
     } on SocketException {
       return Future.error('No Internet');
