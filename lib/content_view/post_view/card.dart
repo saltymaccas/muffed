@@ -99,6 +99,9 @@ class CardLemmyPostItem extends StatelessWidget {
                           child: SizedBox(
                             height: 100,
                             child: AnyLinkPreview(
+                              errorImage: 'null',
+                              errorBody: 'Could not load body',
+                              errorTitle: post.name,
                               errorWidget: GestureDetector(
                                 onTap: () => launchUrl(Uri.parse(post.url!)),
                                 child: Container(
