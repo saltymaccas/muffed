@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/utils.dart';
 import 'post_more_actions_sheet/post_more_actions_sheet.dart';
@@ -35,39 +36,48 @@ class CardLemmyPostItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(45),
-                          child: (post.communityIcon != null)
-                              ? Image.network(
-                                  post.communityIcon! + '?thumbnail=50')
-                              : SvgPicture.asset('assets/logo.svg'),
+                  GestureDetector(
+                    onTap: () {
+                      context.push('/home/community?id=${post.communityId}');
+                    },
+                    child: Row(
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 12,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(45),
+                                child: (post.communityIcon != null)
+                                    ? Image.network(
+                                        post.communityIcon! + '?thumbnail=50')
+                                    : SvgPicture.asset('assets/logo.svg'),
+                              ),
+                            ),
+                            const VerticalDivider(),
+                            Text(
+                              post.communityName,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const VerticalDivider(),
-                      Text(
-                        post.communityName,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
+                        const VerticalDivider(),
+                        Text(
+                          post.creatorName,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
-                      ),
-                      const VerticalDivider(),
-                      Text(
-                        post.creatorName,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
+                        const VerticalDivider(),
+                        Text(
+                          formattedPostedAgo(post.timePublished) + ' ago',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.outline),
                         ),
-                      ),
-                      const VerticalDivider(),
-                      Text(
-                        formattedPostedAgo(post.timePublished) + ' ago',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 5,
