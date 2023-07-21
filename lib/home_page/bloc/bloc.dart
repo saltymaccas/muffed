@@ -21,6 +21,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         emit(HomePageState(status: HomePageStatus.success, posts: posts));
       }catch (err){
         emit(HomePageState(status: HomePageStatus.failure));
+        print('[HomePageBloc] ERR: $err');
       }
 
 
