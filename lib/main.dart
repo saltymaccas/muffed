@@ -2,6 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
@@ -10,6 +11,7 @@ import 'package:muffed/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/community_screen/community_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
 final _router = GoRouter(
   initialLocation: '/home',
@@ -93,7 +95,10 @@ final _router = GoRouter(
   ],
 );
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: await getApplicationDocumentsDirectory());
   runApp(const MyApp());
 }
 
