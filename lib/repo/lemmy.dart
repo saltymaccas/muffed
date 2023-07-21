@@ -1,41 +1,40 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart';
+
 import 'lemmy/models.dart';
+import 'package:dio/dio.dart';
 
 interface class LemmyRepo {
-  final Client client;
+  final Dio dio;
+  final String baseUrl;
 
-  LemmyRepo() : client = Client();
+  LemmyRepo({this.baseUrl = 'http://lemmy.ml'})
+      :
+        dio = Dio();
 
   Future<List<LemmyPost>> getPosts(
       {LemmySortType sortType = LemmySortType.hot,
       int page = 1,
       int? communityId}) async {
     try {
-      final response = await client.get(
-        Uri.https(
-          'lemmy.ml',
-          'api/v3/post/list',
-          {
-            'page': page.toString(),
-            'sort': lemmySortTypeEnumToApiCompatible[sortType],
-            if (communityId != null) 'community_id': communityId.toString(),
-          },
-        ),
+      final response = await dio.get(
+        '$baseUrl/api/v3/post/list',
+        queryParameters: {
+          'page': page.toString(),
+          'sort': lemmySortTypeEnumToApiCompatible[sortType],
+          if (communityId != null) 'community_id': communityId.toString(),
+        },
       );
 
       if (response.statusCode != 200) {
         throw HttpException('${response.statusCode}');
       }
 
-      var decodedResponse =
-          (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['posts'];
+      var postsMap = response.data['posts'];
 
       List<LemmyPost> posts = [];
 
-      for (Map<String, dynamic> post in decodedResponse) {
+      for (Map<String, dynamic> post in postsMap) {
         posts.add(
           LemmyPost(
             body: post['post']['body'],
@@ -73,30 +72,26 @@ interface class LemmyRepo {
   Future<List<LemmyComment>> getComments(int postId,
       {required int page}) async {
     try {
-      final response = await client.get(
-        Uri.https(
-          'lemmy.ml',
-          'api/v3/comment/list',
-          {
-            'post_id': postId.toString(),
-            'page': page.toString(),
-          },
-        ),
+      final response = await dio.get(
+        '$baseUrl/api/v3/comment/list',
+        queryParameters: {
+          'post_id': postId.toString(),
+          'page': page.toString(),
+        },
       );
 
       if (response.statusCode != 200) {
         throw HttpException('${response.statusCode}');
       }
 
-      var decodedResponse =
-          (jsonDecode(utf8.decode(response.bodyBytes)) as Map)['comments'];
+      var commentsMap = response.data['comments'];
 
       // defines comment children and parent
 
       Map<int, List> mapReplyToParent = {};
       List<Map> baseLevelComments = [];
 
-      for (final comment in decodedResponse) {
+      for (final comment in commentsMap) {
         final String p = comment['comment']['path'];
         final List<String> parts = p.split('.');
 
@@ -193,34 +188,28 @@ interface class LemmyRepo {
     LemmyListingType listingType = LemmyListingType.all,
   }) async {
     try {
-      final response = await client.get(
-        Uri.https(
-          'lemmy.ml',
-          'api/v3/search',
-          {
-            'q': query,
-            'type_': lemmySearchTypeToApiCompatible[searchType],
-            'sort': lemmySortTypeEnumToApiCompatible[sortType],
-            if (communityId != null) 'community_id': communityId.toString(),
-            if (creatorId != null) 'creator_id': creatorId.toString(),
-            'listing_type': lemmyListingTypeToApiCompatible[listingType],
-          },
-        ),
+      final response = await dio.get(
+        '$baseUrl/api/v3/search',
+        queryParameters: {
+          'q': query,
+          'type_': lemmySearchTypeToApiCompatible[searchType],
+          'sort': lemmySortTypeEnumToApiCompatible[sortType],
+          if (communityId != null) 'community_id': communityId.toString(),
+          if (creatorId != null) 'creator_id': creatorId.toString(),
+          'listing_type': lemmyListingTypeToApiCompatible[listingType],
+        },
       );
 
       if (response.statusCode != 200) {
         throw HttpException('${response.statusCode}');
       }
 
-      var decodedResponse =
-          (jsonDecode(utf8.decode(response.bodyBytes)) as Map);
-
       final List<LemmyComment> comments = [];
       final List<LemmyPerson> people = [];
       final List<LemmyPost> posts = [];
       final List<LemmyCommunity> communities = [];
 
-      for (final comment in decodedResponse['comments']) {
+      for (final comment in response.data['comments']) {
         comments.add(LemmyComment(
           creatorName: comment['creator']['name'],
           creatorId: comment['creator']['id'],
@@ -237,7 +226,7 @@ interface class LemmyRepo {
         ));
       }
 
-      for (final person in decodedResponse['users']) {
+      for (final person in response.data['users']) {
         people.add(LemmyPerson(
           actorId: person['person']['actor_id'],
           admin: person['person']['admin'],
@@ -255,7 +244,7 @@ interface class LemmyRepo {
           postScore: person['counts']['post_score'],
         ));
       }
-      for (final post in decodedResponse['posts']) {
+      for (final post in response.data['posts']) {
         posts.add(
           LemmyPost(
             body: post['post']['body'],
@@ -280,7 +269,7 @@ interface class LemmyRepo {
         );
       }
 
-      for (final community in decodedResponse['communities']) {
+      for (final community in response.data['communities']) {
         communities.add(LemmyCommunity(
           id: community['community']['id'],
           actorId: community['community']['actor_id'],
@@ -329,22 +318,18 @@ interface class LemmyRepo {
 
   Future<LemmyCommunity> communityFromId(int id) async {
     try {
-      final response = await client.get(
-        Uri.https(
-          'lemmy.ml',
-          'api/v3/community',
-          {
-            'id': id.toString(),
-          },
-        ),
+      final response = await dio.get(
+        '$baseUrl/api/v3/community',
+        queryParameters: {
+          'id': id.toString(),
+        },
       );
 
       if (response.statusCode != 200) {
         throw HttpException('${response.statusCode}');
       }
 
-      var community = (jsonDecode(utf8.decode(response.bodyBytes))
-          as Map)['community_view'];
+      var community = response.data['community_view'];
 
       return LemmyCommunity(
         id: community['community']['id'],
@@ -375,6 +360,37 @@ interface class LemmyRepo {
         description: community['community']['description'],
         banner: community['community']['banner'],
       );
+    } on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+  }
+
+  Future<LemmyLoginResponse> login(String password, String? totp,
+      String usernameOrEmail, String serverAddr) async {
+    try {
+      final response = await dio.post(
+        '$serverAddr/api/v3/user/login',
+        data: {
+          'password': password,
+          if (totp != null) 'totp_2fa_token': totp,
+          'username_or_email': usernameOrEmail,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+
+      return LemmyLoginResponse(
+          registrationCreated: response.data['registration_created'],
+          verifyEmailSent: response.data['verify_email_sent'],
+          jwt: response.data['jwt']);
+
+
     } on SocketException {
       return Future.error('No Internet');
     } on HttpException {
