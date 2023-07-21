@@ -1,6 +1,5 @@
 import 'dart:io';
 
-
 import 'lemmy/models.dart';
 import 'package:dio/dio.dart';
 
@@ -8,9 +7,7 @@ interface class LemmyRepo {
   final Dio dio;
   final String baseUrl;
 
-  LemmyRepo({this.baseUrl = 'http://lemmy.ml'})
-      :
-        dio = Dio();
+  LemmyRepo({this.baseUrl = 'http://lemmy.ml'}) : dio = Dio();
 
   Future<List<LemmyPost>> getPosts(
       {LemmySortType sortType = LemmySortType.hot,
@@ -389,8 +386,6 @@ interface class LemmyRepo {
           registrationCreated: response.data['registration_created'],
           verifyEmailSent: response.data['verify_email_sent'],
           jwt: response.data['jwt']);
-
-
     } on SocketException {
       return Future.error('No Internet');
     } on HttpException {
