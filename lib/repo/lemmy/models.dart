@@ -309,3 +309,15 @@ class LemmySearchResponse {
     this.lemmyPosts,
   });
 }
+
+class LemmyLoginResponse {
+  final String? jwt;
+  final bool registrationCreated;
+  final bool verifyEmailSent;
+
+  LemmyLoginResponse({
+    this.jwt,
+    required this.registrationCreated,
+    required this.verifyEmailSent,
+  });
+}

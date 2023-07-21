@@ -1,5 +1,6 @@
 import 'lemmy.dart';
 import 'lemmy/models.dart';
+import 'package:dio/dio.dart';
 
 export 'lemmy/models.dart';
 
