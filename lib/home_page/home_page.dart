@@ -22,12 +22,6 @@ class HomePage extends StatelessWidget {
       create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
-        buildWhen: (previousState, state) {
-          if (previousState.pagesLoaded != state.pagesLoaded) return true;
-          if (previousState.status != state.status) return true;
-          if (previousState.posts != state.posts) return true;
-          return false;
-        },
         builder: (context, state) {
           if (state.status == HomePageStatus.loading) {
             return const LoadingComponentTransparent();
