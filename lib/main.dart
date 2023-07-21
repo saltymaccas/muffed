@@ -9,7 +9,6 @@ import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/content_screen/content_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/community_screen/community_screen.dart';
 
 final _router = GoRouter(
