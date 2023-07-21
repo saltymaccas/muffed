@@ -12,6 +12,7 @@ import 'package:muffed/repo/server_repo.dart';
 import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/community_screen/community_screen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:muffed/global_state/bloc.dart';
 
 final _router = GoRouter(
   initialLocation: '/home',
@@ -113,7 +114,8 @@ class MyApp extends StatelessWidget {
         create: (context) => ServerRepo(),
         child: MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => DynamicNavigationBarBloc())
+            BlocProvider(create: (context) => DynamicNavigationBarBloc()),
+            BlocProvider(create: (context) => GlobalBloc()),
           ],
           child: MaterialApp.router(
             routerConfig: _router,
