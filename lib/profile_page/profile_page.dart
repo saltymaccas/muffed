@@ -36,11 +36,15 @@ class ProfilePage extends StatelessWidget {
                               ...List.generate(globalBloc.state.accounts.length,
                                   (index) {
                                 return ListTile(
-                                  title: Text(globalBloc.state.accounts.keys
-                                      .toList()[index]),
+                                  title: Text(globalBloc
+                                      .state.accounts[index].userName),
                                   leading: Icon(Icons.account_circle),
                                 );
                               }),
+                              ListTile(
+                                title: Text('Anonymous'),
+                                leading: Icon(Icons.private_connectivity),
+                              ),
                               ListTile(
                                 title: Text('Add Account'),
                                 leading: Icon(Icons.add),
