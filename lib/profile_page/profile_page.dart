@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -18,11 +20,36 @@ class ProfilePage extends StatelessWidget {
                 Icons.account_circle,
                 size: 100,
               ),
-              TextButton(onPressed: () {
-                showModalBottomSheet(context: context, builder: (context) {
-                  return Container();
-                });
-              }, child: Text('Anonymous'))
+              TextButton(
+                  onPressed: () {
+                    final globalBloc = context.read<GlobalBloc>();
+
+                    showModalBottomSheet(
+                        useRootNavigator: true,
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ...List.generate(globalBloc.state.accounts.length,
+                                  (index) {
+                                return ListTile(
+                                  title: Text(globalBloc.state.accounts.keys
+                                      .toList()[index]),
+                                  leading: Icon(Icons.account_circle),
+                                );
+                              }),
+                              ListTile(
+                                title: Text('Add Account'),
+                                leading: Icon(Icons.add),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  child: Text('Anonymous'))
             ],
           ),
         ));
