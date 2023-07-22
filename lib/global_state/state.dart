@@ -1,7 +1,7 @@
 part of 'bloc.dart';
 
 final class GlobalState extends Equatable {
-  final List<AccountData> lemmyAccounts;
+  final List<LemmyAccountData> lemmyAccounts;
 
   // null means anonymous/no account
   final int? lemmySelectedAccount;
@@ -33,13 +33,13 @@ final class GlobalState extends Equatable {
   factory GlobalState.fromMap(Map<String, dynamic> map) {
     return GlobalState(
         lemmyAccounts: List.generate((map['lemmyAccounts'] as List).length,
-            (index) => AccountData.fromMap(map['lemmyAccounts'][index])),
+            (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index])),
         lemmySelectedAccount: map['lemmySelectedAccount'] as int?,
         lemmyDefaultHomeServer: map['lemmyDefaultHome']);
   }
 
   GlobalState copyWith({
-    List<AccountData>? lemmyAccounts,
+    List<LemmyAccountData>? lemmyAccounts,
     int? lemmySelectedAccount,
     String? lemmyDefaultHomeServer,
   }) {
@@ -52,12 +52,12 @@ final class GlobalState extends Equatable {
   }
 }
 
-final class AccountData {
+final class LemmyAccountData {
   final String jwt;
   final String homeServer;
   final String userName;
 
-  AccountData(
+  LemmyAccountData(
       {required this.jwt, required this.homeServer, required this.userName});
 
   Map<String, dynamic> toMap() {
@@ -68,8 +68,8 @@ final class AccountData {
     };
   }
 
-  factory AccountData.fromMap(Map<String, dynamic> map) {
-    return AccountData(
+  factory LemmyAccountData.fromMap(Map<String, dynamic> map) {
+    return LemmyAccountData(
       jwt: map['jwt'] as String,
       homeServer: map['homeServer'] as String,
       userName: map['userName'] as String,

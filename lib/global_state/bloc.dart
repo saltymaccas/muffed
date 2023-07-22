@@ -15,6 +15,8 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
   }
 
+
+
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
 

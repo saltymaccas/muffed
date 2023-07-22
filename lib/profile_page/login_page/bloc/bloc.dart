@@ -31,7 +31,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
         print((result as LemmyLoginResponse).jwt);
 
         globalBloc.add(AccountLoggedIn(
-          AccountData(
+          LemmyAccountData(
             jwt: (result as LemmyLoginResponse).jwt!,
             homeServer: state.serverAddr,
             userName: state.usernameOrEmail,
