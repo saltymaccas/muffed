@@ -42,14 +42,22 @@ final class GlobalState extends Equatable {
 
   GlobalState copyWith({
     List<LemmyAccountData>? lemmyAccounts,
-    int? lemmySelectedAccount,
+
+    /// set to required to make sure the value does not accidentally get set
+    /// to null
+    required int? lemmySelectedAccount,
+
+
     String? lemmyDefaultHomeServer,
   }) {
+
+
+
     return GlobalState(
       lemmyDefaultHomeServer:
           lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
       lemmyAccounts: lemmyAccounts ?? this.lemmyAccounts,
-      lemmySelectedAccount: lemmySelectedAccount ?? this.lemmySelectedAccount,
+      lemmySelectedAccount: lemmySelectedAccount,
     );
   }
 }
