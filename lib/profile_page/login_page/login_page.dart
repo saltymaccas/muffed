@@ -82,7 +82,9 @@ class LoginPage extends StatelessWidget {
                       ),
                       TextButton(
                           onPressed: () {
-                            context.read<LoginPageBloc>().add(Submitted());
+                            context.read<LoginPageBloc>().add(Submitted(() {
+                              context.pop();
+                            }));
                           },
                           child: Text('Login')),
                       if (state.errorMessage != null)

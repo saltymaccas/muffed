@@ -27,4 +27,8 @@ class ServerAddrChanged extends LoginPageEvent {
   ServerAddrChanged(this.value);
 }
 
-class Submitted extends LoginPageEvent {}
+class Submitted extends LoginPageEvent {
+  final Function() loginAccepted;
+
+  Submitted(this.loginAccepted);
+}
