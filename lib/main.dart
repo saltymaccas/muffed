@@ -13,6 +13,7 @@ import 'dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/community_screen/community_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/profile_page/login_page/login_page.dart';
 
 final _router = GoRouter(
   initialLocation: '/home',
@@ -88,6 +89,11 @@ final _router = GoRouter(
               builder: (BuildContext context, GoRouterState state) {
                 return const ProfilePage();
               },
+              routes: [
+                GoRoute(path: 'login', builder: (context, state) {
+                  return LoginScreen();
+                })
+              ]
             )
           ],
         ),
