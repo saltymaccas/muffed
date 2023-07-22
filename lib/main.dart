@@ -20,14 +20,12 @@ final _router = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       restorationScopeId: 'indexStack',
-      builder: (
-        BuildContext context,
-        GoRouterState state,
-        StatefulNavigationShell navigationShell,
-      ) {
+      builder: (BuildContext context,
+          GoRouterState state,
+          StatefulNavigationShell navigationShell,) {
         return Scaffold(
           bottomNavigationBar:
-              DynamicNavigationBar(onTap: (index, currentContext) {
+          DynamicNavigationBar(onTap: (index, currentContext) {
             if (index == navigationShell.currentIndex) {
               if (currentContext != null) {
                 if (currentContext.canPop()) {
@@ -67,7 +65,7 @@ final _router = GoRouter(
                       builder: (context, state) {
                         return CommunityScreen(
                             communityId:
-                                int.parse(state.queryParameters['id']!));
+                            int.parse(state.queryParameters['id']!));
                       })
                 ]),
           ],
@@ -85,15 +83,15 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/profile',
-              builder: (BuildContext context, GoRouterState state) {
-                return const ProfilePage();
-              },
-              routes: [
-                GoRoute(path: 'login', builder: (context, state) {
-                  return LoginPage();
-                })
-              ]
+                path: '/profile',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ProfilePage();
+                },
+                routes: [
+                  GoRoute(path: 'login', builder: (context, state) {
+                    return LoginPage();
+                  })
+                ]
             )
           ],
         ),
@@ -116,25 +114,30 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-      return RepositoryProvider(
-        create: (context) => ServerRepo(),
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => DynamicNavigationBarBloc()),
-            BlocProvider(create: (context) => GlobalBloc()),
-          ],
-          child: MaterialApp.router(
-            routerConfig: _router,
-            title: 'Muffed',
-            theme: ThemeData(
-              colorScheme: lightDynamic,
-              useMaterial3: true,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => DynamicNavigationBarBloc()),
+              BlocProvider(create: (context) => GlobalBloc()),
+            ],
+            child: Builder(
+              builder: (context) {
+                return RepositoryProvider(
+                  create: (context) => ServerRepo(context.read<GlobalBloc>()),
+                  child: MaterialApp.router(
+                    routerConfig: _router,
+                    title: 'Muffed',
+                    theme: ThemeData(
+                      colorScheme: lightDynamic,
+                      useMaterial3: true,
+                    ),
+                    darkTheme: ThemeData(
+                        colorScheme: darkDynamic, useMaterial3: true),
+                    themeMode: ThemeMode.system,
+                  ),
+                );
+              }
             ),
-            darkTheme: ThemeData(colorScheme: darkDynamic, useMaterial3: true),
-            themeMode: ThemeMode.system,
-          ),
-        ),
-      );
-    });
+          );
+        });
   }
 }

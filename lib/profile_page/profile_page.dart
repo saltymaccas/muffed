@@ -33,11 +33,11 @@ class ProfilePage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              ...List.generate(globalBloc.state.accounts.length,
+                              ...List.generate(globalBloc.state.lemmyAccounts.length,
                                   (index) {
                                 return ListTile(
                                   title: Text(globalBloc
-                                      .state.accounts[index].userName),
+                                      .state.lemmyAccounts[index].userName),
                                   leading: Icon(Icons.account_circle),
                                 );
                               }),

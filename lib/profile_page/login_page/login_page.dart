@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'bloc/bloc.dart';
 
@@ -11,7 +12,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginPageBloc(context.read<ServerRepo>()),
+      create: (context) => LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
       child: BlocBuilder<LoginPageBloc, LoginPageState>(
         builder: (context, state) {
           return BlocListener<LoginPageBloc, LoginPageState>(

@@ -1,27 +1,53 @@
 part of 'bloc.dart';
 
 final class GlobalState extends Equatable {
-  final List<AccountData> accounts;
-  final int? selectedAccount;
+  final List<AccountData> lemmyAccounts;
 
-  GlobalState({this.accounts = const [], this.selectedAccount});
+  // null means anonymous/no account
+  final int? lemmySelectedAccount;
+
+  final String lemmyDefaultHomeServer;
+
+  GlobalState({
+    this.lemmyAccounts = const [],
+    this.lemmySelectedAccount,
+    this.lemmyDefaultHomeServer = 'lemmy.ml',
+  });
 
   @override
-  List<Object?> get props => [accounts, selectedAccount];
+  List<Object?> get props => [
+        lemmyAccounts,
+        lemmySelectedAccount,
+        lemmyDefaultHomeServer,
+      ];
 
   Map<String, dynamic> toMap() {
     return {
-      'accounts': List.generate(
-          this.accounts.length, (index) => this.accounts[index].toMap()),
-      'selectedAccount': this.selectedAccount
+      'accounts': List.generate(this.lemmyAccounts.length,
+          (index) => this.lemmyAccounts[index].toMap()),
+      'lemmySelectedAccount': this.lemmySelectedAccount,
+      'lemmyDefaultHomeServer': this.lemmyDefaultHomeServer,
     };
   }
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
     return GlobalState(
-      accounts: List.generate((map['accounts'] as List).length,
-          (index) => AccountData.fromMap(map['accounts'][index])),
-      selectedAccount: map['selectedAccount'] as int?,
+        lemmyAccounts: List.generate((map['lemmyAccounts'] as List).length,
+            (index) => AccountData.fromMap(map['lemmyAccounts'][index])),
+        lemmySelectedAccount: map['lemmySelectedAccount'] as int?,
+        lemmyDefaultHomeServer: map['lemmyDefaultHome']);
+  }
+
+  GlobalState copyWith({
+    List<AccountData>? lemmyAccounts,
+    int? lemmySelectedAccount,
+    String? lemmyDefaultHomeServer,
+  }) {
+    return GlobalState(
+      lemmyDefaultHomeServer:
+          lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
+      lemmyAccounts: lemmyAccounts ?? this.lemmyAccounts,
+      lemmySelectedAccount: lemmySelectedAccount ?? this.lemmySelectedAccount,
     );
   }
 }

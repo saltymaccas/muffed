@@ -7,7 +7,13 @@ part 'state.dart';
 part 'event.dart';
 
 class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
-  GlobalBloc() : super(GlobalState()) {}
+  GlobalBloc() : super(GlobalState()) {
+    on<AccountLoggedIn>((event, emit) {
+      emit(state.copyWith(
+          lemmyAccounts: [...state.lemmyAccounts, event.account],
+          lemmySelectedAccount: state.lemmyAccounts.length));
+    });
+  }
 
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);

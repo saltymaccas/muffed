@@ -1,22 +1,35 @@
 import 'dart:io';
 
+import '../global_state/bloc.dart';
 import 'lemmy/models.dart';
 import 'package:dio/dio.dart';
 
 interface class LemmyRepo {
   final Dio dio;
-  final String baseUrl;
+  final GlobalBloc globalBloc;
 
-  LemmyRepo({this.baseUrl = 'https://lemmy.ml'}) : dio = Dio();
+  LemmyRepo({required this.globalBloc})
+      : dio = Dio();
 
   Future<List<LemmyPost>> getPosts(
       {LemmySortType sortType = LemmySortType.hot,
       int page = 1,
       int? communityId}) async {
+    String? currentJwt = (globalBloc.state.lemmySelectedAccount != null)
+        ? globalBloc
+            .state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!].jwt
+        : null;
+
+    String baseUrl = (globalBloc.state.lemmySelectedAccount == null)
+        ? globalBloc.state.lemmyDefaultHomeServer
+        : globalBloc.state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!]
+            .homeServer;
+
     try {
       final response = await dio.get(
-        '$baseUrl/api/v3/post/list',
+        'https://$baseUrl/api/v3/post/list',
         queryParameters: {
+          if (currentJwt != null) 'auth': currentJwt,
           'page': page.toString(),
           'sort': lemmySortTypeEnumToApiCompatible[sortType],
           if (communityId != null) 'community_id': communityId.toString(),
@@ -68,10 +81,21 @@ interface class LemmyRepo {
 
   Future<List<LemmyComment>> getComments(int postId,
       {required int page}) async {
+    String? currentJwt = (globalBloc.state.lemmySelectedAccount != null)
+        ? globalBloc
+            .state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!].jwt
+        : null;
+
+    String baseUrl = (globalBloc.state.lemmySelectedAccount == null)
+        ? globalBloc.state.lemmyDefaultHomeServer
+        : globalBloc.state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!]
+        .homeServer;
+
     try {
       final response = await dio.get(
-        '$baseUrl/api/v3/comment/list',
+        'https://$baseUrl/api/v3/comment/list',
         queryParameters: {
+          if (currentJwt != null) 'auth': currentJwt,
           'post_id': postId.toString(),
           'page': page.toString(),
         },
@@ -184,10 +208,21 @@ interface class LemmyRepo {
     int? creatorId,
     LemmyListingType listingType = LemmyListingType.all,
   }) async {
+    String? currentJwt = (globalBloc.state.lemmySelectedAccount != null)
+        ? globalBloc
+            .state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!].jwt
+        : null;
+
+    String baseUrl = (globalBloc.state.lemmySelectedAccount == null)
+        ? globalBloc.state.lemmyDefaultHomeServer
+        : globalBloc.state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!]
+        .homeServer;
+
     try {
       final response = await dio.get(
-        '$baseUrl/api/v3/search',
+        'https://$baseUrl/api/v3/search',
         queryParameters: {
+          if (currentJwt != null) 'auth': currentJwt,
           'q': query,
           'type_': lemmySearchTypeToApiCompatible[searchType],
           'sort': lemmySortTypeEnumToApiCompatible[sortType],
@@ -314,10 +349,22 @@ interface class LemmyRepo {
   }
 
   Future<LemmyCommunity> communityFromId(int id) async {
+
+    String? currentJwt = (globalBloc.state.lemmySelectedAccount != null)
+        ? globalBloc.state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!]
+        .jwt
+        : null;
+
+    String baseUrl = (globalBloc.state.lemmySelectedAccount == null)
+        ? globalBloc.state.lemmyDefaultHomeServer
+        : globalBloc.state.lemmyAccounts[globalBloc.state.lemmySelectedAccount!]
+        .homeServer;
+
     try {
       final response = await dio.get(
-        '$baseUrl/api/v3/community',
+        'https://$baseUrl/api/v3/community',
         queryParameters: {
+          if (currentJwt != null) 'auth': currentJwt,
           'id': id.toString(),
         },
       );
@@ -368,13 +415,12 @@ interface class LemmyRepo {
 
   Future<LemmyLoginResponse> login(String password, String? totp,
       String usernameOrEmail, String serverAddr) async {
-    
     serverAddr = serverAddr.replaceAll('https://', '');
 
     try {
       final response = await dio.post(
         'https://$serverAddr/api/v3/user/login',
-        options: Options(headers: {'Content-type':'application/json'}),
+        options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'username_or_email': usernameOrEmail,
           'password': password,
