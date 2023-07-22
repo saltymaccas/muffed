@@ -7,7 +7,7 @@ interface class LemmyRepo {
   final Dio dio;
   final String baseUrl;
 
-  LemmyRepo({this.baseUrl = 'http://lemmy.ml'}) : dio = Dio();
+  LemmyRepo({this.baseUrl = 'https://lemmy.ml'}) : dio = Dio();
 
   Future<List<LemmyPost>> getPosts(
       {LemmySortType sortType = LemmySortType.hot,
