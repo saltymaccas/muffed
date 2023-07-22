@@ -11,49 +11,83 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => LoginPageBloc(context.read<ServerRepo>()),
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              context.pop();
+      child: BlocBuilder<LoginPageBloc, LoginPageState>(
+        builder: (context, state) {
+          return BlocListener<LoginPageBloc, LoginPageState>(
+            listener: (context, state) {
+              // TODO: implement listener
             },
-            icon: Icon(Icons.arrow_back),
-          ),
-        ),
-        body: Center(
-          child: SizedBox(
-            width: 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                TextField(
-                  decoration: InputDecoration(
-                      label: Text('Username or Email'), filled: true),
+            child: Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  icon: Icon(Icons.arrow_back),
                 ),
-                SizedBox(
-                  height: 16,
+              ),
+              body: Center(
+                child: SizedBox(
+                  width: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(
+                            label: Text('Username or Email'), filled: true),
+                        onChanged: (value) {
+                          context
+                              .read<LoginPageBloc>()
+                              .add(UserNameOrEmailChanged(value));
+                        },
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                            filled: true, label: Text('TOTP (Optional)')),
+                        onChanged: (value) {
+                          context.read<LoginPageBloc>().add(TotpChanged(value));
+                        },
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        decoration:
+                        InputDecoration(filled: true, label: Text('Password')),
+                        onChanged: (value) {
+                          context.read<LoginPageBloc>().add(
+                              PasswordChanged(value));
+                        },
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        decoration:
+                        InputDecoration(filled: true, label: Text(
+                            'Server Address')),
+                        onChanged: (value) {
+                          context.read<LoginPageBloc>().add(
+                              ServerAddrChanged(value));
+                        },
+                      ),
+                      TextButton(onPressed: () {
+                        context.read<LoginPageBloc>().add(Submitted());
+                      }, child: Text('Login'))
+                    ],
+                  ),
                 ),
-                TextField(
-                  decoration:
-                  InputDecoration(filled: true, label: Text('TOTP (Optional)')),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  decoration:
-                  InputDecoration(filled: true, label: Text('Password')),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextButton(onPressed: () {}, child: Text('Login'))
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
