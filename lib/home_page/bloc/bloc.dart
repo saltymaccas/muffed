@@ -19,12 +19,10 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       try {
         List posts = await repo.getPosts(page: 1);
         emit(HomePageState(status: HomePageStatus.success, posts: posts));
-      }catch (err){
-        emit(HomePageState(status: HomePageStatus.failure));
-        print('[HomePageBloc] ERR: $err');
+      } catch (err) {
+        emit(HomePageState(
+            status: HomePageStatus.failure, errorMessage: err.toString()));
       }
-
-
     });
     on<PullDownRefresh>((event, emit) async {
       emit(state.copyWith(isRefreshing: true));

@@ -26,8 +26,8 @@ class HomePage extends StatelessWidget {
           if (state.status == HomePageStatus.loading) {
             return const LoadingComponentTransparent();
           } else if (state.status == HomePageStatus.failure) {
-            return const ErrorComponentTransparent(
-              message: 'Load Failed',
+            return ErrorComponentTransparent(
+              message: state.errorMessage ?? 'Load Failed',
             );
           } else if (state.status == HomePageStatus.success) {
             return SetPageInfo(
