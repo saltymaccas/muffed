@@ -48,7 +48,9 @@ class ProfilePage extends StatelessWidget {
                               ListTile(
                                 title: Text('Add Account'),
                                 leading: Icon(Icons.add),
-                                onTap: () {context.go('/profile/login');},
+                                onTap: () {
+                                  context.pop();
+                                  context.go('/profile/login');},
 
                               ),
                             ],

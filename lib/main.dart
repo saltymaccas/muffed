@@ -91,7 +91,7 @@ final _router = GoRouter(
               },
               routes: [
                 GoRoute(path: 'login', builder: (context, state) {
-                  return LoginScreen();
+                  return LoginPage();
                 })
               ]
             )
