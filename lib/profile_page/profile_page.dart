@@ -9,6 +9,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final globalBloc = context.read<GlobalBloc>();
+
     return SetPageInfo(
         itemIndex: 2,
         actions: [],
@@ -22,8 +24,6 @@ class ProfilePage extends StatelessWidget {
               ),
               TextButton(
                   onPressed: () {
-                    final globalBloc = context.read<GlobalBloc>();
-
                     showModalBottomSheet(
                         useRootNavigator: true,
                         context: context,
@@ -33,7 +33,8 @@ class ProfilePage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              ...List.generate(globalBloc.state.lemmyAccounts.length,
+                              ...List.generate(
+                                  globalBloc.state.lemmyAccounts.length,
                                   (index) {
                                 return ListTile(
                                   title: Text(globalBloc
@@ -50,14 +51,15 @@ class ProfilePage extends StatelessWidget {
                                 leading: Icon(Icons.add),
                                 onTap: () {
                                   context.pop();
-                                  context.go('/profile/login');},
-
+                                  context.go('/profile/login');
+                                },
                               ),
                             ],
                           );
                         });
                   },
-                  child: Text('Anonymous'))
+                  child: Text(globalBloc.getSelectedLemmyAccount()?.userName ??
+                      'Anonymous'))
             ],
           ),
         ));
