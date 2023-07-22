@@ -25,7 +25,7 @@ final class GlobalState extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'accounts': List.generate(this.lemmyAccounts.length,
+      'lemmyAccounts': List.generate(this.lemmyAccounts.length,
           (index) => this.lemmyAccounts[index].toMap()),
       'lemmySelectedAccount': this.lemmySelectedAccount,
       'lemmyDefaultHomeServer': this.lemmyDefaultHomeServer,
