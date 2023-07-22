@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/error.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'bloc/bloc.dart';
 
@@ -56,11 +57,12 @@ class LoginPage extends StatelessWidget {
                         height: 16,
                       ),
                       TextField(
-                        decoration:
-                        InputDecoration(filled: true, label: Text('Password')),
+                        decoration: InputDecoration(
+                            filled: true, label: Text('Password')),
                         onChanged: (value) {
-                          context.read<LoginPageBloc>().add(
-                              PasswordChanged(value));
+                          context
+                              .read<LoginPageBloc>()
+                              .add(PasswordChanged(value));
                         },
                       ),
                       SizedBox(
@@ -70,17 +72,23 @@ class LoginPage extends StatelessWidget {
                         height: 16,
                       ),
                       TextField(
-                        decoration:
-                        InputDecoration(filled: true, label: Text(
-                            'Server Address')),
+                        decoration: InputDecoration(
+                            filled: true, label: Text('Server Address')),
                         onChanged: (value) {
-                          context.read<LoginPageBloc>().add(
-                              ServerAddrChanged(value));
+                          context
+                              .read<LoginPageBloc>()
+                              .add(ServerAddrChanged(value));
                         },
                       ),
-                      TextButton(onPressed: () {
-                        context.read<LoginPageBloc>().add(Submitted());
-                      }, child: Text('Login'))
+                      TextButton(
+                          onPressed: () {
+                            context.read<LoginPageBloc>().add(Submitted());
+                          },
+                          child: Text('Login')),
+                      if (state.errorMessage != null)
+                        ErrorComponentTransparent(
+                          message: state.errorMessage!,
+                        )
                     ],
                   ),
                 ),

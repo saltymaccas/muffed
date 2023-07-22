@@ -23,10 +23,19 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<Submitted>((event, emit) async {
       final totp = (state.totp == '') ? null : state.totp;
 
-      final result = await repo.lemmyRepo
-          .login(state.password, totp, state.usernameOrEmail, state.serverAddr);
+      try{
+        final result = await repo.lemmyRepo
+            .login(state.password, totp, state.usernameOrEmail, state.serverAddr);
 
-      print((result as LemmyLoginResponse).jwt);
+        print((result as LemmyLoginResponse).jwt);
+
+      }catch (err){
+        emit(state.copyWith(errorMessage: err.toString()));
+      }
+
+
+
+
     });
   }
 
