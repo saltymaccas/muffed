@@ -43,6 +43,7 @@ class ProfilePage extends StatelessWidget {
                                           .state.lemmyAccounts[index].userName),
                                       leading: Icon(Icons.account_circle),
                                       onTap: () {
+                                        context.pop();
                                         globalBloc.add(
                                             UserRequestsLemmyAccountSwitch(
                                                 index));
@@ -53,6 +54,7 @@ class ProfilePage extends StatelessWidget {
                                     title: Text('Anonymous'),
                                     leading: Icon(Icons.security),
                                     onTap: () {
+                                      context.pop();
                                       globalBloc.add(
                                           UserRequestsLemmyAccountSwitch(null));
                                     },
