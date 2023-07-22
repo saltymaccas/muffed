@@ -37,7 +37,7 @@ final class GlobalState extends Equatable {
         lemmyAccounts: List.generate((map['lemmyAccounts'] as List).length,
             (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index])),
         lemmySelectedAccount: map['lemmySelectedAccount'] as int?,
-        lemmyDefaultHomeServer: map['lemmyDefaultHome']);
+        lemmyDefaultHomeServer: map['lemmyDefaultHomeServer']);
   }
 
   GlobalState copyWith({
