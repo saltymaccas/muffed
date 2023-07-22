@@ -368,10 +368,12 @@ interface class LemmyRepo {
 
   Future<LemmyLoginResponse> login(String password, String? totp,
       String usernameOrEmail, String serverAddr) async {
+    
+    serverAddr = serverAddr.replaceAll('https://', '');
 
     try {
       final response = await dio.post(
-        'https://sh.itjust.works/api/v3/user/login',
+        'https://$serverAddr/api/v3/user/login',
         options: Options(headers: {'Content-type':'application/json'}),
         data: {
           'username_or_email': usernameOrEmail,
