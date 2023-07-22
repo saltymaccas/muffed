@@ -54,7 +54,7 @@ final class GlobalState extends Equatable {
   }
 }
 
-final class LemmyAccountData {
+final class LemmyAccountData extends Equatable {
   final String jwt;
   final String homeServer;
   final String userName;
@@ -77,4 +77,11 @@ final class LemmyAccountData {
       userName: map['userName'] as String,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        jwt,
+        homeServer,
+        userName,
+      ];
 }
