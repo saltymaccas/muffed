@@ -37,6 +37,8 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
             userName: state.usernameOrEmail,
           ),
         ));
+        
+        event.onLoginAccepted();
       } catch (err) {
         emit(state.copyWith(errorMessage: err.toString()));
       }
