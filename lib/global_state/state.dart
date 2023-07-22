@@ -3,9 +3,11 @@ part of 'bloc.dart';
 final class GlobalState extends Equatable {
   final List<LemmyAccountData> lemmyAccounts;
 
-  // null means anonymous/no account
+  /// the index of the selected account on lemmyAccounts
+  /// null mean anonymous/no account
   final int? lemmySelectedAccount;
 
+  /// the home server used if no account selected
   final String lemmyDefaultHomeServer;
 
   GlobalState({
