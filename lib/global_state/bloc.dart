@@ -15,7 +15,11 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
   }
 
-
+  LemmyAccountData? getSelectedLemmyAccount() {
+    return (state.lemmySelectedAccount == null)
+        ? null
+        : state.lemmyAccounts[state.lemmySelectedAccount!];
+  }
 
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
