@@ -369,17 +369,14 @@ interface class LemmyRepo {
   Future<LemmyLoginResponse> login(String password, String? totp,
       String usernameOrEmail, String serverAddr) async {
 
-    print('username: $usernameOrEmail');
-    print('password: $password');
-
     try {
       final response = await dio.post(
         'https://sh.itjust.works/api/v3/user/login',
         options: Options(headers: {'Content-type':'application/json'}),
         data: {
+          'username_or_email': usernameOrEmail,
           'password': password,
           if (totp != null) 'totp_2fa_token': totp,
-          'username_or_email': usernameOrEmail,
         },
       );
 
