@@ -43,7 +43,7 @@ class ProfilePage extends StatelessWidget {
                               }),
                               ListTile(
                                 title: Text('Anonymous'),
-                                leading: Icon(Icons.private_connectivity),
+                                leading: Icon(Icons.security),
                               ),
                               ListTile(
                                 title: Text('Add Account'),
