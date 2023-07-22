@@ -13,6 +13,9 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
           lemmyAccounts: [...state.lemmyAccounts, event.account],
           lemmySelectedAccount: state.lemmyAccounts.length));
     });
+    on<UserRequestsLemmyAccountSwitch>((event, emit) {
+      emit(state.copyWith(lemmySelectedAccount: event.accountIndex));
+    });
   }
 
   LemmyAccountData? getSelectedLemmyAccount() {

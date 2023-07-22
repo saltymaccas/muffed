@@ -7,3 +7,9 @@ class AccountLoggedIn extends GlobalEvent {
 
   AccountLoggedIn(this.account);
 }
+
+class UserRequestsLemmyAccountSwitch extends GlobalEvent {
+  final int? accountIndex;
+
+  UserRequestsLemmyAccountSwitch(this.accountIndex);
+}
