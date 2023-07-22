@@ -14,54 +14,61 @@ class ProfilePage extends StatelessWidget {
     return SetPageInfo(
         itemIndex: 2,
         actions: [],
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.account_circle,
-                size: 100,
+        child: BlocBuilder<GlobalBloc, GlobalState>(
+          builder: (context, state) {
+            return SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.account_circle,
+                    size: 100,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                            useRootNavigator: true,
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ...List.generate(
+                                      globalBloc.state.lemmyAccounts.length,
+                                          (index) {
+                                        return ListTile(
+                                          title: Text(globalBloc
+                                              .state.lemmyAccounts[index]
+                                              .userName),
+                                          leading: Icon(Icons.account_circle),
+                                        );
+                                      }),
+                                  ListTile(
+                                    title: Text('Anonymous'),
+                                    leading: Icon(Icons.security),
+                                  ),
+                                  ListTile(
+                                    title: Text('Add Account'),
+                                    leading: Icon(Icons.add),
+                                    onTap: () {
+                                      context.pop();
+                                      context.go('/profile/login');
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text(globalBloc
+                          .getSelectedLemmyAccount()
+                          ?.userName ??
+                          'Anonymous'))
+                ],
               ),
-              TextButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                        useRootNavigator: true,
-                        context: context,
-                        builder: (context) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ...List.generate(
-                                  globalBloc.state.lemmyAccounts.length,
-                                  (index) {
-                                return ListTile(
-                                  title: Text(globalBloc
-                                      .state.lemmyAccounts[index].userName),
-                                  leading: Icon(Icons.account_circle),
-                                );
-                              }),
-                              ListTile(
-                                title: Text('Anonymous'),
-                                leading: Icon(Icons.security),
-                              ),
-                              ListTile(
-                                title: Text('Add Account'),
-                                leading: Icon(Icons.add),
-                                onTap: () {
-                                  context.pop();
-                                  context.go('/profile/login');
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                  child: Text(globalBloc.getSelectedLemmyAccount()?.userName ??
-                      'Anonymous'))
-            ],
-          ),
+            );
+          },
         ));
   }
 }
