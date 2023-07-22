@@ -37,17 +37,25 @@ class ProfilePage extends StatelessWidget {
                                 children: [
                                   ...List.generate(
                                       globalBloc.state.lemmyAccounts.length,
-                                          (index) {
-                                        return ListTile(
-                                          title: Text(globalBloc
-                                              .state.lemmyAccounts[index]
-                                              .userName),
-                                          leading: Icon(Icons.account_circle),
-                                        );
-                                      }),
+                                      (index) {
+                                    return ListTile(
+                                      title: Text(globalBloc
+                                          .state.lemmyAccounts[index].userName),
+                                      leading: Icon(Icons.account_circle),
+                                      onTap: () {
+                                        globalBloc.add(
+                                            UserRequestsLemmyAccountSwitch(
+                                                index));
+                                      },
+                                    );
+                                  }),
                                   ListTile(
                                     title: Text('Anonymous'),
                                     leading: Icon(Icons.security),
+                                    onTap: () {
+                                      globalBloc.add(
+                                          UserRequestsLemmyAccountSwitch(null));
+                                    },
                                   ),
                                   ListTile(
                                     title: Text('Add Account'),
@@ -61,10 +69,9 @@ class ProfilePage extends StatelessWidget {
                               );
                             });
                       },
-                      child: Text(globalBloc
-                          .getSelectedLemmyAccount()
-                          ?.userName ??
-                          'Anonymous'))
+                      child: Text(
+                          globalBloc.getSelectedLemmyAccount()?.userName ??
+                              'Anonymous'))
                 ],
               ),
             );
