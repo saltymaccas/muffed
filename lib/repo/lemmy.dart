@@ -266,8 +266,10 @@ interface class LemmyRepo {
             url: post['post']['url'],
             id: post['post']['id'],
             name: post['post']['name'],
-            timePublished: DateTime.parse(post['post']['published'] + 'Z'),
             // Z added to mark as UTC time
+            timePublished: DateTime.parse(post['post']['published'] + 'Z'),
+            myVote: post['my_vote'],
+            thumbnailUrl: post['post']['thumbnail_url'],
             nsfw: post['post']['nsfw'],
             creatorId: post['post']['creator_id'],
             creatorName: post['creator']['name'],
