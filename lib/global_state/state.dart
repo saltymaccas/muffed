@@ -46,13 +46,8 @@ final class GlobalState extends Equatable {
     /// set to required to make sure the value does not accidentally get set
     /// to null
     required int? lemmySelectedAccount,
-
-
     String? lemmyDefaultHomeServer,
   }) {
-
-
-
     return GlobalState(
       lemmyDefaultHomeServer:
           lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
