@@ -3,3 +3,7 @@ include: package:very_good_analysis/analysis_options.yaml
 analyzer:
   language:
     strict-casts: false
+
+linter:
+  rules:
+    omit_local_variable_types: false
