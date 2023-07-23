@@ -24,6 +24,12 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
         : state.lemmyAccounts[state.lemmySelectedAccount!];
   }
 
+  String getLemmyBaseUrl() {
+    return (state.lemmySelectedAccount == null)
+        ? state.lemmyDefaultHomeServer
+        : state.lemmyAccounts[state.lemmySelectedAccount!].homeServer;
+  }
+
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
 
