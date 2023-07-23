@@ -218,15 +218,51 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             ? Colors.deepOrange
                             : null,
                         onPressed: () async {
-                          try {
-                            await context.read<ServerRepo>().lemmyRepo.votePost(
-                              widget.post.id,
-                              LemmyVoteType.upVote,
-                            );
+
+                          // saves what the last vote is in order to reverse
+                          // the vote in the state if an error occurs
+                          final lastVote = voteType;
+
+
+                          if (voteType == LemmyVoteType.upVote) {
+                            setState(() {
+                              voteType = LemmyVoteType.none;
+                            });
+                            try {
+                              // tries to change the vote
+                              await context
+                                  .read<ServerRepo>()
+                                  .lemmyRepo
+                                  .votePost(
+                                    widget.post.id,
+                                    LemmyVoteType.none,
+                                  );
+                            } catch (err) {
+                              // reverts the vote state if an error occurs
+                              setState(() {
+                                voteType = lastVote;
+                              });
+                            }
+                          } else {
                             setState(() {
                               voteType = LemmyVoteType.upVote;
                             });
-                          } catch (err) {}
+                            try {
+                              // tries to change the vote
+                              await context
+                                  .read<ServerRepo>()
+                                  .lemmyRepo
+                                  .votePost(
+                                    widget.post.id,
+                                    LemmyVoteType.upVote,
+                                  );
+                            } catch (err) {
+                              // reverts the vote state if an error occurs
+                              setState(() {
+                                voteType = lastVote;
+                              });
+                            }
+                          }
                         },
                         visualDensity: VisualDensity.compact,
                       ),
