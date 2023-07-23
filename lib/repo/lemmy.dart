@@ -423,7 +423,7 @@ interface class LemmyRepo {
     }
   }
 
-  Future<void> votePost(int postId, int score,) async {
+  Future<void> votePost(int postId, LemmyVoteType vote,) async {
     if(globalBloc.state.lemmySelectedAccount == null){
       throw 'Not logged in';
     }
@@ -435,7 +435,7 @@ interface class LemmyRepo {
         data: {
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           'post_id': postId,
-          'score': score,
+          'score': lemmyVoteTypeToApiCompatible[vote],
         },
       );
 
