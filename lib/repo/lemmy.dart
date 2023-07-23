@@ -1,21 +1,24 @@
 import 'dart:io';
 
-import '../global_state/bloc.dart';
-import 'lemmy/models.dart';
 import 'package:dio/dio.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/repo/lemmy/models.dart';
 
+/// Used to interact with the lemmy api
 interface class LemmyRepo {
+  /// The dio client that will be used to send requests
   final Dio dio;
   final GlobalBloc globalBloc;
 
   LemmyRepo({required this.globalBloc}) : dio = Dio();
 
-  Future<List<LemmyPost>> getPosts(
-      {LemmySortType sortType = LemmySortType.hot,
-      int page = 1,
-      int? communityId}) async {
+  Future<List<LemmyPost>> getPosts({
+    LemmySortType sortType = LemmySortType.hot,
+    int page = 1,
+    int? communityId,
+  }) async {
     try {
-      final response = await dio.get(
+      final Response<dynamic> response = await dio.get(
         'https://${globalBloc.getLemmyBaseUrl()}/api/v3/post/list',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
@@ -30,29 +33,30 @@ interface class LemmyRepo {
         throw HttpException('${response.statusCode}');
       }
 
-      var postsMap = response.data['posts'];
+      final List<dynamic> postsMap = response.data['posts'];
 
-      List<LemmyPost> posts = [];
+      final List<LemmyPost> posts = [];
 
       for (Map<String, dynamic> post in postsMap) {
         posts.add(
           LemmyPost(
-            body: post['post']['body'],
-            url: post['post']['url'],
-            id: post['post']['id'],
-            name: post['post']['name'],
-            timePublished: DateTime.parse(post['post']['published'] + 'Z'),
+            body: (post['post'] as Map)['body'],
+            url: (post['post'] as Map)['url'],
+            id: (post['post'] as Map)['id'],
+            name: (post['post'] as Map)['name'],
+            timePublished:
+                DateTime.parse('${(post['post'] as Map)['published']}Z'),
             // Z added to mark as UTC time
-            nsfw: post['post']['nsfw'],
-            creatorId: post['post']['creator_id'],
-            creatorName: post['creator']['name'],
-            communityId: post['post']['community_id'],
-            communityName: post['community']['name'],
-            communityIcon: post['community']['icon'],
-            commentCount: post['counts']['comments'],
-            upVotes: post['counts']['upvotes'],
-            downVotes: post['counts']['downvotes'],
-            score: post['counts']['score'],
+            nsfw: (post['post'] as Map)['nsfw'],
+            creatorId: (post['post'] as Map)['creator_id'],
+            creatorName: (post['creator'] as Map)['name'],
+            communityId: (post['post'] as Map)['community_id'],
+            communityName: (post['community'] as Map)['name'],
+            communityIcon: (post['community'] as Map)['icon'],
+            commentCount: (post['counts'] as Map)['comments'],
+            upVotes: (post['counts'] as Map)['upvotes'],
+            downVotes: (post['counts'] as Map)['downvotes'],
+            score: (post['counts'] as Map)['score'],
             read: post['read'],
             saved: post['saved'],
           ),
@@ -69,10 +73,15 @@ interface class LemmyRepo {
     }
   }
 
-  Future<List<LemmyComment>> getComments(int postId,
-      {required int page}) async {
+  /// Gets comments from lemmy api
+  ///
+  ///
+  Future<List<LemmyComment>> getComments(
+    int postId, {
+    required int page,
+  }) async {
     try {
-      final response = await dio.get(
+      final Response<dynamic> response = await dio.get(
         'https://${globalBloc.getLemmyBaseUrl()}/api/v3/comment/list',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
