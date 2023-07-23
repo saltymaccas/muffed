@@ -109,6 +109,7 @@ class LemmyPost extends Equatable {
   final int upVotes;
   final int downVotes;
   final int score;
+  final int? myVote;
 
   final bool read;
   final bool saved;
@@ -129,6 +130,7 @@ class LemmyPost extends Equatable {
     required this.commentCount,
     required this.upVotes,
     required this.downVotes,
+    this.myVote,
     required this.score,
     required this.read,
     required this.saved,
