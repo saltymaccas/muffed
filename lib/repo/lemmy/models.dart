@@ -87,12 +87,12 @@ Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
   LemmyListingType.local: 'local',
 };
 
-enum VoteType {upVote, downVote, none}
+enum LemmyVoteType {upVote, downVote, none}
 
-Map<VoteType, int> voteTypeToApiCompatible = {
-  VoteType.upVote: 1,
-  VoteType.none: 0,
-  VoteType.downVote: -1,
+Map<LemmyVoteType, int> lemmyVoteTypeToApiCompatible = {
+  LemmyVoteType.upVote: 1,
+  LemmyVoteType.none: 0,
+  LemmyVoteType.downVote: -1,
 };
 
 class LemmyPost extends Equatable {
