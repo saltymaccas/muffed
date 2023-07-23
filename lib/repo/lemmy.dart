@@ -38,6 +38,9 @@ interface class LemmyRepo {
       final List<LemmyPost> posts = [];
 
       for (Map<String, dynamic> post in postsMap) {
+
+        print(post['my_vote']);
+
         posts.add(
           LemmyPost(
             body: (post['post'] as Map)['body'],
@@ -419,4 +422,34 @@ interface class LemmyRepo {
       return Future.error('Bad response format');
     }
   }
+
+  Future<void> votePost(int postId, int score,) async {
+    if(globalBloc.state.lemmySelectedAccount == null){
+      throw 'Not logged in';
+    }
+
+    try {
+      final response = await dio.post(
+        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/post/like',
+        options: Options(headers: {'Content-type': 'application/json'}),
+        data: {
+          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          'post_id': postId,
+          'score': score,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+
+    }on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+  }
+
 }
