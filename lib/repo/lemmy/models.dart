@@ -89,6 +89,12 @@ Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
 
 enum VoteType {upVote, downVote, none}
 
+Map<VoteType, int> voteTypeToApiCompatible = {
+  VoteType.upVote: 1,
+  VoteType.none: 0,
+  VoteType.downVote: -1,
+};
+
 class LemmyPost extends Equatable {
   final int id;
   final String name;
