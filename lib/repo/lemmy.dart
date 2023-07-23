@@ -38,9 +38,6 @@ interface class LemmyRepo {
       final List<LemmyPost> posts = [];
 
       for (Map<String, dynamic> post in postsMap) {
-
-        print(post['my_vote']);
-
         posts.add(
           LemmyPost(
             body: (post['post'] as Map)['body'],
