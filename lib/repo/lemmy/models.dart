@@ -95,6 +95,12 @@ Map<LemmyVoteType, int> lemmyVoteTypeToApiCompatible = {
   LemmyVoteType.downVote: -1,
 };
 
+Map<int, LemmyVoteType> intToLemmyVoteType = {
+  1: LemmyVoteType.upVote,
+  0: LemmyVoteType.none,
+  -1: LemmyVoteType.downVote
+};
+
 class LemmyPost extends Equatable {
   final int id;
   final String name;
@@ -117,7 +123,7 @@ class LemmyPost extends Equatable {
   final int upVotes;
   final int downVotes;
   final int score;
-  final int? myVote;
+  final LemmyVoteType? myVote;
 
   final bool read;
   final bool saved;
