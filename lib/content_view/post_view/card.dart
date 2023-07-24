@@ -229,7 +229,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 
                           if (post.myVote == LemmyVoteType.upVote) {
                             setState(() {
-                              post.myVote = LemmyVoteType.none;
+                              post
+                                ..upVotes = post.upVotes - 1
+                                ..myVote = LemmyVoteType.none;
                             });
                             try {
                               // tries to change the vote
@@ -243,12 +245,23 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
-                                post.myVote = lastVote;
+                                post
+                                  ..upVotes = post.upVotes + 1
+                                  ..myVote = lastVote;
                               });
                             }
                           } else {
+                            // If last vote was downVote a downVote should
+                            // be taken off.
+                            if (post.myVote == LemmyVoteType.downVote) {
+                              setState(() {
+                                post.downVotes = post.downVotes - 1;
+                              });
+                            }
                             setState(() {
-                              post.myVote = LemmyVoteType.upVote;
+                              post
+                                ..upVotes = post.upVotes + 1
+                                ..myVote = LemmyVoteType.upVote;
                             });
                             try {
                               // tries to change the vote
@@ -262,7 +275,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
-                                post.myVote = lastVote;
+                                post
+                                  ..upVotes = post.upVotes - 1
+                                  ..myVote = lastVote;
                               });
                             }
                           }
@@ -282,7 +297,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 
                           if (post.myVote == LemmyVoteType.downVote) {
                             setState(() {
-                              post.myVote = LemmyVoteType.none;
+                              post
+                                ..downVotes = post.downVotes - 1
+                                ..myVote = LemmyVoteType.none;
                             });
                             try {
                               // tries to change the vote
@@ -296,12 +313,23 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
-                                post.myVote = lastVote;
+                                post
+                                  ..downVotes = post.downVotes + 1
+                                  ..myVote = lastVote;
                               });
                             }
                           } else {
+                            // If last vote was upVote a upVote should
+                            // be taken off.
+                            if (post.myVote == LemmyVoteType.upVote) {
+                              setState(() {
+                                post.upVotes = post.upVotes - 1;
+                              });
+                            }
                             setState(() {
-                              post.myVote = LemmyVoteType.downVote;
+                              post
+                                ..downVotes = post.downVotes + 1
+                                ..myVote = LemmyVoteType.downVote;
                             });
                             try {
                               // tries to change the vote
@@ -315,7 +343,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
-                                post.myVote = lastVote;
+                                post
+                                  ..downVotes = post.downVotes - 1
+                                  ..myVote = lastVote;
                               });
                             }
                           }
