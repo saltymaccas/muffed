@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/content_screen/content_screen.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'bloc/bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'bloc/bloc.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({required this.communityId, this.community, super.key});
@@ -64,7 +65,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   if (state.communityInfo != null) {
                                     return Dialog(
                                       child: Markdown(
-                                        shrinkWrap: true,
+                                          shrinkWrap: true,
                                           data: state
                                                   .communityInfo!.description ??
                                               'no description',
