@@ -1,10 +1,11 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/utils.dart';
+import 'package:muffed/utils/time.dart';
 import 'post_more_actions_sheet.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,8 +59,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      context.push(
-                          '/home/community?id=${post.communityId}');
+                      context.push('/home/community?id=${post.communityId}');
                     },
                     child: Row(
                       children: [
@@ -70,8 +70,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(45),
                                 child: (post.communityIcon != null)
-                                    ? Image.network(post.communityIcon! +
-                                        '?thumbnail=50')
+                                    ? Image.network(
+                                        post.communityIcon! + '?thumbnail=50')
                                     : SvgPicture.asset('assets/logo.svg'),
                               ),
                             ),
@@ -93,8 +93,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         ),
                         const VerticalDivider(),
                         Text(
-                          formattedPostedAgo(post.timePublished) +
-                              ' ago',
+                          formattedPostedAgo(post.timePublished) + ' ago',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.outline),
                         ),
@@ -121,11 +120,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             post.url!.contains('.webp') ||
                             post.url!.contains('.bmp')) {
                           return SizedBox(
-                              height: 300,
-                              child: Center(
-                                child: Image.network(post.url!,
-                                    fit: BoxFit.fitWidth),
-                              ));
+                            child: Center(
+                              child: _ImageViewer(imageUrl: post.url!)
+                          ));
                         } else {
                           return Padding(
                             padding: EdgeInsets.all(4),
@@ -136,8 +133,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                 errorBody: 'Could not load body',
                                 errorTitle: post.name,
                                 errorWidget: GestureDetector(
-                                  onTap: () =>
-                                      launchUrl(Uri.parse(post.url!)),
+                                  onTap: () => launchUrl(Uri.parse(post.url!)),
                                   child: Container(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -364,10 +360,31 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ImageViewer extends StatefulWidget {
+  const _ImageViewer({required this.imageUrl, super.key});
+
+  final String imageUrl;
+
+  @override
+  State<_ImageViewer> createState() => _ImageViewerState();
+}
+
+class _ImageViewerState extends State<_ImageViewer> {
+  double height = 300;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      child: CachedNetworkImage(imageUrl: widget.imageUrl, ),
     );
   }
 }

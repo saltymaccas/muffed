@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/utils/utils.dart';
+import 'package:muffed/utils/time.dart';
 
 import '../../repo/server_repo.dart';
 
