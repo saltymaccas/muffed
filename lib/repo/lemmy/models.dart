@@ -120,15 +120,17 @@ class LemmyPost extends Equatable {
   final String? communityIcon;
 
   final int commentCount;
-  final int upVotes;
-  final int downVotes;
-  final int score;
-  final LemmyVoteType myVote;
+
+  // not set to final because the user can change these
+  int upVotes;
+  int downVotes;
+  int score;
+  LemmyVoteType myVote;
 
   final bool read;
   final bool saved;
 
-  const LemmyPost({
+  LemmyPost({
     this.body,
     this.url,
     this.thumbnailUrl,
