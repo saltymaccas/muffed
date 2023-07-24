@@ -44,7 +44,7 @@ interface class LemmyRepo {
             url: (post['post'] as Map)['url'],
             id: (post['post'] as Map)['id'],
             name: (post['post'] as Map)['name'],
-            myVote: intToLemmyVoteType[post['my_vote']],
+            myVote: intToLemmyVoteType[post['my_vote']] ?? LemmyVoteType.none,
             thumbnailUrl: (post['post'] as Map)['thumbnail_url'],
             // Z added to mark as UTC time
             timePublished:
@@ -268,7 +268,7 @@ interface class LemmyRepo {
             name: post['post']['name'],
             // Z added to mark as UTC time
             timePublished: DateTime.parse(post['post']['published'] + 'Z'),
-            myVote: intToLemmyVoteType[post['my_vote']],
+            myVote: intToLemmyVoteType[post['my_vote']] ?? LemmyVoteType.none,
             thumbnailUrl: post['post']['thumbnail_url'],
             nsfw: post['post']['nsfw'],
             creatorId: post['post']['creator_id'],
