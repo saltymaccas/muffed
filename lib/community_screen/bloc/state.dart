@@ -1,17 +1,19 @@
 part of 'bloc.dart';
 
+enum CommunityStatus { initial, loading, success, failure }
+
 final class CommunityScreenState extends Equatable {
   final LemmyCommunity? communityInfo;
   final List<LemmyPost> posts;
   final int pagesLoaded;
   final int communityId;
-  final ScreenStatus postsStatus;
-  final ScreenStatus communityInfoStatus;
+  final CommunityStatus postsStatus;
+  final CommunityStatus communityInfoStatus;
   final bool loadingMorePosts;
 
   CommunityScreenState(
-      {this.loadingMorePosts = false,this.postsStatus = ScreenStatus.initial,
-      this.communityInfoStatus = ScreenStatus.initial,
+      {this.loadingMorePosts = false,this.postsStatus = CommunityStatus.initial,
+      this.communityInfoStatus = CommunityStatus.initial,
       this.posts = const [],
       this.pagesLoaded = 0,
       this.communityInfo,
@@ -30,8 +32,8 @@ final class CommunityScreenState extends Equatable {
 
   CommunityScreenState copyWith({
     bool? loadingMorePosts,
-    ScreenStatus? postsStatus,
-    ScreenStatus? communityInfoStatus,
+    CommunityStatus? postsStatus,
+    CommunityStatus? communityInfoStatus,
     LemmyCommunity? community,
     List<LemmyPost>? posts,
     int? pagesLoaded,

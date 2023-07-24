@@ -5,7 +5,6 @@ import 'package:muffed/content_screen/content_screen.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import '../enums.dart';
 import 'bloc/bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -105,12 +104,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
               absorbing: menuOpen,
               child: ContentView(
                 headerDelegate:
-                    (state.communityInfoStatus == ScreenStatus.success)
+                    (state.communityInfoStatus == CommunityStatus.success)
                         ? _TopBarDelegate(community: state.communityInfo!)
                         : null,
                 floatingHeader: true,
                 pinnedHeader: false,
-                isContentLoading: state.postsStatus == ScreenStatus.loading,
+                isContentLoading: state.postsStatus == CommunityStatus.loading,
                 onPressedPost: (post) {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {

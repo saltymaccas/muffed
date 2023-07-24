@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import '../../enums.dart';
-
 part 'event.dart';
 
 part 'state.dart';
@@ -19,31 +17,31 @@ class CommunityScreenBloc
       // get community info
 
       if (state.communityInfo == null) {
-        emit(state.copyWith(communityInfoStatus: ScreenStatus.loading));
+        emit(state.copyWith(communityInfoStatus: CommunityStatus.loading));
 
         try {
           final community = await repo.lemmyRepo.communityFromId(communityId);
 
           emit(state.copyWith(
-              community: community, communityInfoStatus: ScreenStatus.success));
+              community: community, communityInfoStatus: CommunityStatus.success));
         } catch (err) {
-          emit(state.copyWith(communityInfoStatus: ScreenStatus.failure));
+          emit(state.copyWith(communityInfoStatus: CommunityStatus.failure));
         }
       } else {
-        emit(state.copyWith(communityInfoStatus: ScreenStatus.success));
+        emit(state.copyWith(communityInfoStatus: CommunityStatus.success));
       }
 
       // get posts
 
-      emit(state.copyWith(postsStatus: ScreenStatus.loading));
+      emit(state.copyWith(postsStatus: CommunityStatus.loading));
 
       try {
         final posts = await repo.lemmyRepo.getPosts(
             communityId: state.communityId, page: state.pagesLoaded + 1);
 
-        emit(state.copyWith(posts: posts, postsStatus: ScreenStatus.success));
+        emit(state.copyWith(posts: posts, postsStatus: CommunityStatus.success));
       } catch (err) {
-        emit(state.copyWith(postsStatus: ScreenStatus.failure));
+        emit(state.copyWith(postsStatus: CommunityStatus.failure));
       }
     });
 
