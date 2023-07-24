@@ -29,7 +29,6 @@ class CardLemmyPostItem extends StatefulWidget {
 }
 
 class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
-
   /// The post variable is created in state so that it can be changed by
   /// functions like upVote and downVote.
   late LemmyPost post;
@@ -113,58 +112,61 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
               return Column(
                 children: [
                   if (widget.post.url != null) ...[
-                    Builder(builder: (context) {
-                      if (widget.post.url!.contains('.jpg') ||
-                          widget.post.url!.contains('.png') ||
-                          widget.post.url!.contains('.jpeg') ||
-                          widget.post.url!.contains('.gif') ||
-                          widget.post.url!.contains('.webp') ||
-                          widget.post.url!.contains('.bmp')) {
-                        return SizedBox(
-                            height: 300,
-                            child: Center(
-                              child: Image.network(widget.post.url!,
-                                  fit: BoxFit.fitWidth),
-                            ));
-                      } else {
-                        return Padding(
-                          padding: EdgeInsets.all(4),
-                          child: SizedBox(
-                            height: 100,
-                            child: AnyLinkPreview(
-                              errorImage: 'null',
-                              errorBody: 'Could not load body',
-                              errorTitle: widget.post.name,
-                              errorWidget: GestureDetector(
-                                onTap: () =>
-                                    launchUrl(Uri.parse(widget.post.url!)),
-                                child: Container(
-                                  color:
-                                      Theme.of(context).colorScheme.background,
-                                  padding: EdgeInsets.all(4),
-                                  child: Text(
-                                    widget.post.url!,
-                                    style: const TextStyle(
-                                        decoration: TextDecoration.underline),
+                    Builder(
+                      builder: (context) {
+                        if (widget.post.url!.contains('.jpg') ||
+                            widget.post.url!.contains('.png') ||
+                            widget.post.url!.contains('.jpeg') ||
+                            widget.post.url!.contains('.gif') ||
+                            widget.post.url!.contains('.webp') ||
+                            widget.post.url!.contains('.bmp')) {
+                          return SizedBox(
+                              height: 300,
+                              child: Center(
+                                child: Image.network(widget.post.url!,
+                                    fit: BoxFit.fitWidth),
+                              ));
+                        } else {
+                          return Padding(
+                            padding: EdgeInsets.all(4),
+                            child: SizedBox(
+                              height: 100,
+                              child: AnyLinkPreview(
+                                errorImage: 'null',
+                                errorBody: 'Could not load body',
+                                errorTitle: widget.post.name,
+                                errorWidget: GestureDetector(
+                                  onTap: () =>
+                                      launchUrl(Uri.parse(widget.post.url!)),
+                                  child: Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    padding: EdgeInsets.all(4),
+                                    child: Text(
+                                      widget.post.url!,
+                                      style: const TextStyle(
+                                          decoration: TextDecoration.underline),
+                                    ),
                                   ),
                                 ),
+                                bodyTextOverflow: TextOverflow.fade,
+                                removeElevation: true,
+                                borderRadius: 10,
+                                boxShadow: [],
+                                link: widget.post.url!,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.background,
+                                displayDirection:
+                                    UIDirection.uiDirectionHorizontal,
+                                titleStyle:
+                                    Theme.of(context).textTheme.titleSmall,
                               ),
-                              bodyTextOverflow: TextOverflow.fade,
-                              removeElevation: true,
-                              borderRadius: 10,
-                              boxShadow: [],
-                              link: widget.post.url!,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.background,
-                              displayDirection:
-                                  UIDirection.uiDirectionHorizontal,
-                              titleStyle:
-                                  Theme.of(context).textTheme.titleSmall,
                             ),
-                          ),
-                        );
-                      }
-                    })
+                          );
+                        }
+                      },
+                    )
                   ],
                   if (widget.post.body != '' && widget.post.body != null) ...[
                     Padding(
