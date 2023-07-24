@@ -50,6 +50,7 @@ dependencies:
   flutter_animate: ^4.2.0
   flutter_markdown: ^0.6.17
   path_provider: ^2.0.15
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:
