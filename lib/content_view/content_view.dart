@@ -34,7 +34,7 @@ class ContentView extends StatelessWidget {
         return true;
       },
       child: CustomScrollView(
-        cacheExtent: 99999999,
+        cacheExtent: 999,
         slivers: [
           if (headerDelegate != null)
             SliverPersistentHeader(

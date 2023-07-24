@@ -16,6 +16,7 @@ interface class LemmyRepo {
     LemmySortType sortType = LemmySortType.hot,
     int page = 1,
     int? communityId,
+    LemmyListingType listingType = LemmyListingType.all,
   }) async {
     try {
       final Response<dynamic> response = await dio.get(
@@ -26,6 +27,7 @@ interface class LemmyRepo {
           'page': page.toString(),
           'sort': lemmySortTypeEnumToApiCompatible[sortType],
           if (communityId != null) 'community_id': communityId.toString(),
+          'type_':lemmyListingTypeToApiCompatible[listingType],
         },
       );
 

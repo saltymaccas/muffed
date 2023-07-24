@@ -2,10 +2,12 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
+import '../../utils/measure_size.dart';
 import 'post_more_actions_sheet.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -121,8 +123,12 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             post.url!.contains('.bmp')) {
                           return SizedBox(
                             child: Center(
-                              child: _ImageViewer(imageUrl: post.url!)
-                          ));
+                              child: _ImageViewer(
+                                imageUrl: post.url!,
+                                shouldBlur: post.nsfw,
+                              ),
+                            ),
+                          );
                         } else {
                           return Padding(
                             padding: EdgeInsets.all(4),
@@ -369,22 +375,61 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 }
 
 class _ImageViewer extends StatefulWidget {
-  const _ImageViewer({required this.imageUrl, super.key});
+  const _ImageViewer(
+      {required this.imageUrl, required this.shouldBlur, super.key});
 
   final String imageUrl;
+  final bool shouldBlur;
 
   @override
   State<_ImageViewer> createState() => _ImageViewerState();
 }
 
 class _ImageViewerState extends State<_ImageViewer> {
-  double height = 300;
+  double? height;
+  late bool shouldBlur;
+
+  @override
+  void initState() {
+    shouldBlur = widget.shouldBlur;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: CachedNetworkImage(imageUrl: widget.imageUrl, ),
+    return GestureDetector(
+      onTap: shouldBlur ? () {
+        setState(() {
+          shouldBlur = false;
+        });
+      } : null,
+      child: SizedBox(
+        height: height,
+        child: CachedNetworkImage(
+          imageUrl: widget.imageUrl,
+          imageBuilder: (context, imageProvider) {
+            return MeasureSize(
+              onChange: (size) {
+                setState(() {
+                  height = size.height;
+                });
+              },
+              child: ClipRect(
+                child: ImageFiltered(
+                  enabled: shouldBlur,
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: 10,
+                    sigmaY: 10,
+                  ),
+                  child: Image(
+                    image: imageProvider,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
