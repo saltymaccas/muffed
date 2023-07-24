@@ -45,7 +45,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
       child: InkWell(
         onTap: () {
           if (widget.openContent != null) {
-            widget.openContent!(widget.post);
+            widget.openContent!(post);
           }
         },
         child: Column(
@@ -59,7 +59,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                   GestureDetector(
                     onTap: () {
                       context.push(
-                          '/home/community?id=${widget.post.communityId}');
+                          '/home/community?id=${post.communityId}');
                     },
                     child: Row(
                       children: [
@@ -69,15 +69,15 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                               radius: 12,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(45),
-                                child: (widget.post.communityIcon != null)
-                                    ? Image.network(widget.post.communityIcon! +
+                                child: (post.communityIcon != null)
+                                    ? Image.network(post.communityIcon! +
                                         '?thumbnail=50')
                                     : SvgPicture.asset('assets/logo.svg'),
                               ),
                             ),
                             const VerticalDivider(),
                             Text(
-                              widget.post.communityName,
+                              post.communityName,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -86,14 +86,14 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         ),
                         const VerticalDivider(),
                         Text(
-                          widget.post.creatorName,
+                          post.creatorName,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.outline,
                           ),
                         ),
                         const VerticalDivider(),
                         Text(
-                          formattedPostedAgo(widget.post.timePublished) +
+                          formattedPostedAgo(post.timePublished) +
                               ' ago',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.outline),
@@ -104,26 +104,26 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(widget.post.name, style: TextStyle(fontSize: 16)),
+                  Text(post.name, style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
             Builder(builder: (context) {
               return Column(
                 children: [
-                  if (widget.post.url != null) ...[
+                  if (post.url != null) ...[
                     Builder(
                       builder: (context) {
-                        if (widget.post.url!.contains('.jpg') ||
-                            widget.post.url!.contains('.png') ||
-                            widget.post.url!.contains('.jpeg') ||
-                            widget.post.url!.contains('.gif') ||
-                            widget.post.url!.contains('.webp') ||
-                            widget.post.url!.contains('.bmp')) {
+                        if (post.url!.contains('.jpg') ||
+                            post.url!.contains('.png') ||
+                            post.url!.contains('.jpeg') ||
+                            post.url!.contains('.gif') ||
+                            post.url!.contains('.webp') ||
+                            post.url!.contains('.bmp')) {
                           return SizedBox(
                               height: 300,
                               child: Center(
-                                child: Image.network(widget.post.url!,
+                                child: Image.network(post.url!,
                                     fit: BoxFit.fitWidth),
                               ));
                         } else {
@@ -134,17 +134,17 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                               child: AnyLinkPreview(
                                 errorImage: 'null',
                                 errorBody: 'Could not load body',
-                                errorTitle: widget.post.name,
+                                errorTitle: post.name,
                                 errorWidget: GestureDetector(
                                   onTap: () =>
-                                      launchUrl(Uri.parse(widget.post.url!)),
+                                      launchUrl(Uri.parse(post.url!)),
                                   child: Container(
                                     color: Theme.of(context)
                                         .colorScheme
                                         .background,
                                     padding: EdgeInsets.all(4),
                                     child: Text(
-                                      widget.post.url!,
+                                      post.url!,
                                       style: const TextStyle(
                                           decoration: TextDecoration.underline),
                                     ),
@@ -154,7 +154,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                 removeElevation: true,
                                 borderRadius: 10,
                                 boxShadow: [],
-                                link: widget.post.url!,
+                                link: post.url!,
                                 backgroundColor:
                                     Theme.of(context).colorScheme.background,
                                 displayDirection:
@@ -168,7 +168,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                       },
                     )
                   ],
-                  if (widget.post.body != '' && widget.post.body != null) ...[
+                  if (post.body != '' && post.body != null) ...[
                     Padding(
                       padding: EdgeInsets.all(4),
                       child: Container(
@@ -183,11 +183,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                           padding: const EdgeInsets.all(4),
                           child: (widget.limitContentHeight)
                               ? Text(
-                                  widget.post.body!,
+                                  post.body!,
                                   maxLines: 10,
                                 )
                               : MarkdownBody(
-                                  data: widget.post.body!,
+                                  data: post.body!,
                                   shrinkWrap: true,
                                   onTapLink: (text, link, title) {
                                     launchUrl(Uri.parse(link!));
@@ -212,7 +212,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                       const SizedBox(
                         width: 5,
                       ),
-                      Text('${widget.post.commentCount}'),
+                      Text('${post.commentCount}'),
                     ],
                   ),
                   Row(
@@ -225,7 +225,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         onPressed: () async {
                           // saves what the last vote is in order to reverse
                           // the vote in the state if an error occurs
-                          final lastVote = widget.post.myVote;
+                          final lastVote = post.myVote;
 
                           if (post.myVote == LemmyVoteType.upVote) {
                             setState(() {
@@ -239,7 +239,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    widget.post.id,
+                                    post.id,
                                     LemmyVoteType.none,
                                   );
                             } catch (err) {
@@ -269,7 +269,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    widget.post.id,
+                                    post.id,
                                     LemmyVoteType.upVote,
                                   );
                             } catch (err) {
@@ -284,7 +284,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         },
                         visualDensity: VisualDensity.compact,
                       ),
-                      Text(widget.post.upVotes.toString()),
+                      Text(post.upVotes.toString()),
                       IconButton(
                         icon: const Icon(Icons.arrow_downward_outlined),
                         color: (post.myVote == LemmyVoteType.downVote)
@@ -307,7 +307,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    widget.post.id,
+                                    post.id,
                                     LemmyVoteType.none,
                                   );
                             } catch (err) {
@@ -337,7 +337,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    widget.post.id,
+                                    post.id,
                                     LemmyVoteType.downVote,
                                   );
                             } catch (err) {
@@ -352,11 +352,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         },
                         visualDensity: VisualDensity.compact,
                       ),
-                      Text(widget.post.downVotes.toString()),
+                      Text(post.downVotes.toString()),
                       IconButton(
                         icon: const Icon(Icons.more_vert),
                         onPressed: () {
-                          showPostMoreActionsSheet(context, widget.post);
+                          showPostMoreActionsSheet(context, post);
                         },
                         visualDensity: VisualDensity.compact,
                       ),
