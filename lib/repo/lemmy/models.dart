@@ -170,12 +170,15 @@ class LemmyComment extends Equatable {
   final int postId;
   final int creatorId;
   final int childCount;
-  final int upVotes;
-  final int downVotes;
-  final int score;
+
+  int upVotes;
+  int downVotes;
+  int score;
+  LemmyVoteType myVote;
+
   final int hotRank;
 
-  const LemmyComment({
+  LemmyComment({
     this.replies = const [],
     this.parentCommentId,
     this.level = 0,
@@ -188,6 +191,7 @@ class LemmyComment extends Equatable {
     required this.childCount,
     required this.upVotes,
     required this.downVotes,
+    this.myVote = LemmyVoteType.none,
     required this.score,
     required this.hotRank,
   });

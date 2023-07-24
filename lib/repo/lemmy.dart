@@ -177,6 +177,7 @@ interface class LemmyRepo {
           upVotes: comment['counts']['upvotes'],
           downVotes: comment['counts']['downvotes'],
           score: comment['counts']['score'],
+          myVote: intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
           hotRank: comment['counts']['hot_rank'],
         ));
       }
@@ -225,20 +226,25 @@ interface class LemmyRepo {
       final List<LemmyCommunity> communities = [];
 
       for (final comment in response.data['comments']) {
-        comments.add(LemmyComment(
-          creatorName: comment['creator']['name'],
-          creatorId: comment['creator']['id'],
-          content: comment['comment']['content'],
-          id: comment['comment']['id'],
-          timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
-          // Z added to mark as UTC time
-          postId: comment['comment']['post_id'],
-          childCount: comment['counts']['child_count'],
-          upVotes: comment['counts']['upvotes'],
-          downVotes: comment['counts']['downvotes'],
-          score: comment['counts']['score'],
-          hotRank: comment['counts']['hot_rank'],
-        ));
+        comments.add(
+          LemmyComment(
+            creatorName: comment['creator']['name'],
+            creatorId: comment['creator']['id'],
+            content: comment['comment']['content'],
+            id: comment['comment']['id'],
+            // Z added to mark as UTC time
+            timePublished:
+                DateTime.parse(comment['comment']['published'] + 'Z'),
+
+            postId: comment['comment']['post_id'],
+            childCount: comment['counts']['child_count'],
+            upVotes: comment['counts']['upvotes'],
+            downVotes: comment['counts']['downvotes'],
+            score: comment['counts']['score'],
+            myVote: intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
+            hotRank: comment['counts']['hot_rank'],
+          ),
+        );
       }
 
       for (final person in response.data['users']) {
@@ -420,8 +426,11 @@ interface class LemmyRepo {
     }
   }
 
-  Future<void> votePost(int postId, LemmyVoteType vote,) async {
-    if(globalBloc.state.lemmySelectedAccount == null){
+  Future<void> votePost(
+    int postId,
+    LemmyVoteType vote,
+  ) async {
+    if (globalBloc.state.lemmySelectedAccount == null) {
       throw 'Not logged in';
     }
 
@@ -439,8 +448,7 @@ interface class LemmyRepo {
       if (response.statusCode != 200) {
         throw HttpException('${response.statusCode}');
       }
-
-    }on SocketException {
+    } on SocketException {
       return Future.error('No Internet');
     } on HttpException {
       return Future.error('Could not find post');
@@ -448,5 +456,4 @@ interface class LemmyRepo {
       return Future.error('Bad response format');
     }
   }
-
 }
