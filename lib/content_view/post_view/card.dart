@@ -1,19 +1,19 @@
 import 'dart:ui';
 
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/time.dart';
-import '../../utils/measure_size.dart';
-import 'post_more_actions_sheet.dart';
-import 'package:any_link_preview/any_link_preview.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:muffed/components/image_viewer.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/utils/measure_size.dart';
+import 'package:muffed/utils/time.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'post_more_actions_sheet.dart';
 
 class CardLemmyPostItem extends StatefulWidget {
   final LemmyPost post;
@@ -398,31 +398,43 @@ class _ImageViewerState extends State<_ImageViewer> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: shouldBlur ? () {
-        setState(() {
-          shouldBlur = false;
-        });
-      } : null,
+      onTap: shouldBlur
+          ? () {
+              setState(() {
+                shouldBlur = false;
+              });
+            }
+          : null,
       child: SizedBox(
         height: height,
         child: CachedNetworkImage(
           imageUrl: widget.imageUrl,
           imageBuilder: (context, imageProvider) {
-            return MeasureSize(
-              onChange: (size) {
-                setState(() {
-                  height = size.height;
-                });
+            UniqueKey heroTag = UniqueKey();
+            return GestureDetector(
+              onTap: (){
+                openImageViewer(context, imageProvider, heroTag, DisposeLevel.low);
               },
-              child: ClipRect(
-                child: ImageFiltered(
-                  enabled: shouldBlur,
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: 10,
-                    sigmaY: 10,
-                  ),
-                  child: Image(
-                    image: imageProvider,
+
+              child: MeasureSize(
+                onChange: (size) {
+                  setState(() {
+                    height = size.height;
+                  });
+                },
+                child: ClipRect(
+                  child: ImageFiltered(
+                    enabled: shouldBlur,
+                    imageFilter: ImageFilter.blur(
+                      sigmaX: 10,
+                      sigmaY: 10,
+                    ),
+                    child: Hero(
+                      tag: heroTag,
+                      child: Image(
+                        image: imageProvider,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -433,3 +445,4 @@ class _ImageViewerState extends State<_ImageViewer> {
     );
   }
 }
+
