@@ -28,7 +28,7 @@ class ContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+        if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 5000) {
           reachedEnd();
         }
         return true;
