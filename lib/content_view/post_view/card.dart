@@ -415,9 +415,11 @@ class _ImageViewerState extends State<_ImageViewer> {
             imageBuilder: (context, imageProvider) {
               UniqueKey heroTag = UniqueKey();
               return GestureDetector(
-                onTap: (){
+                // if should blur is on a tap should remove the blur and a
+                // second tap should open the image
+                onTap: (!shouldBlur) ? (){
                   openImageViewer(context, imageProvider, heroTag, DisposeLevel.low);
-                },
+                } : null,
 
                 child: MeasureSize(
                   onChange: (size) {
@@ -443,11 +445,11 @@ class _ImageViewerState extends State<_ImageViewer> {
                 ),
               );
             },
-            fadeInCurve: Curves.easeInOutCubic,
-            fadeInDuration: Duration(milliseconds: 500),
-            fadeOutDuration: Duration(milliseconds: 500),
-            placeholder: (context, url) => CircularProgressIndicator(),
-
+            placeholder: (context, url) {
+              // width is double.maxFinite to make image not animate the
+              // width changing size but instead only animate the height
+              return SizedBox(height: 300, width: double.maxFinite,);
+            },
           ),
         ),
       ),
