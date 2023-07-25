@@ -405,41 +405,50 @@ class _ImageViewerState extends State<_ImageViewer> {
               });
             }
           : null,
-      child: SizedBox(
-        height: height,
-        child: CachedNetworkImage(
-          imageUrl: widget.imageUrl,
-          imageBuilder: (context, imageProvider) {
-            UniqueKey heroTag = UniqueKey();
-            return GestureDetector(
-              onTap: (){
-                openImageViewer(context, imageProvider, heroTag, DisposeLevel.low);
-              },
-
-              child: MeasureSize(
-                onChange: (size) {
-                  setState(() {
-                    height = size.height;
-                  });
+      child: AnimatedSize(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+        child: SizedBox(
+          height: height,
+          child: CachedNetworkImage(
+            imageUrl: widget.imageUrl,
+            imageBuilder: (context, imageProvider) {
+              UniqueKey heroTag = UniqueKey();
+              return GestureDetector(
+                onTap: (){
+                  openImageViewer(context, imageProvider, heroTag, DisposeLevel.low);
                 },
-                child: ClipRect(
-                  child: ImageFiltered(
-                    enabled: shouldBlur,
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: 10,
-                      sigmaY: 10,
-                    ),
-                    child: Hero(
-                      tag: heroTag,
-                      child: Image(
-                        image: imageProvider,
+
+                child: MeasureSize(
+                  onChange: (size) {
+                    setState(() {
+                      height = size.height;
+                    });
+                  },
+                  child: ClipRect(
+                    child: ImageFiltered(
+                      enabled: shouldBlur,
+                      imageFilter: ImageFilter.blur(
+                        sigmaX: 10,
+                        sigmaY: 10,
+                      ),
+                      child: Hero(
+                        tag: heroTag,
+                        child: Image(
+                          image: imageProvider,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+            fadeInCurve: Curves.easeInOutCubic,
+            fadeInDuration: Duration(milliseconds: 500),
+            fadeOutDuration: Duration(milliseconds: 500),
+            placeholder: (context, url) => CircularProgressIndicator(),
+
+          ),
         ),
       ),
     );
