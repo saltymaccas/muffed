@@ -101,6 +101,7 @@ final _router = GoRouter(
 );
 
 Future<void> main() async {
+  // initialize hydrated bloc
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: await getApplicationDocumentsDirectory());
