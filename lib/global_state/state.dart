@@ -13,7 +13,7 @@ final class GlobalState extends Equatable {
   GlobalState({
     this.lemmyAccounts = const [],
     this.lemmySelectedAccount,
-    this.lemmyDefaultHomeServer = 'lemmy.ml',
+    this.lemmyDefaultHomeServer = 'https://lemmy.ml',
   });
 
   @override
@@ -59,6 +59,7 @@ final class GlobalState extends Equatable {
 
 final class LemmyAccountData extends Equatable {
   final String jwt;
+  /// home server should include the "https://"
   final String homeServer;
   final String userName;
 
