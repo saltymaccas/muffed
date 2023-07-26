@@ -10,10 +10,20 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/bloc.dart';
 
+/// The screen that displays the community including information and the
+/// post view
 class CommunityScreen extends StatefulWidget {
+  /// initialize
   const CommunityScreen({required this.communityId, this.community, super.key});
 
+  /// The community ID
   final int communityId;
+
+  /// The community object which contains the community information.
+  ///
+  /// If this is set to null the information will be loaded from the API.
+  /// Setting the value will mean the community information can be shown
+  /// instantly
   final LemmyCommunity? community;
 
   @override
@@ -27,10 +37,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CommunityScreenBloc(
-          communityId: widget.communityId,
-          community: widget.community,
-          repo: context.read<ServerRepo>())
-        ..add(Initialize()),
+        communityId: widget.communityId,
+        community: widget.community,
+        repo: context.read<ServerRepo>(),
+      )..add(Initialize()),
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
           final blocContext = context;
@@ -51,9 +61,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   },
                   menuChildren: [
                     MenuItemButton(
-                      child: Text('about'),
+                      child: const Text('about'),
                       onPressed: () {
-                        showDialog(
+                        showDialog<void>(
                             context: context,
                             builder: (context) {
                               return BlocProvider.value(
@@ -118,7 +128,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   }));
                 },
                 posts: state.posts,
-                reachedEnd: () {
+                reachedNearEnd: () {
                   context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
                 },
               ),

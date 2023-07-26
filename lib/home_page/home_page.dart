@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/content_view/post_view/card.dart';
-import 'bloc/bloc.dart';
-import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/error.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/error.dart';
+import 'package:muffed/components/loading.dart';
+import 'package:muffed/content_view/content_view.dart';
+import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_dialog.dart';
-import 'package:muffed/content_view/content_view.dart';
+
+import 'bloc/bloc.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-
-  late final ScrollController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,7 @@ class HomePage extends StatelessWidget {
                   });
                 },
                 child: ContentView(
-                  reachedEnd: () {
+                  reachedNearEnd: () {
                     context
                         .read<HomePageBloc>()
                         .add(ReachedNearEndOfScroll());

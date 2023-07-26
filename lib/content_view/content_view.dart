@@ -1,35 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:muffed/components/loading.dart';
 import 'package:muffed/content_view/post_view/card.dart';
+import 'package:muffed/repo/lemmy/models.dart';
 
-import '../components/loading.dart';
-import '../repo/lemmy/models.dart';
-
+/// Displays the posts in a scroll view.
 class ContentView extends StatelessWidget {
+  /// initialize
   const ContentView({
-    this.isContentLoading = false,
     required this.onPressedPost,
     required this.posts,
+    required this.reachedNearEnd,
+    this.isContentLoading = false,
     this.floatingHeader = false,
     this.headerDelegate,
-    required this.reachedEnd,
     this.pinnedHeader = false,
     super.key,
   });
 
-  final Function() reachedEnd;
-  final Function(LemmyPost post) onPressedPost;
+  /// When the user has reached near the end of the scroll. often used to
+  /// load more posts.
+  final void Function() reachedNearEnd;
+
+  /// When the user presses a post.
+  final void Function(LemmyPost post) onPressedPost;
+
+  /// The header delegate of the scroll view.
   final SliverPersistentHeaderDelegate? headerDelegate;
+
+  /// Whether the header should float, meaning become visible again when
+  /// the user scrolls up in any part of the scrollview.
   final bool floatingHeader;
+
+  /// Whether the header should be pinned, meaning have the header always
+  /// visible on the scroll view.
   final bool pinnedHeader;
+
+  /// The posts that should be displayed.
   final List posts;
+
+  /// Whether there is some content being loaded.
   final bool isContentLoading;
 
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 5000) {
-          reachedEnd();
+        if (scrollInfo.metrics.pixels >=
+            scrollInfo.metrics.maxScrollExtent - 5000) {
+          reachedNearEnd();
         }
         return true;
       },
@@ -38,24 +56,30 @@ class ContentView extends StatelessWidget {
         slivers: [
           if (headerDelegate != null)
             SliverPersistentHeader(
-                floating: floatingHeader, delegate: headerDelegate!, pinned: pinnedHeader),
+              floating: floatingHeader,
+              delegate: headerDelegate!,
+              pinned: pinnedHeader,
+            ),
           SliverList(
-              delegate: (isContentLoading)
-                  ? SliverChildListDelegate([
-                      const SizedBox(
-                        height: 300,
-                        child: Center(
-                          child: LoadingComponentTransparent(),
-                        ),
-                      )
-                    ])
-                  : SliverChildBuilderDelegate(childCount: posts.length,
-                      (context, index) {
-                      return CardLemmyPostItem(posts[index] as LemmyPost,
-                          openContent: (post) {
+            delegate: isContentLoading
+                ? SliverChildListDelegate([
+                    const SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: LoadingComponentTransparent(),
+                      ),
+                    ),
+                  ])
+                : SliverChildBuilderDelegate(childCount: posts.length,
+                    (context, index) {
+                    return CardLemmyPostItem(
+                      posts[index] as LemmyPost,
+                      openContent: (post) {
                         onPressedPost(post);
-                      });
-                    }))
+                      },
+                    );
+                  }),
+          ),
         ],
       ),
     );
