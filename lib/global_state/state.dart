@@ -59,7 +59,7 @@ final class GlobalState extends Equatable {
 
 final class LemmyAccountData extends Equatable {
   final String jwt;
-  /// home server should include the "https://"
+  /// home server should include the "https://" and not end with "/"
   final String homeServer;
   final String userName;
 

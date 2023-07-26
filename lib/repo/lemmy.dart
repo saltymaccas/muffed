@@ -3,14 +3,19 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-/// Used to interact with the lemmy api
+/// Used to interact with the lemmy http api
 interface class LemmyRepo {
+  /// initialize lemmy repo
+  LemmyRepo({required this.globalBloc})
+      : dio = Dio()..interceptors.add(PrettyDioLogger());
+
   /// The dio client that will be used to send requests
   final Dio dio;
-  final GlobalBloc globalBloc;
 
-  LemmyRepo({required this.globalBloc}) : dio = Dio();
+  /// used to get information such as the home server to use for requests
+  final GlobalBloc globalBloc;
 
   Future<List<LemmyPost>> getPosts({
     LemmySortType sortType = LemmySortType.hot,
@@ -20,14 +25,14 @@ interface class LemmyRepo {
   }) async {
     try {
       final Response<dynamic> response = await dio.get(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/post/list',
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/post/list',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           'page': page.toString(),
           'sort': lemmySortTypeEnumToApiCompatible[sortType],
           if (communityId != null) 'community_id': communityId.toString(),
-          'type_':lemmyListingTypeToApiCompatible[listingType],
+          'type_': lemmyListingTypeToApiCompatible[listingType],
         },
       );
 
@@ -40,6 +45,8 @@ interface class LemmyRepo {
       final List<LemmyPost> posts = [];
 
       for (Map<String, dynamic> post in postsMap) {
+        print((post['post'] as Map)['id'].toString());
+        print((post['post'] as Map)['ap_id']);
         posts.add(
           LemmyPost(
             body: (post['post'] as Map)['body'],
@@ -48,6 +55,7 @@ interface class LemmyRepo {
             name: (post['post'] as Map)['name'],
             myVote: intToLemmyVoteType[post['my_vote']] ?? LemmyVoteType.none,
             thumbnailUrl: (post['post'] as Map)['thumbnail_url'],
+            apId: (post['post'] as Map)['ap_id'],
             // Z added to mark as UTC time
             timePublished:
                 DateTime.parse('${(post['post'] as Map)['published']}Z'),
@@ -77,21 +85,23 @@ interface class LemmyRepo {
     }
   }
 
+  // TODO: expain what this does
+
   /// Gets comments from lemmy api
-  ///
-  ///
   Future<List<LemmyComment>> getComments(
     int postId, {
     required int page,
+    LemmyListingType listingType = LemmyListingType.all,
   }) async {
     try {
-      final Response<dynamic> response = await dio.get(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/comment/list',
+      final response = await dio.get(
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/comment/list',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           'post_id': postId.toString(),
           'page': page.toString(),
+          'type_': lemmyListingTypeToApiCompatible[listingType],
         },
       );
 
@@ -99,15 +109,15 @@ interface class LemmyRepo {
         throw HttpException('${response.statusCode}');
       }
 
-      var commentsMap = response.data['comments'];
+      final commentResponse = response.data['comments'];
 
       // defines comment children and parent
 
       Map<int, List> mapReplyToParent = {};
       List<Map> baseLevelComments = [];
 
-      for (final comment in commentsMap) {
-        final String p = comment['comment']['path'];
+      for (final Map<String, dynamic> comment in commentResponse) {
+        final String p = (comment['comment'] as Map)['path'];
         final List<String> parts = p.split('.');
 
         if (parts.length == 2) {
@@ -129,8 +139,13 @@ interface class LemmyRepo {
 
         if (mapReplyToParent.containsKey(comment['comment']['id'])) {
           for (var element in mapReplyToParent[comment['comment']['id']]!) {
-            replies.add(mapToLemmyComment(
-                element, level + 1, comment['comment']['id']));
+            replies.add(
+              mapToLemmyComment(
+                element,
+                level + 1,
+                comment['comment']['id'],
+              ),
+            );
           }
         }
 
@@ -205,7 +220,7 @@ interface class LemmyRepo {
   }) async {
     try {
       final response = await dio.get(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/search',
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/search',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -243,7 +258,8 @@ interface class LemmyRepo {
             upVotes: comment['counts']['upvotes'],
             downVotes: comment['counts']['downvotes'],
             score: comment['counts']['score'],
-            myVote: intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
+            myVote:
+                intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
             hotRank: comment['counts']['hot_rank'],
           ),
         );
@@ -273,6 +289,7 @@ interface class LemmyRepo {
             body: post['post']['body'],
             url: post['post']['url'],
             id: post['post']['id'],
+            apId: post['post']['ap_id'],
             name: post['post']['name'],
             // Z added to mark as UTC time
             timePublished: DateTime.parse(post['post']['published'] + 'Z'),
@@ -344,7 +361,7 @@ interface class LemmyRepo {
   Future<LemmyCommunity> communityFromId(int id) async {
     try {
       final response = await dio.get(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/community',
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/community',
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -398,11 +415,9 @@ interface class LemmyRepo {
 
   Future<LemmyLoginResponse> login(String password, String? totp,
       String usernameOrEmail, String serverAddr) async {
-    serverAddr = serverAddr.replaceAll('https://', '');
-
     try {
       final response = await dio.post(
-        'https://$serverAddr/api/v3/user/login',
+        '$serverAddr/api/v3/user/login',
         options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'username_or_email': usernameOrEmail,
@@ -438,7 +453,7 @@ interface class LemmyRepo {
 
     try {
       final response = await dio.post(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/post/like',
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/post/like',
         options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -460,16 +475,16 @@ interface class LemmyRepo {
   }
 
   Future<void> voteComment(
-      int commentId,
-      LemmyVoteType vote,
-      ) async {
+    int commentId,
+    LemmyVoteType vote,
+  ) async {
     if (globalBloc.state.lemmySelectedAccount == null) {
       throw 'Not logged in';
     }
 
     try {
       final response = await dio.post(
-        'https://${globalBloc.getLemmyBaseUrl()}/api/v3/comment/like',
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/comment/like',
         options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,

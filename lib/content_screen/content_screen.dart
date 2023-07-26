@@ -18,9 +18,10 @@ class ContentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ContentScreenBloc(repo: context.read<ServerRepo>(), postId: post.id)
-            ..add(InitializeEvent()),
+      create: (context) => ContentScreenBloc(
+        repo: context.read<ServerRepo>(),
+        postId: post.id,
+      )..add(InitializeEvent()),
       child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
         builder: (context, state) {
           return NotificationListener(

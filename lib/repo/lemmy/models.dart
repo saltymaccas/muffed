@@ -84,10 +84,10 @@ Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
   LemmyListingType.all: 'All',
   LemmyListingType.community: 'Community',
   LemmyListingType.subscribed: 'Subscribed',
-  LemmyListingType.local: 'local',
+  LemmyListingType.local: 'Local',
 };
 
-enum LemmyVoteType {upVote, downVote, none}
+enum LemmyVoteType { upVote, downVote, none }
 
 Map<LemmyVoteType, int> lemmyVoteTypeToApiCompatible = {
   LemmyVoteType.upVote: 1,
@@ -101,9 +101,44 @@ Map<int, LemmyVoteType> intToLemmyVoteType = {
   -1: LemmyVoteType.downVote
 };
 
+// The classes with equatable only has the name of the class as a string
+// and id in props, this is because this should be all that is needed to
+// determine weather the objects are the same or not
+
+// a warning also appears because some of the class is not immutable
+// this is fine because only immutable values are in props,
+
 class LemmyPost extends Equatable {
+  /// initialize object
+  LemmyPost({
+    required this.apId,
+    required this.id,
+    required this.name,
+    required this.timePublished,
+    required this.nsfw,
+    required this.creatorId,
+    required this.creatorName,
+    required this.communityId,
+    required this.communityName,
+    required this.communityIcon,
+    required this.commentCount,
+    required this.upVotes,
+    required this.downVotes,
+    required this.score,
+    required this.read,
+    required this.saved,
+    this.body,
+    this.url,
+    this.thumbnailUrl,
+    this.myVote = LemmyVoteType.none,
+  });
+
   final int id;
   final String name;
+
+  /// the server address of where the post came from
+  /// to get the comments of a post the server address is required
+  final String apId;
 
   final String? url;
   final String? thumbnailUrl;
@@ -130,33 +165,30 @@ class LemmyPost extends Equatable {
   final bool read;
   final bool saved;
 
-  LemmyPost({
-    this.body,
-    this.url,
-    this.thumbnailUrl,
-    required this.id,
-    required this.name,
-    required this.timePublished,
-    required this.nsfw,
-    required this.creatorId,
+  @override
+  List<Object> get props => ['LemmyPost', id];
+}
+
+class LemmyComment extends Equatable {
+  /// initialise object
+  LemmyComment({
+    this.replies = const [],
+    this.parentCommentId,
+    this.level = 0,
     required this.creatorName,
-    required this.communityId,
-    required this.communityName,
-    required this.communityIcon,
-    required this.commentCount,
+    required this.creatorId,
+    required this.content,
+    required this.timePublished,
+    required this.id,
+    required this.postId,
+    required this.childCount,
     required this.upVotes,
     required this.downVotes,
     this.myVote = LemmyVoteType.none,
     required this.score,
-    required this.read,
-    required this.saved,
+    required this.hotRank,
   });
 
-  @override
-  List<Object> get props => [id];
-}
-
-class LemmyComment extends Equatable {
   /// Level that the comment is on where 0 is comment on a post,
   /// 1 is comment on a comment,
   /// 2 in comment on that comment that is on a comment and so on.
@@ -178,29 +210,41 @@ class LemmyComment extends Equatable {
 
   final int hotRank;
 
-  LemmyComment({
-    this.replies = const [],
-    this.parentCommentId,
-    this.level = 0,
-    required this.creatorName,
-    required this.creatorId,
-    required this.content,
-    required this.timePublished,
-    required this.id,
-    required this.postId,
-    required this.childCount,
-    required this.upVotes,
-    required this.downVotes,
-    this.myVote = LemmyVoteType.none,
-    required this.score,
-    required this.hotRank,
-  });
-
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => ['LemmyComment', id];
 }
 
 class LemmyCommunity extends Equatable {
+  LemmyCommunity({
+    this.moderators,
+    required this.id,
+    required this.actorId,
+    this.banner,
+    required this.deleted,
+    this.description,
+    required this.hidden,
+    this.icon,
+    required this.name,
+    required this.local,
+    required this.instanceId,
+    required this.nsfw,
+    required this.postingRestrictedToMods,
+    required this.published,
+    required this.removed,
+    required this.title,
+    this.updated,
+    required this.comments,
+    required this.hotRank,
+    required this.posts,
+    required this.subscribers,
+    required this.usersActiveDay,
+    required this.usersActiveHalfYear,
+    required this.usersActiveMonth,
+    required this.usersActiveWeek,
+    required this.blocked,
+    required this.subscribed,
+  });
+
   final int id;
   final String actorId;
   final String? banner;
@@ -232,64 +276,11 @@ class LemmyCommunity extends Equatable {
 
   final LemmySubscribedType subscribed;
 
-  LemmyCommunity({
-    this.moderators,
-    required this.id,
-    required this.actorId,
-    this.banner,
-    required this.deleted,
-    this.description,
-    required this.hidden,
-    this.icon,
-    required this.name,
-    required this.local,
-    required this.instanceId,
-    required this.nsfw,
-    required this.postingRestrictedToMods,
-    required this.published,
-    required this.removed,
-    required this.title,
-    this.updated,
-    required this.comments,
-    required this.hotRank,
-    required this.posts,
-    required this.subscribers,
-    required this.usersActiveDay,
-    required this.usersActiveHalfYear,
-    required this.usersActiveMonth,
-    required this.usersActiveWeek,
-    required this.blocked,
-    required this.subscribed,
-  });
-
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => ['LemmyCommunity', id];
 }
 
 class LemmyPerson extends Equatable {
-  final String actorId;
-  final bool admin;
-  final String? avatar;
-  final DateTime? banExpires;
-  final bool banned;
-  final String? banner;
-  final String? bio;
-  final bool botAccount;
-  final bool deleted;
-  final String? displayName;
-  final int id;
-  final int instanceId;
-  final bool local;
-  final String? matrixUserId;
-  final String name;
-  final DateTime published;
-  final String? updated;
-
-  final int commentCount;
-  final int commentScore;
-  final int postCount;
-  final int postScore;
-
   LemmyPerson({
     required this.actorId,
     required this.admin,
@@ -314,32 +305,55 @@ class LemmyPerson extends Equatable {
     required this.postScore,
   });
 
+  final String actorId;
+  final bool admin;
+  final String? avatar;
+  final DateTime? banExpires;
+  final bool banned;
+  final String? banner;
+  final String? bio;
+  final bool botAccount;
+  final bool deleted;
+  final String? displayName;
+  final int id;
+  final int instanceId;
+  final bool local;
+  final String? matrixUserId;
+  final String name;
+  final DateTime published;
+  final String? updated;
+
+  final int commentCount;
+  final int commentScore;
+  final int postCount;
+  final int postScore;
+
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => ['LemmyPerson', id];
 }
 
 class LemmySearchResponse {
-  final List<LemmyPost>? lemmyPosts;
-  final List<LemmyCommunity>? lemmyCommunities;
-  final List<LemmyComment>? lemmyComments;
-  final List<LemmyPerson>? lemmyPersons;
-
   LemmySearchResponse({
     this.lemmyComments,
     this.lemmyCommunities,
     this.lemmyPersons,
     this.lemmyPosts,
   });
+
+  final List<LemmyPost>? lemmyPosts;
+  final List<LemmyCommunity>? lemmyCommunities;
+  final List<LemmyComment>? lemmyComments;
+  final List<LemmyPerson>? lemmyPersons;
 }
 
 class LemmyLoginResponse {
-  final String? jwt;
-  final bool registrationCreated;
-  final bool verifyEmailSent;
-
   LemmyLoginResponse({
     this.jwt,
     required this.registrationCreated,
     required this.verifyEmailSent,
   });
+
+  final String? jwt;
+  final bool registrationCreated;
+  final bool verifyEmailSent;
 }
