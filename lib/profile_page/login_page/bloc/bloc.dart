@@ -35,6 +35,8 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
           ? state.serverAddr
           : 'https://${state.serverAddr}';
 
+      emit(state.copyWith(loading: true));
+
       try {
         final result = await repo.lemmyRepo
             .login(state.password, totp, state.usernameOrEmail, homeServer);
@@ -49,9 +51,11 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
           ),
         );
 
+        emit(state.copyWith(loading: false));
+
         event.onLoginAccepted();
       } catch (err) {
-        emit(state.copyWith(errorMessage: err.toString()));
+        emit(state.copyWith(errorMessage: err.toString(), loading: false));
       }
     });
   }
