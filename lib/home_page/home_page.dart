@@ -10,6 +10,7 @@ import 'package:muffed/search_dialog/search_dialog.dart';
 
 import 'bloc/bloc.dart';
 
+/// The main page the user uses the scroll through content
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
@@ -38,7 +39,12 @@ class HomePage extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                 ),
               ],
-              child: RefreshIndicator(
+              child: ContentView(
+                reachedNearEnd: () {
+                  context
+                      .read<HomePageBloc>()
+                      .add(ReachedNearEndOfScroll());
+                },
                 onRefresh: () async {
                   context.read<HomePageBloc>().add(PullDownRefresh());
                   await context
@@ -51,17 +57,10 @@ class HomePage extends StatelessWidget {
                     return false;
                   });
                 },
-                child: ContentView(
-                  reachedNearEnd: () {
-                    context
-                        .read<HomePageBloc>()
-                        .add(ReachedNearEndOfScroll());
-                  },
-                  onPressedPost: (post) {context.go('/home/content', extra: post);},
-                  posts: context.read<HomePageBloc>().state.posts!,
-                  floatingHeader: false,
-                  headerDelegate: _TopBarDelegate(),
-                ),
+                onPressedPost: (post) {context.go('/home/content', extra: post);},
+                posts: context.read<HomePageBloc>().state.posts!,
+                floatingHeader: false,
+                headerDelegate: _TopBarDelegate(),
               ),
             );
           } else {
@@ -72,6 +71,9 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+// right now the header is only used to create a buffer between the very
+// top post and the top of the scroll view to make it easier to see
 
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override

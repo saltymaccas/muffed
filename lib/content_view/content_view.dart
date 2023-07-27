@@ -10,6 +10,7 @@ class ContentView extends StatelessWidget {
     required this.onPressedPost,
     required this.posts,
     required this.reachedNearEnd,
+    required this.onRefresh,
     this.isContentLoading = false,
     this.floatingHeader = false,
     this.headerDelegate,
@@ -41,6 +42,9 @@ class ContentView extends StatelessWidget {
   /// Whether there is some content being loaded.
   final bool isContentLoading;
 
+  /// when user pulls down to refresh
+  final Future<void> Function() onRefresh;
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
@@ -51,36 +55,39 @@ class ContentView extends StatelessWidget {
         }
         return true;
       },
-      child: CustomScrollView(
-        cacheExtent: 999,
-        slivers: [
-          if (headerDelegate != null)
-            SliverPersistentHeader(
-              floating: floatingHeader,
-              delegate: headerDelegate!,
-              pinned: pinnedHeader,
-            ),
-          SliverList(
-            delegate: isContentLoading
-                ? SliverChildListDelegate([
-                    const SizedBox(
-                      height: 300,
-                      child: Center(
-                        child: LoadingComponentTransparent(),
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          cacheExtent: 999,
+          slivers: [
+            if (headerDelegate != null)
+              SliverPersistentHeader(
+                floating: floatingHeader,
+                delegate: headerDelegate!,
+                pinned: pinnedHeader,
+              ),
+            SliverList(
+              delegate: isContentLoading
+                  ? SliverChildListDelegate([
+                      const SizedBox(
+                        height: 300,
+                        child: Center(
+                          child: LoadingComponentTransparent(),
+                        ),
                       ),
-                    ),
-                  ])
-                : SliverChildBuilderDelegate(childCount: posts.length,
-                    (context, index) {
-                    return CardLemmyPostItem(
-                      posts[index] as LemmyPost,
-                      openContent: (post) {
-                        onPressedPost(post);
-                      },
-                    );
-                  }),
-          ),
-        ],
+                    ])
+                  : SliverChildBuilderDelegate(childCount: posts.length,
+                      (context, index) {
+                      return CardLemmyPostItem(
+                        posts[index] as LemmyPost,
+                        openContent: (post) {
+                          onPressedPost(post);
+                        },
+                      );
+                    }),
+            ),
+          ],
+        ),
       ),
     );
   }
