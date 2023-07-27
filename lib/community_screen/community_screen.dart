@@ -113,7 +113,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 },
               ),
             ],
-            itemIndex: 0,
+            indexOfRelevantItem: 0,
             // makes presses outside of the menu not register and closes the
             // menu
             child: AbsorbPointer(

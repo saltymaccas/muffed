@@ -27,7 +27,7 @@ final _router = GoRouter(
       ) {
         return Scaffold(
           bottomNavigationBar:
-              DynamicNavigationBar(onTap: (index, currentContext) {
+              DynamicNavigationBar(onItemTapped: (index, currentContext) {
             if (index == navigationShell.currentIndex) {
               if (currentContext != null) {
                 if (currentContext.canPop()) {

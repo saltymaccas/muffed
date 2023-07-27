@@ -12,7 +12,7 @@ class ProfilePage extends StatelessWidget {
     final globalBloc = context.read<GlobalBloc>();
 
     return SetPageInfo(
-        itemIndex: 2,
+        indexOfRelevantItem: 2,
         actions: [],
         child: BlocBuilder<GlobalBloc, GlobalState>(
           builder: (context, state) {

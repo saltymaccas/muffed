@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
             );
           } else if (state.status == HomePageStatus.success) {
             return SetPageInfo(
-              itemIndex: 0,
+              indexOfRelevantItem: 0,
               actions: [
                 IconButton(
                   onPressed: () {

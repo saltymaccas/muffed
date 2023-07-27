@@ -6,6 +6,6 @@ class InboxPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SetPageInfo(actions: [], itemIndex: 1,child: const Placeholder());
+    return SetPageInfo(actions: [], indexOfRelevantItem: 1,child: const Placeholder());
   }
 }

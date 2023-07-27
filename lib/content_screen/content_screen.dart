@@ -59,7 +59,7 @@ class ContentScreen extends StatelessWidget {
                                 child: Container(),
                               )
                             : SetPageInfo(
-                                itemIndex: 0,
+                                indexOfRelevantItem: 0,
                                 actions: [
                                   IconButton(
                                       visualDensity: VisualDensity.compact,

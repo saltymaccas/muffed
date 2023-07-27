@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import 'bloc/bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-const Duration animDur = Duration(milliseconds: 500);
-const int animInterval = 200;
-const Curve animCurve = Curves.easeInOutCubic;
+const Duration _animDur = Duration(milliseconds: 500);
+const int _animInterval = 200;
+const Curve _animCurve = Curves.easeInOutCubic;
 
+/// The bar that is displayed at the bottom of the app
+///
+/// Items are the main buttons, actions are the buttons that come out
+/// of the items.
 class DynamicNavigationBar extends StatelessWidget {
-  const DynamicNavigationBar({required this.onTap, super.key});
+  /// initialize
+  const DynamicNavigationBar({required this.onItemTapped, super.key});
 
-  final Function(int index, BuildContext? currentContext) onTap;
+  /// When an item item is tapped, an item being the main navigation button
+  /// on the bar e.g. Home, Inbox User
+  final void Function(int index, BuildContext? currentContext) onItemTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +33,12 @@ class DynamicNavigationBar extends StatelessWidget {
                 itemIndex: 0,
                 icon: IconButton(
                   onPressed: () {
-                    onTap(
-                        0,
-                        (state.pageStackInfo[0]!.isNotEmpty)
-                            ? state.pageStackInfo[0]!.last.context
-                            : null);
+                    onItemTapped(
+                      0,
+                      (state.pageStackInfo[0]!.isNotEmpty)
+                          ? state.pageStackInfo[0]!.last.context
+                          : null,
+                    );
                   },
                   visualDensity: VisualDensity.compact,
                   icon: Icon(Icons.home_outlined),
@@ -43,7 +51,7 @@ class DynamicNavigationBar extends StatelessWidget {
                 itemIndex: 1,
                 icon: IconButton(
                   onPressed: () {
-                    onTap(
+                    onItemTapped(
                         1,
                         (state.pageStackInfo[1]!.isNotEmpty)
                             ? state.pageStackInfo[1]!.last.context
@@ -60,11 +68,12 @@ class DynamicNavigationBar extends StatelessWidget {
                 icon: IconButton(
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    onTap(
-                        2,
-                        (state.pageStackInfo[2]!.isNotEmpty)
-                            ? state.pageStackInfo[2]!.last.context
-                            : null);
+                    onItemTapped(
+                      2,
+                      (state.pageStackInfo[2]!.isNotEmpty)
+                          ? state.pageStackInfo[2]!.last.context
+                          : null,
+                    );
                   },
                   icon: Icon(Icons.person_outline),
                   selectedIcon: Icon(Icons.person),
@@ -78,7 +87,7 @@ class DynamicNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
                 return AnimatedSize(
-                    curve: animCurve, duration: animDur, child: items[index]);
+                    curve: _animCurve, duration: _animDur, child: items[index]);
               }),
             );
           },
@@ -93,8 +102,11 @@ class _DynamicNavigationBarItem extends StatefulWidget {
   final bool selected;
   final int itemIndex;
 
-  const _DynamicNavigationBarItem(
-      {required this.icon, required this.selected, required this.itemIndex});
+  const _DynamicNavigationBarItem({
+    required this.icon,
+    required this.selected,
+    required this.itemIndex,
+  });
 
   @override
   State<_DynamicNavigationBarItem> createState() =>
@@ -104,13 +116,16 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
-    final _bloc = context.read<DynamicNavigationBarBloc>();
+    final bloc = context.read<DynamicNavigationBarBloc>();
 
-    late final hasActions;
+    /// Whether the page has actions.
+    ///
+    /// This is used to make sure the spacer in between the item and the actions
+    /// is only shown when it should be
+    late final bool hasActions;
 
-    if (_bloc.state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
-      if (_bloc
-          .state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {
+    if (bloc.state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
+      if (bloc.state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {
         hasActions = true;
       } else {
         hasActions = false;
@@ -120,74 +135,93 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
     }
 
     return Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: BorderRadius.circular(10)),
-        child: AnimatedSize(
-          reverseDuration: animDur,
-          curve: animCurve,
-          duration: animDur,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              widget.icon,
-              AnimatedSize(
-                curve: animCurve,
-                duration: animDur,
-                child: (widget.selected && hasActions)
-                    ? Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: Container(
-                              width: 2,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.outline),
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: AnimatedSize(
+        reverseDuration: _animDur,
+        curve: _animCurve,
+        duration: _animDur,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            widget.icon,
+            AnimatedSize(
+              curve: _animCurve,
+              duration: _animDur,
+              child: (widget.selected && hasActions)
+                  ? Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Container(
+                            width: 2,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.outline,
                             ),
-                          ).animate().fadeIn(
-                              duration: animDur, curve: animCurve, begin: 0),
-                          AnimatedSize(
-                            duration: animDur,
-                            curve: animCurve,
-                            child: AnimatedSwitcher(
-                              duration: animDur,
-                              reverseDuration: animDur,
-                              switchInCurve: animCurve,
-                              switchOutCurve: animCurve,
-                              child: Row(
-                                // key needs to be set so the actions get animated in when page
-                                // is pushed
-                                key: Key(
-                                    'actionRow ${_bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}'),
-                                children: _bloc
-                                    .state
-                                    .pageStackInfo[widget.itemIndex]!
-                                    .last
-                                    .actions,
-                              ),
+                          ),
+                        ).animate().fade(
+                              duration: _animDur,
+                              curve: _animCurve,
+                              begin: 0,
                             ),
-                          )
-                        ],
-                      )
-                    : SizedBox(),
-              ),
-            ],
-          ),
-        ));
+                        AnimatedSize(
+                          duration: _animDur,
+                          curve: _animCurve,
+                          child: AnimatedSwitcher(
+                            duration: _animDur,
+                            reverseDuration: _animDur,
+                            switchInCurve: _animCurve,
+                            switchOutCurve: _animCurve,
+                            child: Row(
+                              // key needs to be set so the actions get animated in when page
+                              // is pushed
+                              key: Key(
+                                  'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                              children: bloc
+                                  .state
+                                  .pageStackInfo[widget.itemIndex]!
+                                  .last
+                                  .actions,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
+/// A widget that wraps around a page that sets the information of the page
+/// which gets passed into the [DynamicNavigationBar]
 class SetPageInfo extends StatefulWidget {
-  const SetPageInfo(
-      {required this.itemIndex,
-      required this.actions,
-      required this.child,
-      super.key});
+  /// initialize
+  const SetPageInfo({
+    required this.indexOfRelevantItem,
+    required this.actions,
+    required this.child,
+    super.key,
+  });
 
-  final int itemIndex;
+  /// The index of the item that the information will be added to.
+  ///
+  /// Basically just set this to the base page index that the page is on.
+  ///
+  /// *Fuck this shit is hard to explain properly
+  final int indexOfRelevantItem;
+
+  /// The actions that will appear next to the item when it is on the page
   final List<Widget> actions;
+
+  /// the page itself
   final Widget child;
 
   @override
@@ -214,27 +248,31 @@ class _SetPageInfoState extends State<SetPageInfo> {
       animatedActions.add(action
           .animate(autoPlay: true)
           .slideY(
-            duration: animDur,
-            curve: animCurve,
+            duration: _animDur,
+            curve: _animCurve,
             begin: 3,
-            delay: Duration(milliseconds: animInterval * i),
+            delay: Duration(milliseconds: _animInterval * i),
             end: 0,
           )
           .fadeIn(
-              duration: animDur,
+              duration: _animDur,
               begin: 0,
-              curve: animCurve,
-              delay: Duration(milliseconds: animInterval * i)));
+              curve: _animCurve,
+              delay: Duration(milliseconds: _animInterval * i)));
     }
 
-    _bloc.add(PageAdded(PageInfo(context: context, actions: animatedActions),
-        widget.itemIndex));
+    _bloc.add(
+      PageAdded(
+        PageInfo(context: context, actions: animatedActions),
+        widget.indexOfRelevantItem,
+      ),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _bloc.add(PageRemoved(widget.itemIndex));
+    _bloc.add(PageRemoved(widget.indexOfRelevantItem));
   }
 
   @override
