@@ -8,20 +8,20 @@ part 'event.dart';
 part 'state.dart';
 
 /// The bloc for the content screen
-class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
+class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
   /// Initialize
-  ContentScreenBloc({required this.repo, required this.postId})
-      : super(ContentScreenState(status: ContentScreenStatus.initial)) {
+  CommentScreenBloc({required this.repo, required this.postId})
+      : super(CommentScreenState(status: CommentScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
-      emit(ContentScreenState(status: ContentScreenStatus.loading));
+      emit(CommentScreenState(status: CommentScreenStatus.loading));
 
       try {
         List<LemmyComment> comments =
             await repo.lemmyRepo.getComments(postId, page: 1);
 
         emit(
-          ContentScreenState(
-            status: ContentScreenStatus.success,
+          CommentScreenState(
+            status: CommentScreenStatus.success,
             comments: comments,
             pagesLoaded: 1,
           ),
@@ -29,7 +29,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       } catch (err) {
         emit(
           state.copyWith(
-            status: ContentScreenStatus.failure,
+            status: CommentScreenStatus.failure,
             errorMessage: err.toString(),
           ),
         );

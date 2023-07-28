@@ -1,9 +1,9 @@
 part of 'bloc.dart';
 
-enum ContentScreenStatus { initial, loading, success, failure }
+enum CommentScreenStatus { initial, loading, success, failure }
 
-class ContentScreenState extends Equatable {
-  final ContentScreenStatus status;
+class CommentScreenState extends Equatable {
+  final CommentScreenStatus status;
   final List<LemmyComment>? comments;
   final int pagesLoaded;
   final bool isLoadingMore;
@@ -12,7 +12,7 @@ class ContentScreenState extends Equatable {
   final String? errorMessage;
   final String? createCommentErrorMessage;
 
-  ContentScreenState({
+  CommentScreenState({
     required this.status,
     this.createdCommentGettingPosted = false,
     this.comments,
@@ -35,17 +35,17 @@ class ContentScreenState extends Equatable {
         createCommentErrorMessage,
       ];
 
-  ContentScreenState copyWith({
+  CommentScreenState copyWith({
     String? createCommentErrorMessage,
     String? errorMessage,
     bool? reachedEnd,
     bool? isLoadingMore,
-    ContentScreenStatus? status,
+    CommentScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
     bool? createdCommentGettingPosted,
   }) {
-    return ContentScreenState(
+    return CommentScreenState(
       createdCommentGettingPosted:
           createdCommentGettingPosted ?? this.createdCommentGettingPosted,
       errorMessage: errorMessage,

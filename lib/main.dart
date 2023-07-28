@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:muffed/community_screen/community_screen.dart';
-import 'package:muffed/content_screen/content_screen.dart';
+import 'package:muffed/comment_screen/comment_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
@@ -60,7 +60,7 @@ final _router = GoRouter(
                 GoRoute(
                   path: 'content',
                   builder: (context, state) {
-                    return ContentScreen(state.extra as LemmyPost);
+                    return CommentScreen(state.extra as LemmyPost);
                   },
                 ),
                 GoRoute(

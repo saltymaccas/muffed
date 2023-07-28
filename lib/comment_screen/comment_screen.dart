@@ -10,19 +10,19 @@ import 'package:muffed/repo/server_repo.dart';
 import 'bloc/bloc.dart';
 import 'comment_view/comment.dart';
 
-class ContentScreen extends StatelessWidget {
-  const ContentScreen(this.post, {super.key});
+class CommentScreen extends StatelessWidget {
+  const CommentScreen(this.post, {super.key});
 
   final LemmyPost post;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ContentScreenBloc(
+      create: (context) => CommentScreenBloc(
         repo: context.read<ServerRepo>(),
         postId: post.id,
       )..add(InitializeEvent()),
-      child: BlocBuilder<ContentScreenBloc, ContentScreenState>(
+      child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
         builder: (context, state) {
           final BuildContext blocContext = context;
 
@@ -40,9 +40,9 @@ class ContentScreen extends StatelessWidget {
                             TextEditingController();
 
                         return BlocProvider.value(
-                          value: BlocProvider.of<ContentScreenBloc>(blocContext),
-                          child: BlocBuilder<ContentScreenBloc,
-                              ContentScreenState>(
+                          value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                          child: BlocBuilder<CommentScreenBloc,
+                              CommentScreenState>(
                             builder: (context, state) {
                               return Dialog(
                                 clipBehavior: Clip.hardEdge,
@@ -83,7 +83,7 @@ class ContentScreen extends StatelessWidget {
                                           TextButton(
                                             onPressed: () {
                                               context
-                                                  .read<ContentScreenBloc>()
+                                                  .read<CommentScreenBloc>()
                                                   .add(
                                                     UserCommented(
                                                         controller.text, () {
@@ -136,7 +136,7 @@ class ContentScreen extends StatelessWidget {
                 if (scrollInfo.metrics.pixels ==
                     scrollInfo.metrics.maxScrollExtent) {
                   context
-                      .read<ContentScreenBloc>()
+                      .read<CommentScreenBloc>()
                       .add(ReachedNearEndOfScroll());
                 }
                 return true;
@@ -153,18 +153,18 @@ class ContentScreen extends StatelessWidget {
                       limitContentHeight: false,
                     ),
                   ),
-                  if (state.status == ContentScreenStatus.loading)
+                  if (state.status == CommentScreenStatus.loading)
                     const SliverFillRemaining(
                       child: LoadingComponentTransparent(),
                     )
                   else
-                    (state.status == ContentScreenStatus.failure)
+                    (state.status == CommentScreenStatus.failure)
                         ? SliverFillRemaining(
                             child: ErrorComponentTransparent(
                               message: state.errorMessage ?? 'failed to load',
                             ),
                           )
-                        : (state.status == ContentScreenStatus.initial)
+                        : (state.status == CommentScreenStatus.initial)
                             ? SliverFillRemaining(
                                 child: Container(),
                               )
