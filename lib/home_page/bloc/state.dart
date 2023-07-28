@@ -14,7 +14,7 @@ final class HomePageState extends Equatable {
     required this.status,
     this.posts,
     this.isRefreshing = false,
-    this.pagesLoaded = 1,
+    this.pagesLoaded = 0,
     this.isLoadingMore = false,
     this.errorMessage,
   });

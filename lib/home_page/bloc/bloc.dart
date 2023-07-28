@@ -11,6 +11,7 @@ part 'event.dart';
 part 'state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
+  ///
   HomePageBloc({required this.repo})
       : super(HomePageState(status: HomePageStatus.initial)) {
     on<LoadInitialPostsRequested>((event, emit) async {
@@ -18,10 +19,20 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       try {
         List posts = await repo.getPosts(page: 1);
-        emit(HomePageState(status: HomePageStatus.success, posts: posts));
+        emit(
+          HomePageState(
+            status: HomePageStatus.success,
+            posts: posts,
+            pagesLoaded: 0,
+          ),
+        );
       } catch (err) {
-        emit(HomePageState(
-            status: HomePageStatus.failure, errorMessage: err.toString()));
+        emit(
+          HomePageState(
+            status: HomePageStatus.failure,
+            errorMessage: err.toString(),
+          ),
+        );
       }
     });
     on<PullDownRefresh>((event, emit) async {
@@ -31,20 +42,43 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       emit(state.copyWith(posts: posts, isRefreshing: false, pagesLoaded: 1));
     });
-    on<ReachedNearEndOfScroll>((event, emit) async {
-      log('[HomePageBloc] Loading page ${state.pagesLoaded + 1}');
-      emit(state.copyWith(isLoadingMore: true));
+    on<ReachedNearEndOfScroll>(
+      (event, emit) async {
+        log('[HomePageBloc] Loading page ${state.pagesLoaded + 1}');
+        emit(state.copyWith(isLoadingMore: true));
 
-      List posts = await repo.getPosts(page: state.pagesLoaded + 1);
+        List posts = await repo.getPosts(page: state.pagesLoaded + 1);
 
-      emit(state.copyWith(
-        posts: (state.posts! + posts),
-        pagesLoaded: state.pagesLoaded + 1,
-        isLoadingMore: false,
-      ));
+        emit(
+          state.copyWith(
+            posts: (state.posts! + posts),
+            pagesLoaded: state.pagesLoaded + 1,
+            isLoadingMore: false,
+          ),
+        );
 
-      log('[HomePageBloc] Loaded page ${state.pagesLoaded}');
-    }, transformer: droppable());
+        log('[HomePageBloc] Loaded page ${state.pagesLoaded}');
+      },
+      transformer: droppable(),
+    );
+    on<AccountChanged>(
+      (event, emit) async {
+        emit(state.copyWith(posts: [], pagesLoaded: 0));
+        try {
+          List posts = await repo.getPosts(page: 1);
+          emit(HomePageState(
+              status: HomePageStatus.success, posts: posts, pagesLoaded: 1));
+        } catch (err) {
+          emit(
+            HomePageState(
+              status: HomePageStatus.failure,
+              errorMessage: err.toString(),
+            ),
+          );
+        }
+      },
+      transformer: restartable(),
+    );
   }
 
   final ServerRepo repo;
