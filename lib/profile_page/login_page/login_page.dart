@@ -76,7 +76,7 @@ class LoginPage extends StatelessWidget {
                       onChanged: (value) {
                         context
                             .read<LoginPageBloc>()
-                            .add(ServerAddrChanged(value));
+                            .add(ServerAddressChanged(value));
                       },
                     ),
                     TextButton(

@@ -21,7 +21,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<TotpChanged>((event, emit) {
       emit(state.copyWith(totp: event.value));
     });
-    on<ServerAddrChanged>((event, emit) {
+    on<ServerAddressChanged>((event, emit) {
       emit(state.copyWith(serverAddr: event.value));
     });
 
