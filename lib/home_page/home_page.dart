@@ -71,28 +71,44 @@ class HomePage extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
-                child: ContentView(
-                  reachedNearEnd: () {
-                    context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-                  },
-                  onRefresh: () async {
-                    context.read<HomePageBloc>().add(PullDownRefresh());
-                    await context
-                        .read<HomePageBloc>()
-                        .stream
-                        .firstWhere((element) {
-                      if (element.isRefreshing == false) {
-                        return true;
-                      }
-                      return false;
-                    });
-                  },
-                  onPressedPost: (post) {
-                    context.go('/home/content', extra: post);
-                  },
-                  posts: context.read<HomePageBloc>().state.posts!,
-                  floatingHeader: false,
-                  headerDelegate: _TopBarDelegate(),
+                child: Stack(
+                  children: [
+                    ContentView(
+                      reachedNearEnd: () {
+                        context
+                            .read<HomePageBloc>()
+                            .add(ReachedNearEndOfScroll());
+                      },
+                      onRefresh: () async {
+                        context.read<HomePageBloc>().add(PullDownRefresh());
+                        await context
+                            .read<HomePageBloc>()
+                            .stream
+                            .firstWhere((element) {
+                          if (element.isRefreshing == false) {
+                            return true;
+                          }
+                          return false;
+                        });
+                      },
+                      onPressedPost: (post) {
+                        context.go('/home/content', extra: post);
+                      },
+                      posts: context.read<HomePageBloc>().state.posts!,
+                      floatingHeader: false,
+                      headerDelegate: _TopBarDelegate(),
+                    ),
+                    if (state.isLoadingMore)
+                      const SafeArea(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            height: 5,
+                            child: LinearProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               );
             } else {
