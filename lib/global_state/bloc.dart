@@ -6,7 +6,9 @@ part 'state.dart';
 
 part 'event.dart';
 
+/// The bloc that controls the global app state
 class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
+  ///
   GlobalBloc() : super(GlobalState()) {
     on<AccountLoggedIn>((event, emit) {
       emit(state.copyWith(
@@ -15,6 +17,14 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
     on<UserRequestsLemmyAccountSwitch>((event, emit) {
       emit(state.copyWith(lemmySelectedAccount: event.accountIndex));
+    });
+    on<UserRequestsAccountRemoval>((event, emit) {
+      emit(
+        state.copyWith(
+          lemmySelectedAccount: null,
+          lemmyAccounts: state.lemmyAccounts..removeAt(event.index),
+        ),
+      );
     });
   }
 
