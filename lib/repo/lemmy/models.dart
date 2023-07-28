@@ -101,13 +101,6 @@ Map<int, LemmyVoteType> intToLemmyVoteType = {
   -1: LemmyVoteType.downVote
 };
 
-// The classes with equatable only has the name of the class as a string
-// and id in props, this is because this should be all that is needed to
-// determine weather the objects are the same or not
-
-// a warning also appears because some of the class is not immutable
-// this is fine because only immutable values are in props,
-
 class LemmyPost extends Equatable {
   /// initialize object
   LemmyPost({
@@ -166,7 +159,7 @@ class LemmyPost extends Equatable {
   final bool saved;
 
   @override
-  List<Object> get props => ['LemmyPost', id];
+  List<Object> get props => [apId];
 }
 
 class LemmyComment extends Equatable {
