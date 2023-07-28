@@ -19,7 +19,7 @@ final class LoginPageState extends Equatable {
 
   @override
   List<Object?> get props =>
-      [usernameOrEmail, password, totp, serverAddr, errorMessage];
+      [usernameOrEmail, password, totp, serverAddr, errorMessage, loading];
 
   LoginPageState copyWith({
     bool? loading,

@@ -14,7 +14,8 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
+      create: (context) =>
+          LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
       child: BlocBuilder<LoginPageBloc, LoginPageState>(
         builder: (context, state) {
           return Scaffold(
@@ -26,74 +27,87 @@ class LoginPage extends StatelessWidget {
                 icon: Icon(Icons.arrow_back),
               ),
             ),
-            body: Center(
-              child: SizedBox(
-                width: 300,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                          label: Text('Username or Email'), filled: true),
-                      onChanged: (value) {
-                        context
-                            .read<LoginPageBloc>()
-                            .add(UserNameOrEmailChanged(value));
-                      },
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          filled: true, label: Text('TOTP (Optional)')),
-                      onChanged: (value) {
-                        context.read<LoginPageBloc>().add(TotpChanged(value));
-                      },
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          filled: true, label: Text('Password')),
-                      onChanged: (value) {
-                        context
-                            .read<LoginPageBloc>()
-                            .add(PasswordChanged(value));
-                      },
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          filled: true, label: Text('Server Address')),
-                      onChanged: (value) {
-                        context
-                            .read<LoginPageBloc>()
-                            .add(ServerAddressChanged(value));
-                      },
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          context.read<LoginPageBloc>().add(Submitted(() {
-                            context.pop();
-                          }));
-                        },
-                        child: Text('Login')),
-                    if(state.loading) LoadingComponentTransparent(),
-                    if (state.errorMessage != null)
-                      ErrorComponentTransparent(
-                        message: state.errorMessage!,
-                      )
-                  ],
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 5,
+                  child: (state.loading)
+                      ? const LinearProgressIndicator()
+                      : Container(),
                 ),
-              ),
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                label: Text('Username or Email'), filled: true),
+                            onChanged: (value) {
+                              context
+                                  .read<LoginPageBloc>()
+                                  .add(UserNameOrEmailChanged(value));
+                            },
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                                filled: true, label: Text('TOTP (Optional)')),
+                            onChanged: (value) {
+                              context
+                                  .read<LoginPageBloc>()
+                                  .add(TotpChanged(value));
+                            },
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                                filled: true, label: Text('Password')),
+                            onChanged: (value) {
+                              context
+                                  .read<LoginPageBloc>()
+                                  .add(PasswordChanged(value));
+                            },
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                                filled: true, label: Text('Server Address')),
+                            onChanged: (value) {
+                              context
+                                  .read<LoginPageBloc>()
+                                  .add(ServerAddressChanged(value));
+                            },
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                context.read<LoginPageBloc>().add(
+                                  Submitted(() {
+                                    context.pop();
+                                  }),
+                                );
+                              },
+                              child: Text('Login')),
+                          if (state.errorMessage != null)
+                            ErrorComponentTransparent(
+                              message: state.errorMessage!,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
