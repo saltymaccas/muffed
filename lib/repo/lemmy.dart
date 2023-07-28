@@ -454,7 +454,6 @@ interface class LemmyRepo {
     try {
       final response = await dio.post(
         '${globalBloc.getLemmyBaseUrl()}/api/v3/post/like',
-        options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           'post_id': postId,
@@ -485,7 +484,6 @@ interface class LemmyRepo {
     try {
       final response = await dio.post(
         '${globalBloc.getLemmyBaseUrl()}/api/v3/comment/like',
-        options: Options(headers: {'Content-type': 'application/json'}),
         data: {
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           'comment_id': commentId,
