@@ -502,4 +502,36 @@ interface class LemmyRepo {
       return Future.error('Bad response format');
     }
   }
+
+  Future<void> createComment(
+    String content,
+    int postId,
+    int? parentId,
+  ) async {
+    if (globalBloc.state.lemmySelectedAccount == null) {
+      throw 'Not logged in';
+    }
+
+    try {
+      final response = await dio.post(
+        '${globalBloc.getLemmyBaseUrl()}/api/v3/comment',
+        data: {
+          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          'post_id': postId,
+          'content': content,
+          if (parentId != null) 'parent_id': parentId,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+    } on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+  }
 }

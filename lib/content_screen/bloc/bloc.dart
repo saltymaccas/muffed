@@ -64,6 +64,22 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       },
       transformer: droppable(),
     );
+    on<UserCommented>((event, emit) async {
+      emit(state.copyWith(createdCommentGettingPosted: true));
+
+      try {
+        await repo.lemmyRepo.createComment(event.comment, postId, null);
+        emit(state.copyWith(createdCommentGettingPosted: false));
+        event.onSuccess();
+      } catch (err) {
+        emit(
+          state.copyWith(
+            createCommentErrorMessage: err.toString(),
+            isLoadingMore: false,
+          ),
+        );
+      }
+    });
   }
 
   final ServerRepo repo;

@@ -8,15 +8,19 @@ class ContentScreenState extends Equatable {
   final int pagesLoaded;
   final bool isLoadingMore;
   final bool reachedEnd;
+  final bool createdCommentGettingPosted;
   final String? errorMessage;
+  final String? createCommentErrorMessage;
 
   ContentScreenState({
     required this.status,
+    this.createdCommentGettingPosted = false,
     this.comments,
     this.pagesLoaded = 0,
     this.isLoadingMore = false,
     this.reachedEnd = false,
     this.errorMessage,
+    this.createCommentErrorMessage,
   });
 
   @override
@@ -27,18 +31,25 @@ class ContentScreenState extends Equatable {
         isLoadingMore,
         reachedEnd,
         errorMessage,
+        createdCommentGettingPosted,
+        createCommentErrorMessage,
       ];
 
   ContentScreenState copyWith({
+    String? createCommentErrorMessage,
     String? errorMessage,
     bool? reachedEnd,
     bool? isLoadingMore,
     ContentScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
+    bool? createdCommentGettingPosted,
   }) {
     return ContentScreenState(
+      createdCommentGettingPosted:
+          createdCommentGettingPosted ?? this.createdCommentGettingPosted,
       errorMessage: errorMessage,
+      createCommentErrorMessage: createCommentErrorMessage,
       reachedEnd: reachedEnd ?? this.reachedEnd,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       status: status ?? this.status,
