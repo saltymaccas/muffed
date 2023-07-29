@@ -59,6 +59,8 @@ class CommentScreen extends StatelessWidget {
                                     Padding(
                                       padding: EdgeInsets.all(4),
                                       child: TextField(
+                                        autofocus: true,
+                                        autocorrect: true,
                                         controller: controller,
                                         keyboardType: TextInputType.multiline,
                                         minLines: 5,
