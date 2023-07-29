@@ -128,7 +128,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           sortType: state.sortType,
           page: 1,
         );
-        emit(state.copyWith(posts: []));
         emit(state.copyWith(posts: posts, isLoading: false, pagesLoaded: 1));
       } catch (err) {
         emit(

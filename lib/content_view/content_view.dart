@@ -79,6 +79,8 @@ class ContentView extends StatelessWidget {
                   : SliverChildBuilderDelegate(childCount: posts.length,
                       (context, index) {
                       return CardLemmyPostItem(
+                        // key needs to be set to properly update the items
+                        key: UniqueKey(),
                         posts[index] as LemmyPost,
                         openContent: (post) {
                           onPressedPost(post);
