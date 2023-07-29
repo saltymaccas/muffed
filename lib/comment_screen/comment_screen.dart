@@ -40,7 +40,8 @@ class CommentScreen extends StatelessWidget {
                             TextEditingController();
 
                         return BlocProvider.value(
-                          value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                          value:
+                              BlocProvider.of<CommentScreenBloc>(blocContext),
                           child: BlocBuilder<CommentScreenBloc,
                               CommentScreenState>(
                             builder: (context, state) {
@@ -141,46 +142,60 @@ class CommentScreen extends StatelessWidget {
                 }
                 return true;
               },
-              child: CustomScrollView(
-                slivers: [
-                  const SliverAppBar(
-                    title: Text('Comments'),
-                    floating: true,
-                  ),
-                  SliverToBoxAdapter(
-                    child: CardLemmyPostItem(
-                      post,
-                      limitContentHeight: false,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<CommentScreenBloc>().add(PullDownRefresh());
+                  await context
+                      .read<CommentScreenBloc>()
+                      .stream
+                      .firstWhere((element) {
+                    if (element.isRefreshing == false) {
+                      return true;
+                    }
+                    return false;
+                  });
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverAppBar(
+                      title: Text('Comments'),
+                      floating: true,
                     ),
-                  ),
-                  if (state.status == CommentScreenStatus.loading)
-                    const SliverFillRemaining(
-                      child: LoadingComponentTransparent(),
-                    )
-                  else
-                    (state.status == CommentScreenStatus.failure)
-                        ? SliverFillRemaining(
-                            child: ErrorComponentTransparent(
-                              message: state.errorMessage ?? 'failed to load',
-                            ),
-                          )
-                        : (state.status == CommentScreenStatus.initial)
-                            ? SliverFillRemaining(
-                                child: Container(),
-                              )
-                            : SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                    childCount: state.comments!.length,
-                                    (context, index) {
-                                  return Column(
-                                    children: [
-                                      CommentItem(state.comments![index]),
-                                      const Divider(),
-                                    ],
-                                  );
-                                }),
+                    SliverToBoxAdapter(
+                      child: CardLemmyPostItem(
+                        post,
+                        limitContentHeight: false,
+                      ),
+                    ),
+                    if (state.status == CommentScreenStatus.loading)
+                      const SliverFillRemaining(
+                        child: LoadingComponentTransparent(),
+                      )
+                    else
+                      (state.status == CommentScreenStatus.failure)
+                          ? SliverFillRemaining(
+                              child: ErrorComponentTransparent(
+                                message: state.errorMessage ?? 'failed to load',
                               ),
-                ],
+                            )
+                          : (state.status == CommentScreenStatus.initial)
+                              ? SliverFillRemaining(
+                                  child: Container(),
+                                )
+                              : SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                      childCount: state.comments!.length,
+                                      (context, index) {
+                                    return Column(
+                                      children: [
+                                        CommentItem(state.comments![index]),
+                                        const Divider(),
+                                      ],
+                                    );
+                                  }),
+                                ),
+                  ],
+                ),
               ),
             ),
           );

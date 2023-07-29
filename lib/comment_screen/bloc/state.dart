@@ -3,16 +3,9 @@ part of 'bloc.dart';
 enum CommentScreenStatus { initial, loading, success, failure }
 
 class CommentScreenState extends Equatable {
-  final CommentScreenStatus status;
-  final List<LemmyComment>? comments;
-  final int pagesLoaded;
-  final bool isLoadingMore;
-  final bool reachedEnd;
-  final bool createdCommentGettingPosted;
-  final String? errorMessage;
-  final String? createCommentErrorMessage;
 
-  CommentScreenState({
+  ///
+  const CommentScreenState({
     required this.status,
     this.createdCommentGettingPosted = false,
     this.comments,
@@ -21,10 +14,33 @@ class CommentScreenState extends Equatable {
     this.reachedEnd = false,
     this.errorMessage,
     this.createCommentErrorMessage,
+    this.isRefreshing = false,
   });
 
+  final CommentScreenStatus status;
+  final List<LemmyComment>? comments;
+  final int pagesLoaded;
+  final bool isLoadingMore;
+
+  /// whether all the comment pages have been loaded, so there are no more
+  /// comment to be loaded
+  final bool reachedEnd;
+
+  final bool createdCommentGettingPosted;
+
+  /// The error message that appears instead of the comments if the comment
+  /// screen state is failure. If the comment screen state is loaded it will
+  /// appear as a snack bar.
+  final String? errorMessage;
+
+  /// the error message that will appear on the add comment dialog is an error
+  /// occurs with adding the comment
+  final String? createCommentErrorMessage;
+  final bool isRefreshing;
+
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         status,
         comments,
         pagesLoaded,
@@ -33,9 +49,11 @@ class CommentScreenState extends Equatable {
         errorMessage,
         createdCommentGettingPosted,
         createCommentErrorMessage,
+        isRefreshing,
       ];
 
   CommentScreenState copyWith({
+    bool? isRefreshing,
     String? createCommentErrorMessage,
     String? errorMessage,
     bool? reachedEnd,
@@ -46,8 +64,9 @@ class CommentScreenState extends Equatable {
     bool? createdCommentGettingPosted,
   }) {
     return CommentScreenState(
+      isRefreshing: isRefreshing ?? this.isRefreshing,
       createdCommentGettingPosted:
-          createdCommentGettingPosted ?? this.createdCommentGettingPosted,
+      createdCommentGettingPosted ?? this.createdCommentGettingPosted,
       errorMessage: errorMessage,
       createCommentErrorMessage: createCommentErrorMessage,
       reachedEnd: reachedEnd ?? this.reachedEnd,

@@ -13,3 +13,5 @@ final class UserCommented extends CommentScreenEvent {
   final void Function() onSuccess;
   final String comment;
 }
+
+final class PullDownRefresh extends CommentScreenEvent{}

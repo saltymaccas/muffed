@@ -80,6 +80,25 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         );
       }
     });
+    on<PullDownRefresh>((event, emit) async {
+      emit(state.copyWith(isRefreshing: true));
+      
+      try {
+        final List<LemmyComment> comments =
+        await repo.lemmyRepo.getComments(postId, page: 1);
+
+        emit(
+          state.copyWith(
+            comments: comments,
+            isRefreshing: false,
+            pagesLoaded: 1,
+            reachedEnd: false,
+          ),
+        );
+      }catch(err){
+        emit(state.copyWith(isRefreshing: false, errorMessage: err.toString()));
+      }
+    });
   }
 
   final ServerRepo repo;
