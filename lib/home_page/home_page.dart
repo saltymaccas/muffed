@@ -159,62 +159,79 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                   ),
-                  MuffedMenuAnchor(
-                    icon: Icons.filter_list,
-                    // I wrapped every child in bloc builder so it updates
-                    // I couldn't find a way around this
-                    menuChildren: [
-                      BlocProvider.value(
-                        value: BlocProvider.of<HomePageBloc>(blocContext),
-                        child: BlocBuilder<HomePageBloc, HomePageState>(
-                          builder: (context, state) {
-                            return MenuItemButton(
-                              child: Text('All'),
-                              onPressed: () {
-                                context.read<HomePageBloc>().add(
-                                    ListingTypeChanged(LemmyListingType.all));
-                              },
-                              closeOnActivate: true,
-                              trailingIcon:
-                                  (state.listingType == LemmyListingType.all)
-                                      ? Icon(Icons.check)
-                                      : null,
-                            );
-                          },
-                        ),
-                      ),
-                      BlocProvider.value(
-                        value: BlocProvider.of<HomePageBloc>(blocContext),
-                        child: BlocBuilder<HomePageBloc, HomePageState>(
-                          builder: (context, state) {
-                            return MenuItemButton(
-                              child: Text('Subscribed'),
-                              onPressed: () {
-                                context.read<HomePageBloc>().add(
-                                    ListingTypeChanged(
-                                        LemmyListingType.subscribed));
-                              },
-                              closeOnActivate: true,
-                              trailingIcon: (state.listingType ==
-                                      LemmyListingType.subscribed)
-                                  ? Icon(Icons.check)
-                                  : null,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                    onClose: () {
-                      setState(() {
-                        menuOpen = false;
-                      });
-                    },
-                    onOpen: () {
-                      setState(() {
-                        menuOpen = true;
-                      });
-                    },
-                  ),
+                  BlocProvider.value(
+                    value: BlocProvider.of<HomePageBloc>(blocContext),
+                    child: BlocBuilder<HomePageBloc, HomePageState>(
+                      builder: (context, state) {
+                        if (context
+                                .read<GlobalBloc>()
+                                .getSelectedLemmyAccount() !=
+                            null) {
+                          return MuffedMenuAnchor(
+                            icon: Icons.filter_list,
+                            // I wrapped every child in bloc builder so it updates
+                            // I couldn't find a way around this
+                            menuChildren: [
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MenuItemButton(
+                                      child: Text('All'),
+                                      onPressed: () {
+                                        context.read<HomePageBloc>().add(
+                                            ListingTypeChanged(
+                                                LemmyListingType.all));
+                                      },
+                                      closeOnActivate: true,
+                                      trailingIcon: (state.listingType ==
+                                              LemmyListingType.all)
+                                          ? Icon(Icons.check)
+                                          : null,
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MenuItemButton(
+                                      child: Text('Subscribed'),
+                                      onPressed: () {
+                                        context.read<HomePageBloc>().add(
+                                            ListingTypeChanged(
+                                                LemmyListingType.subscribed));
+                                      },
+                                      closeOnActivate: true,
+                                      trailingIcon: (state.listingType ==
+                                              LemmyListingType.subscribed)
+                                          ? Icon(Icons.check)
+                                          : null,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                            onClose: () {
+                              setState(() {
+                                menuOpen = false;
+                              });
+                            },
+                            onOpen: () {
+                              setState(() {
+                                menuOpen = true;
+                              });
+                            },
+                          );
+                        } else {
+                          return SizedBox();
+                        }
+                      },
+                    ),
+                  )
                 ],
                 child: AbsorbPointer(
                   absorbing: menuOpen,
