@@ -37,29 +37,33 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        if (!state.reachedEnd) {
-          print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
+        print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
 
-          emit(state.copyWith(isLoadingMore: true));
+        emit(state.copyWith(isLoadingMore: true));
+        try {
+          if (!state.reachedEnd) {
+            final List<LemmyComment> comments = await repo.lemmyRepo
+                .getComments(postId, page: state.pagesLoaded + 1);
 
-          List<LemmyComment> comments = await repo.lemmyRepo
-              .getComments(postId, page: state.pagesLoaded + 1);
+            if (comments.isEmpty) {
+              emit(state.copyWith(reachedEnd: true, isLoadingMore: false));
 
-          if (comments.isEmpty) {
-            emit(state.copyWith(reachedEnd: true));
+              print('[ContentScreenBloc] end reached');
+            } else {
+              emit(
+                state.copyWith(
+                  isLoadingMore: false,
+                  pagesLoaded: state.pagesLoaded + 1,
+                  comments: [...state.comments ?? [], ...comments],
+                ),
+              );
 
-            print('[ContentScreenBloc] end reached');
-          } else {
-            emit(
-              state.copyWith(
-                isLoadingMore: false,
-                pagesLoaded: state.pagesLoaded + 1,
-                comments: [...state.comments ?? [], ...comments],
-              ),
-            );
-
-            print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+              print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+            }
           }
+        }
+        catch(err){
+          emit(state.copyWith(errorMessage: err.toString(), isLoadingMore: false));
         }
       },
       transformer: droppable(),

@@ -85,126 +85,144 @@ class CommentScreen extends StatelessWidget {
                 icon: const Icon(Icons.sort),
               ),
             ],
-            child: NotificationListener(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels ==
-                    scrollInfo.metrics.maxScrollExtent) {
-                  context
-                      .read<CommentScreenBloc>()
-                      .add(ReachedNearEndOfScroll());
-                }
-                return true;
-              },
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<CommentScreenBloc>().add(PullDownRefresh());
-                  await context
-                      .read<CommentScreenBloc>()
-                      .stream
-                      .firstWhere((element) {
-                    if (element.isRefreshing == false) {
-                      return true;
+            child: Stack(
+              children: [
+                NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                      context
+                          .read<CommentScreenBloc>()
+                          .add(ReachedNearEndOfScroll());
                     }
-                    return false;
-                  });
-                },
-                child: CustomScrollView(
-                  slivers: [
-                    const SliverAppBar(
-                      title: Text('Comments'),
-                      floating: true,
-                    ),
-                    SliverToBoxAdapter(
-                      child: CardLemmyPostItem(
-                        post,
-                        limitContentHeight: false,
-                      ),
-                    ),
-                    if (state.status == CommentScreenStatus.loading)
-                      const SliverFillRemaining(
-                        child: LoadingComponentTransparent(),
-                      )
-                    else
-                      (state.status == CommentScreenStatus.failure)
-                          ? SliverFillRemaining(
-                              child: ErrorComponentTransparent(
-                                message: state.errorMessage ?? 'failed to load',
-                              ),
-                            )
-                          : (state.status == CommentScreenStatus.initial)
+                    return true;
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<CommentScreenBloc>().add(PullDownRefresh());
+                      await context
+                          .read<CommentScreenBloc>()
+                          .stream
+                          .firstWhere((element) {
+                        if (element.isRefreshing == false) {
+                          return true;
+                        }
+                        return false;
+                      });
+                    },
+                    child: CustomScrollView(
+                      slivers: [
+                        const SliverAppBar(
+                          title: Text('Comments'),
+                          floating: true,
+                        ),
+                        SliverToBoxAdapter(
+                          child: CardLemmyPostItem(
+                            post,
+                            limitContentHeight: false,
+                          ),
+                        ),
+                        if (state.status == CommentScreenStatus.loading)
+                          const SliverFillRemaining(
+                            child: LoadingComponentTransparent(),
+                          )
+                        else
+                          (state.status == CommentScreenStatus.failure)
                               ? SliverFillRemaining(
-                                  child: Container(),
+                                  child: ErrorComponentTransparent(
+                                    message:
+                                        state.errorMessage ?? 'failed to load',
+                                  ),
                                 )
-                              : SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                      childCount: state.comments!.length,
-                                      (context, index) {
-                                    return Column(
-                                      children: [
-                                        CommentItem(
-                                          key: UniqueKey(),
-                                          comment: state.comments![index],
-                                          onReplyPressed: (id, parentContent) {
-                                            final controller =
-                                                _CreateCommentDialogController();
+                              : (state.status == CommentScreenStatus.initial)
+                                  ? SliverFillRemaining(
+                                      child: Container(),
+                                    )
+                                  : SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                          childCount: state.comments!.length,
+                                          (context, index) {
+                                        return Column(
+                                          children: [
+                                            CommentItem(
+                                              key: UniqueKey(),
+                                              comment: state.comments![index],
+                                              onReplyPressed:
+                                                  (id, parentContent) {
+                                                final controller =
+                                                    _CreateCommentDialogController();
 
-                                            showDialog<void>(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return BlocProvider.value(
-                                                  value: BlocProvider.of<
-                                                      CommentScreenBloc>(
-                                                    blocContext,
-                                                  ),
-                                                  child: Builder(
-                                                    builder: (context) {
-                                                      return _CreateCommentDialog(
-                                                        contentOfReplyingComment:
-                                                            parentContent,
-                                                        onSubmitted: (comment) {
-                                                          controller
-                                                              .changeLoadingState(
-                                                            loadingState: true,
-                                                          );
-                                                          context
-                                                              .read<
-                                                                  CommentScreenBloc>()
-                                                              .add(
-                                                                UserRepliedToComment(
-                                                                  onSuccess:
-                                                                      controller
-                                                                          .onSuccess,
-                                                                  onError: () {
-                                                                    controller
-                                                                        .changeLoadingState(
-                                                                      loadingState:
-                                                                          false,
-                                                                    );
-                                                                  },
-                                                                  comment:
-                                                                      comment,
-                                                                  commentId: id,
-                                                                ),
+                                                showDialog<void>(
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return BlocProvider.value(
+                                                      value: BlocProvider.of<
+                                                          CommentScreenBloc>(
+                                                        blocContext,
+                                                      ),
+                                                      child: Builder(
+                                                        builder: (context) {
+                                                          return _CreateCommentDialog(
+                                                            contentOfReplyingComment:
+                                                                parentContent,
+                                                            onSubmitted:
+                                                                (comment) {
+                                                              controller
+                                                                  .changeLoadingState(
+                                                                loadingState:
+                                                                    true,
                                                               );
+                                                              context
+                                                                  .read<
+                                                                      CommentScreenBloc>()
+                                                                  .add(
+                                                                    UserRepliedToComment(
+                                                                      onSuccess:
+                                                                          controller
+                                                                              .onSuccess,
+                                                                      onError:
+                                                                          () {
+                                                                        controller
+                                                                            .changeLoadingState(
+                                                                          loadingState:
+                                                                              false,
+                                                                        );
+                                                                      },
+                                                                      comment:
+                                                                          comment,
+                                                                      commentId:
+                                                                          id,
+                                                                    ),
+                                                                  );
+                                                            },
+                                                            controller:
+                                                                controller,
+                                                          );
                                                         },
-                                                        controller: controller,
-                                                      );
-                                                    },
-                                                  ),
+                                                      ),
+                                                    );
+                                                  },
                                                 );
                                               },
-                                            );
-                                          },
-                                        ),
-                                        const Divider(),
-                                      ],
-                                    );
-                                  }),
-                                ),
-                  ],
+                                            ),
+                                            const Divider(),
+                                          ],
+                                        );
+                                      }),
+                                    ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                if (state.isLoadingMore)
+                  const SafeArea(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: LinearProgressIndicator(),
+                    ),
+                  ),
+              ],
             ),
           );
         },
