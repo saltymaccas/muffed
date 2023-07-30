@@ -12,9 +12,11 @@ import 'package:muffed/repo/server_repo.dart';
 import 'bloc/bloc.dart';
 import 'comment_view/comment.dart';
 
+/// Displays a screen that shows the post on top and the comments under
 class CommentScreen extends StatelessWidget {
   const CommentScreen(this.post, {super.key});
 
+  /// The post that should be shown
   final LemmyPost post;
 
   @override
@@ -37,53 +39,51 @@ class CommentScreen extends StatelessWidget {
             indexOfRelevantItem: 0,
             actions: [
               IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    showDialog<void>(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        final TextEditingController controller =
-                            TextEditingController();
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  showDialog<void>(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return BlocProvider.value(
+                        value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                        child:
+                            BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                          builder: (context, state) {
+                            final controller = _CreateCommentDialogController();
 
-                        return BlocProvider.value(
-                          value:
-                              BlocProvider.of<CommentScreenBloc>(blocContext),
-                          child: BlocBuilder<CommentScreenBloc,
-                              CommentScreenState>(
-                            builder: (context, state) {
-                              final controller =
-                                  _CreateCommentDialogController();
-
-                              return _CreateCommentDialog(
-                                controller: controller,
-                                onSubmitted: (content) {
-                                  controller.changeLoadingState(false);
-                                  context.read<CommentScreenBloc>().add(
-                                        UserCommented(
-                                          comment: content,
-                                          onSuccess: () {
-                                            controller.onSuccess();
-                                          },
-                                          onError: () {
-                                            controller
-                                                .changeLoadingState(false);
-                                          },
-                                        ),
-                                      );
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.add)),
+                            return _CreateCommentDialog(
+                              controller: controller,
+                              onSubmitted: (content) {
+                                controller.changeLoadingState(
+                                  loadingState: true,
+                                );
+                                context.read<CommentScreenBloc>().add(
+                                      UserCommented(
+                                        comment: content,
+                                        onSuccess: controller.onSuccess,
+                                        onError: () {
+                                          controller.changeLoadingState(
+                                            loadingState: false,
+                                          );
+                                        },
+                                      ),
+                                    );
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(Icons.add),
+              ),
               IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {},
-                  icon: Icon(Icons.sort)),
+                visualDensity: VisualDensity.compact,
+                onPressed: () {},
+                icon: const Icon(Icons.sort),
+              ),
             ],
             child: NotificationListener(
               onNotification: (ScrollNotification scrollInfo) {
@@ -165,7 +165,7 @@ class CommentScreen extends StatelessWidget {
                                                         onSubmitted: (comment) {
                                                           controller
                                                               .changeLoadingState(
-                                                            true,
+                                                            loadingState: true,
                                                           );
                                                           context
                                                               .read<
@@ -173,14 +173,13 @@ class CommentScreen extends StatelessWidget {
                                                               .add(
                                                                 UserRepliedToComment(
                                                                   onSuccess:
-                                                                      () {
-                                                                    controller
-                                                                        .onSuccess();
-                                                                  },
+                                                                      controller
+                                                                          .onSuccess,
                                                                   onError: () {
                                                                     controller
                                                                         .changeLoadingState(
-                                                                      false,
+                                                                      loadingState:
+                                                                          false,
                                                                     );
                                                                   },
                                                                   comment:
@@ -223,7 +222,7 @@ class _CreateCommentDialogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeLoadingState(bool loadingState) {
+  void changeLoadingState({required bool loadingState}) {
     isLoading = loadingState;
     notifyListeners();
   }
@@ -234,7 +233,6 @@ class _CreateCommentDialog extends StatefulWidget {
     required this.onSubmitted,
     required this.controller,
     this.contentOfReplyingComment,
-    super.key,
   });
 
   final void Function(String content) onSubmitted;
@@ -280,23 +278,23 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
             Flexible(
               flex: 2,
               child: Container(
-                constraints: BoxConstraints(maxHeight: 200),
+                constraints: const BoxConstraints(maxHeight: 200),
                 child: Markdown(
                   data: widget.contentOfReplyingComment!,
                   shrinkWrap: true,
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
           ],
           SizedBox(
             height: 5,
-            child: (isLoading) ? LinearProgressIndicator() : Container(),
+            child: isLoading ? const LinearProgressIndicator() : Container(),
           ),
           Flexible(
             flex: 1,
             child: Padding(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               child: TextField(
                 controller: controller,
                 autofocus: true,
@@ -304,11 +302,11 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
                 keyboardType: TextInputType.multiline,
                 minLines: 5,
                 maxLines: null,
-                decoration: InputDecoration(border: InputBorder.none),
+                decoration: const InputDecoration(border: InputBorder.none),
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8,
@@ -317,21 +315,22 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-                    child: Text('Cancel')),
-                SizedBox(width: 8),
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 8),
                 TextButton(
                   onPressed: () {
                     widget.onSubmitted(controller.text);
                   },
-                  child: Text(
-                    'Comment',
-                  ),
                   style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  child: const Text(
+                    'Comment',
                   ),
                 ),
               ],
