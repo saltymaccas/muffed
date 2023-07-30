@@ -135,6 +135,15 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             child: SizedBox(
                               height: 100,
                               child: AnyLinkPreview(
+                                cache: Duration(days: 1),
+                                placeholderWidget: Container(
+                                  height: double.maxFinite,
+                                  width: double.maxFinite,
+                                  color: Theme.of(context).colorScheme.surface,
+                                  child: const Center(
+                                    child: Text('Loading url data'),
+                                  ),
+                                ),
                                 errorImage: 'null',
                                 errorBody: 'Could not load body',
                                 errorTitle: post.name,
@@ -148,7 +157,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                     child: Text(
                                       post.url!,
                                       style: const TextStyle(
-                                          decoration: TextDecoration.underline),
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -168,7 +178,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                           );
                         }
                       },
-                    )
+                    ),
                   ],
                   if (post.body != '' && post.body != null) ...[
                     Padding(
@@ -363,7 +373,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         visualDensity: VisualDensity.compact,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -417,9 +427,12 @@ class _ImageViewerState extends State<_ImageViewer> {
               return GestureDetector(
                 // if should blur is on a tap should remove the blur and a
                 // second tap should open the image
-                onTap: (!shouldBlur) ? (){
-                  openImageViewer(context, imageProvider, heroTag, DisposeLevel.low);
-                } : null,
+                onTap: (!shouldBlur)
+                    ? () {
+                        openImageViewer(
+                            context, imageProvider, heroTag, DisposeLevel.low);
+                      }
+                    : null,
 
                 child: MeasureSize(
                   onChange: (size) {
@@ -448,7 +461,10 @@ class _ImageViewerState extends State<_ImageViewer> {
             placeholder: (context, url) {
               // width is double.maxFinite to make image not animate the
               // width changing size but instead only animate the height
-              return SizedBox(height: 300, width: double.maxFinite,);
+              return SizedBox(
+                height: 300,
+                width: double.maxFinite,
+              );
             },
           ),
         ),
@@ -456,4 +472,3 @@ class _ImageViewerState extends State<_ImageViewer> {
     );
   }
 }
-
