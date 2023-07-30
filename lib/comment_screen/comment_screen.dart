@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
+import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -22,7 +23,12 @@ class CommentScreen extends StatelessWidget {
         repo: context.read<ServerRepo>(),
         postId: post.id,
       )..add(InitializeEvent()),
-      child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+      child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            showErrorSnackBar(context, text: state.errorMessage!);
+          }
+        },
         builder: (context, state) {
           final BuildContext blocContext = context;
 
@@ -45,82 +51,21 @@ class CommentScreen extends StatelessWidget {
                           child: BlocBuilder<CommentScreenBloc,
                               CommentScreenState>(
                             builder: (context, state) {
-                              return Dialog(
-                                clipBehavior: Clip.hardEdge,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      height: 5,
-                                      child: (state.createdCommentGettingPosted)
-                                          ? LinearProgressIndicator()
-                                          : Container(),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(4),
-                                      child: TextField(
-                                        autofocus: true,
-                                        autocorrect: true,
-                                        controller: controller,
-                                        keyboardType: TextInputType.multiline,
-                                        minLines: 5,
-                                        maxLines: null,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none),
-                                      ),
-                                    ),
-                                    Divider(),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          TextButton(
-                                              onPressed: () {
-                                                context.pop();
-                                              },
-                                              child: Text('Cancel')),
-                                          SizedBox(width: 8),
-                                          TextButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<CommentScreenBloc>()
-                                                  .add(
-                                                    UserCommented(
-                                                        controller.text, () {
-                                                      context.pop();
-                                                    }),
-                                                  );
-                                            },
-                                            child: Text(
-                                              'Comment',
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary,
-                                              ),
-                                            ),
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (state.createCommentErrorMessage != null)
-                                      ErrorComponentTransparent(
-                                        message:
-                                            state.createCommentErrorMessage!,
-                                      ),
-                                  ],
-                                ),
+                              final controller =
+                                  _CreateCommentDialogController();
+
+                              return _CreateCommentDialog(
+                                controller: controller,
+                                onSubmitted: (content) {
+                                  controller.changeLoadingState(false);
+                                  context.read<CommentScreenBloc>().add(
+                                        UserCommented(content, () {
+                                          controller.onSuccess();
+                                        }, (){
+                                          controller.changeLoadingState(false);
+                                        }),
+                                      );
+                                },
                               );
                             },
                           ),
@@ -202,6 +147,116 @@ class CommentScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _CreateCommentDialogController extends ChangeNotifier {
+  bool successfullyPosted = false;
+  bool isLoading = false;
+
+  void onSuccess() {
+    successfullyPosted = true;
+    notifyListeners();
+  }
+
+  void changeLoadingState(bool loadingState) {
+    isLoading = loadingState;
+    notifyListeners();
+  }
+}
+
+class _CreateCommentDialog extends StatefulWidget {
+  const _CreateCommentDialog({
+    required this.onSubmitted,
+    required this.controller,
+    super.key,
+  });
+
+  final void Function(String content) onSubmitted;
+  final _CreateCommentDialogController controller;
+
+  @override
+  State<_CreateCommentDialog> createState() => _CreateCommentDialogState();
+}
+
+class _CreateCommentDialogState extends State<_CreateCommentDialog> {
+  bool successfullyPosted = false;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    widget.controller.addListener(() {
+      setState(() {
+        successfullyPosted = widget.controller.successfullyPosted;
+        isLoading = widget.controller.isLoading;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+
+    if (successfullyPosted) {
+      context.pop();
+    }
+
+    return Dialog(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 5,
+            child: (isLoading) ? LinearProgressIndicator() : Container(),
+          ),
+          Padding(
+            padding: EdgeInsets.all(4),
+            child: TextField(
+              autofocus: true,
+              autocorrect: true,
+              keyboardType: TextInputType.multiline,
+              minLines: 5,
+              maxLines: null,
+              decoration: InputDecoration(border: InputBorder.none),
+            ),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    child: Text('Cancel')),
+                SizedBox(width: 8),
+                TextButton(
+                  onPressed: () {
+                    widget.onSubmitted(controller.text);
+                  },
+                  child: Text(
+                    'Comment',
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    textStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

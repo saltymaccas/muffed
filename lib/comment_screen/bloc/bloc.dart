@@ -72,10 +72,10 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         emit(state.copyWith(createdCommentGettingPosted: false));
         event.onSuccess();
       } catch (err) {
+        event.onError();
         emit(
           state.copyWith(
-            createCommentErrorMessage: err.toString(),
-            isLoadingMore: false,
+            errorMessage: err.toString(),
           ),
         );
       }

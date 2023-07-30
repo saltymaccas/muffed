@@ -7,13 +7,11 @@ class CommentScreenState extends Equatable {
   ///
   const CommentScreenState({
     required this.status,
-    this.createdCommentGettingPosted = false,
     this.comments,
     this.pagesLoaded = 0,
     this.isLoadingMore = false,
     this.reachedEnd = false,
     this.errorMessage,
-    this.createCommentErrorMessage,
     this.isRefreshing = false,
   });
 
@@ -26,16 +24,11 @@ class CommentScreenState extends Equatable {
   /// comment to be loaded
   final bool reachedEnd;
 
-  final bool createdCommentGettingPosted;
-
   /// The error message that appears instead of the comments if the comment
   /// screen state is failure. If the comment screen state is loaded it will
   /// appear as a snack bar.
   final String? errorMessage;
 
-  /// the error message that will appear on the add comment dialog is an error
-  /// occurs with adding the comment
-  final String? createCommentErrorMessage;
   final bool isRefreshing;
 
   @override
@@ -47,14 +40,11 @@ class CommentScreenState extends Equatable {
         isLoadingMore,
         reachedEnd,
         errorMessage,
-        createdCommentGettingPosted,
-        createCommentErrorMessage,
         isRefreshing,
       ];
 
   CommentScreenState copyWith({
     bool? isRefreshing,
-    String? createCommentErrorMessage,
     String? errorMessage,
     bool? reachedEnd,
     bool? isLoadingMore,
@@ -65,10 +55,7 @@ class CommentScreenState extends Equatable {
   }) {
     return CommentScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,
-      createdCommentGettingPosted:
-      createdCommentGettingPosted ?? this.createdCommentGettingPosted,
       errorMessage: errorMessage,
-      createCommentErrorMessage: createCommentErrorMessage,
       reachedEnd: reachedEnd ?? this.reachedEnd,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       status: status ?? this.status,
