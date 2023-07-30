@@ -51,7 +51,6 @@ class CommentScreenState extends Equatable {
     CommentScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
-    bool? createdCommentGettingPosted,
   }) {
     return CommentScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,

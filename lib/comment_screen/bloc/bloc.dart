@@ -65,11 +65,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       transformer: droppable(),
     );
     on<UserCommented>((event, emit) async {
-      emit(state.copyWith(createdCommentGettingPosted: true));
-
       try {
         await repo.lemmyRepo.createComment(event.comment, postId, null);
-        emit(state.copyWith(createdCommentGettingPosted: false));
         event.onSuccess();
       } catch (err) {
         event.onError();
@@ -80,12 +77,21 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         );
       }
     });
+    on<UserRepliedToComment>((event, emit) async {
+      try {
+        await repo.lemmyRepo
+            .createComment(event.comment, postId, event.commentId);
+        event.onSuccess();
+      } catch (err) {
+        emit(state.copyWith(errorMessage: err.toString()));
+      }
+    });
     on<PullDownRefresh>((event, emit) async {
       emit(state.copyWith(isRefreshing: true));
-      
+
       try {
         final List<LemmyComment> comments =
-        await repo.lemmyRepo.getComments(postId, page: 1);
+            await repo.lemmyRepo.getComments(postId, page: 1);
 
         emit(
           state.copyWith(
@@ -95,7 +101,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
             reachedEnd: false,
           ),
         );
-      }catch(err){
+      } catch (err) {
         emit(state.copyWith(isRefreshing: false, errorMessage: err.toString()));
       }
     });

@@ -2,17 +2,31 @@ part of 'bloc.dart';
 
 sealed class CommentScreenEvent {}
 
-final class InitializeEvent extends CommentScreenEvent{}
+final class InitializeEvent extends CommentScreenEvent {}
 
 final class ReachedNearEndOfScroll extends CommentScreenEvent {}
 
 final class UserCommented extends CommentScreenEvent {
-
-  UserCommented(this.comment, this.onSuccess, this.onError);
+  UserCommented(
+      {required this.comment, required this.onSuccess, required this.onError});
 
   final void Function() onSuccess;
   final void Function() onError;
   final String comment;
 }
 
-final class PullDownRefresh extends CommentScreenEvent{}
+final class UserRepliedToComment extends CommentScreenEvent {
+  UserRepliedToComment({
+    required this.onSuccess,
+    required this.onError,
+    required this.comment,
+    required this.commentId,
+  });
+
+  final void Function() onSuccess;
+  final void Function() onError;
+  final int commentId;
+  final String comment;
+}
+
+final class PullDownRefresh extends CommentScreenEvent {}

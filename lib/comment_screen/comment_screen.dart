@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
@@ -59,11 +60,16 @@ class CommentScreen extends StatelessWidget {
                                 onSubmitted: (content) {
                                   controller.changeLoadingState(false);
                                   context.read<CommentScreenBloc>().add(
-                                        UserCommented(content, () {
-                                          controller.onSuccess();
-                                        }, (){
-                                          controller.changeLoadingState(false);
-                                        }),
+                                        UserCommented(
+                                          comment: content,
+                                          onSuccess: () {
+                                            controller.onSuccess();
+                                          },
+                                          onError: () {
+                                            controller
+                                                .changeLoadingState(false);
+                                          },
+                                        ),
                                       );
                                 },
                               );
@@ -135,7 +141,63 @@ class CommentScreen extends StatelessWidget {
                                       (context, index) {
                                     return Column(
                                       children: [
-                                        CommentItem(state.comments![index]),
+                                        CommentItem(
+                                          key: UniqueKey(),
+                                          comment: state.comments![index],
+                                          onReplyPressed: (id, parentContent) {
+                                            final controller =
+                                                _CreateCommentDialogController();
+
+                                            showDialog<void>(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return BlocProvider.value(
+                                                  value: BlocProvider.of<
+                                                      CommentScreenBloc>(
+                                                    blocContext,
+                                                  ),
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      return _CreateCommentDialog(
+                                                        contentOfReplyingComment:
+                                                            parentContent,
+                                                        onSubmitted: (comment) {
+                                                          controller
+                                                              .changeLoadingState(
+                                                            true,
+                                                          );
+                                                          context
+                                                              .read<
+                                                                  CommentScreenBloc>()
+                                                              .add(
+                                                                UserRepliedToComment(
+                                                                  onSuccess:
+                                                                      () {
+                                                                    controller
+                                                                        .onSuccess();
+                                                                  },
+                                                                  onError: () {
+                                                                    controller
+                                                                        .changeLoadingState(
+                                                                      false,
+                                                                    );
+                                                                  },
+                                                                  comment:
+                                                                      comment,
+                                                                  commentId: id,
+                                                                ),
+                                                              );
+                                                        },
+                                                        controller: controller,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                         const Divider(),
                                       ],
                                     );
@@ -171,11 +233,16 @@ class _CreateCommentDialog extends StatefulWidget {
   const _CreateCommentDialog({
     required this.onSubmitted,
     required this.controller,
+    this.contentOfReplyingComment,
     super.key,
   });
 
   final void Function(String content) onSubmitted;
   final _CreateCommentDialogController controller;
+
+  /// If replying to another comment this will be set as the comment that the
+  /// user is replying to.
+  final String? contentOfReplyingComment;
 
   @override
   State<_CreateCommentDialog> createState() => _CreateCommentDialogState();
@@ -209,19 +276,36 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (widget.contentOfReplyingComment != null) ...[
+            Flexible(
+              flex: 2,
+              child: Container(
+                constraints: BoxConstraints(maxHeight: 200),
+                child: Markdown(
+                  data: widget.contentOfReplyingComment!,
+                  shrinkWrap: true,
+                ),
+              ),
+            ),
+            Divider(),
+          ],
           SizedBox(
             height: 5,
             child: (isLoading) ? LinearProgressIndicator() : Container(),
           ),
-          Padding(
-            padding: EdgeInsets.all(4),
-            child: TextField(
-              autofocus: true,
-              autocorrect: true,
-              keyboardType: TextInputType.multiline,
-              minLines: 5,
-              maxLines: null,
-              decoration: InputDecoration(border: InputBorder.none),
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.all(4),
+              child: TextField(
+                controller: controller,
+                autofocus: true,
+                autocorrect: true,
+                keyboardType: TextInputType.multiline,
+                minLines: 5,
+                maxLines: null,
+                decoration: InputDecoration(border: InputBorder.none),
+              ),
             ),
           ),
           Divider(),
@@ -247,9 +331,6 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    textStyle: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
