@@ -10,20 +10,18 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_dialog.dart';
 
+import '../components/popup_menu.dart';
 import 'bloc/bloc.dart';
 
 /// The main page the user uses the scroll through content
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  /// used to determine is a menu is open so absorb pointer can be activated
-  /// to make presses outside of the menu only close the menu
-  bool menuOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,198 +80,81 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.search_rounded),
                     visualDensity: VisualDensity.compact,
                   ),
-                  MuffedMenuAnchor(
-                    icon: Icons.sort,
-                    // I wrapped every child in bloc builder so it updates
-                    // I couldn't find a way around this
-                    menuChildren: [
-                      BlocProvider.value(
-                        value: BlocProvider.of<HomePageBloc>(blocContext),
-                        child: BlocBuilder<HomePageBloc, HomePageState>(
-                          builder: (context, state) {
-                            return MenuItemButton(
-                              child: Text('Hot'),
-                              onPressed: () {
-                                context
-                                    .read<HomePageBloc>()
-                                    .add(SortTypeChanged(LemmySortType.hot));
-                              },
-                              closeOnActivate: true,
-                              trailingIcon:
-                                  (state.sortType == LemmySortType.hot)
-                                      ? Icon(Icons.check)
-                                      : null,
-                            );
-                          },
-                        ),
-                      ),
-                      BlocProvider.value(
-                        value: BlocProvider.of<HomePageBloc>(blocContext),
-                        child: BlocBuilder<HomePageBloc, HomePageState>(
-                          builder: (context, state) {
-                            return MenuItemButton(
-                              child: Text('Active'),
-                              onPressed: () {
-                                context
-                                    .read<HomePageBloc>()
-                                    .add(SortTypeChanged(LemmySortType.active));
-                              },
-                              closeOnActivate: true,
-                              trailingIcon:
-                                  (state.sortType == LemmySortType.active)
-                                      ? Icon(Icons.check)
-                                      : null,
-                            );
-                          },
-                        ),
-                      ),
-                      BlocProvider.value(
-                        value: BlocProvider.of<HomePageBloc>(blocContext),
-                        child: BlocBuilder<HomePageBloc, HomePageState>(
-                          builder: (context, state) {
-                            return MenuItemButton(
-                              child: Text('Latest'),
-                              onPressed: () {
-                                context
-                                    .read<HomePageBloc>()
-                                    .add(SortTypeChanged(LemmySortType.latest));
-                              },
-                              closeOnActivate: true,
-                              trailingIcon:
-                                  (state.sortType == LemmySortType.latest)
-                                      ? Icon(Icons.check)
-                                      : null,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                    onClose: () {
-                      setState(() {
-                        menuOpen = false;
-                      });
-                    },
-                    onOpen: () {
-                      setState(() {
-                        menuOpen = true;
-                      });
-                    },
-                  ),
                   BlocProvider.value(
                     value: BlocProvider.of<HomePageBloc>(blocContext),
                     child: BlocBuilder<HomePageBloc, HomePageState>(
                       builder: (context, state) {
-                        if (context
-                                .read<GlobalBloc>()
-                                .getSelectedLemmyAccount() !=
-                            null) {
-                          return MuffedMenuAnchor(
-                            icon: Icons.filter_list,
-                            // I wrapped every child in bloc builder so it updates
-                            // I couldn't find a way around this
-                            menuChildren: [
-                              BlocProvider.value(
-                                value:
-                                    BlocProvider.of<HomePageBloc>(blocContext),
-                                child: BlocBuilder<HomePageBloc, HomePageState>(
-                                  builder: (context, state) {
-                                    return MenuItemButton(
-                                      child: Text('All'),
-                                      onPressed: () {
-                                        context.read<HomePageBloc>().add(
-                                            ListingTypeChanged(
-                                                LemmyListingType.all));
-                                      },
-                                      closeOnActivate: true,
-                                      trailingIcon: (state.listingType ==
-                                              LemmyListingType.all)
-                                          ? Icon(Icons.check)
-                                          : null,
-                                    );
-                                  },
-                                ),
-                              ),
-                              BlocProvider.value(
-                                value:
-                                    BlocProvider.of<HomePageBloc>(blocContext),
-                                child: BlocBuilder<HomePageBloc, HomePageState>(
-                                  builder: (context, state) {
-                                    return MenuItemButton(
-                                      child: Text('Subscribed'),
-                                      onPressed: () {
-                                        context.read<HomePageBloc>().add(
-                                            ListingTypeChanged(
-                                                LemmyListingType.subscribed));
-                                      },
-                                      closeOnActivate: true,
-                                      trailingIcon: (state.listingType ==
-                                              LemmyListingType.subscribed)
-                                          ? Icon(Icons.check)
-                                          : null,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                            onClose: () {
-                              setState(() {
-                                menuOpen = false;
-                              });
-                            },
-                            onOpen: () {
-                              setState(() {
-                                menuOpen = true;
-                              });
-                            },
-                          );
-                        } else {
-                          return SizedBox();
-                        }
+                        return MuffedPopupMenuButton(
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(Icons.sort),
+                          itemsBuilder: [
+                            MuffedPopupMenuItem(
+                              title: 'Hot',
+                              isSelected: state.sortType == LemmySortType.hot,
+                              onTap: () => context
+                                  .read<HomePageBloc>()
+                                  .add(SortTypeChanged(LemmySortType.hot)),
+                            ),
+                            MuffedPopupMenuItem(
+                              title: 'Latest',
+                              isSelected:
+                                  state.sortType == LemmySortType.latest,
+                              onTap: () => context
+                                  .read<HomePageBloc>()
+                                  .add(SortTypeChanged(LemmySortType.latest)),
+                            ),
+                            MuffedPopupMenuItem(
+                              title: 'Active',
+                              isSelected:
+                                  state.sortType == LemmySortType.active,
+                              onTap: () => context
+                                  .read<HomePageBloc>()
+                                  .add(SortTypeChanged(LemmySortType.active)),
+                            ),
+                          ],
+                        );
                       },
                     ),
-                  )
+                  ),
                 ],
-                child: AbsorbPointer(
-                  absorbing: menuOpen,
-                  child: Stack(
-                    children: [
-                      ContentView(
-                        reachedNearEnd: () {
-                          context
-                              .read<HomePageBloc>()
-                              .add(ReachedNearEndOfScroll());
-                        },
-                        onRefresh: () async {
-                          context.read<HomePageBloc>().add(PullDownRefresh());
-                          await context
-                              .read<HomePageBloc>()
-                              .stream
-                              .firstWhere((element) {
-                            if (element.isRefreshing == false) {
-                              return true;
-                            }
-                            return false;
-                          });
-                        },
-                        onPressedPost: (post) {
-                          context.go('/home/content', extra: post);
-                        },
-                        posts: context.read<HomePageBloc>().state.posts!,
-                        floatingHeader: false,
-                        headerDelegate: _TopBarDelegate(),
-                      ),
-                      if (state.isLoading)
-                        const SafeArea(
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: SizedBox(
-                              height: 5,
-                              child: LinearProgressIndicator(),
-                            ),
+                child: Stack(
+                  children: [
+                    ContentView(
+                      reachedNearEnd: () {
+                        context
+                            .read<HomePageBloc>()
+                            .add(ReachedNearEndOfScroll());
+                      },
+                      onRefresh: () async {
+                        context.read<HomePageBloc>().add(PullDownRefresh());
+                        await context
+                            .read<HomePageBloc>()
+                            .stream
+                            .firstWhere((element) {
+                          if (element.isRefreshing == false) {
+                            return true;
+                          }
+                          return false;
+                        });
+                      },
+                      onPressedPost: (post) {
+                        context.go('/home/content', extra: post);
+                      },
+                      posts: context.read<HomePageBloc>().state.posts!,
+                      floatingHeader: false,
+                      headerDelegate: _TopBarDelegate(),
+                    ),
+                    if (state.isLoading)
+                      const SafeArea(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            height: 5,
+                            child: LinearProgressIndicator(),
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               );
             } else {
