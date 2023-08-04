@@ -37,7 +37,7 @@ class ContentView extends StatelessWidget {
   final bool pinnedHeader;
 
   /// The posts that should be displayed.
-  final List posts;
+  final List<LemmyPost> posts;
 
   /// Whether there is some content being loaded.
   final bool isContentLoading;
@@ -80,7 +80,7 @@ class ContentView extends StatelessWidget {
                       (context, index) {
                       return CardLemmyPostItem(
                         // key needs to be set to properly update the items
-                        key: UniqueKey(),
+                        key: ValueKey(posts[index].apId),
                         posts[index] as LemmyPost,
                         openContent: (post) {
                           onPressedPost(post);
