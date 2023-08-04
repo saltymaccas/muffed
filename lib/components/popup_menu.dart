@@ -14,6 +14,127 @@ const double _kMenuVerticalPadding = 8.0;
 const double _kMenuWidthStep = 56.0;
 const double _kMenuScreenPadding = 8.0;
 
+class MuffedPopupMenuExpandableItem extends StatefulWidget {
+  const MuffedPopupMenuExpandableItem({
+    super.key,
+    required this.items,
+    required this.isSelected,
+    this.title = 'Title',
+  });
+
+  final String title;
+
+  final bool isSelected;
+
+  final List<Widget> items;
+
+  @override
+  State<MuffedPopupMenuExpandableItem> createState() =>
+      _MuffedPopupMenuExpandableItemState();
+}
+
+class _MuffedPopupMenuExpandableItemState
+    extends State<MuffedPopupMenuExpandableItem> {
+  bool isExpanded = false;
+
+  List<Widget> createCollapsableItems() {
+    // TODO: fix not animating when collapsing
+    final List<Widget> collapsedItems = [];
+    for (final item in widget.items) {
+      collapsedItems.add(
+        AnimatedSize(
+          duration: _kMenuDuration * widget.items.length,
+          reverseDuration: _kMenuDuration * widget.items.length,
+          curve: Curves.linear,
+          child: SizedBox(
+            height: isExpanded ? null : 0,
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Container(
+                    width: 1,
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                  item,
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return collapsedItems;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: _kMenuDuration,
+      curve: Curves.easeInOutCubic,
+      child: Column(
+        children: [
+          Divider(
+            height: 2,
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+            child: Container(
+              color: widget.isSelected
+                  ? Theme.of(context).colorScheme.outlineVariant
+                  : null,
+              alignment: AlignmentDirectional.centerStart,
+              constraints:
+                  const BoxConstraints(minHeight: kMinInteractiveDimension),
+              padding: const EdgeInsets.symmetric(
+                horizontal: _kMenuHorizontalPadding,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  AnimatedSwitcher(
+                    duration: _kMenuDuration,
+                    reverseDuration: _kMenuDuration,
+                    switchOutCurve: Curves.easeInOutCubic,
+                    switchInCurve: Curves.easeInOutCubic,
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return ScaleTransition(scale: animation, child: child);
+                    },
+                    child: isExpanded
+                        ? const Icon(Icons.expand_less)
+                        : const Icon(Icons.expand_more),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          //const Divider(height: 2,),
+          AnimatedSize(
+            duration: _kMenuDuration,
+            reverseDuration: _kMenuDuration,
+            curve: Curves.easeInOutCubic,
+            child: Column(
+              key: GlobalKey(),
+              children: [...createCollapsableItems()],
+            ),
+          ),
+          const Divider(
+            height: 2,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Item to be put into [MuffedPopupMenuButton]
 class MuffedPopupMenuItem extends StatelessWidget {
   ///
@@ -22,7 +143,6 @@ class MuffedPopupMenuItem extends StatelessWidget {
     this.title = 'Title',
     this.isSelected = false,
     this.onTap,
-
   });
 
   final bool isSelected;
@@ -31,24 +151,31 @@ class MuffedPopupMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (onTap == null) ? null : () {
-        Navigator.pop(context);
-        onTap!.call();
-      },
-      child: Container(
-        color:
-            isSelected ? Theme.of(context).colorScheme.outlineVariant : null,
-        alignment: AlignmentDirectional.centerStart,
-        constraints:
-            const BoxConstraints(minHeight: kMinInteractiveDimension),
-        padding:
-            const EdgeInsets.symmetric(horizontal: _kMenuHorizontalPadding),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
+    return Column(
+      children: [
+        InkWell(
+          onTap: (onTap == null)
+              ? null
+              : () {
+                  Navigator.pop(context);
+                  onTap!.call();
+                },
+          child: Container(
+            color: isSelected
+                ? Theme.of(context).colorScheme.outlineVariant
+                : null,
+            alignment: AlignmentDirectional.centerStart,
+            constraints:
+                const BoxConstraints(minHeight: kMinInteractiveDimension),
+            padding:
+                const EdgeInsets.symmetric(horizontal: _kMenuHorizontalPadding),
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -58,7 +185,7 @@ class MuffedPopupMenuButton extends StatefulWidget {
   ///
   const MuffedPopupMenuButton({
     required this.icon,
-    required this.itemsBuilder,
+    required this.items,
     super.key,
     this.useRootNavigator = false,
     this.visualDensity = VisualDensity.comfortable,
@@ -66,7 +193,7 @@ class MuffedPopupMenuButton extends StatefulWidget {
   });
 
   final Widget icon;
-  final List<MuffedPopupMenuItem> itemsBuilder;
+  final List<Widget> items;
   final bool useRootNavigator;
   final VisualDensity visualDensity;
   final Offset offset;
@@ -108,7 +235,7 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
         _MuffedPopupMenuRoute(
           position: position,
           barrierLabel: 'test',
-          items: widget.itemsBuilder,
+          items: widget.items,
         ),
       )
           .then((value) {
@@ -148,7 +275,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
   /// determine the menu position
   final RelativeRect position;
 
-  final List<MuffedPopupMenuItem> items;
+  final List<Widget> items;
 
   final EdgeInsets padding;
 
@@ -233,13 +360,17 @@ class _MuffedPopupMenu extends StatelessWidget {
         minWidth: _kMenuMinWidth,
         maxWidth: _kMenuMaxWidth,
       ),
-      child: IntrinsicWidth(
-        stepWidth: _kMenuWidthStep,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            vertical: _kMenuVerticalPadding,
+      child: AnimatedSize(
+        duration: _kMenuDuration,
+        curve: Curves.easeInOutCubic,
+        child: IntrinsicWidth(
+          stepWidth: _kMenuWidthStep,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              vertical: _kMenuVerticalPadding,
+            ),
+            child: ListBody(children: route.items),
           ),
-          child: ListBody(children: route.items),
         ),
       ),
     );
