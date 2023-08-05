@@ -6,11 +6,12 @@ import 'package:muffed/repo/lemmy/models.dart';
 /// Displays the posts in a scroll view.
 class ContentView extends StatelessWidget {
   /// initialize
-  const ContentView({
+  ContentView({
     required this.onPressedPost,
     required this.posts,
     required this.reachedNearEnd,
     required this.onRefresh,
+    required this.scrollController,
     this.isContentLoading = false,
     this.floatingHeader = false,
     this.headerDelegate,
@@ -45,6 +46,8 @@ class ContentView extends StatelessWidget {
   /// when user pulls down to refresh
   final Future<void> Function() onRefresh;
 
+  final ScrollController scrollController;
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
@@ -58,6 +61,7 @@ class ContentView extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: CustomScrollView(
+          controller: scrollController,
           cacheExtent: 999,
           slivers: [
             if (headerDelegate != null)

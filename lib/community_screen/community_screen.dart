@@ -119,6 +119,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             child: AbsorbPointer(
               absorbing: menuOpen,
               child: ContentView(
+                scrollController: ScrollController(),
                 headerDelegate:
                     (state.communityInfoStatus == CommunityStatus.success)
                         ? _TopBarDelegate(community: state.communityInfo!)
