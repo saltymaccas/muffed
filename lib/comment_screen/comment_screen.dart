@@ -35,48 +35,92 @@ class CommentScreen extends StatelessWidget {
         builder: (context, state) {
           final BuildContext blocContext = context;
 
+          /// Shows the dialog used to reply to the post
+          void showCommentDialog() {
+            showDialog<void>(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) {
+                return BlocProvider.value(
+                  value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                  child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                    builder: (context, state) {
+                      final controller = _CreateCommentDialogController();
+
+                      return _CreateCommentDialog(
+                        controller: controller,
+                        onSubmitted: (content) {
+                          controller.changeLoadingState(
+                            loadingState: true,
+                          );
+                          context.read<CommentScreenBloc>().add(
+                                UserCommented(
+                                  comment: content,
+                                  onSuccess: controller.onSuccess,
+                                  onError: () {
+                                    controller.changeLoadingState(
+                                      loadingState: false,
+                                    );
+                                  },
+                                ),
+                              );
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          }
+
+          /// Shows The dialog used to reply to a comment
+          void showReplyDialog(int id, String parentContent) {
+            final controller = _CreateCommentDialogController();
+
+            showDialog<void>(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) {
+                return BlocProvider.value(
+                  value: BlocProvider.of<CommentScreenBloc>(
+                    blocContext,
+                  ),
+                  child: Builder(
+                    builder: (context) {
+                      return _CreateCommentDialog(
+                        contentOfParent: parentContent,
+                        onSubmitted: (comment) {
+                          controller.changeLoadingState(
+                            loadingState: true,
+                          );
+                          context.read<CommentScreenBloc>().add(
+                                UserRepliedToComment(
+                                  onSuccess: controller.onSuccess,
+                                  onError: () {
+                                    controller.changeLoadingState(
+                                      loadingState: false,
+                                    );
+                                  },
+                                  comment: comment,
+                                  commentId: id,
+                                ),
+                              );
+                        },
+                        controller: controller,
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          }
+
           return SetPageInfo(
             indexOfRelevantItem: 0,
             actions: [
               IconButton(
                 visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  showDialog<void>(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return BlocProvider.value(
-                        value: BlocProvider.of<CommentScreenBloc>(blocContext),
-                        child:
-                            BlocBuilder<CommentScreenBloc, CommentScreenState>(
-                          builder: (context, state) {
-                            final controller = _CreateCommentDialogController();
-
-                            return _CreateCommentDialog(
-                              controller: controller,
-                              onSubmitted: (content) {
-                                controller.changeLoadingState(
-                                  loadingState: true,
-                                );
-                                context.read<CommentScreenBloc>().add(
-                                      UserCommented(
-                                        comment: content,
-                                        onSuccess: controller.onSuccess,
-                                        onError: () {
-                                          controller.changeLoadingState(
-                                            loadingState: false,
-                                          );
-                                        },
-                                      ),
-                                    );
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
+                onPressed: showCommentDialog,
                 icon: const Icon(Icons.add),
               ),
               IconButton(
@@ -147,64 +191,7 @@ class CommentScreen extends StatelessWidget {
                                             CommentItem(
                                               key: UniqueKey(),
                                               comment: state.comments![index],
-                                              onReplyPressed:
-                                                  (id, parentContent) {
-                                                final controller =
-                                                    _CreateCommentDialogController();
-
-                                                showDialog<void>(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return BlocProvider.value(
-                                                      value: BlocProvider.of<
-                                                          CommentScreenBloc>(
-                                                        blocContext,
-                                                      ),
-                                                      child: Builder(
-                                                        builder: (context) {
-                                                          return _CreateCommentDialog(
-                                                            contentOfReplyingComment:
-                                                                parentContent,
-                                                            onSubmitted:
-                                                                (comment) {
-                                                              controller
-                                                                  .changeLoadingState(
-                                                                loadingState:
-                                                                    true,
-                                                              );
-                                                              context
-                                                                  .read<
-                                                                      CommentScreenBloc>()
-                                                                  .add(
-                                                                    UserRepliedToComment(
-                                                                      onSuccess:
-                                                                          controller
-                                                                              .onSuccess,
-                                                                      onError:
-                                                                          () {
-                                                                        controller
-                                                                            .changeLoadingState(
-                                                                          loadingState:
-                                                                              false,
-                                                                        );
-                                                                      },
-                                                                      comment:
-                                                                          comment,
-                                                                      commentId:
-                                                                          id,
-                                                                    ),
-                                                                  );
-                                                            },
-                                                            controller:
-                                                                controller,
-                                                          );
-                                                        },
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
+                                              onReplyPressed: showReplyDialog,
                                             ),
                                             const Divider(),
                                           ],
@@ -250,7 +237,7 @@ class _CreateCommentDialog extends StatefulWidget {
   const _CreateCommentDialog({
     required this.onSubmitted,
     required this.controller,
-    this.contentOfReplyingComment,
+    this.contentOfParent,
   });
 
   final void Function(String content) onSubmitted;
@@ -258,7 +245,7 @@ class _CreateCommentDialog extends StatefulWidget {
 
   /// If replying to another comment this will be set as the comment that the
   /// user is replying to.
-  final String? contentOfReplyingComment;
+  final String? contentOfParent;
 
   @override
   State<_CreateCommentDialog> createState() => _CreateCommentDialogState();
@@ -292,13 +279,13 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.contentOfReplyingComment != null) ...[
+          if (widget.contentOfParent != null) ...[
             Flexible(
               flex: 2,
               child: Container(
                 constraints: const BoxConstraints(maxHeight: 200),
                 child: Markdown(
-                  data: widget.contentOfReplyingComment!,
+                  data: widget.contentOfParent!,
                   shrinkWrap: true,
                 ),
               ),
