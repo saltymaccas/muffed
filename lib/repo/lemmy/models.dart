@@ -101,6 +101,15 @@ Map<int, LemmyVoteType> intToLemmyVoteType = {
   -1: LemmyVoteType.downVote
 };
 
+enum LemmyCommentSortType {hot, top, latest, old}
+
+Map<LemmyCommentSortType, String> lemmyCommentSortTypeToApiCompatible = {
+  LemmyCommentSortType.hot : 'Hot',
+  LemmyCommentSortType.top : 'Top',
+  LemmyCommentSortType.latest : 'New',
+  LemmyCommentSortType.old : 'Old',
+};
+
 class LemmyPost extends Equatable {
   /// initialize object
   LemmyPost({

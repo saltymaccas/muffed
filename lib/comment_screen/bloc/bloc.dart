@@ -16,8 +16,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       emit(CommentScreenState(status: CommentScreenStatus.loading));
 
       try {
-        List<LemmyComment> comments =
-            await repo.lemmyRepo.getComments(postId, page: 1);
+        List<LemmyComment> comments = await repo.lemmyRepo
+            .getComments(postId, page: 1, sortType: state.sortType);
 
         emit(
           CommentScreenState(
@@ -39,20 +39,23 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       (event, emit) async {
         print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
 
-        emit(state.copyWith(isLoadingMore: true));
+        emit(state.copyWith(isLoading: true));
         try {
           if (!state.reachedEnd) {
-            final List<LemmyComment> comments = await repo.lemmyRepo
-                .getComments(postId, page: state.pagesLoaded + 1);
+            final comments = await repo.lemmyRepo.getComments(
+              postId,
+              page: state.pagesLoaded + 1,
+              sortType: state.sortType,
+            );
 
             if (comments.isEmpty) {
-              emit(state.copyWith(reachedEnd: true, isLoadingMore: false));
+              emit(state.copyWith(reachedEnd: true, isLoading: false));
 
               print('[ContentScreenBloc] end reached');
             } else {
               emit(
                 state.copyWith(
-                  isLoadingMore: false,
+                  isLoading: false,
                   pagesLoaded: state.pagesLoaded + 1,
                   comments: [...state.comments ?? [], ...comments],
                 ),
@@ -61,9 +64,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
               print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
             }
           }
-        }
-        catch(err){
-          emit(state.copyWith(errorMessage: err.toString(), isLoadingMore: false));
+        } catch (err) {
+          emit(state.copyWith(errorMessage: err.toString(), isLoading: false));
         }
       },
       transformer: droppable(),
@@ -94,8 +96,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       emit(state.copyWith(isRefreshing: true));
 
       try {
-        final List<LemmyComment> comments =
-            await repo.lemmyRepo.getComments(postId, page: 1);
+        final List<LemmyComment> comments = await repo.lemmyRepo
+            .getComments(postId, page: 1, sortType: state.sortType);
 
         emit(
           state.copyWith(
@@ -107,6 +109,31 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         );
       } catch (err) {
         emit(state.copyWith(isRefreshing: false, errorMessage: err.toString()));
+      }
+    });
+    on<SortTypeChanged>((event, emit) async {
+      final lastSortType = state.sortType;
+
+      emit(state.copyWith(sortType: event.sortType, isLoading: true));
+
+      try {
+        final newComments = await repo.lemmyRepo
+            .getComments(postId, page: 1, sortType: state.sortType);
+        emit(
+          state.copyWith(
+            isLoading: false,
+            comments: newComments,
+            pagesLoaded: 1,
+          ),
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: err.toString(),
+            sortType: lastSortType,
+          ),
+        );
       }
     });
   }

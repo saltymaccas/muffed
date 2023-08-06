@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -123,10 +124,70 @@ class CommentScreen extends StatelessWidget {
                 onPressed: showCommentDialog,
                 icon: const Icon(Icons.add),
               ),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                onPressed: () {},
-                icon: const Icon(Icons.sort),
+              MuffedPopupMenuButton(
+                icon: Icon(Icons.sort),
+                items: [
+                  BlocProvider.value(
+                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                      builder: (context, state) {
+                        return MuffedPopupMenuItem(
+                          title: 'Hot',
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.hot)),
+                          isSelected:
+                              state.sortType == LemmyCommentSortType.hot,
+                        );
+                      },
+                    ),
+                  ),
+                  BlocProvider.value(
+                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                      builder: (context, state) {
+                        return MuffedPopupMenuItem(
+                          title: 'Top',
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.top)),
+                          isSelected:
+                              state.sortType == LemmyCommentSortType.top,
+                        );
+                      },
+                    ),
+                  ),
+                  BlocProvider.value(
+                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                      builder: (context, state) {
+                        return MuffedPopupMenuItem(
+                          title: 'New',
+                          onTap: () => context.read<CommentScreenBloc>().add(
+                                SortTypeChanged(LemmyCommentSortType.latest),
+                              ),
+                          isSelected:
+                              state.sortType == LemmyCommentSortType.latest,
+                        );
+                      },
+                    ),
+                  ),
+                  BlocProvider.value(
+                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                      builder: (context, state) {
+                        return MuffedPopupMenuItem(
+                          title: 'Old',
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.old)),
+                          isSelected:
+                              state.sortType == LemmyCommentSortType.old,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
             child: Stack(
@@ -189,7 +250,9 @@ class CommentScreen extends StatelessWidget {
                                         return Column(
                                           children: [
                                             CommentItem(
-                                              key: UniqueKey(),
+                                              key: ValueKey(
+                                                state.comments![index].id,
+                                              ),
                                               comment: state.comments![index],
                                               onReplyPressed: showReplyDialog,
                                             ),
@@ -202,7 +265,7 @@ class CommentScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (state.isLoadingMore)
+                if (state.isLoading)
                   const SafeArea(
                     child: Align(
                       alignment: Alignment.topCenter,

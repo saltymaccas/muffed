@@ -9,16 +9,18 @@ class CommentScreenState extends Equatable {
     required this.status,
     this.comments,
     this.pagesLoaded = 0,
-    this.isLoadingMore = false,
+    this.isLoading = false,
     this.reachedEnd = false,
     this.errorMessage,
     this.isRefreshing = false,
+    this.sortType = LemmyCommentSortType.hot,
   });
 
   final CommentScreenStatus status;
   final List<LemmyComment>? comments;
   final int pagesLoaded;
-  final bool isLoadingMore;
+  final bool isLoading;
+  final LemmyCommentSortType sortType;
 
   /// whether all the comment pages have been loaded, so there are no more
   /// comment to be loaded
@@ -37,29 +39,32 @@ class CommentScreenState extends Equatable {
         status,
         comments,
         pagesLoaded,
-        isLoadingMore,
+        isLoading,
         reachedEnd,
         errorMessage,
         isRefreshing,
+        sortType,
       ];
 
   CommentScreenState copyWith({
     bool? isRefreshing,
     String? errorMessage,
     bool? reachedEnd,
-    bool? isLoadingMore,
+    bool? isLoading,
     CommentScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
+    LemmyCommentSortType? sortType
   }) {
     return CommentScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,
       errorMessage: errorMessage,
       reachedEnd: reachedEnd ?? this.reachedEnd,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       comments: comments ?? this.comments,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+      sortType: sortType ?? this.sortType,
     );
   }
 }

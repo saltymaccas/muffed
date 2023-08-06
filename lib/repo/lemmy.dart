@@ -92,6 +92,7 @@ interface class LemmyRepo {
     int postId, {
     required int page,
     LemmyListingType listingType = LemmyListingType.all,
+        LemmyCommentSortType sortType = LemmyCommentSortType.hot,
   }) async {
     try {
       final response = await dio.get(
@@ -102,6 +103,7 @@ interface class LemmyRepo {
           'post_id': postId.toString(),
           'page': page.toString(),
           'type_': lemmyListingTypeToApiCompatible[listingType],
+          'sort': lemmyCommentSortTypeToApiCompatible[sortType],
         },
       );
 

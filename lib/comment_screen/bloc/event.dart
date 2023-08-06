@@ -30,3 +30,10 @@ final class UserRepliedToComment extends CommentScreenEvent {
 }
 
 final class PullDownRefresh extends CommentScreenEvent {}
+
+final class SortTypeChanged extends CommentScreenEvent {
+
+  SortTypeChanged(this.sortType);
+
+  final LemmyCommentSortType sortType;
+}
