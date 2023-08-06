@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> {
                             title: 'Hot',
                             isSelected: state.sortType == LemmySortType.hot,
                             onTap: () => context.read<HomePageBloc>().add(
-                              SortTypeChanged(LemmySortType.hot),
-                            ),
+                                  SortTypeChanged(LemmySortType.hot),
+                                ),
                           );
                         },
                       ),
@@ -394,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       );
-                    }else{
+                    } else {
                       return SizedBox();
                     }
                   },
@@ -461,53 +461,40 @@ class _HomePageSuccess extends StatelessWidget {
 
     final scrollController = ScrollController();
 
-    return BlocListener<HomePageBloc, HomePageState>(
-      listenWhen: (previous, current) {
-        if (previous.sortType != current.sortType &&
-            current.isLoading == false) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        print('test');
-        scrollController.jumpTo(0);
-      },
-      child: Stack(
-        children: [
-          ContentView(
-            scrollController: scrollController,
-            reachedNearEnd: () {
-              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-            },
-            onRefresh: () async {
-              context.read<HomePageBloc>().add(PullDownRefresh());
-              await context.read<HomePageBloc>().stream.firstWhere((element) {
-                if (element.isRefreshing == false) {
-                  return true;
-                }
-                return false;
-              });
-            },
-            onPressedPost: (post) {
-              context.go('/home/content', extra: post);
-            },
-            posts: context.read<HomePageBloc>().state.posts!,
-            floatingHeader: false,
-            headerDelegate: _TopBarDelegate(),
-          ),
-          if (state.isLoading)
-            const SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: 5,
-                  child: LinearProgressIndicator(),
-                ),
+    return Stack(
+      children: [
+        ContentView(
+          scrollController: scrollController,
+          reachedNearEnd: () {
+            context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+          },
+          onRefresh: () async {
+            context.read<HomePageBloc>().add(PullDownRefresh());
+            await context.read<HomePageBloc>().stream.firstWhere((element) {
+              if (element.isRefreshing == false) {
+                return true;
+              }
+              return false;
+            });
+          },
+          onPressedPost: (post) {
+            context.go('/home/content', extra: post);
+          },
+          posts: context.read<HomePageBloc>().state.posts!,
+          floatingHeader: false,
+          headerDelegate: _TopBarDelegate(),
+        ),
+        if (state.isLoading)
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                height: 5,
+                child: LinearProgressIndicator(),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
