@@ -75,12 +75,19 @@ class _HomePageState extends State<HomePage> {
                   visualDensity: VisualDensity.compact,
                   icon: Icon(Icons.sort),
                   items: [
-                    MuffedPopupMenuItem(
-                      title: 'Hot',
-                      isSelected: state.sortType == LemmySortType.hot,
-                      onTap: () => context
-                          .read<HomePageBloc>()
-                          .add(SortTypeChanged(LemmySortType.hot)),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuItem(
+                            title: 'Hot',
+                            isSelected: state.sortType == LemmySortType.hot,
+                            onTap: () => context.read<HomePageBloc>().add(
+                              SortTypeChanged(LemmySortType.hot),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     BlocProvider.value(
                       value: BlocProvider.of<HomePageBloc>(blocContext),
