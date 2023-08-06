@@ -71,31 +71,298 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.search_rounded),
                   visualDensity: VisualDensity.compact,
                 ),
-                BlocProvider.value(
-                  value: BlocProvider.of<HomePageBloc>(blocContext),
-                  child: BlocBuilder<HomePageBloc, HomePageState>(
-                    builder: (context, state) {
+                MuffedPopupMenuButton(
+                  visualDensity: VisualDensity.compact,
+                  icon: Icon(Icons.sort),
+                  items: [
+                    MuffedPopupMenuItem(
+                      title: 'Hot',
+                      isSelected: state.sortType == LemmySortType.hot,
+                      onTap: () => context
+                          .read<HomePageBloc>()
+                          .add(SortTypeChanged(LemmySortType.hot)),
+                    ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuItem(
+                            title: 'Active',
+                            isSelected: state.sortType == LemmySortType.active,
+                            onTap: () => context.read<HomePageBloc>().add(
+                                  SortTypeChanged(LemmySortType.active),
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuItem(
+                            title: 'Latest',
+                            isSelected: state.sortType == LemmySortType.latest,
+                            onTap: () => context.read<HomePageBloc>().add(
+                                  SortTypeChanged(LemmySortType.latest),
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuItem(
+                            title: 'Old',
+                            isSelected: state.sortType == LemmySortType.old,
+                            onTap: () => context.read<HomePageBloc>().add(
+                                  SortTypeChanged(LemmySortType.old),
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuExpandableItem(
+                            title: 'Top',
+                            isSelected: state.sortType ==
+                                    LemmySortType.topAll ||
+                                state.sortType == LemmySortType.topDay ||
+                                state.sortType == LemmySortType.topHour ||
+                                state.sortType == LemmySortType.topMonth ||
+                                state.sortType == LemmySortType.topSixHour ||
+                                state.sortType == LemmySortType.topTwelveHour ||
+                                state.sortType == LemmySortType.topWeek ||
+                                state.sortType == LemmySortType.topYear,
+                            items: [
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'All Time',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topAll,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topAll),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Year',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topYear,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topYear),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Month',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topMonth,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topMonth),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Week',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topWeek,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topWeek),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Day',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topDay,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topDay),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Twelve Hours',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topTwelveHour,
+                                      onTap: () => context
+                                          .read<HomePageBloc>()
+                                          .add(
+                                            SortTypeChanged(
+                                                LemmySortType.topTwelveHour),
+                                          ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Six Hours',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topSixHour,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topSixHour),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Hour',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.topHour,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                    LemmySortType.topHour),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    BlocProvider.value(
+                      value: BlocProvider.of<HomePageBloc>(blocContext),
+                      child: BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          return MuffedPopupMenuExpandableItem(
+                            title: 'Comments',
+                            isSelected:
+                                state.sortType == LemmySortType.mostComments ||
+                                    state.sortType == LemmySortType.newComments,
+                            items: [
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'Most Comments',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.mostComments,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                  LemmySortType.topAll,
+                                                ),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              BlocProvider.value(
+                                value:
+                                    BlocProvider.of<HomePageBloc>(blocContext),
+                                child: BlocBuilder<HomePageBloc, HomePageState>(
+                                  builder: (context, state) {
+                                    return MuffedPopupMenuItem(
+                                      title: 'New Comments',
+                                      isSelected: state.sortType ==
+                                          LemmySortType.newComments,
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                  LemmySortType.newComments,
+                                                ),
+                                              ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                BlocBuilder<GlobalBloc, GlobalState>(
+                  builder: (context, state) {
+                    if (state.lemmySelectedAccount != null) {
                       return MuffedPopupMenuButton(
-                        visualDensity: VisualDensity.compact,
-                        icon: Icon(Icons.sort),
+                        icon: Icon(Icons.filter_list),
                         items: [
-                          MuffedPopupMenuItem(
-                            title: 'Hot',
-                            isSelected: state.sortType == LemmySortType.hot,
-                            onTap: () => context
-                                .read<HomePageBloc>()
-                                .add(SortTypeChanged(LemmySortType.hot)),
-                          ),
                           BlocProvider.value(
                             value: BlocProvider.of<HomePageBloc>(blocContext),
                             child: BlocBuilder<HomePageBloc, HomePageState>(
                               builder: (context, state) {
                                 return MuffedPopupMenuItem(
-                                  title: 'Active',
+                                  title: 'All',
                                   isSelected:
-                                      state.sortType == LemmySortType.active,
+                                      state.listingType == LemmyListingType.all,
                                   onTap: () => context.read<HomePageBloc>().add(
-                                        SortTypeChanged(LemmySortType.active),
+                                        ListingTypeChanged(
+                                          LemmyListingType.all,
+                                        ),
                                       ),
                                 );
                               },
@@ -106,219 +373,24 @@ class _HomePageState extends State<HomePage> {
                             child: BlocBuilder<HomePageBloc, HomePageState>(
                               builder: (context, state) {
                                 return MuffedPopupMenuItem(
-                                  title: 'Latest',
-                                  isSelected:
-                                      state.sortType == LemmySortType.latest,
+                                  title: 'Subscribed',
+                                  isSelected: state.listingType ==
+                                      LemmyListingType.subscribed,
                                   onTap: () => context.read<HomePageBloc>().add(
-                                        SortTypeChanged(LemmySortType.latest),
+                                        ListingTypeChanged(
+                                          LemmyListingType.subscribed,
+                                        ),
                                       ),
-                                );
-                              },
-                            ),
-                          ),
-                          BlocProvider.value(
-                            value: BlocProvider.of<HomePageBloc>(blocContext),
-                            child: BlocBuilder<HomePageBloc, HomePageState>(
-                              builder: (context, state) {
-                                return MuffedPopupMenuItem(
-                                  title: 'Old',
-                                  isSelected:
-                                      state.sortType == LemmySortType.old,
-                                  onTap: () => context.read<HomePageBloc>().add(
-                                        SortTypeChanged(LemmySortType.old),
-                                      ),
-                                );
-                              },
-                            ),
-                          ),
-                          BlocProvider.value(
-                            value: BlocProvider.of<HomePageBloc>(blocContext),
-                            child: BlocBuilder<HomePageBloc, HomePageState>(
-                              builder: (context, state) {
-                                return MuffedPopupMenuExpandableItem(
-                                  title: 'Top',
-                                  isSelected: state.sortType ==
-                                          LemmySortType.topAll ||
-                                      state.sortType == LemmySortType.topDay ||
-                                      state.sortType == LemmySortType.topHour ||
-                                      state.sortType ==
-                                          LemmySortType.topMonth ||
-                                      state.sortType ==
-                                          LemmySortType.topSixHour ||
-                                      state.sortType ==
-                                          LemmySortType.topTwelveHour ||
-                                      state.sortType == LemmySortType.topWeek ||
-                                      state.sortType == LemmySortType.topYear,
-                                  items: [
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'All Time',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topAll,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topAll),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Year',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topYear,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topYear),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Month',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topMonth,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topMonth),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Week',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topWeek,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topWeek),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Day',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topDay,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topDay),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Twelve Hours',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topTwelveHour,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(LemmySortType
-                                                      .topTwelveHour),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Six Hours',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topSixHour,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topSixHour),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    BlocProvider.value(
-                                      value: BlocProvider.of<HomePageBloc>(
-                                          blocContext),
-                                      child: BlocBuilder<HomePageBloc,
-                                          HomePageState>(
-                                        builder: (context, state) {
-                                          return MuffedPopupMenuItem(
-                                            title: 'Hour',
-                                            isSelected: state.sortType ==
-                                                LemmySortType.topHour,
-                                            onTap: () => context
-                                                .read<HomePageBloc>()
-                                                .add(
-                                                  SortTypeChanged(
-                                                      LemmySortType.topHour),
-                                                ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
                                 );
                               },
                             ),
                           ),
                         ],
                       );
-                    },
-                  ),
+                    }else{
+                      return SizedBox();
+                    }
+                  },
                 ),
               ],
               child: Builder(
