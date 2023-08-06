@@ -10,7 +10,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_dialog.dart';
 
-import '../components/popup_menu.dart';
+import '../components/popup_menu/popup_menu.dart';
 import 'bloc/bloc.dart';
 
 /// The main page the user uses the scroll through content

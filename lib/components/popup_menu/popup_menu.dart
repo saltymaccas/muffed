@@ -2,19 +2,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'cubit.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
 const double _kMenuHorizontalPadding = 16.0;
-const double _kMenuDividerHeight = 16.0;
 const double _kMenuMaxWidth = 5.0 * _kMenuWidthStep;
 const double _kMenuMinWidth = 2.0 * _kMenuWidthStep;
 const double _kMenuVerticalPadding = 8.0;
 const double _kMenuWidthStep = 56.0;
 const double _kMenuScreenPadding = 8.0;
 
-class MuffedPopupMenuExpandableItem extends StatefulWidget {
+// TODO: Neaten up and add comments
+
+class MuffedPopupMenuExpandableItem extends StatelessWidget {
   const MuffedPopupMenuExpandableItem({
     super.key,
     required this.items,
@@ -29,61 +32,36 @@ class MuffedPopupMenuExpandableItem extends StatefulWidget {
   final List<Widget> items;
 
   @override
-  State<MuffedPopupMenuExpandableItem> createState() =>
-      _MuffedPopupMenuExpandableItemState();
-}
-
-class _MuffedPopupMenuExpandableItemState
-    extends State<MuffedPopupMenuExpandableItem> {
-  bool isExpanded = false;
-
-  List<Widget> createCollapsableItems() {
-    // TODO: fix not animating when collapsing
-    final List<Widget> collapsedItems = [];
-    for (final item in widget.items) {
-      collapsedItems.add(
-        AnimatedSize(
-          duration: _kMenuDuration * widget.items.length,
-          reverseDuration: _kMenuDuration * widget.items.length,
-          curve: Curves.linear,
-          child: SizedBox(
-            height: isExpanded ? null : 0,
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  Container(
-                    width: 1,
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  item,
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    return collapsedItems;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final blocContext = context;
+
     return AnimatedSize(
       duration: _kMenuDuration,
       curve: Curves.easeInOutCubic,
       child: Column(
         children: [
-          Divider(
-            height: 2,
-          ),
           InkWell(
             onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
+              context.read<MuffedPopupMenuCubit>().addItemSet(
+                [
+                  ...items,
+                  Builder(
+                    builder: (context) {
+                      return IconButton(
+                        onPressed: () => context
+                            .read<MuffedPopupMenuCubit>()
+                            .removeItemSet(),
+                        icon: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Icon(Icons.arrow_back)),
+                      );
+                    },
+                  ),
+                ],
+              );
             },
             child: Container(
-              color: widget.isSelected
+              color: isSelected
                   ? Theme.of(context).colorScheme.outlineVariant
                   : null,
               alignment: AlignmentDirectional.centerStart,
@@ -96,38 +74,22 @@ class _MuffedPopupMenuExpandableItemState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.title,
+                    title,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   AnimatedSwitcher(
-                    duration: _kMenuDuration,
-                    reverseDuration: _kMenuDuration,
-                    switchOutCurve: Curves.easeInOutCubic,
-                    switchInCurve: Curves.easeInOutCubic,
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child: isExpanded
-                        ? const Icon(Icons.expand_less)
-                        : const Icon(Icons.expand_more),
-                  ),
+                      duration: _kMenuDuration,
+                      reverseDuration: _kMenuDuration,
+                      switchOutCurve: Curves.easeInOutCubic,
+                      switchInCurve: Curves.easeInOutCubic,
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: Icon(Icons.arrow_right)),
                 ],
               ),
             ),
-          ),
-          //const Divider(height: 2,),
-          AnimatedSize(
-            duration: _kMenuDuration,
-            reverseDuration: _kMenuDuration,
-            curve: Curves.easeInOutCubic,
-            child: Column(
-              key: GlobalKey(),
-              children: [...createCollapsableItems()],
-            ),
-          ),
-          const Divider(
-            height: 2,
           ),
         ],
       ),
@@ -142,10 +104,12 @@ class MuffedPopupMenuItem extends StatelessWidget {
     super.key,
     this.title = 'Title',
     this.isSelected = false,
+    this.shouldPopOnPresssed = true,
     this.onTap,
   });
 
   final bool isSelected;
+  final bool shouldPopOnPresssed;
   final String title;
   final void Function()? onTap;
 
@@ -157,7 +121,9 @@ class MuffedPopupMenuItem extends StatelessWidget {
           onTap: (onTap == null)
               ? null
               : () {
-                  Navigator.pop(context);
+                  if (shouldPopOnPresssed) {
+                    Navigator.pop(context);
+                  }
                   onTap!.call();
                 },
           child: Container(
@@ -355,55 +321,62 @@ class _MuffedPopupMenu extends StatelessWidget {
     final double unit = 1.0 / (route.items.length + 1.5);
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
 
-    final child = ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: _kMenuMinWidth,
-        maxWidth: _kMenuMaxWidth,
-      ),
-      child: AnimatedSize(
-        duration: _kMenuDuration,
-        curve: Curves.easeInOutCubic,
-        child: IntrinsicWidth(
-          stepWidth: _kMenuWidthStep,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              vertical: _kMenuVerticalPadding,
-            ),
-            child: ListBody(children: route.items),
-          ),
-        ),
-      ),
-    );
-
     final CurveTween opacity =
         CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
     final CurveTween width = CurveTween(curve: Interval(0.0, unit));
     final CurveTween height =
         CurveTween(curve: Interval(0.0, unit * route.items.length));
 
-    return AnimatedBuilder(
-      animation: route.animation!,
-      builder: (BuildContext context, Widget? child) {
-        return FadeTransition(
-          opacity: opacity.animate(route.animation!),
-          child: Material(
-            clipBehavior: Clip.hardEdge,
-            type: MaterialType.card,
-            shape: popupMenuTheme.shape,
-            color: popupMenuTheme.color,
-            elevation: popupMenuTheme.elevation ?? 5,
-            surfaceTintColor: popupMenuTheme.surfaceTintColor,
-            shadowColor: popupMenuTheme.color,
-            child: Align(
-              alignment: AlignmentDirectional.topEnd,
-              widthFactor: width.evaluate(route.animation!),
-              heightFactor: height.evaluate(route.animation!),
-              child: child,
+    return BlocProvider(
+      create: (context) => MuffedPopupMenuCubit(route.items),
+      child: BlocBuilder<MuffedPopupMenuCubit, List<List<Widget>>>(
+        builder: (context, state) {
+          final child = ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: _kMenuMinWidth,
+              maxWidth: _kMenuMaxWidth,
             ),
-          ),
-        );
-      },
-      child: child,
+            child: AnimatedSize(
+              duration: _kMenuDuration,
+              curve: Curves.easeInOutCubic,
+              child: IntrinsicWidth(
+                stepWidth: _kMenuWidthStep,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: _kMenuVerticalPadding,
+                  ),
+                  child: ListBody(children: state[state.length - 1]),
+                ),
+              ),
+            ),
+          );
+
+          return AnimatedBuilder(
+            animation: route.animation!,
+            builder: (BuildContext context, Widget? child) {
+              return FadeTransition(
+                opacity: opacity.animate(route.animation!),
+                child: Material(
+                  clipBehavior: Clip.hardEdge,
+                  type: MaterialType.card,
+                  shape: popupMenuTheme.shape,
+                  color: popupMenuTheme.color,
+                  elevation: popupMenuTheme.elevation ?? 5,
+                  surfaceTintColor: popupMenuTheme.surfaceTintColor,
+                  shadowColor: popupMenuTheme.color,
+                  child: Align(
+                    alignment: AlignmentDirectional.topEnd,
+                    widthFactor: width.evaluate(route.animation!),
+                    heightFactor: height.evaluate(route.animation!),
+                    child: child,
+                  ),
+                ),
+              );
+            },
+            child: child,
+          );
+        },
+      ),
     );
   }
 }
