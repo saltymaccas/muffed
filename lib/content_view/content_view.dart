@@ -11,13 +11,13 @@ class ContentView extends StatelessWidget {
     required this.posts,
     required this.reachedNearEnd,
     required this.onRefresh,
-    required this.scrollController,
     this.isContentLoading = false,
     this.floatingHeader = false,
     this.headerDelegate,
     this.pinnedHeader = false,
+    ScrollController? scrollController,
     super.key,
-  });
+  }): scrollController = scrollController ?? ScrollController();
 
   /// When the user has reached near the end of the scroll. often used to
   /// load more posts.
@@ -85,7 +85,7 @@ class ContentView extends StatelessWidget {
                       return CardLemmyPostItem(
                         // key needs to be set to properly update the items
                         key: ValueKey(posts[index].apId),
-                        posts[index] as LemmyPost,
+                        posts[index],
                         openContent: (post) {
                           onPressedPost(post);
                         },
