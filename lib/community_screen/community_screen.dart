@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -11,7 +12,7 @@ import 'bloc/bloc.dart';
 
 /// The screen that displays the community including information and the
 /// post view
-class CommunityScreen extends StatefulWidget {
+class CommunityScreen extends StatelessWidget {
   /// initialize
   const CommunityScreen({required this.communityId, this.community, super.key});
 
@@ -26,116 +27,85 @@ class CommunityScreen extends StatefulWidget {
   final LemmyCommunity? community;
 
   @override
-  State<CommunityScreen> createState() => _CommunityScreenState();
-}
-
-class _CommunityScreenState extends State<CommunityScreen> {
-  bool menuOpen = false;
-
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CommunityScreenBloc(
-        communityId: widget.communityId,
-        community: widget.community,
+        communityId: communityId,
+        community: community,
         repo: context.read<ServerRepo>(),
       )..add(Initialize()),
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
           final blocContext = context;
 
-          return SetPageInfo(
-            actions: [
-              MenuAnchor(
-                childFocusNode: FocusNode(),
-                onOpen: () {
-                  setState(() {
-                    menuOpen = true;
-                  });
-                },
-                onClose: () {
-                  setState(() {
-                    menuOpen = false;
-                  });
-                },
-                menuChildren: [
-                  MenuItemButton(
-                    child: const Text('about'),
-                    onPressed: () {
-                      showDialog<void>(
-                        context: context,
-                        builder: (context) {
-                          return BlocProvider.value(
-                            value: BlocProvider.of<CommunityScreenBloc>(
-                              blocContext,
-                            ),
-                            child: BlocBuilder<CommunityScreenBloc,
-                                CommunityScreenState>(
-                              builder: (context, state) {
-                                if (state.communityInfo != null) {
-                                  return Dialog(
-                                    child: Markdown(
-                                      shrinkWrap: true,
-                                      data: state.communityInfo!.description ??
-                                          'no description',
-                                      selectable: true,
-                                      onTapLink: (text, url, title) {
-                                        launchUrl(Uri.parse(url!));
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return Dialog(
-                                      child: Text('community still loading'));
-                                }
-                              },
-                            ),
-                          );
-                          final state =
-                              context.read<CommunityScreenBloc>().state;
-                        },
-                      );
-                    },
+          void showAboutDialog() {
+            showDialog<void>(
+              context: context,
+              builder: (context) {
+                return BlocProvider.value(
+                  value: BlocProvider.of<CommunityScreenBloc>(
+                    blocContext,
                   ),
-                ],
-                builder: (context, controller, child) {
-                  return IconButton(
-                    onPressed: () {
-                      if (!controller.isOpen) {
-                        controller.open();
+                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                    builder: (context, state) {
+                      if (state.communityInfo != null) {
+                        return Dialog(
+                          child: Markdown(
+                            shrinkWrap: true,
+                            data: state.communityInfo!.description ??
+                                'no description',
+                            selectable: true,
+                            onTapLink: (text, url, title) {
+                              launchUrl(Uri.parse(url!));
+                            },
+                          ),
+                        );
                       } else {
-                        controller.close();
+                        return const Dialog(
+                          child: Text('community still loading'),
+                        );
                       }
                     },
-                    icon: Icon(Icons.more_vert),
-                    visualDensity: VisualDensity.compact,
-                  );
-                },
+                  ),
+                );
+                final state = context.read<CommunityScreenBloc>().state;
+              },
+            );
+          }
+
+          return SetPageInfo(
+            actions: [
+              MuffedPopupMenuButton(
+                icon: Icon(Icons.more_vert),
+                visualDensity: VisualDensity.compact,
+                items: [
+                  MuffedPopupMenuItem(
+                    title: 'About',
+                    onTap: showAboutDialog,
+                  ),
+                ],
               ),
             ],
             indexOfRelevantItem: 0,
             // makes presses outside of the menu not register and closes the
             // menu
-            child: AbsorbPointer(
-              absorbing: menuOpen,
-              child: ContentView(
-                scrollController: ScrollController(),
-                headerDelegate:
-                    (state.communityInfoStatus == CommunityStatus.success)
-                        ? _TopBarDelegate(community: state.communityInfo!)
-                        : null,
-                onRefresh: () async {},
-                floatingHeader: true,
-                pinnedHeader: false,
-                isContentLoading: state.postsStatus == CommunityStatus.loading,
-                onPressedPost: (post) {
-                  context.push('/home/content', extra: post);
-                },
-                posts: state.posts,
-                reachedNearEnd: () {
-                  context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
-                },
-              ),
+            child: ContentView(
+              scrollController: ScrollController(),
+              headerDelegate:
+                  (state.communityInfoStatus == CommunityStatus.success)
+                      ? _TopBarDelegate(community: state.communityInfo!)
+                      : null,
+              onRefresh: () async {},
+              floatingHeader: true,
+              pinnedHeader: false,
+              isContentLoading: state.postsStatus == CommunityStatus.loading,
+              onPressedPost: (post) {
+                context.push('/home/content', extra: post);
+              },
+              posts: state.posts,
+              reachedNearEnd: () {
+                context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
+              },
             ),
           );
         },
