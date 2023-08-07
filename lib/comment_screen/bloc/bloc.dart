@@ -49,7 +49,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
             );
 
             if (comments.isEmpty) {
-              emit(state.copyWith(reachedEnd: true, isLoading: false));
+              emit(state.copyWith(isLoading: false, reachedEnd: true));
 
               print('[ContentScreenBloc] end reached');
             } else {
