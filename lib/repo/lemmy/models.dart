@@ -1,13 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-enum ContentType {
-  text,
-  image,
-  video,
-  gif,
-  url,
-}
-
 enum LemmySortType {
   active,
   hot,
