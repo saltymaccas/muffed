@@ -461,40 +461,52 @@ class _HomePageSuccess extends StatelessWidget {
 
     final scrollController = ScrollController();
 
-    return Stack(
-      children: [
-        ContentView(
-          scrollController: scrollController,
-          reachedNearEnd: () {
-            context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-          },
-          onRefresh: () async {
-            context.read<HomePageBloc>().add(PullDownRefresh());
-            await context.read<HomePageBloc>().stream.firstWhere((element) {
-              if (element.isRefreshing == false) {
-                return true;
-              }
-              return false;
-            });
-          },
-          onPressedPost: (post) {
-            context.go('/home/content', extra: post);
-          },
-          posts: context.read<HomePageBloc>().state.posts!,
-          floatingHeader: false,
-          headerDelegate: _TopBarDelegate(),
-        ),
-        if (state.isLoading)
-          const SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: SizedBox(
-                height: 5,
-                child: LinearProgressIndicator(),
+    return BlocListener<HomePageBloc, HomePageState>(
+      listenWhen: (previous, current) {
+        if (previous.loadedSortType != current.loadedSortType) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      listener: (context, state) {
+        scrollController.jumpTo(0);
+      },
+      child: Stack(
+        children: [
+          ContentView(
+            scrollController: scrollController,
+            reachedNearEnd: () {
+              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+            },
+            onRefresh: () async {
+              context.read<HomePageBloc>().add(PullDownRefresh());
+              await context.read<HomePageBloc>().stream.firstWhere((element) {
+                if (element.isRefreshing == false) {
+                  return true;
+                }
+                return false;
+              });
+            },
+            onPressedPost: (post) {
+              context.go('/home/content', extra: post);
+            },
+            posts: context.read<HomePageBloc>().state.posts!,
+            floatingHeader: false,
+            headerDelegate: _TopBarDelegate(),
+          ),
+          if (state.isLoading)
+            const SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  height: 5,
+                  child: LinearProgressIndicator(),
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

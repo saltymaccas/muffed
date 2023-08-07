@@ -12,6 +12,7 @@ final class HomePageState extends Equatable {
     this.isLoading = false,
     this.errorMessage,
     this.sortType = LemmySortType.hot,
+    this.loadedSortType = LemmySortType.hot,
     this.listingType = LemmyListingType.all,
   });
 
@@ -26,7 +27,18 @@ final class HomePageState extends Equatable {
   /// If status is success the error message should appear as a snack bar so
   /// the posts are still visible.
   final String? errorMessage;
+
+  /// The sort type the user selected
+  ///
+  /// This gets set as soon as the user sets the sort type, It will be changed
+  /// back if an error occurs when loading the posts
   final LemmySortType sortType;
+
+  /// The sort type that is currently loaded
+  ///
+  /// This sort type gets changed when the sort type gets successfully loaded
+  final LemmySortType loadedSortType;
+
   final LemmyListingType listingType;
 
   @override
@@ -39,6 +51,7 @@ final class HomePageState extends Equatable {
         errorMessage,
         listingType,
         sortType,
+    loadedSortType,
       ];
 
   HomePageState copyWith({
@@ -50,6 +63,7 @@ final class HomePageState extends Equatable {
     bool? isLoading,
     LemmyListingType? listingType,
     LemmySortType? sortType,
+    LemmySortType? loadedSortType,
   }) {
     return HomePageState(
       errorMessage: errorMessage,
@@ -60,6 +74,7 @@ final class HomePageState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       listingType: listingType ?? this.listingType,
       sortType: sortType ?? this.sortType,
+      loadedSortType: loadedSortType ?? this.loadedSortType,
     );
   }
 }
