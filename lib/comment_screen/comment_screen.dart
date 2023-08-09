@@ -194,8 +194,9 @@ class CommentScreen extends StatelessWidget {
               children: [
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
+                    if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 10000 &&
+                        state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()
                           .add(ReachedNearEndOfScroll());
@@ -247,18 +248,23 @@ class CommentScreen extends StatelessWidget {
                                       delegate: SliverChildBuilderDelegate(
                                           childCount: state.comments!.length,
                                           (context, index) {
-                                        return Column(
-                                          children: [
-                                            CommentItem(
-                                              key: ValueKey(
-                                                state.comments![index].id,
+                                        if (state
+                                            .comments![index].path.isEmpty) {
+                                          return Column(
+                                            children: [
+                                              CommentItem(
+                                                key: ValueKey(
+                                                  state.comments![index].id,
+                                                ),
+                                                comment: state.comments![index],
+                                                onReplyPressed: showReplyDialog,
                                               ),
-                                              comment: state.comments![index],
-                                              onReplyPressed: showReplyDialog,
-                                            ),
-                                            const Divider(),
-                                          ],
-                                        );
+                                              const Divider(),
+                                            ],
+                                          );
+                                        } else {
+                                          return SizedBox();
+                                        }
                                       }),
                                     ),
                       ],

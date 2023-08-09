@@ -7,6 +7,8 @@ part 'event.dart';
 
 part 'state.dart';
 
+const pageLoadInterval = 5;
+
 /// The bloc for the content screen
 class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
   /// Initialize
@@ -16,16 +18,22 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       emit(CommentScreenState(status: CommentScreenStatus.loading));
 
       try {
-        List<LemmyComment> comments = await repo.lemmyRepo
-            .getComments(postId, page: 1, sortType: state.sortType);
+        for (int i = 1; i < 5; i++) {
+          List<LemmyComment> newComments = await repo.lemmyRepo
+              .getComments(postId, page: i, sortType: state.sortType);
 
-        emit(
-          CommentScreenState(
-            status: CommentScreenStatus.success,
-            comments: comments,
-            pagesLoaded: 1,
-          ),
-        );
+          final comments = organiseComments(newComments);
+
+          emit(
+            CommentScreenState(
+              status: CommentScreenStatus.success,
+              comments: comments,
+              isLoading: true,
+              pagesLoaded: i,
+            ),
+          );
+        }
+        emit(state.copyWith(isLoading: false));
       } catch (err) {
         emit(
           state.copyWith(
@@ -37,35 +45,43 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
+        if (!state.reachedEnd) {
+          print('[ContentScreenBloc] loading page ${state.pagesLoaded + 1}');
 
-        emit(state.copyWith(isLoading: true));
-        try {
-          if (!state.reachedEnd) {
-            final comments = await repo.lemmyRepo.getComments(
-              postId,
-              page: state.pagesLoaded + 1,
-              sortType: state.sortType,
-            );
-
-            if (comments.isEmpty) {
-              emit(state.copyWith(isLoading: false, reachedEnd: true));
-
-              print('[ContentScreenBloc] end reached');
-            } else {
-              emit(
-                state.copyWith(
-                  isLoading: false,
-                  pagesLoaded: state.pagesLoaded + 1,
-                  comments: [...state.comments ?? [], ...comments],
-                ),
+          emit(state.copyWith(isLoading: true));
+          try {
+            for (int i = state.pagesLoaded + 1;
+                i < state.pagesLoaded + 5;
+                i++) {
+              final newComments = await repo.lemmyRepo.getComments(
+                postId,
+                page: state.pagesLoaded + 1,
+                sortType: state.sortType,
               );
 
-              print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+              if (newComments.isEmpty) {
+                emit(state.copyWith(isLoading: false, reachedEnd: true));
+
+                print('[ContentScreenBloc] end reached');
+              } else {
+                final comments =
+                    organiseComments([...state.comments ?? [], ...newComments]);
+
+                emit(
+                  state.copyWith(
+                    pagesLoaded: state.pagesLoaded + 1,
+                    comments: comments,
+                  ),
+                );
+
+                print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
+              }
             }
+            emit(state.copyWith(isLoading: false));
+          } catch (err) {
+            emit(
+                state.copyWith(errorMessage: err.toString(), isLoading: false));
           }
-        } catch (err) {
-          emit(state.copyWith(errorMessage: err.toString(), isLoading: false));
         }
       },
       transformer: droppable(),
@@ -96,8 +112,10 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       emit(state.copyWith(isRefreshing: true));
 
       try {
-        final List<LemmyComment> comments = await repo.lemmyRepo
+        final List<LemmyComment> newComments = await repo.lemmyRepo
             .getComments(postId, page: 1, sortType: state.sortType);
+
+        final comments = organiseComments(newComments);
 
         emit(
           state.copyWith(
@@ -119,10 +137,13 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       try {
         final newComments = await repo.lemmyRepo
             .getComments(postId, page: 1, sortType: state.sortType);
+
+        final comments = organiseComments(newComments);
+
         emit(
           state.copyWith(
+            comments: comments,
             isLoading: false,
-            comments: newComments,
             pagesLoaded: 1,
           ),
         );
@@ -140,4 +161,28 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
   final ServerRepo repo;
   final int postId;
+
+  List<LemmyComment> organiseComments(List<LemmyComment> inputComments) {
+    List<LemmyComment> comments = inputComments;
+
+    List<LemmyComment> toBeRemoved = [];
+
+    for (final comment in comments) {
+      for (final comment2 in comments) {
+        if (comment != comment2) {
+          bool success = comment.addCommentToTree(comment2);
+          if (success) {
+            toBeRemoved.add(comment2);
+            break;
+          }
+        }
+      }
+    }
+
+    for (final comment in toBeRemoved) {
+      comments.remove(comment);
+    }
+
+    return comments;
+  }
 }

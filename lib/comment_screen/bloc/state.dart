@@ -17,7 +17,9 @@ class CommentScreenState extends Equatable {
   });
 
   final CommentScreenStatus status;
+
   final List<LemmyComment>? comments;
+
   final int pagesLoaded;
   final bool isLoading;
   final LemmyCommentSortType sortType;

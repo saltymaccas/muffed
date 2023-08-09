@@ -167,8 +167,7 @@ class LemmyComment extends Equatable {
   /// initialise object
   LemmyComment({
     this.replies = const [],
-    this.parentCommentId,
-    this.level = 0,
+    required this.path,
     required this.creatorName,
     required this.creatorId,
     required this.content,
@@ -179,16 +178,20 @@ class LemmyComment extends Equatable {
     required this.upVotes,
     required this.downVotes,
     this.myVote = LemmyVoteType.none,
+    required this.page,
     required this.score,
     required this.hotRank,
   });
 
-  /// Level that the comment is on where 0 is comment on a post,
-  /// 1 is comment on a comment,
-  /// 2 in comment on that comment that is on a comment and so on.
-  final int level;
-  final int? parentCommentId; // The parent comment
-  final List<LemmyComment> replies;
+  /// Holds the id's of the parent and ancestor comments
+  ///
+  /// This does not include id of the post or the comment itself.
+  final List<int> path;
+
+  /// The page that the comment came from
+  final int page;
+
+  List<LemmyComment> replies;
   final String creatorName;
   final String content;
   final DateTime timePublished;
@@ -206,6 +209,28 @@ class LemmyComment extends Equatable {
 
   @override
   List<Object?> get props => ['LemmyComment', id];
+
+  /// Tries to add the comment into the tree will return true if success and
+  /// false if failed
+  bool addCommentToTree(LemmyComment comment){
+    if (!comment.path.contains(id)){
+      return false;
+    }
+
+    if(comment.path.last == id){
+      replies = [...replies, comment];
+      return true;
+    }
+
+    for (final reply in replies){
+      final bool value = reply.addCommentToTree(comment);
+
+      if (value){
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class LemmyCommunity extends Equatable {

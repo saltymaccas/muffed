@@ -121,108 +121,36 @@ interface class LemmyRepo {
 
       final commentResponse = response.data['comments'];
 
-      // defines comment children and parent
+      final List<LemmyComment> comments = [];
 
-      // Maps comments to their children. The key is the comment id the value
-      // is a list of the comments children
-      Map<int, List<Map<String, dynamic>>> mapReplyToParent = {};
+      for (final comment in commentResponse) {
+        final List<String> pathAsString =
+            (comment['comment']['path'] as String).split('.');
 
-      /// A list that contains all the base level comments
-      List<Map> baseLevelComments = [];
-
-      for (final Map<String, dynamic> comment in commentResponse) {
-        final String path = (comment['comment'] as Map)['path'];
-        final List<String> parts = path.split('.');
-
-        // if the comment is a base level comment
-        if (parts.length == 2) {
-          baseLevelComments.add(comment);
-        } else {
-          // gets the id of the parent
-          final int parentId = int.parse(parts[parts.length - 2]);
-
-          // add reply to map connected to the id of the parent
-          if (!mapReplyToParent.containsKey(parentId)) {
-            mapReplyToParent[parentId] = [comment];
-          } else {
-            mapReplyToParent[parentId]!.add(comment);
+        final List<int> path = [];
+        for (int i = 0; i < pathAsString.length; i++) {
+          if (i != 0 && i != pathAsString.length - 1) {
+            path.add(int.parse(pathAsString[i]));
           }
-        }
-      }
-
-      /// Creates a [LemmyComment] object with the children in place
-      LemmyComment mapToLemmyComment(
-        Map<String, dynamic> comment,
-        int level,
-        int parentId,
-      ) {
-        final List<LemmyComment> replies = [];
-
-        if (mapReplyToParent.containsKey(comment['comment']['id'])) {
-          for (var element in mapReplyToParent[comment['comment']['id']]!) {
-            replies.add(
-              mapToLemmyComment(
-                element,
-                level + 1,
-                comment['comment']['id'],
-              ),
-            );
-          }
-        }
-
-        return LemmyComment(
-          parentCommentId: parentId,
-          replies: replies,
-          level: level + 1,
-          creatorName: comment['creator']['name'],
-          creatorId: comment['creator']['id'],
-          content: comment['comment']['content'],
-          id: comment['comment']['id'],
-          timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
-          // Z added to mark as UTC time
-          postId: postId,
-          childCount: comment['counts']['child_count'],
-          upVotes: comment['counts']['upvotes'],
-          downVotes: comment['counts']['downvotes'],
-          score: comment['counts']['score'],
-          hotRank: comment['counts']['hot_rank'],
-        );
-      }
-
-      List<LemmyComment> comments = [];
-
-      // gets the base level comments, appends the children and adds it to the
-      // list
-      for (final comment in baseLevelComments) {
-        final List<LemmyComment> replies = [];
-
-        if (mapReplyToParent.containsKey(comment['comment']['id'])) {
-          for (var element in mapReplyToParent[comment['comment']['id']]!) {
-            replies
-                .add(mapToLemmyComment(element, 1, comment['comment']['id']));
-          }
-          // removes value to show they have been added
-          mapReplyToParent.remove(comment['comment']['id']);
         }
 
         comments.add(
           LemmyComment(
-            level: 0,
-            replies: replies,
+            page: page,
+            myVote:
+                intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
+            path: path,
             creatorName: comment['creator']['name'],
             creatorId: comment['creator']['id'],
             content: comment['comment']['content'],
-            id: comment['comment']['id'],
             timePublished:
                 DateTime.parse(comment['comment']['published'] + 'Z'),
-            // Z added to mark as UTC time
+            id: comment['comment']['id'],
             postId: postId,
             childCount: comment['counts']['child_count'],
             upVotes: comment['counts']['upvotes'],
             downVotes: comment['counts']['downvotes'],
             score: comment['counts']['score'],
-            myVote:
-                intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
             hotRank: comment['counts']['hot_rank'],
           ),
         );
@@ -272,12 +200,24 @@ interface class LemmyRepo {
       final List<LemmyCommunity> communities = [];
 
       for (final comment in response.data['comments']) {
+        final List<String> pathAsString =
+            (comment['comment']['path'] as String).split('.');
+
+        final List<int> path = [];
+        for (int i = 0; i < pathAsString.length; i++) {
+          if (i != 0 && i != pathAsString.length - 1) {
+            path.add(int.parse(pathAsString[i]));
+          }
+        }
+
         comments.add(
           LemmyComment(
+            path: path,
             creatorName: comment['creator']['name'],
             creatorId: comment['creator']['id'],
             content: comment['comment']['content'],
             id: comment['comment']['id'],
+            page: page,
             // Z added to mark as UTC time
             timePublished:
                 DateTime.parse(comment['comment']['published'] + 'Z'),
