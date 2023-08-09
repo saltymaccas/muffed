@@ -7,8 +7,6 @@ part 'event.dart';
 
 part 'state.dart';
 
-const pageLoadInterval = 5;
-
 /// The bloc for the content screen
 class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
   /// Initialize
@@ -18,22 +16,19 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       emit(CommentScreenState(status: CommentScreenStatus.loading));
 
       try {
-        for (int i = 1; i < 5; i++) {
-          List<LemmyComment> newComments = await repo.lemmyRepo
-              .getComments(postId, page: i, sortType: state.sortType);
+        List<LemmyComment> newComments = await repo.lemmyRepo
+            .getComments(postId, page: 1, sortType: state.sortType);
 
-          final comments = organiseComments(newComments);
+        final comments = organiseComments(newComments);
 
-          emit(
-            CommentScreenState(
-              status: CommentScreenStatus.success,
-              comments: comments,
-              isLoading: true,
-              pagesLoaded: i,
-            ),
-          );
-        }
-        emit(state.copyWith(isLoading: false));
+        emit(
+          CommentScreenState(
+            status: CommentScreenStatus.success,
+            comments: comments,
+            isLoading: false,
+            pagesLoaded: 1,
+          ),
+        );
       } catch (err) {
         emit(
           state.copyWith(
@@ -50,37 +45,34 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
           emit(state.copyWith(isLoading: true));
           try {
-            for (int i = state.pagesLoaded + 1;
-                i < state.pagesLoaded + 5;
-                i++) {
-              final newComments = await repo.lemmyRepo.getComments(
-                postId,
-                page: state.pagesLoaded + 1,
-                sortType: state.sortType,
+            final newComments = await repo.lemmyRepo.getComments(
+              postId,
+              page: state.pagesLoaded + 1,
+              sortType: state.sortType,
+            );
+
+            if (newComments.isEmpty) {
+              emit(state.copyWith(isLoading: false, reachedEnd: true));
+
+              print('[ContentScreenBloc] end reached');
+            } else {
+              final comments =
+                  organiseComments([...state.comments ?? [], ...newComments]);
+
+              emit(
+                state.copyWith(
+                  pagesLoaded: state.pagesLoaded + 1,
+                  comments: comments,
+                  isLoading: false,
+                ),
               );
 
-              if (newComments.isEmpty) {
-                emit(state.copyWith(isLoading: false, reachedEnd: true));
-
-                print('[ContentScreenBloc] end reached');
-              } else {
-                final comments =
-                    organiseComments([...state.comments ?? [], ...newComments]);
-
-                emit(
-                  state.copyWith(
-                    pagesLoaded: state.pagesLoaded + 1,
-                    comments: comments,
-                  ),
-                );
-
-                print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
-              }
+              print('[ContentScreenBloc] loaded page ${state.pagesLoaded}');
             }
-            emit(state.copyWith(isLoading: false));
           } catch (err) {
             emit(
-                state.copyWith(errorMessage: err.toString(), isLoading: false));
+              state.copyWith(errorMessage: err.toString(), isLoading: false),
+            );
           }
         }
       },
