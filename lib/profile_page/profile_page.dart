@@ -13,7 +13,14 @@ class ProfilePage extends StatelessWidget {
 
     return SetPageInfo(
         indexOfRelevantItem: 2,
-        actions: [],
+        actions: [
+          IconButton(
+            visualDensity: VisualDensity.compact,
+              onPressed: () {
+                context.push('/profile/settings');
+              },
+              icon: Icon(Icons.settings)),
+        ],
         child: BlocBuilder<GlobalBloc, GlobalState>(
           builder: (context, state) {
             return SafeArea(

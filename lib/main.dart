@@ -13,6 +13,8 @@ import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/login_page/login_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/settings_page/theme/theme.dart';
+import 'package:muffed/settings_page/settings_page.dart';
 import 'package:path_provider/path_provider.dart';
 
 final _router = GoRouter(
@@ -26,25 +28,26 @@ final _router = GoRouter(
         StatefulNavigationShell navigationShell,
       ) {
         return Scaffold(
-          bottomNavigationBar:
-              DynamicNavigationBar(onItemTapped: (index, currentContext) {
-            if (index == navigationShell.currentIndex) {
-              if (currentContext != null) {
-                if (currentContext.canPop()) {
-                  Navigator.pop(currentContext);
+          bottomNavigationBar: DynamicNavigationBar(
+            onItemTapped: (index, currentContext) {
+              if (index == navigationShell.currentIndex) {
+                if (currentContext != null) {
+                  if (currentContext.canPop()) {
+                    Navigator.pop(currentContext);
+                  }
                 }
-              }
-            } else {
-              context
-                  .read<DynamicNavigationBarBloc>()
-                  .add(GoneToNewMainPage(index));
+              } else {
+                context
+                    .read<DynamicNavigationBarBloc>()
+                    .add(GoneToNewMainPage(index));
 
-              navigationShell.goBranch(
-                index,
-                initialLocation: false,
-              );
-            }
-          }),
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: false,
+                );
+              }
+            },
+          ),
           body: navigationShell,
         );
       },
@@ -67,7 +70,8 @@ final _router = GoRouter(
                   path: 'community',
                   builder: (context, state) {
                     return CommunityScreen(
-                        communityId: int.parse(state.queryParameters['id']!));
+                      communityId: int.parse(state.queryParameters['id']!),
+                    );
                   },
                 ),
               ],
@@ -98,6 +102,20 @@ final _router = GoRouter(
                     return LoginPage();
                   },
                 ),
+                GoRoute(
+                  path: 'settings',
+                  builder: (context, state) {
+                    return SettingsPage();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'look',
+                      builder: (context, state) {
+                        return const SettingsThemePage();
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -121,29 +139,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => DynamicNavigationBarBloc()),
-          BlocProvider(create: (context) => GlobalBloc()),
-        ],
-        child: Builder(builder: (context) {
-          return RepositoryProvider(
-            create: (context) => ServerRepo(context.read<GlobalBloc>()),
-            child: MaterialApp.router(
-              routerConfig: _router,
-              title: 'Muffed',
-              theme: ThemeData(
-                colorScheme: lightDynamic,
-                useMaterial3: true,
-              ),
-              darkTheme:
-                  ThemeData(colorScheme: darkDynamic, useMaterial3: true),
-              themeMode: ThemeMode.system,
-            ),
-          );
-        }),
-      );
-    });
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => DynamicNavigationBarBloc()),
+            BlocProvider(create: (context) => GlobalBloc()),
+          ],
+          child: BlocBuilder<GlobalBloc, GlobalState>(
+            builder: (context, state) {
+              return RepositoryProvider(
+                create: (context) => ServerRepo(context.read<GlobalBloc>()),
+                child: MaterialApp.router(
+                  routerConfig: _router,
+                  title: 'Muffed',
+                  theme: ThemeData(
+                    colorScheme:
+                        (state.useDynamicColorScheme && lightDynamic != null)
+                            ? lightDynamic
+                            : ColorScheme.fromSeed(seedColor: state.seedColor),
+                    useMaterial3: true,
+                  ),
+                  darkTheme: ThemeData(
+                    colorScheme:
+                        (state.useDynamicColorScheme && darkDynamic != null)
+                            ? darkDynamic
+                            : ColorScheme.fromSeed(
+                                seedColor: state.seedColor,
+                                brightness: Brightness.dark,
+                              ),
+                    useMaterial3: true,
+                  ),
+                  themeMode: state.themeMode,
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

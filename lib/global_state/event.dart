@@ -22,3 +22,21 @@ class UserRequestsAccountRemoval extends GlobalEvent {
   /// The index of the account that should be removed from the global state
   final int index;
 }
+
+class ThemeModeChanged extends GlobalEvent {
+  ThemeModeChanged(this.themeMode);
+
+  final ThemeMode themeMode;
+}
+
+class UseDynamicColorSchemeChanged extends GlobalEvent {
+  UseDynamicColorSchemeChanged(this.useDynamicColorScheme);
+
+  final bool useDynamicColorScheme;
+}
+
+class SeedColorChanged extends GlobalEvent {
+  SeedColorChanged(this.seedColor);
+
+  final Color seedColor;
+}
