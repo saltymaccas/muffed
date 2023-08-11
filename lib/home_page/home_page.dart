@@ -354,9 +354,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 BlocBuilder<GlobalBloc, GlobalState>(
                   builder: (context, state) {
-                    if (state.lemmySelectedAccount != null) {
+                    if (state.lemmySelectedAccount != -1) {
                       return MuffedPopupMenuButton(
                         icon: Icon(Icons.filter_list),
+                        visualDensity: VisualDensity.compact,
                         items: [
                           BlocProvider.value(
                             value: BlocProvider.of<HomePageBloc>(blocContext),
