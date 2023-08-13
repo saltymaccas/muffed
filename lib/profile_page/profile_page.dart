@@ -15,7 +15,7 @@ class ProfilePage extends StatelessWidget {
         indexOfRelevantItem: 2,
         actions: [
           IconButton(
-            visualDensity: VisualDensity.compact,
+              visualDensity: VisualDensity.compact,
               onPressed: () {
                 context.push('/profile/settings');
               },
@@ -118,7 +118,8 @@ class ProfilePage extends StatelessWidget {
                                     onTap: () {
                                       context.pop();
                                       globalBloc.add(
-                                          UserRequestsLemmyAccountSwitch(null));
+                                        UserRequestsLemmyAccountSwitch(-1),
+                                      );
                                     },
                                   ),
                                   ListTile(

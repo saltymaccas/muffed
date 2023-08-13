@@ -10,7 +10,7 @@ class AccountLoggedIn extends GlobalEvent {
 }
 
 class UserRequestsLemmyAccountSwitch extends GlobalEvent {
-  final int? accountIndex;
+  final int accountIndex;
 
   UserRequestsLemmyAccountSwitch(this.accountIndex);
 }
