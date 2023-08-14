@@ -13,6 +13,8 @@ import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/login_page/login_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/search_dialog/bloc/bloc.dart';
+import 'package:muffed/search_dialog/search_screen.dart';
 import 'package:muffed/settings_page/theme/theme.dart';
 import 'package:muffed/settings_page/settings_page.dart';
 import 'package:path_provider/path_provider.dart';
@@ -74,6 +76,15 @@ final _router = GoRouter(
                     );
                   },
                 ),
+                GoRoute(
+                  path: 'search',
+                  builder: (context, state) {
+                    return SearchScreen(
+                      searchQuery: state.queryParameters['query'],
+                      initialState: state.extra as SearchState?,
+                    );
+                  },
+                ),
               ],
             ),
           ],
@@ -85,7 +96,7 @@ final _router = GoRouter(
               pageBuilder: (context, state) {
                 return const MaterialPage(child: InboxPage());
               },
-            )
+            ),
           ],
         ),
         StatefulShellBranch(

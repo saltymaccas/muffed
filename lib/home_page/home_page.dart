@@ -33,20 +33,20 @@ class _HomePageState extends State<HomePage> {
 
           late LemmyAccountData? previousAccount;
 
-          if (previous.lemmySelectedAccount == null) {
+          if (previous.lemmySelectedAccount == -1) {
             previousAccount = null;
           } else {
             previousAccount =
-                previous.lemmyAccounts[previous.lemmySelectedAccount!];
+                previous.lemmyAccounts[previous.lemmySelectedAccount];
           }
 
           late LemmyAccountData? currentAccount;
 
-          if (current.lemmySelectedAccount == null) {
+          if (current.lemmySelectedAccount == -1) {
             currentAccount = null;
           } else {
             currentAccount =
-                current.lemmyAccounts[current.lemmySelectedAccount!];
+                current.lemmyAccounts[current.lemmySelectedAccount];
           }
 
           if (previousAccount != currentAccount) {

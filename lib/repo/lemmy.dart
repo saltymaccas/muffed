@@ -181,6 +181,7 @@ interface class LemmyRepo {
         queryParameters: {
           if (globalBloc.getSelectedLemmyAccount() != null)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          'page': page,
           'q': query,
           'type_': lemmySearchTypeToApiCompatible[searchType],
           'sort': lemmySortTypeEnumToApiCompatible[sortType],
