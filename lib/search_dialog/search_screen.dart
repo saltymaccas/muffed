@@ -9,6 +9,7 @@ import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
+import 'package:muffed/components/cards.dart';
 
 import 'bloc/bloc.dart';
 
@@ -395,7 +396,7 @@ class SearchScreen extends StatelessWidget {
                                     controller: communitiesScrollController,
                                     itemCount: state.communities.length,
                                     itemBuilder: (context, index) {
-                                      return _LemmyCommunityCard(
+                                      return LemmyCommunityCard(
                                         community: state.communities[index],
                                       );
                                     },
@@ -404,7 +405,7 @@ class SearchScreen extends StatelessWidget {
                                     controller: personsScrollController,
                                     itemCount: state.persons.length,
                                     itemBuilder: (context, index) {
-                                      return _LemmyPersonCard(
+                                      return LemmyPersonCard(
                                         person: state.persons[index],
                                       );
                                     },
@@ -475,222 +476,3 @@ class SearchScreen extends StatelessWidget {
   }
 }
 
-class _LemmyCommunityCard extends StatelessWidget {
-  const _LemmyCommunityCard({super.key, required this.community});
-
-  final LemmyCommunity community;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      margin: EdgeInsets.all(8),
-      child: InkWell(
-        onTap: () {
-          context.push('/home/community?id=${community.id}');
-        },
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            image: (community.banner != null)
-                ? DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      community.banner!,
-                    ),
-                    fit: BoxFit.cover,
-                    opacity: 0.5,
-                  )
-                : null,
-          ),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 24,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(45),
-                      child: (community.icon != null)
-                          ? CachedNetworkImage(imageUrl: community.icon!)
-                          : SvgPicture.asset(
-                              'assets/logo.svg',
-                            ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Flexible(
-                    child: Text(
-                      community.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Wrap(
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _InfoChip(
-                    label: Text('Age'),
-                    value: Text(formattedPostedAgo(community.published)),
-                  ),
-                  _InfoChip(
-                    label: Text('Posts'),
-                    value: Text(community.posts.toString()),
-                  ),
-                  _InfoChip(
-                    label: Text('Subscribers'),
-                    value: Text(community.subscribers.toString()),
-                  ),
-                  _InfoChip(
-                    label: Text('Hot Rank'),
-                    value: Text(community.hotRank.toString()),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LemmyPersonCard extends StatelessWidget {
-  const _LemmyPersonCard({required this.person, super.key});
-
-  final LemmyPerson person;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      margin: EdgeInsets.all(8),
-      child: InkWell(
-        onTap: () {},
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            image: (person.banner != null)
-                ? DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      person.banner!,
-                    ),
-                    fit: BoxFit.cover,
-                    opacity: 0.5,
-                  )
-                : null,
-          ),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 24,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(45),
-                      child: (person.avatar != null)
-                          ? CachedNetworkImage(imageUrl: person.avatar!)
-                          : SvgPicture.asset(
-                              'assets/logo.svg',
-                            ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Flexible(
-                    child: Text(
-                      person.name,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Wrap(
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _InfoChip(
-                    label: Text('Age'),
-                    value: Text(formattedPostedAgo(person.published)),
-                  ),
-                  _InfoChip(
-                    label: Text('Post Score'),
-                    value: Text(person.postScore.toString()),
-                  ),
-                  _InfoChip(
-                    label: Text('Comment Score'),
-                    value: Text(person.commentScore.toString()),
-                  ),
-                  _InfoChip(
-                    label: Text('Post Count'),
-                    value: Text(person.postCount.toString()),
-                  ),
-                  _InfoChip(
-                    label: Text('Comment Count'),
-                    value: Text(person.commentCount.toString()),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    super.key,
-    required this.label,
-    required this.value,
-  });
-
-  final Widget label;
-  final Widget value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
-      elevation: 2,
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.labelMedium!,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: label,
-            ),
-            Container(
-              //color: Theme.of(context).colorScheme.outline,
-              width: 2,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: value,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
