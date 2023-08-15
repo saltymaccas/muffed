@@ -137,6 +137,11 @@ void openSearchDialog(BuildContext context) {
                         border: InputBorder.none,
                       ),
                     ),
+                    SizedBox(
+                      height: 5,
+                      child:
+                          (state.isLoading) ? LinearProgressIndicator() : null,
+                    ),
                   ],
                 ),
               );
