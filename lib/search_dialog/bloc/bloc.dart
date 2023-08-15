@@ -17,7 +17,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         ) {
     on<SearchQueryChanged>(
       (event, emit) async {
-        emit(state.copyWith(isLoading: true));
+        emit(state.copyWith(isLoading: true, searchQuery: event.searchQuery));
 
         try {
           final search = await repo.lemmyRepo.search(
@@ -28,12 +28,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
           emit(
             state.copyWith(
-              searchQuery: event.searchQuery,
+              loadedSearchQuery: event.searchQuery,
               comments: search.lemmyComments,
               posts: search.lemmyPosts,
               communities: search.lemmyCommunities,
               persons: search.lemmyPersons,
               isLoading: false,
+              pagesLoaded: 1,
             ),
           );
         } catch (err) {
@@ -54,6 +55,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               .search(query: state.searchQuery, sortType: state.sortType);
           emit(
             state.copyWith(
+              loadedSortType: event.sortType,
               isLoading: false,
               communities: search.lemmyCommunities,
               comments: search.lemmyComments,
@@ -79,7 +81,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         try {
           final searchResponse = await repo.lemmyRepo.search(
-            query: state.searchQuery,
+            query: state.loadedSearchQuery,
             sortType: state.sortType,
             searchType: LemmySearchType.all,
             page: state.pagesLoaded + 1,
@@ -114,4 +116,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   final ServerRepo repo;
+
+  @override
+  void onChange(Change<SearchState> change) {
+    super.onChange(change);
+    print(change);
+  }
+
+  @override
+  void onTransition(Transition<SearchEvent, SearchState> transition) {
+    super.onTransition(transition);
+    print(transition);
+  }
 }

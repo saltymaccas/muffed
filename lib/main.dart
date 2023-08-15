@@ -81,7 +81,7 @@ final _router = GoRouter(
                   builder: (context, state) {
                     return SearchScreen(
                       searchQuery: state.queryParameters['query'],
-                      initialState: state.extra as SearchState?,
+                      //initialState: state.extra as SearchState?,
                     );
                   },
                 ),

@@ -9,10 +9,9 @@ class SearchQueryChanged extends SearchEvent {
 }
 
 class SortTypeChanged extends SearchEvent {
-  SortTypeChanged({required this.sortType,required this.searchType});
+  SortTypeChanged(this.sortType);
 
   final LemmySortType sortType;
-  final LemmySearchType searchType;
 }
 
 class ReachedNearEndOfPage extends SearchEvent {}
