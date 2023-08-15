@@ -105,6 +105,7 @@ void openSearchDialog(BuildContext context) {
                         },
                       ),
                     ),
+                    SizedBox(height: 2,),
                     TextField(
                       controller: textController,
                       onChanged: (query) {
@@ -138,7 +139,7 @@ void openSearchDialog(BuildContext context) {
                       ),
                     ),
                     SizedBox(
-                      height: 5,
+                      height: 2,
                       child:
                           (state.isLoading) ? LinearProgressIndicator() : null,
                     ),
