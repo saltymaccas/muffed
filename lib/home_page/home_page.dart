@@ -476,6 +476,12 @@ class _HomePageSuccess extends StatelessWidget {
       child: Stack(
         children: [
           ContentView(
+            leadingSlivers: [
+              SliverPersistentHeader(
+                delegate: _TopBarDelegate(),
+                floating: false,
+              ),
+            ],
             scrollController: scrollController,
             reachedNearEnd: () {
               context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
@@ -493,8 +499,6 @@ class _HomePageSuccess extends StatelessWidget {
               context.go('/home/content', extra: post);
             },
             posts: context.read<HomePageBloc>().state.posts!,
-            floatingHeader: false,
-            headerDelegate: _TopBarDelegate(),
           ),
           if (state.isLoading)
             const SafeArea(

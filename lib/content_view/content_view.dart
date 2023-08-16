@@ -11,13 +11,12 @@ class ContentView extends StatelessWidget {
     required this.posts,
     required this.reachedNearEnd,
     required this.onRefresh,
+    this.leadingSlivers = const [],
     this.isContentLoading = false,
-    this.floatingHeader = false,
-    this.headerDelegate,
-    this.pinnedHeader = false,
+
     ScrollController? scrollController,
     super.key,
-  }): scrollController = scrollController ?? ScrollController();
+  }) : scrollController = scrollController ?? ScrollController();
 
   /// When the user has reached near the end of the scroll. often used to
   /// load more posts.
@@ -25,17 +24,6 @@ class ContentView extends StatelessWidget {
 
   /// When the user presses a post.
   final void Function(LemmyPost post) onPressedPost;
-
-  /// The header delegate of the scroll view.
-  final SliverPersistentHeaderDelegate? headerDelegate;
-
-  /// Whether the header should float, meaning become visible again when
-  /// the user scrolls up in any part of the scrollview.
-  final bool floatingHeader;
-
-  /// Whether the header should be pinned, meaning have the header always
-  /// visible on the scroll view.
-  final bool pinnedHeader;
 
   /// The posts that should be displayed.
   final List<LemmyPost> posts;
@@ -45,6 +33,8 @@ class ContentView extends StatelessWidget {
 
   /// when user pulls down to refresh
   final Future<void> Function() onRefresh;
+
+  final List<Widget> leadingSlivers;
 
   final ScrollController scrollController;
 
@@ -64,12 +54,7 @@ class ContentView extends StatelessWidget {
           controller: scrollController,
           cacheExtent: 999,
           slivers: [
-            if (headerDelegate != null)
-              SliverPersistentHeader(
-                floating: floatingHeader,
-                delegate: headerDelegate!,
-                pinned: pinnedHeader,
-              ),
+            ...leadingSlivers,
             SliverList(
               delegate: isContentLoading
                   ? SliverChildListDelegate([

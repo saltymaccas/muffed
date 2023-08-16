@@ -7,6 +7,7 @@ import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:muffed/components/cards.dart';
 
 import 'bloc/bloc.dart';
 
@@ -91,13 +92,15 @@ class CommunityScreen extends StatelessWidget {
             // menu
             child: ContentView(
               scrollController: ScrollController(),
-              headerDelegate:
-                  (state.communityInfoStatus == CommunityStatus.success)
-                      ? _TopBarDelegate(community: state.communityInfo!)
-                      : null,
+              leadingSlivers: [
+                if (state.communityInfoStatus == CommunityStatus.success)
+                  SliverPersistentHeader(
+                    delegate: _TopBarDelegate(community: state.communityInfo!),
+                    floating: true,
+                    pinned: false,
+                  ),
+              ],
               onRefresh: () async {},
-              floatingHeader: true,
-              pinnedHeader: false,
               isContentLoading: state.postsStatus == CommunityStatus.loading,
               onPressedPost: (post) {
                 context.push('/home/content', extra: post);
@@ -122,10 +125,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   _TopBarDelegate({required this.community});
 
   @override
-  double get maxExtent => 80;
+  double get maxExtent => 600;
 
   @override
-  double get minExtent => 80;
+  double get minExtent => 0;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
@@ -139,35 +142,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final progress = shrinkOffset / maxExtent;
 
-    return Material(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          SafeArea(
-            child: Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-                    icon: Icon(Icons.arrow_back)),
-                Text(community.name,
-                    style: Theme.of(context).textTheme.titleLarge),
-              ],
-            ),
-          ),
-          AnimatedOpacity(
-            duration: const Duration(milliseconds: 150),
-            opacity: 1 - progress,
-            child: (community.banner != null)
-                ? Image.network(
-                    community.banner!,
-                    fit: BoxFit.cover,
-                  )
-                : null,
-          ),
-        ],
-      ),
+    return SafeArea(
+      child: LemmyCommunityCard(community: community),
     );
   }
 }
