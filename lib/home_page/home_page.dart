@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/menu_anchor.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_dialog.dart';
 
-import '../components/popup_menu/popup_menu.dart';
 import 'bloc/bloc.dart';
 
 /// The main page the user uses the scroll through content
 class HomePage extends StatefulWidget {
+  ///
   const HomePage({super.key});
 
   @override
@@ -68,12 +68,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     openSearchDialog(context);
                   },
-                  icon: Icon(Icons.search_rounded),
+                  icon: const Icon(Icons.search_rounded),
                   visualDensity: VisualDensity.compact,
                 ),
                 MuffedPopupMenuButton(
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(Icons.sort),
+                  icon: const Icon(Icons.sort),
                   items: [
                     BlocProvider.value(
                       value: BlocProvider.of<HomePageBloc>(blocContext),
@@ -159,7 +159,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topAll),
+                                                  LemmySortType.topAll,
+                                                ),
                                               ),
                                     );
                                   },
@@ -177,7 +178,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topYear),
+                                                  LemmySortType.topYear,
+                                                ),
                                               ),
                                     );
                                   },
@@ -195,7 +197,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topMonth),
+                                                  LemmySortType.topMonth,
+                                                ),
                                               ),
                                     );
                                   },
@@ -213,7 +216,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topWeek),
+                                                  LemmySortType.topWeek,
+                                                ),
                                               ),
                                     );
                                   },
@@ -231,7 +235,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topDay),
+                                                  LemmySortType.topDay,
+                                                ),
                                               ),
                                     );
                                   },
@@ -246,12 +251,12 @@ class _HomePageState extends State<HomePage> {
                                       title: 'Twelve Hours',
                                       isSelected: state.sortType ==
                                           LemmySortType.topTwelveHour,
-                                      onTap: () => context
-                                          .read<HomePageBloc>()
-                                          .add(
-                                            SortTypeChanged(
-                                                LemmySortType.topTwelveHour),
-                                          ),
+                                      onTap: () =>
+                                          context.read<HomePageBloc>().add(
+                                                SortTypeChanged(
+                                                  LemmySortType.topTwelveHour,
+                                                ),
+                                              ),
                                     );
                                   },
                                 ),
@@ -268,7 +273,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topSixHour),
+                                                  LemmySortType.topSixHour,
+                                                ),
                                               ),
                                     );
                                   },
@@ -286,7 +292,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () =>
                                           context.read<HomePageBloc>().add(
                                                 SortTypeChanged(
-                                                    LemmySortType.topHour),
+                                                  LemmySortType.topHour,
+                                                ),
                                               ),
                                     );
                                   },
@@ -356,7 +363,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, state) {
                     if (state.lemmySelectedAccount != -1) {
                       return MuffedPopupMenuButton(
-                        icon: Icon(Icons.filter_list),
+                        icon: const Icon(Icons.filter_list),
                         visualDensity: VisualDensity.compact,
                         items: [
                           BlocProvider.value(
@@ -396,7 +403,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     } else {
-                      return SizedBox();
+                      return const SizedBox();
                     }
                   },
                 ),
@@ -404,13 +411,13 @@ class _HomePageState extends State<HomePage> {
               child: Builder(
                 builder: (BuildContext context) {
                   if (state.status == HomePageStatus.loading) {
-                    return _HomePageLoading();
+                    return const _HomePageLoading();
                   } else if (state.status == HomePageStatus.failure) {
-                    return _HomePageFailure();
+                    return _HomePageFailure(state.errorMessage ?? '');
                   } else if (state.status == HomePageStatus.success) {
-                    return _HomePageSuccess();
+                    return const _HomePageSuccess();
                   } else {
-                    return _HomePageInitial();
+                    return const _HomePageInitial();
                   }
                 },
               ),
@@ -423,7 +430,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _HomePageInitial extends StatelessWidget {
-  const _HomePageInitial({super.key});
+  const _HomePageInitial();
 
   @override
   Widget build(BuildContext context) {
@@ -432,18 +439,20 @@ class _HomePageInitial extends StatelessWidget {
 }
 
 class _HomePageFailure extends StatelessWidget {
-  const _HomePageFailure({super.key, this.errorMessage});
+  const _HomePageFailure(this.errorMessage);
 
-  final String? errorMessage;
+  final String errorMessage;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ErrorComponentTransparent(
+      message: errorMessage,
+    );
   }
 }
 
 class _HomePageLoading extends StatelessWidget {
-  const _HomePageLoading({super.key});
+  const _HomePageLoading();
 
   @override
   Widget build(BuildContext context) {
@@ -454,7 +463,7 @@ class _HomePageLoading extends StatelessWidget {
 }
 
 class _HomePageSuccess extends StatelessWidget {
-  const _HomePageSuccess({super.key});
+  const _HomePageSuccess();
 
   @override
   Widget build(BuildContext context) {
@@ -521,18 +530,21 @@ class _HomePageSuccess extends StatelessWidget {
 
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   @override
-  double get minExtent => 200.0;
+  double get minExtent => 200;
 
   @override
-  double get maxExtent => 200.0;
+  double get maxExtent => 200;
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return ColoredBox(
       color: Theme.of(context).colorScheme.surface,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: const Padding(
+        padding: EdgeInsets.all(8),
       ),
     );
   }
