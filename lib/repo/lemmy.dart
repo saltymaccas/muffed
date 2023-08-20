@@ -1,15 +1,23 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+final log = Logger('LemmyRepo');
 
 /// Used to interact with the lemmy http api
 interface class LemmyRepo {
   /// initialize lemmy repo
   LemmyRepo({required this.globalBloc})
-      : dio = Dio()..interceptors.add(PrettyDioLogger());
+      : dio = Dio()
+          ..interceptors.add(
+            PrettyDioLogger(
+              logPrint: log.finest,
+            ),
+          );
 
   /// The dio client that will be used to send requests
   final Dio dio;
@@ -45,8 +53,6 @@ interface class LemmyRepo {
       final List<LemmyPost> posts = [];
 
       for (Map<String, dynamic> post in postsMap) {
-        print((post['post'] as Map)['id'].toString());
-        print((post['post'] as Map)['ap_id']);
         posts.add(
           LemmyPost(
             body: (post['post'] as Map)['body'],

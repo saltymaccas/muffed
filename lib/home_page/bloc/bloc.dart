@@ -2,21 +2,28 @@ import 'dart:developer';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
 
 part 'state.dart';
 
+final _log = Logger('HomePageBloc');
+
+/// The bloc that controls the home page
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   ///
-  HomePageBloc({required this.repo})
-      : super(HomePageState(status: HomePageStatus.initial)) {
+  HomePageBloc({required ServerRepo repo})
+      : _repo = repo,
+        super(const HomePageState(status: HomePageStatus.initial)) {
     on<LoadInitialPostsRequested>((event, emit) async {
-      emit(HomePageState(status: HomePageStatus.loading));
+      emit(const HomePageState(status: HomePageStatus.loading));
+
+      _log.info('Loading initial posts');
 
       try {
-        List<LemmyPost> posts = await repo.lemmyRepo.getPosts(
+        final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
           page: 1,
           listingType: state.listingType,
           sortType: state.sortType,
@@ -29,6 +36,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           ),
         );
       } catch (err) {
+        _log.shout('Loading initial posts failed', err);
         emit(
           HomePageState(
             status: HomePageStatus.failure,
@@ -40,7 +48,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<PullDownRefresh>((event, emit) async {
       emit(state.copyWith(isRefreshing: true));
 
-      final List<LemmyPost> posts = await repo.lemmyRepo.getPosts(
+      final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
         page: 1,
         listingType: state.listingType,
         sortType: state.sortType,
@@ -50,23 +58,24 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        log('[HomePageBloc] Loading page ${state.pagesLoaded + 1}');
+        _log.info('Loading page ${state.pagesLoaded + 1}');
         emit(state.copyWith(isLoading: true));
 
-        final List<LemmyPost> posts = await repo.lemmyRepo.getPosts(
-            page: state.pagesLoaded + 1,
-            listingType: state.listingType,
-            sortType: state.sortType);
+        final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+          page: state.pagesLoaded + 1,
+          listingType: state.listingType,
+          sortType: state.sortType,
+        );
 
         emit(
           state.copyWith(
-            posts: (state.posts! + posts),
+            posts: [...state.posts!, ...posts],
             pagesLoaded: state.pagesLoaded + 1,
             isLoading: false,
           ),
         );
 
-        log('[HomePageBloc] Loaded page ${state.pagesLoaded}');
+        _log.info('Loaded page ${state.pagesLoaded}');
       },
       transformer: droppable(),
     );
@@ -74,10 +83,11 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       (event, emit) async {
         emit(state.copyWith(posts: [], pagesLoaded: 0));
         try {
-          final List<LemmyPost> posts = await repo.lemmyRepo.getPosts(
-              page: 1,
-              listingType: state.listingType,
-              sortType: state.sortType);
+          final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+            page: 1,
+            listingType: state.listingType,
+            sortType: state.sortType,
+          );
           emit(
             HomePageState(
               status: HomePageStatus.success,
@@ -103,7 +113,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       emit(state.copyWith(listingType: event.listingType, isLoading: true));
 
       try {
-        final List<LemmyPost> posts = await repo.lemmyRepo
+        final List<LemmyPost> posts = await _repo.lemmyRepo
             .getPosts(listingType: state.listingType, sortType: state.sortType);
         emit(state.copyWith(posts: posts, isLoading: false));
       } catch (err) {
@@ -123,7 +133,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       emit(state.copyWith(sortType: event.sortType, isLoading: true));
 
       try {
-        final List<LemmyPost> posts = await repo.lemmyRepo.getPosts(
+        final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
           listingType: state.listingType,
           sortType: state.sortType,
           page: 1,
@@ -144,10 +154,22 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
             errorMessage: err.toString(),
           ),
         );
-        print(err.toString());
+        _log.warning(err);
       }
     });
   }
 
-  final ServerRepo repo;
+  final ServerRepo _repo;
+
+  @override
+  void onChange(Change<HomePageState> change) {
+    super.onChange(change);
+    _log.fine(change);
+  }
+
+  @override
+  void onTransition(Transition<HomePageEvent, HomePageState> transition) {
+    super.onTransition(transition);
+    _log.fine(transition);
+  }
 }

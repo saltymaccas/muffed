@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:muffed/community_screen/community_screen.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/comment_screen/comment_screen.dart';
+import 'package:muffed/community_screen/community_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
@@ -13,10 +16,9 @@ import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/login_page/login_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/search_dialog/bloc/bloc.dart';
 import 'package:muffed/search_dialog/search_screen.dart';
-import 'package:muffed/settings_page/theme/theme.dart';
 import 'package:muffed/settings_page/settings_page.dart';
+import 'package:muffed/settings_page/theme/theme.dart';
 import 'package:path_provider/path_provider.dart';
 
 final _router = GoRouter(
@@ -140,7 +142,20 @@ Future<void> main() async {
   // initialize hydrated bloc
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getApplicationDocumentsDirectory());
+      storageDirectory: await getApplicationDocumentsDirectory(),);
+  Logger.root.level = Level.FINE;
+  Logger.root.onRecord.listen((record) {
+    log(
+      record.message,
+      level: record.level.value,
+      time: record.time,
+      error: record.error,
+      name: record.loggerName,
+      zone: record.zone,
+      stackTrace: record.stackTrace,
+      sequenceNumber: record.sequenceNumber,
+    );
+  });
   runApp(const MyApp());
 }
 

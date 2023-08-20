@@ -471,8 +471,9 @@ class _HomePageSuccess extends StatelessWidget {
 
     final scrollController = ScrollController();
 
-    return BlocListener<HomePageBloc, HomePageState>(
+    return BlocConsumer<HomePageBloc, HomePageState>(
       listenWhen: (previous, current) {
+        // jumps to top when sort type gets changed and loaded
         if (previous.loadedSortType != current.loadedSortType) {
           return true;
         } else {
@@ -482,45 +483,47 @@ class _HomePageSuccess extends StatelessWidget {
       listener: (context, state) {
         scrollController.jumpTo(0);
       },
-      child: Stack(
-        children: [
-          ContentView(
-            leadingSlivers: [
-              SliverPersistentHeader(
-                delegate: _TopBarDelegate(),
-                floating: false,
-              ),
-            ],
-            scrollController: scrollController,
-            reachedNearEnd: () {
-              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-            },
-            onRefresh: () async {
-              context.read<HomePageBloc>().add(PullDownRefresh());
-              await context.read<HomePageBloc>().stream.firstWhere((element) {
-                if (element.isRefreshing == false) {
-                  return true;
-                }
-                return false;
-              });
-            },
-            onPressedPost: (post) {
-              context.go('/home/content', extra: post);
-            },
-            posts: context.read<HomePageBloc>().state.posts!,
-          ),
-          if (state.isLoading)
-            const SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: 5,
-                  child: LinearProgressIndicator(),
+      builder: (context, state) {
+        return Stack(
+          children: [
+            ContentView(
+              leadingSlivers: [
+                SliverPersistentHeader(
+                  delegate: _TopBarDelegate(),
+                  floating: false,
+                ),
+              ],
+              scrollController: scrollController,
+              reachedNearEnd: () {
+                context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
+              },
+              onRefresh: () async {
+                context.read<HomePageBloc>().add(PullDownRefresh());
+                await context.read<HomePageBloc>().stream.firstWhere((element) {
+                  if (element.isRefreshing == false) {
+                    return true;
+                  }
+                  return false;
+                });
+              },
+              onPressedPost: (post) {
+                context.go('/home/content', extra: post);
+              },
+              posts: context.read<HomePageBloc>().state.posts!,
+            ),
+            if (state.isLoading)
+              const SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    height: 5,
+                    child: LinearProgressIndicator(),
+                  ),
                 ),
               ),
-            ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }
