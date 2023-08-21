@@ -48,7 +48,7 @@ class CommunityScreenBloc
     });
 
     on<ReachedEndOfScroll>((event, emit) async {
-      emit(state.copyWith(loadingMorePosts: true));
+      emit(state.copyWith(isLoading: true));
 
       try {
         final List newPosts = await repo.lemmyRepo.getPosts(
@@ -56,13 +56,37 @@ class CommunityScreenBloc
 
         emit(state.copyWith(
             posts: [...state.posts, ...newPosts],
-            loadingMorePosts: false,
+            isLoading: false,
             pagesLoaded: state.pagesLoaded + 1));
       } catch (err) {
         print(err);
-        emit(state.copyWith(loadingMorePosts: false));
+        emit(state.copyWith(isLoading: false));
       }
     }, transformer: droppable());
+    on<SortTypeChanged>((event, emit) async {
+      emit(state.copyWith(sortType: event.sortType, isLoading: true));
+
+      try {
+        final posts = await repo.lemmyRepo.getPosts(
+            sortType: event.sortType, communityId: state.communityId, page: 1);
+        emit(
+          state.copyWith(
+            isLoading: false,
+            loadedSortType: event.sortType,
+            pagesLoaded: 1,
+            posts: posts,
+          ),
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            errorMessage: err,
+            isLoading: false,
+            sortType: state.loadedSortType,
+          ),
+        );
+      }
+    });
   }
 
   final int communityId;
