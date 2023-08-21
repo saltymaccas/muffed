@@ -142,7 +142,8 @@ Future<void> main() async {
   // initialize hydrated bloc
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getApplicationDocumentsDirectory(),);
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
   Logger.root.level = Level.INFO;
   Logger.root.onRecord.listen((record) {
     log(

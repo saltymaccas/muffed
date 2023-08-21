@@ -61,6 +61,8 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
         : state.lemmyAccounts[state.lemmySelectedAccount].homeServer;
   }
 
+  bool isLoggedIn() => state.lemmySelectedAccount != -1;
+
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
 

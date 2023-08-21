@@ -25,12 +25,12 @@ class LemmyCommunityCard extends StatelessWidget {
           decoration: BoxDecoration(
             image: (community.banner != null)
                 ? DecorationImage(
-              image: CachedNetworkImageProvider(
-                community.banner!,
-              ),
-              fit: BoxFit.cover,
-              opacity: 0.5,
-            )
+                    image: CachedNetworkImageProvider(
+                      community.banner!,
+                    ),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
+                  )
                 : null,
           ),
           child: Column(
@@ -45,8 +45,8 @@ class LemmyCommunityCard extends StatelessWidget {
                       child: (community.icon != null)
                           ? CachedNetworkImage(imageUrl: community.icon!)
                           : SvgPicture.asset(
-                        'assets/logo.svg',
-                      ),
+                              'assets/logo.svg',
+                            ),
                     ),
                   ),
                   SizedBox(
@@ -87,6 +87,38 @@ class LemmyCommunityCard extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 8,
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+
+                  },
+                  style: (community.subscribed ==
+                          LemmySubscribedType.notSubscribed)
+                      ? TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        )
+                      : TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.outline,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                  child:
+                      (community.subscribed == LemmySubscribedType.subscribed)
+                          ? Text('Subscribed')
+                          : (community.subscribed ==
+                                  LemmySubscribedType.notSubscribed)
+                              ? Text('Subscribe')
+                              : Text('Pending'),
+                ),
+              )
             ],
           ),
         ),
@@ -112,12 +144,12 @@ class LemmyPersonCard extends StatelessWidget {
           decoration: BoxDecoration(
             image: (person.banner != null)
                 ? DecorationImage(
-              image: CachedNetworkImageProvider(
-                person.banner!,
-              ),
-              fit: BoxFit.cover,
-              opacity: 0.5,
-            )
+                    image: CachedNetworkImageProvider(
+                      person.banner!,
+                    ),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
+                  )
                 : null,
           ),
           child: Column(
@@ -132,8 +164,8 @@ class LemmyPersonCard extends StatelessWidget {
                       child: (person.avatar != null)
                           ? CachedNetworkImage(imageUrl: person.avatar!)
                           : SvgPicture.asset(
-                        'assets/logo.svg',
-                      ),
+                              'assets/logo.svg',
+                            ),
                     ),
                   ),
                   SizedBox(

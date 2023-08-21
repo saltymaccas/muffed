@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
-
 part 'state.dart';
 
 final _log = Logger('HomePageBloc');
@@ -69,7 +67,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
         emit(
           state.copyWith(
-            posts: [...state.posts!, ...posts],
+            posts: {...state.posts!, ...posts}.toList(),
             pagesLoaded: state.pagesLoaded + 1,
             isLoading: false,
           ),

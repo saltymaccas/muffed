@@ -96,7 +96,7 @@ class CommunityScreen extends StatelessWidget {
                 if (state.communityInfoStatus == CommunityStatus.success)
                   SliverPersistentHeader(
                     delegate: _TopBarDelegate(community: state.communityInfo!),
-                    floating: true,
+                    floating: false,
                     pinned: false,
                   ),
               ],
@@ -143,7 +143,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     final progress = shrinkOffset / maxExtent;
 
     return SafeArea(
-      child: LemmyCommunityCard(community: community),
+      child: LemmyCommunityCard(community: community,),
     );
   }
 }
