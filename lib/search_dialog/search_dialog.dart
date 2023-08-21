@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/community_screen/community_screen.dart';
+
 import '../repo/server_repo.dart';
 import 'bloc/bloc.dart';
-import 'search_screen.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
@@ -26,6 +25,7 @@ void openSearchDialog(BuildContext context) {
               return AnimatedSize(
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeInOutCubic,
+                alignment: Alignment.bottomCenter,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
@@ -105,7 +105,9 @@ void openSearchDialog(BuildContext context) {
                         },
                       ),
                     ),
-                    SizedBox(height: 2,),
+                    SizedBox(
+                      height: 2,
+                    ),
                     TextField(
                       controller: textController,
                       onChanged: (query) {
