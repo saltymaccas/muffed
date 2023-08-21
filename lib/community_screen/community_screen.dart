@@ -125,7 +125,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   _TopBarDelegate({required this.community});
 
   @override
-  double get maxExtent => 600;
+  double get maxExtent => 300;
 
   @override
   double get minExtent => 0;
