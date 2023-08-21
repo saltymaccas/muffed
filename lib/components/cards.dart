@@ -1,32 +1,53 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
+import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 
-import '../repo/lemmy/models.dart';
 import '../utils/time.dart';
 
-class LemmyCommunityCard extends StatelessWidget {
+class LemmyCommunityCard extends StatefulWidget {
   const LemmyCommunityCard({super.key, required this.community});
 
   final LemmyCommunity community;
 
   @override
+  State<LemmyCommunityCard> createState() => _LemmyCommunityCardState();
+}
+
+class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
+  late LemmySubscribedType subscribedType;
+
+  bool isLoadingSubscribe = false;
+
+  @override
+  void initState() {
+    subscribedType = widget.community.subscribed;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _log = Logger('CommunityCard: ${widget.community.name}');
+
     return Card(
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.all(8),
       child: InkWell(
         onTap: () {
-          context.push('/home/community?id=${community.id}');
+          context.push('/home/community?id=${widget.community.id}');
         },
         child: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            image: (community.banner != null)
+            image: (widget.community.banner != null)
                 ? DecorationImage(
                     image: CachedNetworkImageProvider(
-                      community.banner!,
+                      widget.community.banner!,
                     ),
                     fit: BoxFit.cover,
                     opacity: 0.5,
@@ -42,8 +63,8 @@ class LemmyCommunityCard extends StatelessWidget {
                     radius: 24,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(45),
-                      child: (community.icon != null)
-                          ? CachedNetworkImage(imageUrl: community.icon!)
+                      child: (widget.community.icon != null)
+                          ? CachedNetworkImage(imageUrl: widget.community.icon!)
                           : SvgPicture.asset(
                               'assets/logo.svg',
                             ),
@@ -54,7 +75,7 @@ class LemmyCommunityCard extends StatelessWidget {
                   ),
                   Flexible(
                     child: Text(
-                      community.title,
+                      widget.community.title,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -71,54 +92,70 @@ class LemmyCommunityCard extends StatelessWidget {
                 children: [
                   InfoChip(
                     label: Text('Age'),
-                    value: Text(formattedPostedAgo(community.published)),
+                    value: Text(formattedPostedAgo(widget.community.published)),
                   ),
                   InfoChip(
                     label: Text('Posts'),
-                    value: Text(community.posts.toString()),
+                    value: Text(widget.community.posts.toString()),
                   ),
                   InfoChip(
                     label: Text('Subscribers'),
-                    value: Text(community.subscribers.toString()),
+                    value: Text(widget.community.subscribers.toString()),
                   ),
                   InfoChip(
                     label: Text('Hot Rank'),
-                    value: Text(community.hotRank.toString()),
+                    value: Text(widget.community.hotRank.toString()),
                   ),
                 ],
               ),
               SizedBox(
                 height: 8,
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: TextButton(
-                  onPressed: () {
+              if (context.read<GlobalBloc>().isLoggedIn())
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: TextButton(
+                    onPressed: () async {
+                      try {
+                        final result = await context
+                            .read<ServerRepo>()
+                            .lemmyRepo
+                            .followCommunity(
+                                communityId: widget.community.id,
+                                follow: subscribedType ==
+                                    LemmySubscribedType.notSubscribed);
 
-                  },
-                  style: (community.subscribed ==
-                          LemmySubscribedType.notSubscribed)
-                      ? TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        )
-                      : TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.outline,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                  child:
-                      (community.subscribed == LemmySubscribedType.subscribed)
-                          ? Text('Subscribed')
-                          : (community.subscribed ==
-                                  LemmySubscribedType.notSubscribed)
-                              ? Text('Subscribe')
-                              : Text('Pending'),
-                ),
-              )
+                        _log.info('Subscribe results: $result');
+
+                        setState(() {
+                          subscribedType = result;
+                        });
+                      } catch (err) {
+                        _log.warning(err);
+                        showErrorSnackBar(context, text: err.toString());
+                      }
+                    },
+                    style: (subscribedType == LemmySubscribedType.notSubscribed)
+                        ? TextButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            foregroundColor: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                          )
+                        : TextButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.outline,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                    child: (subscribedType == LemmySubscribedType.subscribed)
+                        ? Text('Unsubscribe')
+                        : (subscribedType == LemmySubscribedType.notSubscribed)
+                            ? Text('Subscribe')
+                            : Text('Pending'),
+                  ),
+                )
             ],
           ),
         ),

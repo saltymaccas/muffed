@@ -443,4 +443,15 @@ interface class LemmyRepo {
         'content': content,
         if (parentId != null) 'parent_id': parentId,
       });
+
+  Future<LemmySubscribedType> followCommunity(
+      {required int communityId, required bool follow}) async {
+    final response = await postRequest(
+      path: '/community/follow',
+      data: {'community_id': communityId, 'follow': follow},
+    );
+
+    return apiCompatibleToLemmySubscribedType[response['community_view']
+        ['subscribed']]!;
+  }
 }

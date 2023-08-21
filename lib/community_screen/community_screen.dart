@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:muffed/components/cards.dart';
 
 import 'bloc/bloc.dart';
 
@@ -143,7 +143,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     final progress = shrinkOffset / maxExtent;
 
     return SafeArea(
-      child: LemmyCommunityCard(community: community,),
+      child: LemmyCommunityCard(community: community),
     );
   }
 }
