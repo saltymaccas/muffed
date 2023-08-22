@@ -34,6 +34,16 @@ class SettingsPage extends StatelessWidget {
                     context.push('/profile/settings/look');
                   },
                 ),
+                ListTile(
+                  title: Text('Content Filters'),
+                  style: ListTileStyle.drawer,
+                  visualDensity: VisualDensity.comfortable,
+                  leading: Icon(Icons.color_lens),
+                  subtitle: Text('Filter certain posts'),
+                  onTap: () {
+                    context.push('/profile/settings/contentfilters');
+                  },
+                ),
               ],
             ),
           ),

@@ -9,6 +9,8 @@ final class GlobalState extends Equatable {
     this.lemmyDefaultHomeServer = 'https://lemmy.ml',
     this.useDynamicColorScheme = true,
     this.seedColor = Colors.blueGrey,
+    this.showNsfw = false,
+    this.blurNsfw = true,
   });
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
@@ -22,6 +24,8 @@ final class GlobalState extends Equatable {
       themeMode: ThemeMode.values[map['themeMode']],
       useDynamicColorScheme: map['useDynamicColorScheme'] as bool,
       seedColor: Color(map['seedColor'] as int),
+      showNsfw: map['showNsfw'],
+      blurNsfw: map['blurNsfw'],
     );
   }
 
@@ -43,6 +47,12 @@ final class GlobalState extends Equatable {
   /// The color used to generate the apps color scheme
   final Color seedColor;
 
+  /// whether to show or hide nsfw posts
+  final bool showNsfw;
+
+  /// whether to blur nsfw posts
+  final bool blurNsfw;
+
   @override
   List<Object?> get props => [
         lemmyAccounts,
@@ -50,20 +60,24 @@ final class GlobalState extends Equatable {
         lemmyDefaultHomeServer,
         themeMode,
         useDynamicColorScheme,
-    seedColor,
+        seedColor,
+        showNsfw,
+        blurNsfw,
       ];
 
   Map<String, dynamic> toMap() {
     return {
       'lemmyAccounts': List.generate(
-        this.lemmyAccounts.length,
-        (index) => this.lemmyAccounts[index].toMap(),
+        lemmyAccounts.length,
+        (index) => lemmyAccounts[index].toMap(),
       ),
-      'lemmySelectedAccount': this.lemmySelectedAccount,
-      'lemmyDefaultHomeServer': this.lemmyDefaultHomeServer,
-      'themeMode': this.themeMode.index,
-      'useDynamicColorScheme': this.useDynamicColorScheme,
+      'lemmySelectedAccount': lemmySelectedAccount,
+      'lemmyDefaultHomeServer': lemmyDefaultHomeServer,
+      'themeMode': themeMode.index,
+      'useDynamicColorScheme': useDynamicColorScheme,
       'seedColor': seedColor.value,
+      'showNsfw': showNsfw,
+      'blurNsfw': blurNsfw,
     };
   }
 
@@ -74,6 +88,8 @@ final class GlobalState extends Equatable {
     ThemeMode? themeMode,
     bool? useDynamicColorScheme,
     Color? seedColor,
+    bool? showNsfw,
+    bool? blurNsfw,
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
@@ -84,6 +100,8 @@ final class GlobalState extends Equatable {
       useDynamicColorScheme:
           useDynamicColorScheme ?? this.useDynamicColorScheme,
       seedColor: seedColor ?? this.seedColor,
+      showNsfw: showNsfw ?? this.showNsfw,
+      blurNsfw: blurNsfw ?? this.blurNsfw,
     );
   }
 }

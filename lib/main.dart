@@ -17,6 +17,7 @@ import 'package:muffed/profile_page/login_page/login_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_screen.dart';
+import 'package:muffed/settings_page/content_filters/content_filters.dart';
 import 'package:muffed/settings_page/settings_page.dart';
 import 'package:muffed/settings_page/theme/theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -127,6 +128,11 @@ final _router = GoRouter(
                         return const SettingsThemePage();
                       },
                     ),
+                    GoRoute(
+                        path: 'contentfilters',
+                        builder: (context, state) {
+                          return const ContentFiltersPage();
+                        }),
                   ],
                 ),
               ],
@@ -144,7 +150,7 @@ Future<void> main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
-  Logger.root.level = Level.INFO;
+  Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((record) {
     log(
       record.message,

@@ -26,19 +26,21 @@ interface class LemmyRepo {
   final GlobalBloc globalBloc;
 
   /// Creates a post request to the lemmy api
-  Future<Map<String, dynamic>> postRequest(
-      {required String path,
-      Map<String, dynamic> data = const {},
-      bool mustBeLoggedIn = true}) async {
+  Future<Map<String, dynamic>> postRequest({
+    required String path,
+    Map<String, dynamic> data = const {},
+    bool mustBeLoggedIn = true,
+    String? serverAddress,
+  }) async {
     try {
       if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
         throw ('Not logged in');
       }
 
       final Response<Map<String, dynamic>> response = await dio.post(
-        '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
+        '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
         data: {
-          if (globalBloc.getSelectedLemmyAccount() != null)
+          if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
           ...data
         },
@@ -407,7 +409,8 @@ interface class LemmyRepo {
           'password': password,
           if (totp != null) 'totp_2fa_token': totp,
         },
-        mustBeLoggedIn: false);
+        mustBeLoggedIn: false,
+        serverAddress: serverAddr);
 
     return LemmyLoginResponse(
         registrationCreated: response['registration_created'],

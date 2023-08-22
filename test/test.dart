@@ -8,7 +8,9 @@ void main() {
     final globalState = GlobalState(
       lemmySelectedAccount: 1,
       themeMode: ThemeMode.light,
-      seedColor: Colors.red,
+      seedColor: Colors.red.shade50,
+      showNsfw: true,
+      blurNsfw: false,
       lemmyAccounts: [
         LemmyAccountData(
           userName: 'testUser',
@@ -27,7 +29,7 @@ void main() {
 
     final globalStateFromMap = GlobalState.fromMap(globalStateToMap);
 
-    expect(globalState == globalStateFromMap, true);
+    expect(globalStateFromMap, globalState);
   });
   test('LemmyComment should add reply', () {
     final LemmyComment comment = LemmyComment(

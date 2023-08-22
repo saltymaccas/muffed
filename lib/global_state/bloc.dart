@@ -1,11 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-part 'state.dart';
-
 part 'event.dart';
+part 'state.dart';
 
 /// The bloc that controls the global app state
 class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
@@ -46,6 +44,12 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
     on<SeedColorChanged>((event, emit) {
       emit(state.copyWith(seedColor: event.seedColor));
+    });
+    on<ShowNsfwChanged>((event, emit) {
+      emit(state.copyWith(showNsfw: event.value));
+    });
+    on<BlurNsfwChanged>((event, emit) {
+      emit(state.copyWith(blurNsfw: event.value));
     });
   }
 

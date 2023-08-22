@@ -16,7 +16,6 @@ class UserRequestsLemmyAccountSwitch extends GlobalEvent {
 }
 
 class UserRequestsAccountRemoval extends GlobalEvent {
-
   UserRequestsAccountRemoval(this.index);
 
   /// The index of the account that should be removed from the global state
@@ -39,4 +38,16 @@ class SeedColorChanged extends GlobalEvent {
   SeedColorChanged(this.seedColor);
 
   final Color seedColor;
+}
+
+final class ShowNsfwChanged extends GlobalEvent {
+  ShowNsfwChanged(this.value);
+
+  final bool value;
+}
+
+final class BlurNsfwChanged extends GlobalEvent {
+  BlurNsfwChanged(this.value);
+
+  final bool value;
 }
