@@ -4,10 +4,10 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/image_viewer.dart';
+import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/measure_size.dart';
@@ -45,6 +45,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 
   @override
   Widget build(BuildContext context) {
+    // shows nothing if nsfw and show nsfw off
     if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
       return const SizedBox();
     }
@@ -199,19 +200,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: (widget.limitContentHeight)
-                              ? Text(
-                                  post.body!,
-                                  maxLines: 10,
-                                )
-                              : MarkdownBody(
-                                  data: post.body!,
-                                  shrinkWrap: true,
-                                  onTapLink: (text, link, title) {
-                                    launchUrl(Uri.parse(link!));
-                                  },
-                                  selectable: true,
-                                ),
+                          child: MuffedMarkdownBody(
+                            data: post.body!,
+                            height: widget.limitContentHeight ? 300 : null,
+                          ),
                         ),
                       ),
                     ),
