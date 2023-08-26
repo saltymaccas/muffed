@@ -126,6 +126,7 @@ class CommentScreen extends StatelessWidget {
               ),
               MuffedPopupMenuButton(
                 icon: Icon(Icons.sort),
+                visualDensity: VisualDensity.compact,
                 items: [
                   BlocProvider.value(
                     value: BlocProvider.of<CommentScreenBloc>(blocContext),
