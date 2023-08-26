@@ -162,19 +162,29 @@ interface class LemmyRepo {
   ///
   /// Sometimes a comment can be returned from the api that does not include the
   /// parent comment in the list
-  Future<List<LemmyComment>> getComments(
-    int postId, {
-    required int page,
+  Future<List<LemmyComment>> getComments({
+    int? postId,
+    int? parentId,
+    int page = 1,
+    int? limit = 50,
     LemmyListingType listingType = LemmyListingType.all,
     LemmyCommentSortType sortType = LemmyCommentSortType.hot,
   }) async {
-    final Map<String, dynamic> response =
-        await getRequest(path: '/comment/list', queryParameters: {
-      'post_id': postId.toString(),
-      'page': page.toString(),
-      'type_': lemmyListingTypeToApiCompatible[listingType],
-      'sort': lemmyCommentSortTypeToApiCompatible[sortType],
-    });
+    if (parentId == null && postId == null) {
+      throw ('No id provided');
+    }
+
+    final Map<String, dynamic> response = await getRequest(
+      path: '/comment/list',
+      queryParameters: {
+        if (postId != null) 'post_id': postId,
+        if (parentId != null) 'parent_id': parentId,
+        'page': page,
+        'type_': lemmyListingTypeToApiCompatible[listingType],
+        'sort': lemmyCommentSortTypeToApiCompatible[sortType],
+        if (limit != null) 'limit': limit,
+      },
+    );
 
     final List<dynamic> rawComments = response['comments'];
 
@@ -201,7 +211,7 @@ interface class LemmyRepo {
           content: comment['comment']['content'],
           timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
           id: comment['comment']['id'],
-          postId: postId,
+          postId: comment['post']['id'],
           childCount: comment['counts']['child_count'],
           upVotes: comment['counts']['upvotes'],
           downVotes: comment['counts']['downvotes'],

@@ -93,13 +93,13 @@ Map<int, LemmyVoteType> intToLemmyVoteType = {
   -1: LemmyVoteType.downVote
 };
 
-enum LemmyCommentSortType {hot, top, latest, old}
+enum LemmyCommentSortType { hot, top, latest, old }
 
 Map<LemmyCommentSortType, String> lemmyCommentSortTypeToApiCompatible = {
-  LemmyCommentSortType.hot : 'Hot',
-  LemmyCommentSortType.top : 'Top',
-  LemmyCommentSortType.latest : 'New',
-  LemmyCommentSortType.old : 'Old',
+  LemmyCommentSortType.hot: 'Hot',
+  LemmyCommentSortType.top: 'Top',
+  LemmyCommentSortType.latest: 'New',
+  LemmyCommentSortType.old: 'Old',
 };
 
 class LemmyPost extends Equatable {
@@ -210,22 +210,34 @@ class LemmyComment extends Equatable {
   @override
   List<Object?> get props => ['LemmyComment', id];
 
+  /// gets all the number of all the children including nested children
+  int getNumberOfReplies() {
+    int numberOfReplies = 0;
+
+    for (final reply in replies) {
+      numberOfReplies++;
+      numberOfReplies = numberOfReplies + reply.getNumberOfReplies();
+    }
+
+    return numberOfReplies;
+  }
+
   /// Tries to add the comment into the tree will return true if success and
   /// false if failed
-  bool addCommentToTree(LemmyComment comment){
-    if (!comment.path.contains(id)){
+  bool addCommentToTree(LemmyComment comment) {
+    if (!comment.path.contains(id)) {
       return false;
     }
 
-    if(comment.path.last == id){
-      replies = [...replies, comment];
+    if (comment.path.last == id) {
+      replies = {...replies, comment}.toList();
       return true;
     }
 
-    for (final reply in replies){
+    for (final reply in replies) {
       final bool value = reply.addCommentToTree(comment);
 
-      if (value){
+      if (value) {
         return true;
       }
     }

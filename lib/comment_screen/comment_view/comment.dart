@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/comment_screen/bloc/bloc.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
-import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/utils/time.dart';
 
 import '../../repo/server_repo.dart';
@@ -27,6 +27,7 @@ class CommentItem extends StatefulWidget {
 class _CommentItemState extends State<CommentItem> {
   bool isMinimised = false;
   late LemmyComment comment;
+  int replyPagesLoaded = 0;
 
   @override
   void initState() {
@@ -291,6 +292,7 @@ class _CommentItemState extends State<CommentItem> {
                                                 Text(
                                                   'content: ${comment.content}',
                                                 ),
+                                                Text('path: ${comment.path}')
                                               ],
                                             ),
                                           );
@@ -303,6 +305,27 @@ class _CommentItemState extends State<CommentItem> {
                             ],
                           ),
                           ...generateChildren(),
+                          // this my prevent comments from showing
+                          if (comment.childCount >
+                                  comment.getNumberOfReplies() &&
+                              comment.replies.isEmpty)
+                            InkWell(
+                              onTap: () {
+                                context.read<CommentScreenBloc>().add(
+                                      LoadMoreRepliesPressed(
+                                        id: comment.id,
+                                        page: replyPagesLoaded + 1,
+                                      ),
+                                    );
+                                setState(() {
+                                  replyPagesLoaded++;
+                                });
+                              },
+                              child: Container(
+                                child: Text(
+                                    'Load ${comment.childCount - comment.getNumberOfReplies()} more'),
+                              ),
+                            )
                         ],
                       )
                     : Text(

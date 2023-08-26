@@ -195,7 +195,7 @@ class CommentScreen extends StatelessWidget {
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 10000 &&
+                            scrollInfo.metrics.maxScrollExtent &&
                         state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()

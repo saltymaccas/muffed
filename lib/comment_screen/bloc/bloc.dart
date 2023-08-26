@@ -1,11 +1,14 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/utils/comments.dart';
 
 part 'event.dart';
-
 part 'state.dart';
+
+final _log = Logger('CommentScreenBloc');
 
 /// The bloc for the content screen
 class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
@@ -17,7 +20,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
       try {
         List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = organiseComments(newComments);
 
@@ -46,7 +49,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
           emit(state.copyWith(isLoading: true));
           try {
             final newComments = await repo.lemmyRepo.getComments(
-              postId,
+              postId: postId,
               page: state.pagesLoaded + 1,
               sortType: state.sortType,
             );
@@ -105,7 +108,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = organiseComments(newComments);
 
@@ -128,7 +131,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
       try {
         final newComments = await repo.lemmyRepo
-            .getComments(postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = organiseComments(newComments);
 
@@ -149,32 +152,34 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         );
       }
     });
+    on<LoadMoreRepliesPressed>((event, emit) async {
+      emit(state.copyWith(isLoading: true));
+
+      _log.info('LoadMoreRepliesPressed');
+
+      try {
+        final comments = await repo.lemmyRepo.getComments(
+          postId: postId,
+          parentId: event.id,
+          sortType: state.sortType,
+          page: event.page,
+        );
+
+        _log.info('Recieved ${comments.length} comments');
+
+        emit(
+          state.copyWith(
+            comments: organiseComments(
+                {...state.comments ?? [], ...comments}.toList()),
+            isLoading: false,
+          ),
+        );
+      } catch (err) {
+        _log.warning(err);
+      }
+    }, transformer: droppable());
   }
 
   final ServerRepo repo;
   final int postId;
-
-  List<LemmyComment> organiseComments(List<LemmyComment> inputComments) {
-    List<LemmyComment> comments = inputComments;
-
-    List<LemmyComment> toBeRemoved = [];
-
-    for (final comment in comments) {
-      for (final comment2 in comments) {
-        if (comment != comment2) {
-          bool success = comment.addCommentToTree(comment2);
-          if (success) {
-            toBeRemoved.add(comment2);
-            break;
-          }
-        }
-      }
-    }
-
-    for (final comment in toBeRemoved) {
-      comments.remove(comment);
-    }
-
-    return comments;
-  }
 }
