@@ -6,6 +6,7 @@ class MuffedMarkdownBody extends StatelessWidget {
     super.key,
     required this.data,
     this.height,
+    this.onTapText,
     this.padding = const EdgeInsets.all(4),
     this.physics = const NeverScrollableScrollPhysics(),
   });
@@ -14,12 +15,14 @@ class MuffedMarkdownBody extends StatelessWidget {
   final ScrollPhysics physics;
   final double? height;
   final EdgeInsets padding;
+  final void Function()? onTapText;
 
   @override
   Widget build(BuildContext context) {
     return LimitedBox(
       maxHeight: height ?? double.infinity,
       child: Markdown(
+        onTapText: onTapText,
         data: data,
         shrinkWrap: true,
         selectable: true,

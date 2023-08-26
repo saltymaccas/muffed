@@ -203,6 +203,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                           child: MuffedMarkdownBody(
                             data: post.body!,
                             height: widget.limitContentHeight ? 300 : null,
+                            onTapText: () {
+                              if (widget.openContent != null) {
+                                widget.openContent!(post);
+                              }
+                            },
                           ),
                         ),
                       ),
