@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/comment_screen/bloc/bloc.dart';
+import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/utils/time.dart';
 
@@ -184,158 +185,150 @@ class _CommentItemState extends State<CommentItem> {
             isMinimised = !isMinimised;
           });
         },
-        child: IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (comment.path.isNotEmpty) ...[
-                Container(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.outline,
+        child: (!isMinimised)
+            ? Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: Theme.of(context).colorScheme.outline,
+                      width: 1,
+                    ),
+                  ),
                 ),
-              ],
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: (!isMinimised)
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                comment.creatorName,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                formattedPostedAgo(
-                                  comment.timePublished,
-                                ),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            comment.creatorName,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                          Text(comment.content),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: upvotePressed,
-                                icon: Icon(
-                                  Icons.arrow_upward_rounded,
-                                  color:
-                                      (comment.myVote == LemmyVoteType.upVote)
-                                          ? Colors.deepOrange
-                                          : null,
-                                ),
-                                visualDensity: VisualDensity.compact,
-                              ),
-                              Text(comment.upVotes.toString()),
-                              IconButton(
-                                onPressed: downvotePressed,
-                                icon: Icon(
-                                  Icons.arrow_downward_rounded,
-                                  color:
-                                      (comment.myVote == LemmyVoteType.downVote)
-                                          ? Colors.purple
-                                          : null,
-                                ),
-                                visualDensity: VisualDensity.compact,
-                              ),
-                              Text(comment.downVotes.toString()),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  widget.onReplyPressed(
-                                    comment.id,
-                                    comment.content,
-                                  );
-                                },
-                                icon: const Icon(Icons.reply),
-                                visualDensity: VisualDensity.compact,
-                              ),
-                              MuffedPopupMenuButton(
-                                icon: Icon(Icons.more_vert),
-                                items: [
-                                  MuffedPopupMenuItem(
-                                    title: 'Show Debug Info',
-                                    onTap: () {
-                                      showDialog<void>(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'page: ${comment.page}',
-                                                ),
-                                                Text(
-                                                  'id: ${comment.id}',
-                                                ),
-                                                Text(
-                                                  'childCount: ${comment.childCount}',
-                                                ),
-                                                Text(
-                                                  'content: ${comment.content}',
-                                                ),
-                                                Text('path: ${comment.path}')
-                                              ],
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            formattedPostedAgo(
+                              comment.timePublished,
+                            ),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ),
+                        ],
+                      ),
+                      MuffedMarkdownBody(data: comment.content),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: upvotePressed,
+                            icon: Icon(
+                              Icons.arrow_upward_rounded,
+                              color: (comment.myVote == LemmyVoteType.upVote)
+                                  ? Colors.deepOrange
+                                  : null,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          Text(comment.upVotes.toString()),
+                          IconButton(
+                            onPressed: downvotePressed,
+                            icon: Icon(
+                              Icons.arrow_downward_rounded,
+                              color: (comment.myVote == LemmyVoteType.downVote)
+                                  ? Colors.purple
+                                  : null,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          Text(comment.downVotes.toString()),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              widget.onReplyPressed(
+                                comment.id,
+                                comment.content,
+                              );
+                            },
+                            icon: const Icon(Icons.reply),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          MuffedPopupMenuButton(
+                            icon: Icon(Icons.more_vert),
+                            items: [
+                              MuffedPopupMenuItem(
+                                title: 'Show Debug Info',
+                                onTap: () {
+                                  showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'page: ${comment.page}',
                                             ),
-                                          );
-                                        },
+                                            Text(
+                                              'id: ${comment.id}',
+                                            ),
+                                            Text(
+                                              'childCount: ${comment.childCount}',
+                                            ),
+                                            Text(
+                                              'content: ${comment.content}',
+                                            ),
+                                            Text('path: ${comment.path}')
+                                          ],
+                                        ),
                                       );
                                     },
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ],
                           ),
-                          ...generateChildren(),
-                          // this my prevent comments from showing
-                          if (comment.childCount >
-                                  comment.getNumberOfReplies() &&
-                              comment.replies.isEmpty)
-                            InkWell(
-                              onTap: () {
-                                context.read<CommentScreenBloc>().add(
-                                      LoadMoreRepliesPressed(
-                                        id: comment.id,
-                                        page: replyPagesLoaded + 1,
-                                      ),
-                                    );
-                                setState(() {
-                                  replyPagesLoaded++;
-                                });
-                              },
-                              child: Container(
-                                child: Text(
-                                    'Load ${comment.childCount - comment.getNumberOfReplies()} more'),
-                              ),
-                            )
                         ],
-                      )
-                    : Text(
-                        comment.content,
-                        maxLines: 1,
                       ),
+                      ...generateChildren(),
+                      // this my prevent comments from showing
+                      if (comment.childCount > comment.getNumberOfReplies() &&
+                          comment.replies.isEmpty)
+                        InkWell(
+                          onTap: () {
+                            context.read<CommentScreenBloc>().add(
+                                  LoadMoreRepliesPressed(
+                                    id: comment.id,
+                                    page: replyPagesLoaded + 1,
+                                  ),
+                                );
+                            setState(() {
+                              replyPagesLoaded++;
+                            });
+                          },
+                          child: Container(
+                            child: Text(
+                                'Load ${comment.childCount - comment.getNumberOfReplies()} more'),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              )
+            : Text(
+                comment.content,
+                maxLines: 1,
               ),
-            ],
-          ),
-        ),
       ),
     );
   }
