@@ -183,6 +183,7 @@ class MyApp extends StatelessWidget {
               return RepositoryProvider(
                 create: (context) => ServerRepo(context.read<GlobalBloc>()),
                 child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
                   routerConfig: _router,
                   title: 'Muffed',
                   theme: ThemeData(
