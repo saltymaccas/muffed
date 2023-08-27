@@ -210,6 +210,19 @@ class LemmyComment extends Equatable {
   @override
   List<Object?> get props => ['LemmyComment', id];
 
+  /// Gets the number of children that have not been loaded not including grand
+  /// children
+  int getNumOfUnloadedReplies() {
+    int numOfUnloadedChildren = childCount - replies.length;
+
+    for (final reply in replies) {
+      numOfUnloadedChildren =
+          numOfUnloadedChildren - reply.getNumOfUnloadedReplies();
+    }
+
+    return numOfUnloadedChildren;
+  }
+
   /// gets all the number of all the children including nested children
   int getNumberOfReplies() {
     int numberOfReplies = 0;
