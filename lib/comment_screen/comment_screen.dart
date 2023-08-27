@@ -252,11 +252,11 @@ class CommentScreen extends StatelessWidget {
                                         if (state
                                             .comments![index].path.isEmpty) {
                                           return Column(
+                                            key: ValueKey(
+                                              state.comments![index].id,
+                                            ),
                                             children: [
                                               CommentItem(
-                                                key: ValueKey(
-                                                  state.comments![index].id,
-                                                ),
                                                 comment: state.comments![index],
                                                 onReplyPressed: showReplyDialog,
                                               ),
