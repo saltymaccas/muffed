@@ -18,6 +18,7 @@ import 'package:muffed/profile_page/profile_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/search_dialog/search_screen.dart';
 import 'package:muffed/settings_page/content_filters/content_filters.dart';
+import 'package:muffed/settings_page/defaults/defaults.dart';
 import 'package:muffed/settings_page/settings_page.dart';
 import 'package:muffed/settings_page/theme/theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -132,6 +133,11 @@ final _router = GoRouter(
                         path: 'contentfilters',
                         builder: (context, state) {
                           return const ContentFiltersPage();
+                        }),
+                    GoRoute(
+                        path: 'defaults',
+                        builder: (context, state) {
+                          return const DefaultsSettingsPage();
                         }),
                   ],
                 ),

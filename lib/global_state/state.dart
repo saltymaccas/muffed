@@ -11,6 +11,7 @@ final class GlobalState extends Equatable {
     this.seedColor = Colors.blueGrey,
     this.showNsfw = false,
     this.blurNsfw = true,
+    this.defaultSortType = LemmySortType.active,
   });
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
@@ -26,6 +27,7 @@ final class GlobalState extends Equatable {
       seedColor: Color(map['seedColor'] as int),
       showNsfw: map['showNsfw'],
       blurNsfw: map['blurNsfw'],
+      defaultSortType: LemmySortType.values[map['defaultSortType']],
     );
   }
 
@@ -53,6 +55,8 @@ final class GlobalState extends Equatable {
   /// whether to blur nsfw posts
   final bool blurNsfw;
 
+  final LemmySortType defaultSortType;
+
   @override
   List<Object?> get props => [
         lemmyAccounts,
@@ -63,6 +67,7 @@ final class GlobalState extends Equatable {
         seedColor,
         showNsfw,
         blurNsfw,
+        defaultSortType,
       ];
 
   Map<String, dynamic> toMap() {
@@ -78,6 +83,7 @@ final class GlobalState extends Equatable {
       'seedColor': seedColor.value,
       'showNsfw': showNsfw,
       'blurNsfw': blurNsfw,
+      'defaultSortType': defaultSortType.index
     };
   }
 
@@ -90,6 +96,7 @@ final class GlobalState extends Equatable {
     Color? seedColor,
     bool? showNsfw,
     bool? blurNsfw,
+    LemmySortType? defaultSortType,
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
@@ -102,6 +109,7 @@ final class GlobalState extends Equatable {
       seedColor: seedColor ?? this.seedColor,
       showNsfw: showNsfw ?? this.showNsfw,
       blurNsfw: blurNsfw ?? this.blurNsfw,
+      defaultSortType: defaultSortType ?? this.defaultSortType,
     );
   }
 }
