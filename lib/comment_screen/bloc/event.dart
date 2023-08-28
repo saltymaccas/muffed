@@ -38,8 +38,7 @@ final class SortTypeChanged extends CommentScreenEvent {
 }
 
 final class LoadMoreRepliesPressed extends CommentScreenEvent {
-  LoadMoreRepliesPressed({required this.id, required this.page});
+  LoadMoreRepliesPressed({required this.id});
 
   final int id;
-  final int page;
 }

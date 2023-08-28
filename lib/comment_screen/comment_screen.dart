@@ -259,6 +259,15 @@ class CommentScreen extends StatelessWidget {
                                               CommentItem(
                                                 comment: state.comments![index],
                                                 onReplyPressed: showReplyDialog,
+                                                onLoadMorePressed: (id) {
+                                                  context
+                                                      .read<CommentScreenBloc>()
+                                                      .add(
+                                                        LoadMoreRepliesPressed(
+                                                          id: id,
+                                                        ),
+                                                      );
+                                                },
                                               ),
                                               const Divider(),
                                             ],

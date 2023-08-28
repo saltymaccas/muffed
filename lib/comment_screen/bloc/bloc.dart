@@ -162,7 +162,6 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
           postId: postId,
           parentId: event.id,
           sortType: state.sortType,
-          page: event.page,
         );
 
         _log.info('Recieved ${comments.length} comments');

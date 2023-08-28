@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/comment_screen/bloc/bloc.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/utils/time.dart';
@@ -13,13 +12,16 @@ class CommentItem extends StatefulWidget {
   const CommentItem({
     required this.comment,
     required this.onReplyPressed,
+    this.onLoadMorePressed,
     super.key,
   });
 
   final LemmyComment comment;
 
-  /// The functions to run when the reply button is pressed
+  /// The function to run when the reply button is pressed
   final void Function(int parentId, String parantContent) onReplyPressed;
+
+  final void Function(int id)? onLoadMorePressed;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -305,18 +307,11 @@ class _CommentItemState extends State<CommentItem> {
                       ...generateChildren(),
                       // this my prevent comments from showing
                       if (comment.childCount > comment.getNumberOfReplies() &&
-                          comment.replies.isEmpty)
+                          comment.replies.isEmpty &&
+                          widget.onLoadMorePressed != null)
                         InkWell(
                           onTap: () {
-                            context.read<CommentScreenBloc>().add(
-                                  LoadMoreRepliesPressed(
-                                    id: comment.id,
-                                    page: replyPagesLoaded + 1,
-                                  ),
-                                );
-                            setState(() {
-                              replyPagesLoaded++;
-                            });
+                            widget.onLoadMorePressed!(comment.id);
                           },
                           child: Container(
                             child: Text(

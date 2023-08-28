@@ -1,15 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/comment_screen/comment_view/comment.dart';
+import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/time.dart';
-import 'package:muffed/components/cards.dart';
 
 import 'bloc/bloc.dart';
 
@@ -421,7 +419,14 @@ class SearchScreen extends StatelessWidget {
                                     },
                                   ),
 
-                                  Placeholder(),
+                                  ListView.builder(
+                                      controller: commentsScrollController,
+                                      itemCount: state.comments.length,
+                                      itemBuilder: (context, index) {
+                                        return CommentItem(
+                                            comment: state.comments[index],
+                                            onReplyPressed: (_, __) {});
+                                      }),
                                 ],
                               ),
                             ),
@@ -475,4 +480,3 @@ class SearchScreen extends StatelessWidget {
     );
   }
 }
-
