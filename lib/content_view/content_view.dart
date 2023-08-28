@@ -13,7 +13,6 @@ class ContentView extends StatelessWidget {
     required this.onRefresh,
     this.leadingSlivers = const [],
     this.isContentLoading = false,
-
     ScrollController? scrollController,
     super.key,
   }) : scrollController = scrollController ?? ScrollController();
@@ -43,7 +42,7 @@ class ContentView extends StatelessWidget {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
         if (scrollInfo.metrics.pixels >=
-            scrollInfo.metrics.maxScrollExtent - 5000) {
+            scrollInfo.metrics.maxScrollExtent - 500) {
           reachedNearEnd();
         }
         return true;
@@ -58,24 +57,24 @@ class ContentView extends StatelessWidget {
             SliverList(
               delegate: isContentLoading
                   ? SliverChildListDelegate([
-                const SizedBox(
-                  height: 300,
-                  child: Center(
-                    child: LoadingComponentTransparent(),
-                  ),
-                ),
-              ])
+                      const SizedBox(
+                        height: 300,
+                        child: Center(
+                          child: LoadingComponentTransparent(),
+                        ),
+                      ),
+                    ])
                   : SliverChildBuilderDelegate(childCount: posts.length,
                       (context, index) {
-                    return CardLemmyPostItem(
-                      // key needs to be set to properly update the items
-                      key: ValueKey(posts[index].apId),
-                      posts[index],
-                      onTap: (post) {
-                        onPressedPost(post);
-                      },
-                    );
-                  }),
+                      return CardLemmyPostItem(
+                        // key needs to be set to properly update the items
+                        key: ValueKey(posts[index].apId),
+                        posts[index],
+                        onTap: (post) {
+                          onPressedPost(post);
+                        },
+                      );
+                    }),
             ),
           ],
         ),
