@@ -8,25 +8,31 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/image_viewer.dart';
 import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/measure_size.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'post_more_actions_sheet.dart';
-
+/// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatefulWidget {
-  final LemmyPost post;
-  final bool limitContentHeight;
-  final void Function(dynamic post)? openContent;
-  final LemmyVoteType voteType;
+  ///
+  const CardLemmyPostItem(
+    this.post, {
+    this.onTap,
+    this.limitContentHeight = true,
+    super.key,
+  });
 
-  const CardLemmyPostItem(this.post,
-      {this.openContent,
-      this.limitContentHeight = true,
-      this.voteType = LemmyVoteType.none,
-      super.key});
+  /// The lemmy post
+  final LemmyPost post;
+
+  /// Whether the height of the text should be capped
+  final bool limitContentHeight;
+
+  /// Function to run when pressed, typically opens the post
+  final void Function(dynamic post)? onTap;
 
   @override
   State<CardLemmyPostItem> createState() => _CardLemmyPostItemState();
@@ -52,11 +58,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 
     return Card(
       child: InkWell(
-        onTap: () {
-          if (widget.openContent != null) {
-            widget.openContent!(post);
-          }
-        },
+        onTap: (widget.onTap != null)
+            ? () {
+                widget.onTap!(post);
+              }
+            : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -204,8 +210,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             data: post.body!,
                             height: widget.limitContentHeight ? 300 : null,
                             onTapText: () {
-                              if (widget.openContent != null) {
-                                widget.openContent!(post);
+                              if (widget.onTap != null) {
+                                widget.onTap!(post);
                               }
                             },
                           ),
@@ -368,13 +374,34 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(post.downVotes.toString()),
-                      IconButton(
+                      MuffedPopupMenuButton(
                         icon: const Icon(Icons.more_vert),
-                        onPressed: () {
-                          showPostMoreActionsSheet(context, post);
-                        },
-                        visualDensity: VisualDensity.compact,
-                      ),
+                        items: [
+                          MuffedPopupMenuItem(
+                            title: 'Debug Info',
+                            onTap: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Debug Info'),
+                                    content: SelectableText(
+                                        'id: ${post.id}\nname: ${post.name}\nbody: ${post.body}\nurl: ${post.url}\nthumb url: ${post.thumbnailUrl}'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('close'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ],
