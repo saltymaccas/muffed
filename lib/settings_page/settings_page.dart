@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
                   title: Text('Content Filters'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
-                  leading: Icon(Icons.color_lens),
+                  leading: Icon(Icons.filter_list),
                   subtitle: Text('Filter certain posts'),
                   onTap: () {
                     context.push('/profile/settings/contentfilters');
