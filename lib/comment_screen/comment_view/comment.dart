@@ -189,10 +189,12 @@ class _CommentItemState extends State<CommentItem> {
             ? Container(
                 decoration: BoxDecoration(
                   border: Border(
-                    left: BorderSide(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: 1,
-                    ),
+                    left: (comment.path.isNotEmpty)
+                        ? BorderSide(
+                            color: Theme.of(context).colorScheme.outline,
+                            width: 1,
+                          )
+                        : BorderSide.none,
                   ),
                 ),
                 child: Padding(
