@@ -37,8 +37,7 @@ class SearchScreen extends StatelessWidget {
           return SearchBloc(
             repo: context.read<ServerRepo>(),
             initialState: initialState,
-          )
-            ..add(SearchQueryChanged(searchQuery: searchQuery!));
+          )..add(SearchQueryChanged(searchQuery: searchQuery!));
         } else {
           return SearchBloc(
             repo: context.read<ServerRepo>(),
@@ -69,8 +68,7 @@ class SearchScreen extends StatelessWidget {
         },
         builder: (context, state) {
           /// The focus node for the search bar.
-          final textFocusNode = FocusNode()
-            ..requestFocus();
+          final textFocusNode = FocusNode()..requestFocus();
 
           final blocContext = context;
 
@@ -78,6 +76,7 @@ class SearchScreen extends StatelessWidget {
             indexOfRelevantItem: 0,
             actions: [
               MuffedPopupMenuButton(
+                visualDensity: VisualDensity.compact,
                 icon: Icon(Icons.sort),
                 items: [
                   BlocProvider.value(
@@ -87,8 +86,7 @@ class SearchScreen extends StatelessWidget {
                         return MuffedPopupMenuItem(
                           title: 'Hot',
                           isSelected: state.sortType == LemmySortType.hot,
-                          onTap: () =>
-                              context.read<SearchBloc>().add(
+                          onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(
                                   LemmySortType.hot,
                                 ),
@@ -104,8 +102,7 @@ class SearchScreen extends StatelessWidget {
                         return MuffedPopupMenuItem(
                           title: 'Active',
                           isSelected: state.sortType == LemmySortType.active,
-                          onTap: () =>
-                              context.read<SearchBloc>().add(
+                          onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(
                                   LemmySortType.active,
                                 ),
@@ -121,8 +118,7 @@ class SearchScreen extends StatelessWidget {
                         return MuffedPopupMenuItem(
                           title: 'Latest',
                           isSelected: state.sortType == LemmySortType.latest,
-                          onTap: () =>
-                              context.read<SearchBloc>().add(
+                          onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(
                                   LemmySortType.latest,
                                 ),
@@ -138,8 +134,7 @@ class SearchScreen extends StatelessWidget {
                         return MuffedPopupMenuItem(
                           title: 'Old',
                           isSelected: state.sortType == LemmySortType.old,
-                          onTap: () =>
-                              context.read<SearchBloc>().add(
+                          onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(
                                   LemmySortType.old,
                                 ),
@@ -170,9 +165,8 @@ class SearchScreen extends StatelessWidget {
                                   return MuffedPopupMenuItem(
                                     title: 'All Time',
                                     isSelected:
-                                    state.sortType == LemmySortType.topAll,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                        state.sortType == LemmySortType.topAll,
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topAll,
                                           ),
@@ -188,9 +182,8 @@ class SearchScreen extends StatelessWidget {
                                   return MuffedPopupMenuItem(
                                     title: 'Year',
                                     isSelected:
-                                    state.sortType == LemmySortType.topYear,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                        state.sortType == LemmySortType.topYear,
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topYear,
                                           ),
@@ -207,8 +200,7 @@ class SearchScreen extends StatelessWidget {
                                     title: 'Month',
                                     isSelected: state.sortType ==
                                         LemmySortType.topMonth,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topMonth,
                                           ),
@@ -224,9 +216,8 @@ class SearchScreen extends StatelessWidget {
                                   return MuffedPopupMenuItem(
                                     title: 'Week',
                                     isSelected:
-                                    state.sortType == LemmySortType.topWeek,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                        state.sortType == LemmySortType.topWeek,
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topWeek,
                                           ),
@@ -242,9 +233,8 @@ class SearchScreen extends StatelessWidget {
                                   return MuffedPopupMenuItem(
                                     title: 'Day',
                                     isSelected:
-                                    state.sortType == LemmySortType.topDay,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                        state.sortType == LemmySortType.topDay,
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topDay,
                                           ),
@@ -261,8 +251,7 @@ class SearchScreen extends StatelessWidget {
                                     title: 'Twelve Hours',
                                     isSelected: state.sortType ==
                                         LemmySortType.topTwelveHour,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topTwelveHour,
                                           ),
@@ -279,8 +268,7 @@ class SearchScreen extends StatelessWidget {
                                     title: 'Six Hours',
                                     isSelected: state.sortType ==
                                         LemmySortType.topSixHour,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topSixHour,
                                           ),
@@ -296,9 +284,8 @@ class SearchScreen extends StatelessWidget {
                                   return MuffedPopupMenuItem(
                                     title: 'Hour',
                                     isSelected:
-                                    state.sortType == LemmySortType.topHour,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                        state.sortType == LemmySortType.topHour,
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.topHour,
                                           ),
@@ -319,8 +306,8 @@ class SearchScreen extends StatelessWidget {
                         return MuffedPopupMenuExpandableItem(
                           title: 'Comments',
                           isSelected:
-                          state.sortType == LemmySortType.mostComments ||
-                              state.sortType == LemmySortType.newComments,
+                              state.sortType == LemmySortType.mostComments ||
+                                  state.sortType == LemmySortType.newComments,
                           items: [
                             BlocProvider.value(
                               value: BlocProvider.of<SearchBloc>(blocContext),
@@ -330,8 +317,7 @@ class SearchScreen extends StatelessWidget {
                                     title: 'Most Comments',
                                     isSelected: state.sortType ==
                                         LemmySortType.mostComments,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.mostComments,
                                           ),
@@ -350,8 +336,7 @@ class SearchScreen extends StatelessWidget {
                                     title: 'New Comments',
                                     isSelected: state.sortType ==
                                         LemmySortType.newComments,
-                                    onTap: () =>
-                                        context.read<SearchBloc>().add(
+                                    onTap: () => context.read<SearchBloc>().add(
                                           SortTypeChanged(
                                             LemmySortType.newComments,
                                           ),
@@ -397,12 +382,12 @@ class SearchScreen extends StatelessWidget {
                             NotificationListener(
                               onNotification: (ScrollNotification scrollInfo) {
                                 if (scrollInfo.metrics.pixels >=
-                                    scrollInfo.metrics.maxScrollExtent -
-                                        10 &&
+                                        scrollInfo.metrics.maxScrollExtent -
+                                            10 &&
                                     scrollInfo.metrics.axis == Axis.vertical) {
                                   context.read<SearchBloc>().add(
-                                    ReachedNearEndOfPage(),
-                                  );
+                                        ReachedNearEndOfPage(),
+                                      );
                                 }
                                 return true;
                               },
@@ -415,6 +400,7 @@ class SearchScreen extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       return LemmyCommunityCard(
                                         community: state.communities[index],
+                                        extraOnTap: textFocusNode.unfocus,
                                       );
                                     },
                                   ),
@@ -462,10 +448,10 @@ class SearchScreen extends StatelessWidget {
                         controller: textController,
                         onChanged: (query) {
                           context.read<SearchBloc>().add(
-                            SearchQueryChanged(
-                              searchQuery: query,
-                            ),
-                          );
+                                SearchQueryChanged(
+                                  searchQuery: query,
+                                ),
+                              );
                         },
                         autofocus: true,
                         decoration: InputDecoration(
