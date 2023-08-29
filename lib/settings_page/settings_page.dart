@@ -44,7 +44,7 @@ class SettingsPage extends StatelessWidget {
                     context.push('/profile/settings/contentfilters');
                   },
                 ),
-                ListTile(
+                /*ListTile(
                   title: Text('Defaults'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
                   onTap: () {
                     context.push('/profile/settings/defaults');
                   },
-                ),
+                ),*/
               ],
             ),
           ),
