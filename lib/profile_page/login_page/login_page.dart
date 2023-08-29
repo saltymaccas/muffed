@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
-import 'package:muffed/components/loading.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/components/snackbars.dart';
+
 import 'bloc/bloc.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,6 +16,14 @@ class LoginPage extends StatelessWidget {
       create: (context) =>
           LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
       child: BlocBuilder<LoginPageBloc, LoginPageState>(
+        buildWhen: (previous, current) {
+          if (previous.loading != current.loading ||
+              previous.errorMessage != current.errorMessage) {
+            return true;
+          } else {
+            return false;
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
