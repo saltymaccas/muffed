@@ -31,7 +31,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
       // if what was entered does not contain "http://" or "https://"
       // it will be added
-      final homeServer = (state.serverAddr.contains(r'https?/\/\'))
+      final homeServer = (state.serverAddr.contains(r'https?:/\/\'))
           ? state.serverAddr
           : 'https://${state.serverAddr}';
 

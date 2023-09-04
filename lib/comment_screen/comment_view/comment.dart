@@ -281,9 +281,6 @@ class _CommentItemState extends State<CommentItem> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              'page: ${comment.page}',
-                                            ),
-                                            Text(
                                               'id: ${comment.id}',
                                             ),
                                             Text(

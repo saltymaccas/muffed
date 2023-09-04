@@ -21,6 +21,7 @@ import 'package:muffed/settings_page/content_filters/content_filters.dart';
 import 'package:muffed/settings_page/defaults/defaults.dart';
 import 'package:muffed/settings_page/settings_page.dart';
 import 'package:muffed/settings_page/theme/theme.dart';
+import 'package:muffed/user_screen/user_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 final _router = GoRouter(
@@ -89,6 +90,17 @@ final _router = GoRouter(
                     );
                   },
                 ),
+                GoRoute(
+                  path: 'person',
+                  builder: (context, state) {
+                    return UserScreen(
+                      userId: (state.queryParameters['id'] != null)
+                          ? int.parse(state.queryParameters['id']!)
+                          : null,
+                      username: state.queryParameters['username'],
+                    );
+                  },
+                ),
               ],
             ),
           ],
@@ -135,10 +147,11 @@ final _router = GoRouter(
                           return const ContentFiltersPage();
                         }),
                     GoRoute(
-                        path: 'defaults',
-                        builder: (context, state) {
-                          return const DefaultsSettingsPage();
-                        }),
+                      path: 'defaults',
+                      builder: (context, state) {
+                        return const DefaultsSettingsPage();
+                      },
+                    ),
                   ],
                 ),
               ],

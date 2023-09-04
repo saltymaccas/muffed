@@ -53,12 +53,12 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
           decoration: BoxDecoration(
             image: (widget.community.banner != null)
                 ? DecorationImage(
-              image: CachedNetworkImageProvider(
-                widget.community.banner!,
-              ),
-              fit: BoxFit.cover,
-              opacity: 0.5,
-            )
+                    image: CachedNetworkImageProvider(
+                      widget.community.banner!,
+                    ),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
+                  )
                 : null,
           ),
           child: Column(
@@ -73,8 +73,8 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                       child: (widget.community.icon != null)
                           ? CachedNetworkImage(imageUrl: widget.community.icon!)
                           : SvgPicture.asset(
-                        'assets/logo.svg',
-                      ),
+                              'assets/logo.svg',
+                            ),
                     ),
                   ),
                   SizedBox(
@@ -83,10 +83,7 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                   Flexible(
                     child: Text(
                       widget.community.title,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                 ],
@@ -131,9 +128,9 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                             .read<ServerRepo>()
                             .lemmyRepo
                             .followCommunity(
-                            communityId: widget.community.id,
-                            follow: subscribedType ==
-                                LemmySubscribedType.notSubscribed);
+                                communityId: widget.community.id,
+                                follow: subscribedType ==
+                                    LemmySubscribedType.notSubscribed);
 
                         _log.info('Subscribe results: $result');
 
@@ -147,33 +144,23 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                     },
                     style: (subscribedType == LemmySubscribedType.notSubscribed)
                         ? TextButton.styleFrom(
-                      backgroundColor:
-                      Theme
-                          .of(context)
-                          .colorScheme
-                          .primaryContainer,
-                      foregroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .onPrimaryContainer,
-                    )
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            foregroundColor: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                          )
                         : TextButton.styleFrom(
-                      backgroundColor:
-                      Theme
-                          .of(context)
-                          .colorScheme
-                          .outline,
-                      foregroundColor:
-                      Theme
-                          .of(context)
-                          .colorScheme
-                          .outlineVariant,
-                    ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.outline,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.outlineVariant,
+                          ),
                     child: (subscribedType == LemmySubscribedType.subscribed)
                         ? Text('Unsubscribe')
                         : (subscribedType == LemmySubscribedType.notSubscribed)
-                        ? Text('Subscribe')
-                        : Text('Pending'),
+                            ? Text('Subscribe')
+                            : Text('Pending'),
                   ),
                 )
             ],
@@ -195,18 +182,20 @@ class LemmyPersonCard extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.all(8),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          context.push('/home/person?id=${person.id}');
+        },
         child: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             image: (person.banner != null)
                 ? DecorationImage(
-              image: CachedNetworkImageProvider(
-                person.banner!,
-              ),
-              fit: BoxFit.cover,
-              opacity: 0.5,
-            )
+                    image: CachedNetworkImageProvider(
+                      person.banner!,
+                    ),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
+                  )
                 : null,
           ),
           child: Column(
@@ -221,8 +210,8 @@ class LemmyPersonCard extends StatelessWidget {
                       child: (person.avatar != null)
                           ? CachedNetworkImage(imageUrl: person.avatar!)
                           : SvgPicture.asset(
-                        'assets/logo.svg',
-                      ),
+                              'assets/logo.svg',
+                            ),
                     ),
                   ),
                   SizedBox(
@@ -231,10 +220,7 @@ class LemmyPersonCard extends StatelessWidget {
                   Flexible(
                     child: Text(
                       person.name,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                 ],
@@ -292,17 +278,10 @@ class InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: const BorderRadius.all(Radius.circular(10)),
-      color: Theme
-          .of(context)
-          .colorScheme
-          .primaryContainer
-          .withOpacity(0.5),
+      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
       elevation: 2,
       child: DefaultTextStyle(
-        style: Theme
-            .of(context)
-            .textTheme
-            .labelMedium!,
+        style: Theme.of(context).textTheme.labelMedium!,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
