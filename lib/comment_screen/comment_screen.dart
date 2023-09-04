@@ -227,6 +227,7 @@ class CommentScreen extends StatelessWidget {
                           child: CardLemmyPostItem(
                             post,
                             limitContentHeight: false,
+                            openOnTap: false,
                           ),
                         ),
                         if (state.status == CommentScreenStatus.loading)

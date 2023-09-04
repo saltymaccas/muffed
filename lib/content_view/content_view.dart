@@ -70,9 +70,7 @@ class ContentView extends StatelessWidget {
                         // key needs to be set to properly update the items
                         key: ValueKey(posts[index].apId),
                         posts[index],
-                        onTap: (post) {
-                          onPressedPost(post);
-                        },
+                        openOnTap: true,
                       );
                     }),
             ),
