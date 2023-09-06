@@ -127,6 +127,29 @@ class LemmyPost extends Equatable {
     this.myVote = LemmyVoteType.none,
   });
 
+  LemmyPost.fromPostViewJson(Map<String, dynamic> json)
+      : body = json['post']['body'],
+        url = json['post']['url'],
+        id = json['post']['id'],
+        apId = json['post']['ap_id'],
+        name = json['post']['name'],
+        // Z added to mark as UTC time
+        timePublished = DateTime.parse(json['post']['published'] + 'Z'),
+        myVote = intToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
+        thumbnailUrl = json['post']['thumbnail_url'],
+        nsfw = json['post']['nsfw'],
+        creatorId = json['post']['creator_id'],
+        creatorName = json['creator']['name'],
+        communityId = json['post']['community_id'],
+        communityName = json['community']['name'],
+        communityIcon = json['community']['icon'],
+        commentCount = json['counts']['comments'],
+        upVotes = json['counts']['upvotes'],
+        downVotes = json['counts']['downvotes'],
+        score = json['counts']['score'],
+        read = json['read'],
+        saved = json['saved'];
+
   final int id;
   final String name;
 
@@ -178,18 +201,36 @@ class LemmyComment extends Equatable {
     required this.upVotes,
     required this.downVotes,
     this.myVote = LemmyVoteType.none,
-    required this.page,
     required this.score,
     required this.hotRank,
   });
+
+  LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
+      : path = (json['comment']['path'] as String)
+            .split('.')
+            .map(int.parse)
+            .toList()
+          ..removeLast()
+          ..removeAt(0),
+        creatorName = json['creator']['name'],
+        creatorId = json['creator']['id'],
+        content = json['comment']['content'],
+        id = json['comment']['id'],
+        // Z added to mark as UTC time
+        timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
+        postId = json['comment']['post_id'],
+        childCount = json['counts']['child_count'],
+        upVotes = json['counts']['upvotes'],
+        downVotes = json['counts']['downvotes'],
+        score = json['counts']['score'],
+        myVote = intToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
+        hotRank = json['counts']['hot_rank'],
+        replies = [];
 
   /// Holds the id's of the parent and ancestor comments
   ///
   /// This does not include id of the post or the comment itself.
   final List<int> path;
-
-  /// The page that the comment came from
-  final int page;
 
   List<LemmyComment> replies;
   final String creatorName;
@@ -349,6 +390,29 @@ class LemmyPerson extends Equatable {
     required this.postScore,
   });
 
+  LemmyPerson.fromPersonViewJson(Map<String, dynamic> json)
+      : actorId = json['person']['actor_id'],
+        admin = json['person']['admin'],
+        banned = json['person']['banned'],
+        botAccount = json['person']['bot_account'],
+        deleted = json['person']['deleted'],
+        id = json['person']['id'],
+        instanceId = json['person']['instance_id'],
+        local = json['person']['local'],
+        name = json['person']['name'],
+        published = DateTime.parse(json['person']['published'] + 'Z'),
+        commentCount = json['counts']['comment_count'],
+        commentScore = json['counts']['comment_score'],
+        postCount = json['counts']['post_count'],
+        postScore = json['counts']['post_score'],
+        avatar = json['person']['avatar'],
+        banExpires = json['person']['ban_expires'],
+        banner = json['person']['banner'],
+        bio = json['person']['bio'],
+        displayName = json['person']['display_name'],
+        matrixUserId = json['person']['matrix_user_id'],
+        updated = json['person']['updated'];
+
   final String actorId;
   final bool admin;
   final String? avatar;
@@ -374,6 +438,21 @@ class LemmyPerson extends Equatable {
 
   @override
   List<Object?> get props => ['LemmyPerson', id];
+}
+
+class LemmyGetPersonDetailsResponse {
+  LemmyGetPersonDetailsResponse({
+    required this.person,
+    required this.posts,
+    required this.comments,
+    required this.moderates,
+  });
+
+  final LemmyPerson person;
+  final List<LemmyPost> posts;
+  final List<LemmyComment> comments;
+
+  final List<String> moderates;
 }
 
 class LemmySearchResponse {

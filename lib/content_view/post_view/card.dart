@@ -20,19 +20,19 @@ class CardLemmyPostItem extends StatefulWidget {
   ///
   const CardLemmyPostItem(
     this.post, {
-    this.onTap,
     this.limitContentHeight = true,
+    this.openOnTap = true,
     super.key,
   });
 
   /// The lemmy post
   final LemmyPost post;
 
+  /// Whether the post should open when tapped
+  final bool openOnTap;
+
   /// Whether the height of the text should be capped
   final bool limitContentHeight;
-
-  /// Function to run when pressed, typically opens the post
-  final void Function(dynamic post)? onTap;
 
   @override
   State<CardLemmyPostItem> createState() => _CardLemmyPostItemState();
@@ -56,13 +56,13 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
       return const SizedBox();
     }
 
+    void openPost() {
+      context.push('/home/content', extra: post);
+    }
+
     return Card(
       child: InkWell(
-        onTap: (widget.onTap != null)
-            ? () {
-                widget.onTap!(post);
-              }
-            : null,
+        onTap: (widget.openOnTap) ? openPost : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,40 +76,58 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                       context.push('/home/community?id=${post.communityId}');
                     },
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: 12,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(45),
-                                child: (post.communityIcon != null)
-                                    ? CachedNetworkImage(
-                                        imageUrl: post.communityIcon!)
-                                    : SvgPicture.asset('assets/logo.svg'),
-                              ),
-                            ),
-                            const VerticalDivider(),
-                            Text(
-                              post.communityName,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 12,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(45),
+                                    child: (post.communityIcon != null)
+                                        ? CachedNetworkImage(
+                                            imageUrl: post.communityIcon!,
+                                          )
+                                        : SvgPicture.asset('assets/logo.svg'),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 2,
+                                ),
+                                Text(
+                                  post.communityName,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                        '/home/person?id=${post.creatorId}');
+                                  },
+                                  child: Text(
+                                    post.creatorName,
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        const VerticalDivider(),
-                        Text(
-                          post.creatorName,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                        ),
-                        const VerticalDivider(),
                         Text(
                           formattedPostedAgo(post.timePublished) + ' ago',
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.outline),
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
                       ],
                     ),
@@ -121,107 +139,111 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                 ],
               ),
             ),
-            Builder(builder: (context) {
-              return Column(
-                children: [
-                  if (post.url != null) ...[
-                    Builder(
-                      builder: (context) {
-                        if (post.url!.contains('.jpg') ||
-                            post.url!.contains('.png') ||
-                            post.url!.contains('.jpeg') ||
-                            post.url!.contains('.gif') ||
-                            post.url!.contains('.webp') ||
-                            post.url!.contains('.bmp')) {
-                          return SizedBox(
-                            child: Center(
-                              child: _ImageViewer(
-                                imageUrl: post.url!,
-                                shouldBlur: post.nsfw &&
-                                    context.read<GlobalBloc>().state.blurNsfw,
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Padding(
-                            padding: EdgeInsets.all(4),
-                            child: SizedBox(
-                              height: 100,
-                              child: AnyLinkPreview(
-                                cache: Duration(days: 1),
-                                placeholderWidget: Container(
-                                  height: double.maxFinite,
-                                  width: double.maxFinite,
-                                  color: Theme.of(context).colorScheme.surface,
-                                  child: const Center(
-                                    child: Text('Loading url data'),
-                                  ),
+            Builder(
+              builder: (context) {
+                return Column(
+                  children: [
+                    if (post.url != null) ...[
+                      Builder(
+                        builder: (context) {
+                          if (post.url!.contains('.jpg') ||
+                              post.url!.contains('.png') ||
+                              post.url!.contains('.jpeg') ||
+                              post.url!.contains('.gif') ||
+                              post.url!.contains('.webp') ||
+                              post.url!.contains('.bmp')) {
+                            return SizedBox(
+                              child: Center(
+                                child: _ImageViewer(
+                                  imageUrl: post.url!,
+                                  shouldBlur: post.nsfw &&
+                                      context.read<GlobalBloc>().state.blurNsfw,
                                 ),
-                                errorImage: 'null',
-                                errorBody: 'Could not load body',
-                                errorTitle: post.name,
-                                errorWidget: GestureDetector(
-                                  onTap: () => launchUrl(Uri.parse(post.url!)),
-                                  child: Container(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    padding: EdgeInsets.all(4),
-                                    child: Text(
-                                      post.url!,
-                                      style: const TextStyle(
-                                        decoration: TextDecoration.underline,
+                              ),
+                            );
+                          } else {
+                            return Padding(
+                              padding: EdgeInsets.all(4),
+                              child: SizedBox(
+                                height: 100,
+                                child: AnyLinkPreview(
+                                  cache: Duration(days: 1),
+                                  placeholderWidget: Container(
+                                    height: double.maxFinite,
+                                    width: double.maxFinite,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    child: const Center(
+                                      child: Text('Loading url data'),
+                                    ),
+                                  ),
+                                  errorImage: 'null',
+                                  errorBody: 'Could not load body',
+                                  errorTitle: post.name,
+                                  errorWidget: GestureDetector(
+                                    onTap: () =>
+                                        launchUrl(Uri.parse(post.url!)),
+                                    child: Container(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                      padding: EdgeInsets.all(4),
+                                      child: Text(
+                                        post.url!,
+                                        style: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  bodyTextOverflow: TextOverflow.fade,
+                                  removeElevation: true,
+                                  borderRadius: 10,
+                                  boxShadow: [],
+                                  link: post.url!,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.background,
+                                  displayDirection:
+                                      UIDirection.uiDirectionHorizontal,
+                                  titleStyle:
+                                      Theme.of(context).textTheme.titleSmall,
                                 ),
-                                bodyTextOverflow: TextOverflow.fade,
-                                removeElevation: true,
-                                borderRadius: 10,
-                                boxShadow: [],
-                                link: post.url!,
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.background,
-                                displayDirection:
-                                    UIDirection.uiDirectionHorizontal,
-                                titleStyle:
-                                    Theme.of(context).textTheme.titleSmall,
                               ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                    if (post.body != '' && post.body != null) ...[
+                      Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Container(
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
                             ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                  if (post.body != '' && post.body != null) ...[
-                    Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Container(
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
+                            color: Theme.of(context).colorScheme.surface,
                           ),
-                          color: Theme.of(context).colorScheme.surface,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: MuffedMarkdownBody(
-                            data: post.body!,
-                            height: widget.limitContentHeight ? 300 : null,
-                            onTapText: () {
-                              if (widget.onTap != null) {
-                                widget.onTap!(post);
-                              }
-                            },
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: MuffedMarkdownBody(
+                              data: post.body!,
+                              height: widget.limitContentHeight ? 300 : null,
+                              onTapText: () {
+                                if (widget.openOnTap) {
+                                  openPost();
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ]
-                ],
-              );
-            }),
+                    ],
+                  ],
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               child: Row(

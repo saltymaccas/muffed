@@ -68,35 +68,26 @@ interface class LemmyRepo {
   Future<Map<String, dynamic>> getRequest(
       {required String path,
       Map<String, dynamic> queryParameters = const {}}) async {
-    final Map<String, dynamic> assembledQueryParameters = {
-      if (globalBloc.getSelectedLemmyAccount() != null)
-        'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
-      ...queryParameters
-    };
-
     _log.info(
-        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $assembledQueryParameters');
+        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
 
     try {
       final Response<Map<String, dynamic>> response = await dio.get(
-          '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
-          queryParameters: assembledQueryParameters);
-
-      if (response.statusCode != 200) {
-        throw HttpException('${response.statusCode}');
-      }
+        '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
+        queryParameters: {
+          if (globalBloc.getSelectedLemmyAccount() != null)
+            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          ...queryParameters,
+        },
+      );
 
       if (response.data == null) {
         throw ('response returned null');
       }
 
       return response.data!;
-    } on SocketException {
-      return Future.error('No Internet');
-    } on HttpException {
-      return Future.error('Could not find post');
-    } on FormatException {
-      return Future.error('Bad response format');
+    } on DioException catch (e) {
+      rethrow;
     }
   }
 
@@ -203,7 +194,6 @@ interface class LemmyRepo {
 
       comments.add(
         LemmyComment(
-          page: page,
           myVote: intToLemmyVoteType[comment['my_vote']] ?? LemmyVoteType.none,
           path: path,
           creatorName: comment['creator']['name'],
@@ -222,6 +212,45 @@ interface class LemmyRepo {
     }
 
     return comments;
+  }
+
+  Future<LemmyGetPersonDetailsResponse> getPersonDetails({
+    int? id,
+    String? username,
+    int page = 1,
+    LemmySortType? sortType,
+  }) async {
+    if (id == null && username == null) {
+      throw ('Both id and username equals null');
+    }
+    final response = await getRequest(
+      path: '/user',
+      queryParameters: {
+        if (id != null) 'person_id': id,
+        if (username != null) 'username': username,
+        'page': page,
+        'sort': lemmySortTypeEnumToApiCompatible[
+            sortType ?? globalBloc.state.defaultSortType],
+      },
+    );
+
+    return LemmyGetPersonDetailsResponse(
+      person: LemmyPerson.fromPersonViewJson(response['person_view']),
+      posts: List.generate(
+        (response['posts'] as List).length,
+        (index) => LemmyPost.fromPostViewJson(
+          (response['posts'] as List)[index],
+        ),
+      ),
+      comments: List.generate(
+        (response['comments'] as List).length,
+        (index) => LemmyComment.fromCommentViewJson(
+          (response['comments'] as List)[index],
+        ),
+      ),
+      moderates: List.generate((response['moderates'] as List).length,
+          (index) => response['moderates'][index]['community']['title']),
+    );
   }
 
   Future<LemmySearchResponse> search({
@@ -266,7 +295,6 @@ interface class LemmyRepo {
           creatorId: comment['creator']['id'],
           content: comment['comment']['content'],
           id: comment['comment']['id'],
-          page: page,
           // Z added to mark as UTC time
           timePublished: DateTime.parse(comment['comment']['published'] + 'Z'),
 

@@ -33,7 +33,6 @@ void main() {
   });
   test('LemmyComment should add reply', () {
     final LemmyComment comment = LemmyComment(
-      page: 1,
       path: [],
       creatorName: 'creatorName',
       creatorId: 1,
@@ -48,7 +47,6 @@ void main() {
       hotRank: 2,
       replies: [
         LemmyComment(
-          page: 1,
           path: [1],
           creatorName: 'creatorName',
           creatorId: 2,
@@ -57,7 +55,6 @@ void main() {
           id: 2,
           replies: [
             LemmyComment(
-              page: 1,
               path: [1, 2],
               creatorName: 'creatorName',
               creatorId: 2,
@@ -80,7 +77,6 @@ void main() {
           hotRank: 2,
         ),
         LemmyComment(
-          page: 1,
           path: [1],
           creatorName: 'creatorName',
           creatorId: 2,
@@ -98,7 +94,6 @@ void main() {
     );
 
     final LemmyComment comment2 = LemmyComment(
-      page: 1,
       path: [1, 2, 3],
       creatorName: 'creatorName',
       creatorId: 3,
