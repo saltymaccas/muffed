@@ -1,5 +1,9 @@
 # muffed
 
+<p align="center">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/muffed.png" width="200">
+</p>
+
 A Lemmy client written in flutter with a focus on usability and privacy.
 
 ## Screenshots
@@ -18,3 +22,11 @@ A Lemmy client written in flutter with a focus on usability and privacy.
 # Project Status
 
 Muffed is currently in **very** early development. It is being actively worked on and may undergo significant changes.
+
+# Contributing
+
+Base the contribution off of the develop branch
+
+## Logo
+
+The logo right now is temporary, If you are able to contribute a logo please email me or create a pull request
