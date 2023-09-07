@@ -25,7 +25,7 @@ Muffed is currently in **very** early development. It is being actively worked o
 
 # Contributing
 
-Base the contribution off of the develop branch
+Contributions are welcome
 
 ## Logo
 
