@@ -13,6 +13,7 @@ final class UserScreenState extends Equatable {
     this.loading = false,
     this.errorMessage,
     this.page = 1,
+    this.reachedEnd = false,
   }) : assert(userId != null || userId != null,
             'Both userId and username equals null');
 
@@ -30,6 +31,8 @@ final class UserScreenState extends Equatable {
 
   final int page;
 
+  final bool reachedEnd;
+
   @override
   List<Object?> get props => [
         userId,
@@ -41,18 +44,21 @@ final class UserScreenState extends Equatable {
         loading,
         errorMessage,
         page,
+        reachedEnd,
       ];
 
-  UserScreenState copyWith(
-      {int? userId,
-      String? username,
-      UserStatus? status,
-      LemmyPerson? user,
-      List<LemmyComment>? comments,
-      List<LemmyPost>? posts,
-      bool? loading,
-      Object? errorMessage,
-      int? page}) {
+  UserScreenState copyWith({
+    int? userId,
+    String? username,
+    UserStatus? status,
+    LemmyPerson? user,
+    List<LemmyComment>? comments,
+    List<LemmyPost>? posts,
+    bool? loading,
+    Object? errorMessage,
+    int? page,
+    bool? reachedEnd,
+  }) {
     return UserScreenState(
       userId: userId ?? this.userId,
       username: username ?? this.username,
@@ -63,6 +69,7 @@ final class UserScreenState extends Equatable {
       loading: loading ?? this.loading,
       errorMessage: errorMessage,
       page: page ?? this.page,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
     );
   }
 }

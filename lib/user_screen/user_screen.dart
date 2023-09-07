@@ -40,13 +40,13 @@ class UserScreen extends StatelessWidget {
                   bottom: const TabBar(
                     tabs: [
                       Tab(
+                        text: 'About',
+                      ),
+                      Tab(
                         text: 'Posts',
                       ),
                       Tab(
                         text: 'Comments',
-                      ),
-                      Tab(
-                        text: 'About',
                       ),
                     ],
                   ),
@@ -122,23 +122,6 @@ class _UserScreenSuccess extends StatelessWidget {
           },
           child: TabBarView(
             children: [
-              ListView.builder(
-                itemCount: state.posts.length,
-                itemBuilder: (context, index) {
-                  return CardLemmyPostItem(
-                    state.posts[index],
-                  );
-                },
-              ),
-              ListView.builder(
-                itemCount: state.comments.length,
-                itemBuilder: (context, index) {
-                  return CommentItem(
-                    comment: state.comments[index],
-                    onReplyPressed: (_, __) {},
-                  );
-                },
-              ),
               Column(
                 children: [
                   Container(
@@ -180,6 +163,25 @@ class _UserScreenSuccess extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              ListView.builder(
+                key: const PageStorageKey('posts'),
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) {
+                  return CardLemmyPostItem(
+                    state.posts[index],
+                  );
+                },
+              ),
+              ListView.builder(
+                key: const PageStorageKey('comments'),
+                itemCount: state.comments.length,
+                itemBuilder: (context, index) {
+                  return CommentItem(
+                    comment: state.comments[index],
+                    onReplyPressed: (_, __) {},
+                  );
+                },
               ),
             ],
           ),

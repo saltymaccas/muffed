@@ -38,26 +38,37 @@ class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        emit(state.copyWith(loading: true));
+        if (!state.reachedEnd) {
+          emit(state.copyWith(loading: true));
 
-        try {
-          final response = await repo.lemmyRepo.getPersonDetails(
-            id: state.userId,
-            username: state.username,
-            page: state.page + 1,
-          );
-
-          emit(
-            state.copyWith(
-              loading: false,
+          try {
+            final response = await repo.lemmyRepo.getPersonDetails(
+              id: state.userId,
+              username: state.username,
               page: state.page + 1,
-              posts: {...state.posts, ...response.posts}.toList(),
-              comments: {...state.comments, ...response.comments}.toList(),
-            ),
-          );
-        } catch (err) {
-          emit(state.copyWith(loading: false, errorMessage: err));
-          rethrow;
+            );
+
+            if (response.posts.isEmpty && response.comments.isEmpty) {
+              emit(
+                state.copyWith(
+                  reachedEnd: true,
+                  loading: false,
+                ),
+              );
+            } else {
+              emit(
+                state.copyWith(
+                  loading: false,
+                  page: state.page + 1,
+                  posts: {...state.posts, ...response.posts}.toList(),
+                  comments: {...state.comments, ...response.comments}.toList(),
+                ),
+              );
+            }
+          } catch (err) {
+            emit(state.copyWith(loading: false, errorMessage: err));
+            rethrow;
+          }
         }
       },
       transformer: droppable(),
