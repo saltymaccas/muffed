@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/profile_page/login_page/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-
-import 'bloc/bloc.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -31,11 +30,10 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   context.pop();
                 },
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
               ),
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            body: ListView(
               children: [
                 SizedBox(
                   height: 5,
@@ -52,44 +50,52 @@ class LoginPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
-                            decoration: InputDecoration(
-                                label: Text('Username or Email'), filled: true),
+                            decoration: const InputDecoration(
+                              label: Text('Username or Email'),
+                              filled: true,
+                            ),
                             onChanged: (value) {
                               context
                                   .read<LoginPageBloc>()
                                   .add(UserNameOrEmailChanged(value));
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           TextField(
-                            decoration: InputDecoration(
-                                filled: true, label: Text('TOTP (Optional)')),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              label: Text('TOTP (Optional)'),
+                            ),
                             onChanged: (value) {
                               context
                                   .read<LoginPageBloc>()
                                   .add(TotpChanged(value));
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           TextField(
-                            decoration: InputDecoration(
-                                filled: true, label: Text('Password')),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              label: Text('Password'),
+                            ),
                             onChanged: (value) {
                               context
                                   .read<LoginPageBloc>()
                                   .add(PasswordChanged(value));
                             },
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           TextField(
-                            decoration: InputDecoration(
-                                filled: true, label: Text('Server Address')),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              label: Text('Server Address'),
+                            ),
                             onChanged: (value) {
                               context
                                   .read<LoginPageBloc>()
@@ -97,14 +103,15 @@ class LoginPage extends StatelessWidget {
                             },
                           ),
                           TextButton(
-                              onPressed: () {
-                                context.read<LoginPageBloc>().add(
-                                  Submitted(() {
-                                    context.pop();
-                                  }),
-                                );
-                              },
-                              child: Text('Login')),
+                            onPressed: () {
+                              context.read<LoginPageBloc>().add(
+                                Submitted(() {
+                                  context.pop();
+                                }),
+                              );
+                            },
+                            child: const Text('Login'),
+                          ),
                           if (state.errorMessage != null)
                             ErrorComponentTransparent(
                               message: state.errorMessage!,
