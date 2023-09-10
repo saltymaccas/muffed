@@ -25,7 +25,7 @@ class CommentScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => CommentScreenBloc(
         repo: context.read<ServerRepo>(),
-        postId: post.id,
+        post: post,
       )..add(InitializeEvent()),
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {

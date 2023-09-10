@@ -7,8 +7,11 @@ final class InitializeEvent extends CommentScreenEvent {}
 final class ReachedNearEndOfScroll extends CommentScreenEvent {}
 
 final class UserCommented extends CommentScreenEvent {
-  UserCommented(
-      {required this.comment, required this.onSuccess, required this.onError});
+  UserCommented({
+    required this.comment,
+    required this.onSuccess,
+    required this.onError,
+  });
 
   final void Function() onSuccess;
   final void Function() onError;

@@ -170,10 +170,11 @@ interface class LemmyRepo {
       queryParameters: {
         if (postId != null) 'post_id': postId,
         if (parentId != null) 'parent_id': parentId,
+        if (limit != null) 'limit': limit,
         'page': page,
         'type_': lemmyListingTypeToApiCompatible[listingType],
         'sort': lemmyCommentSortTypeToApiCompatible[sortType],
-        if (limit != null) 'limit': limit,
+        'max_depth': 8,
       },
     );
 

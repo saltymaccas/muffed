@@ -3,7 +3,6 @@ part of 'bloc.dart';
 enum CommentScreenStatus { initial, loading, success, failure }
 
 class CommentScreenState extends Equatable {
-
   ///
   const CommentScreenState({
     required this.status,
@@ -36,8 +35,7 @@ class CommentScreenState extends Equatable {
   final bool isRefreshing;
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         comments,
         pagesLoaded,
@@ -56,7 +54,7 @@ class CommentScreenState extends Equatable {
     CommentScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
-    LemmyCommentSortType? sortType
+    LemmyCommentSortType? sortType,
   }) {
     return CommentScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,

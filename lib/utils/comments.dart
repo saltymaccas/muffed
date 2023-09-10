@@ -1,8 +1,7 @@
 import 'package:muffed/repo/lemmy/models.dart';
 
 List<LemmyComment> organiseComments(List<LemmyComment> inputComments) {
-  print('inputed ${inputComments.length} comments');
-  List<LemmyComment> comments = inputComments;
+  List<LemmyComment> comments = inputComments.toSet().toList();
 
   List<LemmyComment> toBeRemoved = [];
 
