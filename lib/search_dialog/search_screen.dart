@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/comment_screen/comment_view/comment.dart';
 import 'package:muffed/components/cards.dart';
-import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -75,283 +74,283 @@ class SearchScreen extends StatelessWidget {
           return SetPageInfo(
             indexOfRelevantItem: 0,
             actions: [
-              MuffedPopupMenuButton(
-                visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.sort),
-                items: [
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
-                          title: 'Hot',
-                          isSelected: state.sortType == LemmySortType.hot,
-                          onTap: () => context.read<SearchBloc>().add(
-                                SortTypeChanged(
-                                  LemmySortType.hot,
-                                ),
-                              ),
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
-                          title: 'Active',
-                          isSelected: state.sortType == LemmySortType.active,
-                          onTap: () => context.read<SearchBloc>().add(
-                                SortTypeChanged(
-                                  LemmySortType.active,
-                                ),
-                              ),
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
-                          title: 'Latest',
-                          isSelected: state.sortType == LemmySortType.latest,
-                          onTap: () => context.read<SearchBloc>().add(
-                                SortTypeChanged(
-                                  LemmySortType.latest,
-                                ),
-                              ),
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
-                          title: 'Old',
-                          isSelected: state.sortType == LemmySortType.old,
-                          onTap: () => context.read<SearchBloc>().add(
-                                SortTypeChanged(
-                                  LemmySortType.old,
-                                ),
-                              ),
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuExpandableItem(
-                          title: 'Top',
-                          isSelected: state.sortType == LemmySortType.topAll ||
-                              state.sortType == LemmySortType.topDay ||
-                              state.sortType == LemmySortType.topHour ||
-                              state.sortType == LemmySortType.topMonth ||
-                              state.sortType == LemmySortType.topSixHour ||
-                              state.sortType == LemmySortType.topTwelveHour ||
-                              state.sortType == LemmySortType.topWeek ||
-                              state.sortType == LemmySortType.topYear,
-                          items: [
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'All Time',
-                                    isSelected:
-                                        state.sortType == LemmySortType.topAll,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topAll,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Year',
-                                    isSelected:
-                                        state.sortType == LemmySortType.topYear,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topYear,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Month',
-                                    isSelected: state.sortType ==
-                                        LemmySortType.topMonth,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topMonth,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Week',
-                                    isSelected:
-                                        state.sortType == LemmySortType.topWeek,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topWeek,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Day',
-                                    isSelected:
-                                        state.sortType == LemmySortType.topDay,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topDay,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Twelve Hours',
-                                    isSelected: state.sortType ==
-                                        LemmySortType.topTwelveHour,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topTwelveHour,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Six Hours',
-                                    isSelected: state.sortType ==
-                                        LemmySortType.topSixHour,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topSixHour,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Hour',
-                                    isSelected:
-                                        state.sortType == LemmySortType.topHour,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topHour,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<SearchBloc>(blocContext),
-                    child: BlocBuilder<SearchBloc, SearchState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuExpandableItem(
-                          title: 'Comments',
-                          isSelected:
-                              state.sortType == LemmySortType.mostComments ||
-                                  state.sortType == LemmySortType.newComments,
-                          items: [
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(blocContext),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'Most Comments',
-                                    isSelected: state.sortType ==
-                                        LemmySortType.mostComments,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.mostComments,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<SearchBloc>(
-                                blocContext,
-                              ),
-                              child: BlocBuilder<SearchBloc, SearchState>(
-                                builder: (context, state) {
-                                  return MuffedPopupMenuItem(
-                                    title: 'New Comments',
-                                    isSelected: state.sortType ==
-                                        LemmySortType.newComments,
-                                    onTap: () => context.read<SearchBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.newComments,
-                                          ),
-                                        ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              // MuffedPopupMenuButton(
+              //   visualDensity: VisualDensity.compact,
+              //   icon: Icon(Icons.sort),
+              //   items: [
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuItem(
+              //             title: 'Hot',
+              //             isSelected: state.sortType == LemmySortType.hot,
+              //             onTap: () => context.read<SearchBloc>().add(
+              //                   SortTypeChanged(
+              //                     LemmySortType.hot,
+              //                   ),
+              //                 ),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuItem(
+              //             title: 'Active',
+              //             isSelected: state.sortType == LemmySortType.active,
+              //             onTap: () => context.read<SearchBloc>().add(
+              //                   SortTypeChanged(
+              //                     LemmySortType.active,
+              //                   ),
+              //                 ),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuItem(
+              //             title: 'Latest',
+              //             isSelected: state.sortType == LemmySortType.latest,
+              //             onTap: () => context.read<SearchBloc>().add(
+              //                   SortTypeChanged(
+              //                     LemmySortType.latest,
+              //                   ),
+              //                 ),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuItem(
+              //             title: 'Old',
+              //             isSelected: state.sortType == LemmySortType.old,
+              //             onTap: () => context.read<SearchBloc>().add(
+              //                   SortTypeChanged(
+              //                     LemmySortType.old,
+              //                   ),
+              //                 ),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuExpandableItem(
+              //             title: 'Top',
+              //             isSelected: state.sortType == LemmySortType.topAll ||
+              //                 state.sortType == LemmySortType.topDay ||
+              //                 state.sortType == LemmySortType.topHour ||
+              //                 state.sortType == LemmySortType.topMonth ||
+              //                 state.sortType == LemmySortType.topSixHour ||
+              //                 state.sortType == LemmySortType.topTwelveHour ||
+              //                 state.sortType == LemmySortType.topWeek ||
+              //                 state.sortType == LemmySortType.topYear,
+              //             items: [
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'All Time',
+              //                       isSelected:
+              //                           state.sortType == LemmySortType.topAll,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topAll,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Year',
+              //                       isSelected:
+              //                           state.sortType == LemmySortType.topYear,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topYear,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Month',
+              //                       isSelected: state.sortType ==
+              //                           LemmySortType.topMonth,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topMonth,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Week',
+              //                       isSelected:
+              //                           state.sortType == LemmySortType.topWeek,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topWeek,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Day',
+              //                       isSelected:
+              //                           state.sortType == LemmySortType.topDay,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topDay,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Twelve Hours',
+              //                       isSelected: state.sortType ==
+              //                           LemmySortType.topTwelveHour,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topTwelveHour,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Six Hours',
+              //                       isSelected: state.sortType ==
+              //                           LemmySortType.topSixHour,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topSixHour,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Hour',
+              //                       isSelected:
+              //                           state.sortType == LemmySortType.topHour,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.topHour,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //             ],
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     BlocProvider.value(
+              //       value: BlocProvider.of<SearchBloc>(blocContext),
+              //       child: BlocBuilder<SearchBloc, SearchState>(
+              //         builder: (context, state) {
+              //           return MuffedPopupMenuExpandableItem(
+              //             title: 'Comments',
+              //             isSelected:
+              //                 state.sortType == LemmySortType.mostComments ||
+              //                     state.sortType == LemmySortType.newComments,
+              //             items: [
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(blocContext),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'Most Comments',
+              //                       isSelected: state.sortType ==
+              //                           LemmySortType.mostComments,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.mostComments,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //               BlocProvider.value(
+              //                 value: BlocProvider.of<SearchBloc>(
+              //                   blocContext,
+              //                 ),
+              //                 child: BlocBuilder<SearchBloc, SearchState>(
+              //                   builder: (context, state) {
+              //                     return MuffedPopupMenuItem(
+              //                       title: 'New Comments',
+              //                       isSelected: state.sortType ==
+              //                           LemmySortType.newComments,
+              //                       onTap: () => context.read<SearchBloc>().add(
+              //                             SortTypeChanged(
+              //                               LemmySortType.newComments,
+              //                             ),
+              //                           ),
+              //                     );
+              //                   },
+              //                 ),
+              //               ),
+              //             ],
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
             child: Scaffold(
               body: SafeArea(

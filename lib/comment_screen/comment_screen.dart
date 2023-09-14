@@ -4,12 +4,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
+import '../components/popup_menu/popup_menu.dart';
 import 'bloc/bloc.dart';
 import 'comment_view/comment.dart';
 
@@ -124,71 +124,51 @@ class CommentScreen extends StatelessWidget {
                 onPressed: showCommentDialog,
                 icon: const Icon(Icons.add),
               ),
-              MuffedPopupMenuButton(
-                icon: Icon(Icons.sort),
-                visualDensity: VisualDensity.compact,
-                items: [
-                  BlocProvider.value(
-                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
-                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
+              BlocProvider.value(
+                value: BlocProvider.of<CommentScreenBloc>(blocContext),
+                child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
+                  builder: (context, state) {
+                    return MuffedPopupMenuButton(
+                      icon: Icon(Icons.sort),
+                      visualDensity: VisualDensity.compact,
+                      selectedValue: state.sortType,
+                      items: [
+                        MuffedPopupMenuItem(
                           title: 'Hot',
+                          icon: Icon(Icons.local_fire_department),
+                          value: LemmyCommentSortType.hot,
                           onTap: () => context
                               .read<CommentScreenBloc>()
                               .add(SortTypeChanged(LemmyCommentSortType.hot)),
-                          isSelected:
-                              state.sortType == LemmyCommentSortType.hot,
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
-                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
+                        ),
+                        MuffedPopupMenuItem(
                           title: 'Top',
+                          icon: Icon(Icons.military_tech),
+                          value: LemmyCommentSortType.top,
                           onTap: () => context
                               .read<CommentScreenBloc>()
                               .add(SortTypeChanged(LemmyCommentSortType.top)),
-                          isSelected:
-                              state.sortType == LemmyCommentSortType.top,
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
-                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
+                        ),
+                        MuffedPopupMenuItem(
                           title: 'New',
+                          icon: Icon(Icons.auto_awesome),
+                          value: LemmyCommentSortType.latest,
                           onTap: () => context.read<CommentScreenBloc>().add(
                                 SortTypeChanged(LemmyCommentSortType.latest),
                               ),
-                          isSelected:
-                              state.sortType == LemmyCommentSortType.latest,
-                        );
-                      },
-                    ),
-                  ),
-                  BlocProvider.value(
-                    value: BlocProvider.of<CommentScreenBloc>(blocContext),
-                    child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
-                      builder: (context, state) {
-                        return MuffedPopupMenuItem(
+                        ),
+                        MuffedPopupMenuItem(
                           title: 'Old',
+                          icon: Icon(Icons.elderly),
+                          value: LemmyCommentSortType.old,
                           onTap: () => context
                               .read<CommentScreenBloc>()
                               .add(SortTypeChanged(LemmyCommentSortType.old)),
-                          isSelected:
-                              state.sortType == LemmyCommentSortType.old,
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ],
             child: Stack(

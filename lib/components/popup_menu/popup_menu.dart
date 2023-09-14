@@ -1,10 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'cubit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:muffed/components/popup_menu/bloc/bloc.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
@@ -17,82 +14,102 @@ const double _kMenuScreenPadding = 8.0;
 
 // TODO: Neaten up and add comments
 
-class MuffedPopupMenuExpandableItem extends StatelessWidget {
+class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
   const MuffedPopupMenuExpandableItem({
     super.key,
     required this.items,
-    required this.isSelected,
     this.title = 'Title',
   });
 
   final String title;
 
-  final bool isSelected;
+  final List<MuffedPopupMenuItem> items;
 
-  final List<Widget> items;
+  Widget? getSelectedItemIcon(Object? value) {
+    for (final item in items) {
+      if (item.value == value) {
+        return item.icon;
+      }
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final blocContext = context;
+    return BlocBuilder<MuffedPopupMenuBloc, MuffedPopupMenuState>(
+      builder: (context, state) {
+        bool isSelected() {
+          for (final item in items) {
+            if (item.value == state.selectedValue) {
+              return true;
+            }
+          }
+          return false;
+        }
 
-    return AnimatedSize(
-      duration: _kMenuDuration,
-      curve: Curves.easeInOutCubic,
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              context.read<MuffedPopupMenuCubit>().addItemSet(
-                [
-                  ...items,
-                  Builder(
-                    builder: (context) {
-                      return IconButton(
-                        onPressed: () => context
-                            .read<MuffedPopupMenuCubit>()
-                            .removeItemSet(),
-                        icon: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Icon(Icons.arrow_back)),
+        return AnimatedSize(
+          duration: _kMenuDuration,
+          curve: Curves.easeInOutCubic,
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  context.read<MuffedPopupMenuBloc>().add(
+                        ExpandableItemPressed(
+                          [
+                            ...items,
+                            Builder(
+                              builder: (context) {
+                                return IconButton(
+                                  onPressed: () => context
+                                      .read<MuffedPopupMenuBloc>()
+                                      .add(BackPressed()),
+                                  icon: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Icon(Icons.arrow_back)),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       );
-                    },
+                },
+                child: Container(
+                  color: isSelected()
+                      ? Theme.of(context).colorScheme.outlineVariant
+                      : null,
+                  alignment: AlignmentDirectional.centerStart,
+                  constraints:
+                      const BoxConstraints(minHeight: kMinInteractiveDimension),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: _kMenuHorizontalPadding,
                   ),
-                ],
-              );
-            },
-            child: Container(
-              color: isSelected
-                  ? Theme.of(context).colorScheme.outlineVariant
-                  : null,
-              alignment: AlignmentDirectional.centerStart,
-              constraints:
-                  const BoxConstraints(minHeight: kMinInteractiveDimension),
-              padding: const EdgeInsets.symmetric(
-                horizontal: _kMenuHorizontalPadding,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      AnimatedSwitcher(
+                          duration: _kMenuDuration,
+                          reverseDuration: _kMenuDuration,
+                          switchOutCurve: Curves.easeInOutCubic,
+                          switchInCurve: Curves.easeInOutCubic,
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                scale: animation, child: child);
+                          },
+                          child: Icon(Icons.arrow_right)),
+                    ],
                   ),
-                  AnimatedSwitcher(
-                      duration: _kMenuDuration,
-                      reverseDuration: _kMenuDuration,
-                      switchOutCurve: Curves.easeInOutCubic,
-                      switchInCurve: Curves.easeInOutCubic,
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(scale: animation, child: child);
-                      },
-                      child: Icon(Icons.arrow_right)),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -103,45 +120,41 @@ class MuffedPopupMenuItem extends StatelessWidget {
   const MuffedPopupMenuItem({
     super.key,
     this.title = 'Title',
-    this.isSelected = false,
-    this.shouldPopOnPresssed = true,
+    this.shouldPopOnPressed = true,
     this.onTap,
+    this.value,
+    this.icon,
   });
 
-  final bool isSelected;
-  final bool shouldPopOnPresssed;
+  final Object? value;
+  final bool shouldPopOnPressed;
   final String title;
   final void Function()? onTap;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: (onTap == null)
-              ? null
-              : () {
-                  if (shouldPopOnPresssed) {
-                    Navigator.pop(context);
-                  }
-                  onTap!.call();
-                },
-          child: Container(
-            color: isSelected
-                ? Theme.of(context).colorScheme.outlineVariant
-                : null,
-            alignment: AlignmentDirectional.centerStart,
-            constraints:
-                const BoxConstraints(minHeight: kMinInteractiveDimension),
-            padding:
-                const EdgeInsets.symmetric(horizontal: _kMenuHorizontalPadding),
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-        ),
-      ],
+    return BlocBuilder<MuffedPopupMenuBloc, MuffedPopupMenuState>(
+      builder: (context, state) {
+        return ListTile(
+          onTap: () {
+            if (onTap != null) {
+              onTap!.call();
+            }
+            if (shouldPopOnPressed) {
+              context.pop();
+            }
+            if (value != null) {
+              context
+                  .read<MuffedPopupMenuBloc>()
+                  .add(SelectedValueChanged(value!));
+            }
+          },
+          title: Text(title),
+          selected: value == state.selectedValue,
+          leading: icon,
+        );
+      },
     );
   }
 }
@@ -156,13 +169,17 @@ class MuffedPopupMenuButton extends StatefulWidget {
     this.useRootNavigator = false,
     this.visualDensity = VisualDensity.comfortable,
     this.offset = Offset.zero,
+    this.selectedValue,
+    this.changeIconToSelected = true,
   });
 
   final Widget icon;
-  final List<Widget> items;
+  final List<MuffedPopupMenuItem> items;
   final bool useRootNavigator;
   final VisualDensity visualDensity;
   final Offset offset;
+  final Object? selectedValue;
+  final bool changeIconToSelected;
 
   @override
   State<MuffedPopupMenuButton> createState() => _MuffedPopupMenuButtonState();
@@ -196,12 +213,14 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
         Offset.zero & overlay.size,
       );
 
+      // Shows the menu
       Navigator.of(context, rootNavigator: widget.useRootNavigator)
           .push(
         _MuffedPopupMenuRoute(
           position: position,
           barrierLabel: 'test',
           items: widget.items,
+          initialSelectedValue: widget.selectedValue,
         ),
       )
           .then((value) {
@@ -218,10 +237,26 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
       });
     }
 
+    Widget getIcon() {
+      if (widget.changeIconToSelected) {
+        for (final item in widget.items) {
+          if (item is MuffedPopupMenuExpandableItem) {
+            final i = item.getSelectedItemIcon(widget.selectedValue);
+            if (i != null) {
+              return i;
+            }
+          } else if (item.value == widget.selectedValue) {
+            return item.icon ?? widget.icon;
+          }
+        }
+      }
+      return widget.icon;
+    }
+
     return IconButton(
       onPressed: showMuffedMenu,
       isSelected: menuOpen,
-      icon: widget.icon,
+      icon: getIcon(),
       visualDensity: widget.visualDensity,
     );
   }
@@ -233,6 +268,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
     required this.position,
     required this.items,
     // padded on bottom to avoid navigation bar
+    this.initialSelectedValue,
     this.padding = const EdgeInsets.only(bottom: 40),
     this.barrierLabel = '',
   });
@@ -240,6 +276,8 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
   /// The position the the button that displays the menu when presses, used to
   /// determine the menu position
   final RelativeRect position;
+
+  final Object? initialSelectedValue;
 
   final List<Widget> items;
 
@@ -328,9 +366,13 @@ class _MuffedPopupMenu extends StatelessWidget {
         CurveTween(curve: Interval(0.0, unit * route.items.length));
 
     return BlocProvider(
-      create: (context) => MuffedPopupMenuCubit(route.items),
-      child: BlocBuilder<MuffedPopupMenuCubit, List<List<Widget>>>(
+      create: (context) => MuffedPopupMenuBloc(
+        initialItems: route.items,
+        initialSelectedValue: route.initialSelectedValue,
+      ),
+      child: BlocBuilder<MuffedPopupMenuBloc, MuffedPopupMenuState>(
         builder: (context, state) {
+          print('built');
           final child = ConstrainedBox(
             constraints: const BoxConstraints(
               minWidth: _kMenuMinWidth,
@@ -345,7 +387,8 @@ class _MuffedPopupMenu extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     vertical: _kMenuVerticalPadding,
                   ),
-                  child: ListBody(children: state[state.length - 1]),
+                  child:
+                      ListBody(children: state.items[state.items.length - 1]),
                 ),
               ),
             ),
