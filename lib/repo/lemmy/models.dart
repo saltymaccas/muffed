@@ -17,7 +17,7 @@ enum LemmySortType {
   topTwelveHour,
 }
 
-Map<LemmySortType, String> lemmySortTypeEnumToApiCompatible = {
+Map<LemmySortType, String> lemmySortTypeToJson = {
   LemmySortType.active: 'Active',
   LemmySortType.hot: 'Hot',
   LemmySortType.latest: 'New',
@@ -43,7 +43,7 @@ enum LemmySearchType {
   url,
 }
 
-Map<LemmySearchType, String> lemmySearchTypeToApiCompatible = {
+Map<LemmySearchType, String> lemmySearchTypeToJson = {
   LemmySearchType.all: 'All',
   LemmySearchType.comments: 'Comments',
   LemmySearchType.posts: 'Posts',
@@ -58,13 +58,13 @@ enum LemmySubscribedType {
   pending,
 }
 
-Map<LemmySubscribedType, String> lemmySubscribedTypeToApiCompatible = {
+Map<LemmySubscribedType, String> lemmySubscribedTypeToJson = {
   LemmySubscribedType.subscribed: 'Subscribed',
   LemmySubscribedType.pending: 'Pending',
   LemmySubscribedType.notSubscribed: 'NotSubscribed',
 };
 
-Map<String, LemmySubscribedType> apiCompatibleToLemmySubscribedType = {
+Map<String, LemmySubscribedType> jsonToLemmySubscribedType = {
   'Subscribed': LemmySubscribedType.subscribed,
   'Pending': LemmySubscribedType.pending,
   'NotSubscribed': LemmySubscribedType.notSubscribed,
@@ -72,7 +72,7 @@ Map<String, LemmySubscribedType> apiCompatibleToLemmySubscribedType = {
 
 enum LemmyListingType { all, local, community, subscribed }
 
-Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
+Map<LemmyListingType, String> lemmyListingTypeToJson = {
   LemmyListingType.all: 'All',
   LemmyListingType.community: 'Community',
   LemmyListingType.subscribed: 'Subscribed',
@@ -81,13 +81,13 @@ Map<LemmyListingType, String> lemmyListingTypeToApiCompatible = {
 
 enum LemmyVoteType { upVote, downVote, none }
 
-Map<LemmyVoteType, int> lemmyVoteTypeToApiCompatible = {
+Map<LemmyVoteType, int> lemmyVoteTypeJson = {
   LemmyVoteType.upVote: 1,
   LemmyVoteType.none: 0,
   LemmyVoteType.downVote: -1,
 };
 
-Map<int, LemmyVoteType> intToLemmyVoteType = {
+Map<int, LemmyVoteType> jsonToLemmyVoteType = {
   1: LemmyVoteType.upVote,
   0: LemmyVoteType.none,
   -1: LemmyVoteType.downVote
@@ -95,7 +95,7 @@ Map<int, LemmyVoteType> intToLemmyVoteType = {
 
 enum LemmyCommentSortType { hot, top, latest, old }
 
-Map<LemmyCommentSortType, String> lemmyCommentSortTypeToApiCompatible = {
+Map<LemmyCommentSortType, String> lemmyCommentSortTypeToJson = {
   LemmyCommentSortType.hot: 'Hot',
   LemmyCommentSortType.top: 'Top',
   LemmyCommentSortType.latest: 'New',
@@ -133,9 +133,9 @@ class LemmyPost extends Equatable {
         id = json['post']['id'],
         apId = json['post']['ap_id'],
         name = json['post']['name'],
-        // Z added to mark as UTC time
+  // Z added to mark as UTC time
         timePublished = DateTime.parse(json['post']['published'] + 'Z'),
-        myVote = intToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
+        myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         thumbnailUrl = json['post']['thumbnail_url'],
         nsfw = json['post']['nsfw'],
         creatorId = json['post']['creator_id'],
@@ -207,23 +207,23 @@ class LemmyComment extends Equatable {
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
       : path = (json['comment']['path'] as String)
-            .split('.')
-            .map(int.parse)
-            .toList()
-          ..removeLast()
-          ..removeAt(0),
+      .split('.')
+      .map(int.parse)
+      .toList()
+    ..removeLast()
+    ..removeAt(0),
         creatorName = json['creator']['name'],
         creatorId = json['creator']['id'],
         content = json['comment']['content'],
         id = json['comment']['id'],
-        // Z added to mark as UTC time
+  // Z added to mark as UTC time
         timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
         postId = json['comment']['post_id'],
         childCount = json['counts']['child_count'],
         upVotes = json['counts']['upvotes'],
         downVotes = json['counts']['downvotes'],
         score = json['counts']['score'],
-        myVote = intToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
+        myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         hotRank = json['counts']['hot_rank'],
         replies = [];
 
@@ -360,6 +360,37 @@ class LemmyCommunity extends Equatable {
   final bool blocked;
 
   final LemmySubscribedType subscribed;
+
+  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json, {
+    this.moderators,
+  })
+      : id = json['community']['id'],
+        actorId = json['community']['actor_id'],
+        deleted = json['community']['deleted'],
+        hidden = json['community']['hidden'],
+        name = json['community']['name'],
+        local = json['community']['local'],
+        instanceId = json['community']['instance_id'],
+        nsfw = json['community']['nsfw'],
+        postingRestrictedToMods =
+        json['community']['posting_restricted_to_mods'],
+        published = DateTime.parse(json['community']['published'] + 'Z'),
+        removed = json['community']['removed'],
+        title = json['community']['title'],
+        comments = json['counts']['comments'],
+        hotRank = json['counts']['hot_rank'],
+        posts = json['counts']['posts'],
+        subscribers = json['counts']['subscribers'],
+        usersActiveDay = json['counts']['users_active_day'],
+        usersActiveHalfYear = json['counts']['users_active_half_year'],
+        usersActiveMonth = json['counts']['users_active_month'],
+        usersActiveWeek = json['counts']['users_active_week'],
+        blocked = json['blocked'],
+        subscribed = jsonToLemmySubscribedType[json['subscribed']]!,
+        icon = json['community']['icon'],
+        description = json['community']['description'],
+        banner = json['community']['banner'],
+        updated = json['community']['update'];
 
   @override
   List<Object?> get props => ['LemmyCommunity', id];
