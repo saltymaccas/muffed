@@ -400,25 +400,18 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         icon: const Icon(Icons.more_vert),
                         items: [
                           MuffedPopupMenuItem(
-                            title: 'Debug Info',
+                            title: 'Go to community',
                             onTap: () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Debug Info'),
-                                    content: SelectableText(
-                                        'id: ${post.id}\nname: ${post.name}\nbody: ${post.body}\nurl: ${post.url}\nthumb url: ${post.thumbnailUrl}'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('close'),
-                                      ),
-                                    ],
-                                  );
-                                },
+                              context.push(
+                                '/home/community?id=${post.communityId}',
+                              );
+                            },
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Go to user',
+                            onTap: () {
+                              context.push(
+                                '/home/person?id=${post.creatorId}',
                               );
                             },
                           ),

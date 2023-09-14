@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/utils/time.dart';
@@ -294,6 +295,14 @@ class _CommentItemState extends State<CommentItem> {
                                         ),
                                       );
                                     },
+                                  );
+                                },
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Go to user',
+                                onTap: () {
+                                  context.push(
+                                    '/home/person?id=${comment.creatorId}',
                                   );
                                 },
                               ),
