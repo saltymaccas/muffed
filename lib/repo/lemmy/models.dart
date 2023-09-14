@@ -133,7 +133,7 @@ class LemmyPost extends Equatable {
         id = json['post']['id'],
         apId = json['post']['ap_id'],
         name = json['post']['name'],
-  // Z added to mark as UTC time
+        // Z added to mark as UTC time
         timePublished = DateTime.parse(json['post']['published'] + 'Z'),
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         thumbnailUrl = json['post']['thumbnail_url'],
@@ -207,16 +207,16 @@ class LemmyComment extends Equatable {
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
       : path = (json['comment']['path'] as String)
-      .split('.')
-      .map(int.parse)
-      .toList()
-    ..removeLast()
-    ..removeAt(0),
+            .split('.')
+            .map(int.parse)
+            .toList()
+          ..removeLast()
+          ..removeAt(0),
         creatorName = json['creator']['name'],
         creatorId = json['creator']['id'],
         content = json['comment']['content'],
         id = json['comment']['id'],
-  // Z added to mark as UTC time
+        // Z added to mark as UTC time
         timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
         postId = json['comment']['post_id'],
         childCount = json['counts']['child_count'],
@@ -301,7 +301,6 @@ class LemmyComment extends Equatable {
 
 class LemmyCommunity extends Equatable {
   LemmyCommunity({
-    this.moderators,
     required this.id,
     required this.actorId,
     this.banner,
@@ -346,7 +345,6 @@ class LemmyCommunity extends Equatable {
   final bool removed;
   final String title;
   final String? updated;
-  final List<LemmyPerson>? moderators;
 
   final int comments;
   final int hotRank;
@@ -361,9 +359,7 @@ class LemmyCommunity extends Equatable {
 
   final LemmySubscribedType subscribed;
 
-  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json, {
-    this.moderators,
-  })
+  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
       : id = json['community']['id'],
         actorId = json['community']['actor_id'],
         deleted = json['community']['deleted'],
@@ -373,7 +369,7 @@ class LemmyCommunity extends Equatable {
         instanceId = json['community']['instance_id'],
         nsfw = json['community']['nsfw'],
         postingRestrictedToMods =
-        json['community']['posting_restricted_to_mods'],
+            json['community']['posting_restricted_to_mods'],
         published = DateTime.parse(json['community']['published'] + 'Z'),
         removed = json['community']['removed'],
         title = json['community']['title'],
