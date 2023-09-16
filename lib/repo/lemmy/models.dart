@@ -102,7 +102,7 @@ Map<LemmyCommentSortType, String> lemmyCommentSortTypeToJson = {
   LemmyCommentSortType.old: 'Old',
 };
 
-class LemmyPost extends Equatable {
+class LemmyPost with EquatableMixin {
   /// initialize object
   LemmyPost({
     required this.apId,
@@ -186,7 +186,7 @@ class LemmyPost extends Equatable {
   List<Object> get props => [apId];
 }
 
-class LemmyComment extends Equatable {
+class LemmyComment with EquatableMixin {
   /// initialise object
   LemmyComment({
     this.replies = const [],
@@ -249,7 +249,7 @@ class LemmyComment extends Equatable {
   final int hotRank;
 
   @override
-  List<Object?> get props => ['LemmyComment', id];
+  List<Object?> get props => [postId, id];
 
   /// Gets the number of children that have not been loaded not including grand
   /// children

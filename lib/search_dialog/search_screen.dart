@@ -272,6 +272,8 @@ class SearchScreen extends StatelessWidget {
                                     itemCount: state.communities.length,
                                     itemBuilder: (context, index) {
                                       return LemmyCommunityCard(
+                                        key: ValueKey(
+                                            state.communities[index].id),
                                         community: state.communities[index],
                                         extraOnTap: textFocusNode.unfocus,
                                       );
@@ -282,6 +284,7 @@ class SearchScreen extends StatelessWidget {
                                     itemCount: state.persons.length,
                                     itemBuilder: (context, index) {
                                       return LemmyPersonCard(
+                                        key: ValueKey(state.persons[index].id),
                                         person: state.persons[index],
                                       );
                                     },
@@ -292,19 +295,23 @@ class SearchScreen extends StatelessWidget {
                                     itemCount: state.posts.length,
                                     itemBuilder: (context, index) {
                                       return CardLemmyPostItem(
+                                        key: ValueKey(state.posts[index].apId),
                                         state.posts[index],
                                       );
                                     },
                                   ),
 
                                   ListView.builder(
-                                      controller: commentsScrollController,
-                                      itemCount: state.comments.length,
-                                      itemBuilder: (context, index) {
-                                        return CommentItem(
-                                            comment: state.comments[index],
-                                            onReplyPressed: (_, __) {});
-                                      }),
+                                    controller: commentsScrollController,
+                                    itemCount: state.comments.length,
+                                    itemBuilder: (context, index) {
+                                      return CommentItem(
+                                          key: ValueKey(
+                                              state.comments[index].id),
+                                          comment: state.comments[index],
+                                          onReplyPressed: (_, __) {});
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
