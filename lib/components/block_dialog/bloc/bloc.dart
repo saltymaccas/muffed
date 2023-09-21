@@ -6,7 +6,6 @@ import 'package:muffed/repo/server_repo.dart';
 import '../block_dialog.dart';
 
 part 'event.dart';
-
 part 'state.dart';
 
 class BlockDialogBloc extends Bloc<BlockDialogEvent, BlockDialogState> {
@@ -30,8 +29,7 @@ class BlockDialogBloc extends Bloc<BlockDialogEvent, BlockDialogState> {
           );
         }
       } catch (err) {
-        emit(state.copyWith(status: BlockDialogStatus.failure));
-        rethrow;
+        emit(state.copyWith(status: BlockDialogStatus.failure, error: err));
       }
     });
     on<BlockOrUnblockRequested>((event, emit) async {

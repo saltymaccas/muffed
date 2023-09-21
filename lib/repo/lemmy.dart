@@ -35,7 +35,7 @@ interface class LemmyRepo {
   }) async {
     try {
       if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
-        throw ('Not logged in');
+        throw Exception('Not logged in');
       }
 
       final Response<Map<String, dynamic>> response = await dio.post(
@@ -72,7 +72,7 @@ interface class LemmyRepo {
       Map<String, dynamic> queryParameters = const {},
       bool mustBeLoggedIn = false}) async {
     if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
-      return Future.error('Not logged in');
+      throw Exception('Not logged in');
     }
 
     _log.info(
@@ -329,25 +329,26 @@ interface class LemmyRepo {
   /// blocked
   Future<bool> BlockPerson({required int personId, required bool block}) async {
     final response = await postRequest(
-      path: '/user/block',
-      data: {
-        'block': block,
-        'person_id': personId,
-      },
-    );
+        path: '/user/block',
+        data: {
+          'block': block,
+          'person_id': personId,
+        },
+        mustBeLoggedIn: true);
     return response['blocked'];
   }
 
   Future<bool> getIsPersonBlocked(int personId) async {
-    final response = await getRequest(path: '/site', mustBeLoggedIn: true);
+      final response = await getRequest(path: '/site', mustBeLoggedIn: true);
 
-    for (final block in response['my_user']['person_blocks']) {
-      if (block['target']['id'] == personId) {
-        return true;
+      for (final block in response['my_user']['person_blocks']) {
+        if (block['target']['id'] == personId) {
+          return true;
+        }
       }
-    }
 
-    return false;
+      return false;
+
   }
 
   /// User to block and unblock a community, returns whether the community is
@@ -356,8 +357,8 @@ interface class LemmyRepo {
     final response = await postRequest(
       path: '/community/block',
       data: {'community_id': id, 'block': block},
+      mustBeLoggedIn: true,
     );
-
     return response['blocked'];
   }
 
