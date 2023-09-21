@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:muffed/comment_screen/comment_view/comment.dart';
+import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/error.dart';
+import 'package:muffed/components/icon_button.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/user_screen/bloc/bloc.dart';
+
+import 'bloc/bloc.dart';
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
@@ -29,9 +33,56 @@ class UserScreen extends StatelessWidget {
         ..add(InitializeEvent()),
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {
+          final blocContext = context;
           return SetPageInfo(
             indexOfRelevantItem: 0,
-            actions: [],
+            actions: [
+              BlocProvider.value(
+                value: BlocProvider.of<UserScreenBloc>(blocContext),
+                child: BlocBuilder<UserScreenBloc, UserScreenState>(
+                  builder: (context, state) {
+                    late Widget item;
+
+                    if (state.status == UserStatus.loading) {
+                      item = const IconButtonLoading();
+                    } else if (state.status == UserStatus.failure) {
+                      item = const IconButtonFailure();
+                    } else if (state.status == UserStatus.success) {
+                      item = MuffedPopupMenuButton(
+                          changeIconToSelected: false,
+                          icon: Icon(Icons.more_vert),
+                          visualDensity: VisualDensity.compact,
+                          items: [
+                            MuffedPopupMenuItem(
+                              icon: Icon(Icons.block),
+                              title: 'Block/Unblock',
+                              onTap: () {
+                                showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return BlockDialog(
+                                        id: state.user!.id,
+                                        type: BlockDialogType.person,
+                                        name: state.user!.name,
+                                      );
+                                    });
+                              },
+                            )
+                          ]);
+                    } else {
+                      item = SizedBox();
+                    }
+
+                    return AnimatedSwitcher(
+                      duration: Duration(
+                        milliseconds: 200,
+                      ),
+                      child: item,
+                    );
+                  },
+                ),
+              )
+            ],
             child: DefaultTabController(
               length: 3,
               child: Scaffold(
@@ -94,8 +145,9 @@ class _UserScreenFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ErrorComponentTransparent(
-      retryFunction: () =>
-          context.read<UserScreenBloc>().add(InitializeEvent()),
+      retryFunction: () {
+        context.read<UserScreenBloc>().add(InitializeEvent());
+      },
       message: context.read<UserScreenBloc>().state.errorMessage ?? '',
     );
   }

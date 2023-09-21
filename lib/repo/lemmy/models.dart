@@ -464,7 +464,7 @@ class LemmyPerson extends Equatable {
   final int postScore;
 
   @override
-  List<Object?> get props => ['LemmyPerson', id];
+  List<Object?> get props => [id];
 }
 
 class LemmyGetPersonDetailsResponse {

@@ -13,11 +13,11 @@ interface class LemmyRepo {
   /// initialize lemmy repo
   LemmyRepo({required this.globalBloc})
       : dio = Dio()
-    ..interceptors.add(
-      PrettyDioLogger(
-        logPrint: _log.finest,
-      ),
-    );
+          ..interceptors.add(
+            PrettyDioLogger(
+              logPrint: _log.finest,
+            ),
+          );
 
   /// The dio client that will be used to send requests
   final Dio dio;
@@ -25,7 +25,8 @@ interface class LemmyRepo {
   /// used to get information such as the home server to use for requests
   final GlobalBloc globalBloc;
 
-  /// Creates a post request to the lemmy api
+  /// Creates a post request to the lemmy api, If logged in auth parameter will
+  /// be added automatically
   Future<Map<String, dynamic>> postRequest({
     required String path,
     Map<String, dynamic> data = const {},
@@ -64,12 +65,18 @@ interface class LemmyRepo {
     }
   }
 
-  /// Creates a get request to the lemmy api
-  Future<Map<String, dynamic>> getRequest({required String path,
-    Map<String, dynamic> queryParameters = const {}}) async {
+  /// Sends a get request to the lemmy api, If logged in auth parameter will be
+  /// added automatically
+  Future<Map<String, dynamic>> getRequest(
+      {required String path,
+      Map<String, dynamic> queryParameters = const {},
+      bool mustBeLoggedIn = false}) async {
+    if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
+      return Future.error('Not logged in');
+    }
+
     _log.info(
-        'Sending get request to ${globalBloc
-            .getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
+        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
 
     try {
       final Response<Map<String, dynamic>> response = await dio.get(
@@ -111,7 +118,7 @@ interface class LemmyRepo {
 
     return List.generate(
       jsonPosts.length,
-          (index) => LemmyPost.fromPostViewJson(jsonPosts[index]),
+      (index) => LemmyPost.fromPostViewJson(jsonPosts[index]),
     );
   }
 
@@ -154,7 +161,7 @@ interface class LemmyRepo {
     final List<dynamic> rawComments = response['comments'];
 
     return List.generate(rawComments.length,
-            (index) => LemmyComment.fromCommentViewJson(rawComments[index]));
+        (index) => LemmyComment.fromCommentViewJson(rawComments[index]));
   }
 
   Future<LemmyGetPersonDetailsResponse> getPersonDetails({
@@ -173,7 +180,7 @@ interface class LemmyRepo {
         if (username != null) 'username': username,
         'page': page,
         'sort':
-        lemmySortTypeToJson[sortType ?? globalBloc.state.defaultSortType],
+            lemmySortTypeToJson[sortType ?? globalBloc.state.defaultSortType],
       },
     );
 
@@ -181,20 +188,18 @@ interface class LemmyRepo {
       person: LemmyPerson.fromPersonViewJson(response['person_view']),
       posts: List.generate(
         (response['posts'] as List).length,
-            (index) =>
-            LemmyPost.fromPostViewJson(
-              (response['posts'] as List)[index],
-            ),
+        (index) => LemmyPost.fromPostViewJson(
+          (response['posts'] as List)[index],
+        ),
       ),
       comments: List.generate(
         (response['comments'] as List).length,
-            (index) =>
-            LemmyComment.fromCommentViewJson(
-              (response['comments'] as List)[index],
-            ),
+        (index) => LemmyComment.fromCommentViewJson(
+          (response['comments'] as List)[index],
+        ),
       ),
       moderates: List.generate((response['moderates'] as List).length,
-              (index) => response['moderates'][index]['community']['title']),
+          (index) => response['moderates'][index]['community']['title']),
     );
   }
 
@@ -228,20 +233,19 @@ interface class LemmyRepo {
     return LemmySearchResponse(
       lemmyComments: List.generate(
         rawComments.length,
-            (index) => LemmyComment.fromCommentViewJson(rawComments[index]),
+        (index) => LemmyComment.fromCommentViewJson(rawComments[index]),
       ),
       lemmyCommunities: List.generate(
         rawCommunities.length,
-            (index) =>
-            LemmyCommunity.fromCommunityViewJson(rawCommunities[index]),
+        (index) => LemmyCommunity.fromCommunityViewJson(rawCommunities[index]),
       ),
       lemmyPersons: List.generate(
         rawPersons.length,
-            (index) => LemmyPerson.fromPersonViewJson(rawPersons[index]),
+        (index) => LemmyPerson.fromPersonViewJson(rawPersons[index]),
       ),
       lemmyPosts: List.generate(
         rawPosts.length,
-            (index) => LemmyPost.fromPostViewJson(rawPosts[index]),
+        (index) => LemmyPost.fromPostViewJson(rawPosts[index]),
       ),
     );
   }
@@ -280,23 +284,29 @@ interface class LemmyRepo {
         jwt: response['jwt']);
   }
 
-  Future<void> votePost(int postId,
-      LemmyVoteType vote,) =>
+  Future<void> votePost(
+    int postId,
+    LemmyVoteType vote,
+  ) =>
       postRequest(path: '/post/like', data: {
         'post_id': postId,
         'score': lemmyVoteTypeJson[vote],
       });
 
-  Future<void> voteComment(int commentId,
-      LemmyVoteType vote,) =>
+  Future<void> voteComment(
+    int commentId,
+    LemmyVoteType vote,
+  ) =>
       postRequest(path: '/comment/like', data: {
         'comment_id': commentId,
         'score': lemmyVoteTypeJson[vote],
       });
 
-  Future<void> createComment(String content,
-      int postId,
-      int? parentId,) =>
+  Future<void> createComment(
+    String content,
+    int postId,
+    int? parentId,
+  ) =>
       postRequest(path: '/comment', data: {
         'post_id': postId,
         'content': content,
@@ -319,12 +329,47 @@ interface class LemmyRepo {
   /// blocked
   Future<bool> BlockPerson({required int personId, required bool block}) async {
     final response = await postRequest(
-      path: '/user/bloc',
+      path: '/user/block',
       data: {
         'block': block,
         'person_id': personId,
       },
     );
     return response['blocked'];
+  }
+
+  Future<bool> getIsPersonBlocked(int personId) async {
+    final response = await getRequest(path: '/site', mustBeLoggedIn: true);
+
+    for (final block in response['my_user']['person_blocks']) {
+      if (block['target']['id'] == personId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// User to block and unblock a community, returns whether the community is
+  /// now blocked
+  Future<bool> BlockCommunity({required int id, required bool block}) async {
+    final response = await postRequest(
+      path: '/community/block',
+      data: {'community_id': id, 'block': block},
+    );
+
+    return response['blocked'];
+  }
+
+  Future<bool> getIsCommunityBlocked(int communityId) async {
+    final response = await getRequest(path: '/site', mustBeLoggedIn: true);
+
+    for (final block in response['my_user']['community_blocks']) {
+      if (block['community']['id'] == communityId) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

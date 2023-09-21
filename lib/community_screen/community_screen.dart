@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/cards.dart';
+import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../components/block_dialog/block_dialog.dart';
 import '../components/popup_menu/popup_menu.dart';
 import 'bloc/bloc.dart';
 
@@ -234,6 +236,48 @@ class CommunityScreen extends StatelessWidget {
                   },
                 ),
               ),
+              BlocProvider.value(
+                value: BlocProvider.of<CommunityScreenBloc>(blocContext),
+                child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                  builder: (context, state) {
+                    late Widget item;
+
+                    if (state.communityInfoStatus == CommunityStatus.loading) {
+                      item = const IconButtonLoading();
+                    } else if (state.communityInfoStatus ==
+                        CommunityStatus.failure) {
+                      item = const IconButtonFailure();
+                    } else if (state.communityInfoStatus ==
+                        CommunityStatus.success) {
+                      item = MuffedPopupMenuButton(
+                          changeIconToSelected: false,
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(Icons.more_vert),
+                          items: [
+                            MuffedPopupMenuItem(
+                              icon: Icon(Icons.block),
+                              title: 'Block/Unblock',
+                              onTap: () {
+                                showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return BlockDialog(
+                                        id: state.communityInfo!.id,
+                                        type: BlockDialogType.community,
+                                        name: state.communityInfo!.name,
+                                      );
+                                    });
+                              },
+                            ),
+                          ]);
+                    } else {
+                      item = IconButtonInitial();
+                    }
+
+                    return item;
+                  },
+                ),
+              )
             ],
             indexOfRelevantItem: 0,
             // makes presses outside of the menu not register and closes the

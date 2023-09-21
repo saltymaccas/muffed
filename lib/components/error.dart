@@ -4,7 +4,7 @@ class ErrorComponentTransparent extends StatelessWidget {
   const ErrorComponentTransparent(
       {this.message = '', this.retryFunction, super.key});
 
-  final Object message;
+  final Object? message;
   final void Function()? retryFunction;
 
   @override
