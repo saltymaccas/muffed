@@ -18,8 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatefulWidget {
   ///
-  const CardLemmyPostItem(
-    this.post, {
+  const CardLemmyPostItem(this.post, {
     this.limitContentHeight = true,
     this.openOnTap = true,
     super.key,
@@ -52,7 +51,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
   @override
   Widget build(BuildContext context) {
     // shows nothing if nsfw and show nsfw off
-    if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
+    if (post.nsfw && !context
+        .read<GlobalBloc>()
+        .state
+        .showNsfw) {
       return const SizedBox();
     }
 
@@ -88,8 +90,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                     borderRadius: BorderRadius.circular(45),
                                     child: (post.communityIcon != null)
                                         ? CachedNetworkImage(
-                                            imageUrl: post.communityIcon!,
-                                          )
+                                      imageUrl: post.communityIcon!,
+                                    )
                                         : SvgPicture.asset('assets/logo.svg'),
                                   ),
                                 ),
@@ -100,7 +102,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   post.communityName,
                                   style: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                    Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                                 SizedBox(
@@ -115,7 +120,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                     post.creatorName,
                                     style: TextStyle(
                                       color:
-                                          Theme.of(context).colorScheme.outline,
+                                      Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .outline,
                                     ),
                                   ),
                                 ),
@@ -126,7 +134,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         Text(
                           formattedPostedAgo(post.timePublished) + ' ago',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .outline,
                           ),
                         ),
                       ],
@@ -157,7 +168,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                 child: _ImageViewer(
                                   imageUrl: post.url!,
                                   shouldBlur: post.nsfw &&
-                                      context.read<GlobalBloc>().state.blurNsfw,
+                                      context
+                                          .read<GlobalBloc>()
+                                          .state
+                                          .blurNsfw,
                                 ),
                               ),
                             );
@@ -172,7 +186,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                     height: double.maxFinite,
                                     width: double.maxFinite,
                                     color:
-                                        Theme.of(context).colorScheme.surface,
+                                    Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .surface,
                                     child: const Center(
                                       child: Text('Loading url data'),
                                     ),
@@ -184,7 +201,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                     onTap: () =>
                                         launchUrl(Uri.parse(post.url!)),
                                     child: Container(
-                                      color: Theme.of(context)
+                                      color: Theme
+                                          .of(context)
                                           .colorScheme
                                           .background,
                                       padding: EdgeInsets.all(4),
@@ -202,11 +220,17 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   boxShadow: [],
                                   link: post.url!,
                                   backgroundColor:
-                                      Theme.of(context).colorScheme.background,
+                                  Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .background,
                                   displayDirection:
-                                      UIDirection.uiDirectionHorizontal,
+                                  UIDirection.uiDirectionHorizontal,
                                   titleStyle:
-                                      Theme.of(context).textTheme.titleSmall,
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleSmall,
                                 ),
                               ),
                             );
@@ -223,7 +247,10 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            color: Theme.of(context).colorScheme.surface,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .surface,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
@@ -282,9 +309,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    post.id,
-                                    LemmyVoteType.none,
-                                  );
+                                post.id,
+                                LemmyVoteType.none,
+                              );
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
@@ -312,9 +339,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    post.id,
-                                    LemmyVoteType.upVote,
-                                  );
+                                post.id,
+                                LemmyVoteType.upVote,
+                              );
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
@@ -350,9 +377,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    post.id,
-                                    LemmyVoteType.none,
-                                  );
+                                post.id,
+                                LemmyVoteType.none,
+                              );
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
@@ -380,9 +407,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   .read<ServerRepo>()
                                   .lemmyRepo
                                   .votePost(
-                                    post.id,
-                                    LemmyVoteType.downVote,
-                                  );
+                                post.id,
+                                LemmyVoteType.downVote,
+                              );
                             } catch (err) {
                               // reverts the vote state if an error occurs
                               setState(() {
@@ -455,10 +482,10 @@ class _ImageViewerState extends State<_ImageViewer> {
     return GestureDetector(
       onTap: shouldBlur
           ? () {
-              setState(() {
-                shouldBlur = false;
-              });
-            }
+        setState(() {
+          shouldBlur = false;
+        });
+      }
           : null,
       child: AnimatedSize(
         duration: Duration(milliseconds: 500),
@@ -466,6 +493,56 @@ class _ImageViewerState extends State<_ImageViewer> {
         child: SizedBox(
           height: height,
           child: CachedNetworkImage(
+            errorWidget: (context, url, err) {
+              print('error occured')
+              return CachedNetworkImage(
+                imageUrl: widget.imageUrl,
+                imageBuilder: (context, imageProvider) {
+                  UniqueKey heroTag = UniqueKey();
+                  return GestureDetector(
+                    // if should blur is on a tap should remove the blur and a
+                    // second tap should open the image
+                    onTap: (!shouldBlur)
+                        ? () {
+                      openImageViewer(
+                          context, imageProvider, heroTag, DisposeLevel.low);
+                    }
+                        : null,
+
+                    child: MeasureSize(
+                      onChange: (size) {
+                        setState(() {
+                          height = size.height;
+                        });
+                      },
+                      child: ClipRect(
+                        child: ImageFiltered(
+                          enabled: shouldBlur,
+                          imageFilter: ImageFilter.blur(
+                            sigmaX: 10,
+                            sigmaY: 10,
+                          ),
+                          child: Hero(
+                            tag: heroTag,
+                            child: Image(
+                              image: imageProvider,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                placeholder: (context, url) {
+                  // width is double.maxFinite to make image not animate the
+                  // width changing size but instead only animate the height
+                  return SizedBox(
+                    height: 300,
+                    width: double.maxFinite,
+                  );
+                },
+              );
+            },
             imageUrl: widget.imageUrl,
             imageBuilder: (context, imageProvider) {
               UniqueKey heroTag = UniqueKey();
@@ -474,9 +551,9 @@ class _ImageViewerState extends State<_ImageViewer> {
                 // second tap should open the image
                 onTap: (!shouldBlur)
                     ? () {
-                        openImageViewer(
-                            context, imageProvider, heroTag, DisposeLevel.low);
-                      }
+                  openImageViewer(
+                      context, imageProvider, heroTag, DisposeLevel.low);
+                }
                     : null,
 
                 child: MeasureSize(
