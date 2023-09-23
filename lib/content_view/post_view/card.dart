@@ -1,17 +1,14 @@
-import 'dart:ui';
-
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/image_viewer.dart';
+import 'package:muffed/components/image.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/measure_size.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -154,7 +151,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                               post.url!.contains('.bmp')) {
                             return SizedBox(
                               child: Center(
-                                child: _ImageViewer(
+                                child: MuffedImage(
                                   imageUrl: post.url!,
                                   shouldBlur: post.nsfw &&
                                       context.read<GlobalBloc>().state.blurNsfw,
@@ -163,11 +160,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             );
                           } else {
                             return Padding(
-                              padding: EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(4),
                               child: SizedBox(
                                 height: 100,
                                 child: AnyLinkPreview(
-                                  cache: Duration(days: 1),
+                                  cache: const Duration(days: 1),
                                   placeholderWidget: Container(
                                     height: double.maxFinite,
                                     width: double.maxFinite,
@@ -187,7 +184,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .background,
-                                      padding: EdgeInsets.all(4),
+                                      padding: const EdgeInsets.all(4),
                                       child: Text(
                                         post.url!,
                                         style: const TextStyle(
@@ -199,7 +196,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   bodyTextOverflow: TextOverflow.fade,
                                   removeElevation: true,
                                   borderRadius: 10,
-                                  boxShadow: [],
+                                  boxShadow: const [],
                                   link: post.url!,
                                   backgroundColor:
                                       Theme.of(context).colorScheme.background,
@@ -216,7 +213,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                     ],
                     if (post.body != '' && post.body != null) ...[
                       Padding(
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         child: Container(
                           width: double.maxFinite,
                           decoration: BoxDecoration(
@@ -423,95 +420,6 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageViewer extends StatefulWidget {
-  const _ImageViewer(
-      {required this.imageUrl, required this.shouldBlur, super.key});
-
-  final String imageUrl;
-  final bool shouldBlur;
-
-  @override
-  State<_ImageViewer> createState() => _ImageViewerState();
-}
-
-class _ImageViewerState extends State<_ImageViewer> {
-  double? height;
-  late bool shouldBlur;
-
-  @override
-  void initState() {
-    shouldBlur = widget.shouldBlur;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: shouldBlur
-          ? () {
-              setState(() {
-                shouldBlur = false;
-              });
-            }
-          : null,
-      child: AnimatedSize(
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOutCubic,
-        child: SizedBox(
-          height: height,
-          child: CachedNetworkImage(
-            imageUrl: widget.imageUrl,
-            imageBuilder: (context, imageProvider) {
-              UniqueKey heroTag = UniqueKey();
-              return GestureDetector(
-                // if should blur is on a tap should remove the blur and a
-                // second tap should open the image
-                onTap: (!shouldBlur)
-                    ? () {
-                        openImageViewer(
-                            context, imageProvider, heroTag, DisposeLevel.low);
-                      }
-                    : null,
-
-                child: MeasureSize(
-                  onChange: (size) {
-                    setState(() {
-                      height = size.height;
-                    });
-                  },
-                  child: ClipRect(
-                    child: ImageFiltered(
-                      enabled: shouldBlur,
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: 10,
-                        sigmaY: 10,
-                      ),
-                      child: Hero(
-                        tag: heroTag,
-                        child: Image(
-                          image: imageProvider,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-            placeholder: (context, url) {
-              // width is double.maxFinite to make image not animate the
-              // width changing size but instead only animate the height
-              return SizedBox(
-                height: 300,
-                width: double.maxFinite,
-              );
-            },
-          ),
         ),
       ),
     );
