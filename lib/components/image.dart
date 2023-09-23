@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/components/image_viewer.dart';
 import 'package:muffed/utils/measure_size.dart';
+
+final _log = Logger('MuffedImageViewer');
 
 /// Displays an image from a url
 class MuffedImage extends StatefulWidget {
@@ -45,6 +48,12 @@ class _MuffedImageState extends State<MuffedImage> {
         imageUrl: widget.imageUrl,
         errorWidget: (num < widget.numOfRetries)
             ? (context, url, err) {
+                _log
+                  ..info('Failed to load image with error: $err')
+                  ..info(
+                    'Retrying, attempt $num...',
+                  );
+
                 return generateImage(num: num + 1);
               }
             : null,
