@@ -479,6 +479,59 @@ class _ImageViewerState extends State<_ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
+    Widget generateImage({int num = 0}) {
+      return CachedNetworkImage(
+        imageUrl: widget.imageUrl,
+        errorWidget: (num < 3) ? (context, url, err) {
+          return generateImage(num: num + 1);
+        } : null,
+        imageBuilder: (context, imageProvider) {
+          UniqueKey heroTag = UniqueKey();
+          return GestureDetector(
+            // if should blur is on a tap should remove the blur and a
+            // second tap should open the image
+            onTap: (!shouldBlur)
+                ? () {
+              openImageViewer(context, imageProvider, heroTag,
+                  DisposeLevel.low);
+            }
+                : null,
+
+            child: MeasureSize(
+              onChange: (size) {
+                setState(() {
+                  height = size.height;
+                });
+              },
+              child: ClipRect(
+                child: ImageFiltered(
+                  enabled: shouldBlur,
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: 10,
+                    sigmaY: 10,
+                  ),
+                  child: Hero(
+                    tag: heroTag,
+                    child: Image(
+                      image: imageProvider,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        placeholder: (context, url) {
+          // width is double.maxFinite to make image not animate the
+          // width changing size but instead only animate the height
+          return SizedBox(
+            height: 300,
+            width: double.maxFinite,
+          );
+        },
+      );
+    }
+
     return GestureDetector(
       onTap: shouldBlur
           ? () {
@@ -492,103 +545,7 @@ class _ImageViewerState extends State<_ImageViewer> {
         curve: Curves.easeInOutCubic,
         child: SizedBox(
           height: height,
-          child: CachedNetworkImage(
-            errorWidget: (context, url, err) {
-              print('error occured')
-              return CachedNetworkImage(
-                imageUrl: widget.imageUrl,
-                imageBuilder: (context, imageProvider) {
-                  UniqueKey heroTag = UniqueKey();
-                  return GestureDetector(
-                    // if should blur is on a tap should remove the blur and a
-                    // second tap should open the image
-                    onTap: (!shouldBlur)
-                        ? () {
-                      openImageViewer(
-                          context, imageProvider, heroTag, DisposeLevel.low);
-                    }
-                        : null,
-
-                    child: MeasureSize(
-                      onChange: (size) {
-                        setState(() {
-                          height = size.height;
-                        });
-                      },
-                      child: ClipRect(
-                        child: ImageFiltered(
-                          enabled: shouldBlur,
-                          imageFilter: ImageFilter.blur(
-                            sigmaX: 10,
-                            sigmaY: 10,
-                          ),
-                          child: Hero(
-                            tag: heroTag,
-                            child: Image(
-                              image: imageProvider,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                placeholder: (context, url) {
-                  // width is double.maxFinite to make image not animate the
-                  // width changing size but instead only animate the height
-                  return SizedBox(
-                    height: 300,
-                    width: double.maxFinite,
-                  );
-                },
-              );
-            },
-            imageUrl: widget.imageUrl,
-            imageBuilder: (context, imageProvider) {
-              UniqueKey heroTag = UniqueKey();
-              return GestureDetector(
-                // if should blur is on a tap should remove the blur and a
-                // second tap should open the image
-                onTap: (!shouldBlur)
-                    ? () {
-                  openImageViewer(
-                      context, imageProvider, heroTag, DisposeLevel.low);
-                }
-                    : null,
-
-                child: MeasureSize(
-                  onChange: (size) {
-                    setState(() {
-                      height = size.height;
-                    });
-                  },
-                  child: ClipRect(
-                    child: ImageFiltered(
-                      enabled: shouldBlur,
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: 10,
-                        sigmaY: 10,
-                      ),
-                      child: Hero(
-                        tag: heroTag,
-                        child: Image(
-                          image: imageProvider,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-            placeholder: (context, url) {
-              // width is double.maxFinite to make image not animate the
-              // width changing size but instead only animate the height
-              return SizedBox(
-                height: 300,
-                width: double.maxFinite,
-              );
-            },
-          ),
+          child: generateImage(),
         ),
       ),
     );
