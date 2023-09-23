@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/comment_screen/comment_view/comment.dart';
 import 'package:muffed/components/cards.dart';
-import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/content_view/post_view/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import '../components/popup_menu/popup_menu.dart';
+import '../components/snackbars.dart';
 import 'bloc/bloc.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -52,16 +52,6 @@ class SearchScreen extends StatelessWidget {
       },
       child: BlocConsumer<SearchBloc, SearchState>(
         listenWhen: (previous, current) {
-          if (previous.loadedSortType != current.loadedSortType ||
-              previous.loadedSearchQuery != current.loadedSearchQuery) {
-            try {
-              communitiesScrollController.jumpTo(0);
-              personsScrollController.jumpTo(0);
-              postsScrollController.jumpTo(0);
-              commentsScrollController.jumpTo(0);
-            } catch (err) {}
-          }
-
           if (previous.errorMessage != current.errorMessage &&
               current.errorMessage != null) {
             return true;
@@ -268,6 +258,8 @@ class SearchScreen extends StatelessWidget {
                                 children: [
                                   // communities
                                   ListView.builder(
+                                    key: PageStorageKey(
+                                        'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: communitiesScrollController,
                                     itemCount: state.communities.length,
                                     itemBuilder: (context, index) {
@@ -280,6 +272,8 @@ class SearchScreen extends StatelessWidget {
                                     },
                                   ),
                                   ListView.builder(
+                                    key: PageStorageKey(
+                                        'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: personsScrollController,
                                     itemCount: state.persons.length,
                                     itemBuilder: (context, index) {
@@ -291,6 +285,8 @@ class SearchScreen extends StatelessWidget {
                                   ),
                                   // posts
                                   ListView.builder(
+                                    key: PageStorageKey(
+                                        'search posts ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: postsScrollController,
                                     itemCount: state.posts.length,
                                     itemBuilder: (context, index) {
@@ -302,6 +298,8 @@ class SearchScreen extends StatelessWidget {
                                   ),
 
                                   ListView.builder(
+                                    key: PageStorageKey(
+                                        'search comments ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: commentsScrollController,
                                     itemCount: state.comments.length,
                                     itemBuilder: (context, index) {
