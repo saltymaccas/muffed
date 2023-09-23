@@ -88,12 +88,20 @@ class _MuffedImageState extends State<MuffedImage> {
             ),
           );
         },
-        placeholder: (context, url) {
+        progressIndicatorBuilder: (context, url, downloadProgress) {
           // width is double.maxFinite to make image not animate the
           // width changing size but instead only animate the height
-          return const SizedBox(
+          return SizedBox(
             height: 300,
             width: double.maxFinite,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: (downloadProgress.progress != null)
+                  ? LinearProgressIndicator(
+                      value: downloadProgress.progress,
+                    )
+                  : null,
+            ),
           );
         },
       );
