@@ -127,7 +127,7 @@ void openSearchDialog(BuildContext context) {
                             );
                             context.pop();
                           },
-                          icon: Icon(Icons.search),
+                          icon: Icon(Icons.open_in_new),
                         ),
                         prefixIcon: IconButton(
                             visualDensity: VisualDensity.compact,
