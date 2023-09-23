@@ -160,11 +160,11 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             );
                           } else {
                             return Padding(
-                              padding: EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(4),
                               child: SizedBox(
                                 height: 100,
                                 child: AnyLinkPreview(
-                                  cache: Duration(days: 1),
+                                  cache: const Duration(days: 1),
                                   placeholderWidget: Container(
                                     height: double.maxFinite,
                                     width: double.maxFinite,
@@ -184,7 +184,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .background,
-                                      padding: EdgeInsets.all(4),
+                                      padding: const EdgeInsets.all(4),
                                       child: Text(
                                         post.url!,
                                         style: const TextStyle(
@@ -196,7 +196,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                                   bodyTextOverflow: TextOverflow.fade,
                                   removeElevation: true,
                                   borderRadius: 10,
-                                  boxShadow: [],
+                                  boxShadow: const [],
                                   link: post.url!,
                                   backgroundColor:
                                       Theme.of(context).colorScheme.background,
@@ -213,7 +213,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                     ],
                     if (post.body != '' && post.body != null) ...[
                       Padding(
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         child: Container(
                           width: double.maxFinite,
                           decoration: BoxDecoration(
