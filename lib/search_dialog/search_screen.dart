@@ -256,7 +256,7 @@ class SearchScreen extends StatelessWidget {
                               onNotification: (ScrollNotification scrollInfo) {
                                 if (scrollInfo.metrics.pixels >=
                                         scrollInfo.metrics.maxScrollExtent -
-                                            10 &&
+                                            500 &&
                                     scrollInfo.metrics.axis == Axis.vertical) {
                                   context.read<SearchBloc>().add(
                                         ReachedNearEndOfPage(),
