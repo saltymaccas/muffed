@@ -103,6 +103,7 @@ interface class LemmyRepo {
     int page = 1,
     int? communityId,
     LemmyListingType listingType = LemmyListingType.all,
+    bool savedOnly = false,
   }) async {
     final Map<String, dynamic> response = await getRequest(
       path: '/post/list',
@@ -111,6 +112,7 @@ interface class LemmyRepo {
         'sort': lemmySortTypeToJson[sortType],
         if (communityId != null) 'community_id': communityId,
         'type_': lemmyListingTypeToJson[listingType],
+        'saved_only': savedOnly,
       },
     );
 
@@ -339,16 +341,15 @@ interface class LemmyRepo {
   }
 
   Future<bool> getIsPersonBlocked(int personId) async {
-      final response = await getRequest(path: '/site', mustBeLoggedIn: true);
+    final response = await getRequest(path: '/site', mustBeLoggedIn: true);
 
-      for (final block in response['my_user']['person_blocks']) {
-        if (block['target']['id'] == personId) {
-          return true;
-        }
+    for (final block in response['my_user']['person_blocks']) {
+      if (block['target']['id'] == personId) {
+        return true;
       }
+    }
 
-      return false;
-
+    return false;
   }
 
   /// User to block and unblock a community, returns whether the community is
