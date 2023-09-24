@@ -65,6 +65,44 @@ interface class LemmyRepo {
     }
   }
 
+  Future<Map<String, dynamic>> putRequest({
+    required String path,
+    Map<String, dynamic> data = const {},
+    bool mustBeLoggedIn = true,
+    String? serverAddress,
+  }) async {
+    try {
+      if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+        throw Exception('Not logged in');
+      }
+
+      final Response<Map<String, dynamic>> response = await dio.put(
+        '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+        data: {
+          if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
+            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          ...data,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw HttpException('${response.statusCode}');
+      }
+
+      if (response.data == null) {
+        throw ('null returned in response');
+      }
+
+      return response.data!;
+    } on SocketException {
+      return Future.error('No Internet');
+    } on HttpException {
+      return Future.error('Could not find post');
+    } on FormatException {
+      return Future.error('Bad response format');
+    }
+  }
+
   /// Sends a get request to the lemmy api, If logged in auth parameter will be
   /// added automatically
   Future<Map<String, dynamic>> getRequest(
@@ -373,5 +411,18 @@ interface class LemmyRepo {
     }
 
     return false;
+  }
+
+  /// saves post, returns whether the post is now saved or not
+  Future<bool> savePost({required int postId, required bool save}) async {
+    final response = await putRequest(
+      path: '/post/save',
+      data: {
+        'post_id': postId,
+        'save': save,
+      },
+    );
+
+    return response['post_view']['saved'];
   }
 }
