@@ -9,6 +9,11 @@ class ErrorComponentTransparent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // removes any sensitive data from the error message
+    final String errorMessage = message
+        .toString()
+        .replaceAll(RegExp(r'auth=(.*?)(?=&|$)'), '[auth redacted]');
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -19,7 +24,7 @@ class ErrorComponentTransparent extends StatelessWidget {
           color: Theme.of(context).colorScheme.error,
         ),
         Text(
-          message.toString(),
+          errorMessage,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
           textAlign: TextAlign.center,
         ),
