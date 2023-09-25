@@ -1,7 +1,9 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'bloc/bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/profile_page/account_switcher.dart';
+
+import 'bloc/bloc.dart';
 
 const Duration _animDur = Duration(milliseconds: 500);
 const int _animInterval = 200;
@@ -65,19 +67,24 @@ class DynamicNavigationBar extends StatelessWidget {
                 selected: state.selectedItemIndex == 1,
               ),
               _DynamicNavigationBarItem(
-                icon: IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    onItemTapped(
-                      2,
-                      (state.pageStackInfo[2]!.isNotEmpty)
-                          ? state.pageStackInfo[2]!.last.context
-                          : null,
-                    );
+                icon: GestureDetector(
+                  onLongPress: () {
+                    showAccountSwitcher(context);
                   },
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
-                  isSelected: state.selectedItemIndex == 2,
+                  child: IconButton(
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      onItemTapped(
+                        2,
+                        (state.pageStackInfo[2]!.isNotEmpty)
+                            ? state.pageStackInfo[2]!.last.context
+                            : null,
+                      );
+                    },
+                    icon: Icon(Icons.person_outline),
+                    selectedIcon: Icon(Icons.person),
+                    isSelected: state.selectedItemIndex == 2,
+                  ),
                 ),
                 selected: state.selectedItemIndex == 2,
                 itemIndex: 2,
