@@ -22,11 +22,13 @@ final router = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       restorationScopeId: 'indexStack',
-      builder: (
-        BuildContext context,
-        GoRouterState state,
-        StatefulNavigationShell navigationShell,
-      ) {
+      builder: (BuildContext context,
+          GoRouterState state,
+          StatefulNavigationShell navigationShell,) {
+        context
+            .read<DynamicNavigationBarBloc>()
+            .add(GoneToNewMainPage(navigationShell.currentIndex));
+
         return Scaffold(
           bottomNavigationBar: DynamicNavigationBar(
             onItemTapped: (index, currentContext) {
