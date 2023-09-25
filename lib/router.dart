@@ -70,7 +70,7 @@ final router = GoRouter(
                   path: 'community',
                   builder: (context, state) {
                     return CommunityScreen(
-                      communityId: int.parse(state.queryParameters['id']!),
+                      communityId: int.parse(state.uri.queryParameters['id']!),
                     );
                   },
                 ),
@@ -78,7 +78,7 @@ final router = GoRouter(
                   path: 'search',
                   builder: (context, state) {
                     return SearchScreen(
-                      searchQuery: state.queryParameters['query'],
+                      searchQuery: state.uri.queryParameters['query'],
                       //initialState: state.extra as SearchState?,
                     );
                   },
@@ -87,10 +87,10 @@ final router = GoRouter(
                   path: 'person',
                   builder: (context, state) {
                     return UserScreen(
-                      userId: (state.queryParameters['id'] != null)
-                          ? int.parse(state.queryParameters['id']!)
+                      userId: (state.uri.queryParameters['id'] != null)
+                          ? int.parse(state.uri.queryParameters['id']!)
                           : null,
-                      username: state.queryParameters['username'],
+                      username: state.uri.queryParameters['username'],
                     );
                   },
                 ),
