@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/snackbars.dart';
-import 'package:muffed/content_view/post_view/card.dart';
+import 'package:muffed/content_view/post_item/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 

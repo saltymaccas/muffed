@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/comment_screen/comment_view/comment.dart';
 import 'package:muffed/components/cards.dart';
-import 'package:muffed/content_view/post_view/card.dart';
+import 'package:muffed/content_view/post_item/card.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 

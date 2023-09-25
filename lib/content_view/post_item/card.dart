@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/image.dart';
 import 'package:muffed/components/markdown_body.dart';
-import 'package:muffed/components/popup_menu/popup_menu.dart';
+import 'package:muffed/content_view/post_item/more_menu_button.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
@@ -393,27 +393,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(post.downVotes.toString()),
-                      MuffedPopupMenuButton(
-                        icon: const Icon(Icons.more_vert),
-                        items: [
-                          MuffedPopupMenuItem(
-                            title: 'Go to community',
-                            onTap: () {
-                              context.push(
-                                '/home/community?id=${post.communityId}',
-                              );
-                            },
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Go to user',
-                            onTap: () {
-                              context.push(
-                                '/home/person?id=${post.creatorId}',
-                              );
-                            },
-                          ),
-                        ],
-                      )
+                      MoreMenuButton(post: post),
                     ],
                   ),
                 ],
