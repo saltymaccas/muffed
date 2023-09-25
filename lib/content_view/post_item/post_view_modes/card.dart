@@ -12,8 +12,10 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../bloc/bloc.dart';
+
 /// Displays a Lemmy post in card format
-class CardLemmyPostItem extends StatefulWidget {
+class CardLemmyPostItem extends StatelessWidget {
   ///
   const CardLemmyPostItem(
     this.post, {
@@ -32,21 +34,6 @@ class CardLemmyPostItem extends StatefulWidget {
   final bool limitContentHeight;
 
   @override
-  State<CardLemmyPostItem> createState() => _CardLemmyPostItemState();
-}
-
-class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
-  /// The post variable is created in state so that it can be changed by
-  /// functions like upVote and downVote.
-  late LemmyPost post;
-
-  @override
-  void initState() {
-    post = widget.post;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // shows nothing if nsfw and show nsfw off
     if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
@@ -59,7 +46,7 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
 
     return Card(
       child: InkWell(
-        onTap: (widget.openOnTap) ? openPost : null,
+        onTap: (openOnTap) ? openPost : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -226,9 +213,9 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                             padding: const EdgeInsets.all(4),
                             child: MuffedMarkdownBody(
                               data: post.body!,
-                              height: widget.limitContentHeight ? 300 : null,
+                              height: limitContentHeight ? 300 : null,
                               onTapText: () {
-                                if (widget.openOnTap) {
+                                if (openOnTap) {
                                   openPost();
                                 }
                               },
@@ -262,65 +249,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         color: (post.myVote == LemmyVoteType.upVote)
                             ? Colors.deepOrange
                             : null,
-                        onPressed: () async {
-                          // saves what the last vote is in order to reverse
-                          // the vote in the state if an error occurs
-                          final lastVote = post.myVote;
-
-                          if (post.myVote == LemmyVoteType.upVote) {
-                            setState(() {
-                              post
-                                ..upVotes = post.upVotes - 1
-                                ..myVote = LemmyVoteType.none;
-                            });
-                            try {
-                              // tries to change the vote
-                              await context
-                                  .read<ServerRepo>()
-                                  .lemmyRepo
-                                  .votePost(
-                                    post.id,
-                                    LemmyVoteType.none,
-                                  );
-                            } catch (err) {
-                              // reverts the vote state if an error occurs
-                              setState(() {
-                                post
-                                  ..upVotes = post.upVotes + 1
-                                  ..myVote = lastVote;
-                              });
-                            }
-                          } else {
-                            // If last vote was downVote a downVote should
-                            // be taken off.
-                            if (post.myVote == LemmyVoteType.downVote) {
-                              setState(() {
-                                post.downVotes = post.downVotes - 1;
-                              });
-                            }
-                            setState(() {
-                              post
-                                ..upVotes = post.upVotes + 1
-                                ..myVote = LemmyVoteType.upVote;
-                            });
-                            try {
-                              // tries to change the vote
-                              await context
-                                  .read<ServerRepo>()
-                                  .lemmyRepo
-                                  .votePost(
-                                    post.id,
-                                    LemmyVoteType.upVote,
-                                  );
-                            } catch (err) {
-                              // reverts the vote state if an error occurs
-                              setState(() {
-                                post
-                                  ..upVotes = post.upVotes - 1
-                                  ..myVote = lastVote;
-                              });
-                            }
-                          }
+                        onPressed: () {
+                          context.read<PostItemBloc>().add(UpvotePressed());
                         },
                         visualDensity: VisualDensity.compact,
                       ),
@@ -330,65 +260,8 @@ class _CardLemmyPostItemState extends State<CardLemmyPostItem> {
                         color: (post.myVote == LemmyVoteType.downVote)
                             ? Colors.purple
                             : null,
-                        onPressed: () async {
-                          // saves what the last vote is in order to reverse
-                          // the vote in the state if an error occurs
-                          final lastVote = post.myVote;
-
-                          if (post.myVote == LemmyVoteType.downVote) {
-                            setState(() {
-                              post
-                                ..downVotes = post.downVotes - 1
-                                ..myVote = LemmyVoteType.none;
-                            });
-                            try {
-                              // tries to change the vote
-                              await context
-                                  .read<ServerRepo>()
-                                  .lemmyRepo
-                                  .votePost(
-                                    post.id,
-                                    LemmyVoteType.none,
-                                  );
-                            } catch (err) {
-                              // reverts the vote state if an error occurs
-                              setState(() {
-                                post
-                                  ..downVotes = post.downVotes + 1
-                                  ..myVote = lastVote;
-                              });
-                            }
-                          } else {
-                            // If last vote was upVote a upVote should
-                            // be taken off.
-                            if (post.myVote == LemmyVoteType.upVote) {
-                              setState(() {
-                                post.upVotes = post.upVotes - 1;
-                              });
-                            }
-                            setState(() {
-                              post
-                                ..downVotes = post.downVotes + 1
-                                ..myVote = LemmyVoteType.downVote;
-                            });
-                            try {
-                              // tries to change the vote
-                              await context
-                                  .read<ServerRepo>()
-                                  .lemmyRepo
-                                  .votePost(
-                                    post.id,
-                                    LemmyVoteType.downVote,
-                                  );
-                            } catch (err) {
-                              // reverts the vote state if an error occurs
-                              setState(() {
-                                post
-                                  ..downVotes = post.downVotes - 1
-                                  ..myVote = lastVote;
-                              });
-                            }
-                          }
+                        onPressed: () {
+                          context.read<PostItemBloc>().add(DownvotePressed());
                         },
                         visualDensity: VisualDensity.compact,
                       ),

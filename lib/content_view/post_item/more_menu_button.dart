@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 class MoreMenuButton extends StatelessWidget {
   const MoreMenuButton({required this.post, super.key});

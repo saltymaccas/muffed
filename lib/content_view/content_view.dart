@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:muffed/content_view/post_item/card.dart';
+import 'package:muffed/content_view/post_item/post_item.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
 /// Displays the posts in a scroll view.
@@ -66,10 +66,10 @@ class ContentView extends StatelessWidget {
                     ])
                   : SliverChildBuilderDelegate(childCount: posts.length,
                       (context, index) {
-                      return CardLemmyPostItem(
+                      return PostItem(
                         // key needs to be set to properly update the items
-                        key: ValueKey(posts[index].apId),
-                        posts[index],
+                        key: ValueKey(posts[index]),
+                        post: posts[index],
                         openOnTap: true,
                       );
                     }),

@@ -102,7 +102,7 @@ Map<LemmyCommentSortType, String> lemmyCommentSortTypeToJson = {
   LemmyCommentSortType.old: 'Old',
 };
 
-class LemmyPost with EquatableMixin {
+class LemmyPost extends Equatable {
   /// initialize object
   LemmyPost({
     required this.apId,
@@ -133,7 +133,7 @@ class LemmyPost with EquatableMixin {
         id = json['post']['id'],
         apId = json['post']['ap_id'],
         name = json['post']['name'],
-        // Z added to mark as UTC time
+  // Z added to mark as UTC time
         timePublished = DateTime.parse(json['post']['published'] + 'Z'),
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         thumbnailUrl = json['post']['thumbnail_url'],
@@ -153,8 +153,7 @@ class LemmyPost with EquatableMixin {
   final int id;
   final String name;
 
-  /// the server address of where the post came from
-  /// to get the comments of a post the server address is required
+  /// Activity pub id
   final String apId;
 
   final String? url;
@@ -173,17 +172,84 @@ class LemmyPost with EquatableMixin {
 
   final int commentCount;
 
-  // not set to final because the user can change these
-  int upVotes;
-  int downVotes;
-  int score;
-  LemmyVoteType myVote;
+  final int upVotes;
+  final int downVotes;
+  final int score;
+  final LemmyVoteType myVote;
 
   final bool read;
   final bool saved;
 
   @override
-  List<Object> get props => [apId];
+  List<Object?> get props =>
+      [
+        id,
+        name,
+        apId,
+        url,
+        thumbnailUrl,
+        body,
+        timePublished,
+        nsfw,
+        creatorId,
+        creatorName,
+        communityId,
+        communityName,
+        communityIcon,
+        commentCount,
+        upVotes,
+        downVotes,
+        score,
+        myVote,
+        read,
+        saved,
+      ];
+
+  LemmyPost copyWith({
+    int? id,
+    String? name,
+    String? apId,
+    String? url,
+    String? thumbnailUrl,
+    String? body,
+    DateTime? timePublished,
+    bool? nsfw,
+    int? creatorId,
+    String? creatorName,
+    int? communityId,
+    String? communityName,
+    String? communityIcon,
+    int? commentCount,
+    int? upVotes,
+    int? downVotes,
+    int? score,
+    LemmyVoteType? myVote,
+    bool? read,
+    bool? saved,
+  }) {
+    return LemmyPost(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      apId: apId ?? this.apId,
+      url: url ?? this.url,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      body: body ?? this.body,
+      timePublished: timePublished ?? this.timePublished,
+      nsfw: nsfw ?? this.nsfw,
+      creatorId: creatorId ?? this.creatorId,
+      creatorName: creatorName ?? this.creatorName,
+      communityId: communityId ?? this.communityId,
+      communityName: communityName ?? this.communityName,
+      communityIcon: communityIcon ?? this.communityIcon,
+      commentCount: commentCount ?? this.commentCount,
+      upVotes: upVotes ?? this.upVotes,
+      downVotes: downVotes ?? this.downVotes,
+      score: score ?? this.score,
+      myVote: myVote ?? this.myVote,
+      read: read ?? this.read,
+      saved: saved ?? this.saved,
+    );
+  }
 }
 
 class LemmyComment with EquatableMixin {
@@ -207,16 +273,16 @@ class LemmyComment with EquatableMixin {
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
       : path = (json['comment']['path'] as String)
-            .split('.')
-            .map(int.parse)
-            .toList()
-          ..removeLast()
-          ..removeAt(0),
+      .split('.')
+      .map(int.parse)
+      .toList()
+    ..removeLast()
+    ..removeAt(0),
         creatorName = json['creator']['name'],
         creatorId = json['creator']['id'],
         content = json['comment']['content'],
         id = json['comment']['id'],
-        // Z added to mark as UTC time
+  // Z added to mark as UTC time
         timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
         postId = json['comment']['post_id'],
         childCount = json['counts']['child_count'],
@@ -369,7 +435,7 @@ class LemmyCommunity extends Equatable {
         instanceId = json['community']['instance_id'],
         nsfw = json['community']['nsfw'],
         postingRestrictedToMods =
-            json['community']['posting_restricted_to_mods'],
+        json['community']['posting_restricted_to_mods'],
         published = DateTime.parse(json['community']['published'] + 'Z'),
         removed = json['community']['removed'],
         title = json['community']['title'],

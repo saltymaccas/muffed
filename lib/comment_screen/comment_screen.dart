@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/snackbars.dart';
-import 'package:muffed/content_view/post_item/card.dart';
+import 'package:muffed/content_view/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -204,12 +204,12 @@ class CommentScreen extends StatelessWidget {
                           floating: true,
                         ),
                         SliverToBoxAdapter(
-                          child: CardLemmyPostItem(
-                            post,
-                            limitContentHeight: false,
-                            openOnTap: false,
-                          ),
-                        ),
+                            child: PostItem(
+                          post: post,
+                          openOnTap: false,
+                          limitHeight: false,
+                          type: PostViewMode.card,
+                        )),
                         if (state.status == CommentScreenStatus.loading)
                           const SliverFillRemaining(
                             child: LoadingComponentTransparent(),
