@@ -17,10 +17,11 @@ void showAccountSwitcher(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ...List.generate(globalBloc.state.lemmyAccounts.length, (index) {
+              ...List.generate(state.lemmyAccounts.length, (index) {
                 return ListTile(
+                  selected: state.lemmySelectedAccount == index,
                   title: Text(
-                    globalBloc.state.lemmyAccounts[index].userName,
+                    state.lemmyAccounts[index].userName,
                   ),
                   leading: const Icon(Icons.account_circle),
                   trailing: IconButton(
@@ -80,6 +81,7 @@ void showAccountSwitcher(BuildContext context) {
               }),
               ListTile(
                 title: const Text('Anonymous'),
+                selected: !globalBloc.isLoggedIn(),
                 leading: const Icon(Icons.security),
                 onTap: () {
                   context.pop();
