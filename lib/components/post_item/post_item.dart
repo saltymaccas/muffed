@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/content_view/post_item/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
+import 'bloc/bloc.dart';
 import 'post_view_modes/post_view_modes.dart';
 
 /// The forms posts can be displayed in

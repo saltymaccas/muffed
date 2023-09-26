@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:muffed/content_view/post_item/post_item.dart';
+import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
 /// Displays the posts in a scroll view.

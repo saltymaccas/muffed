@@ -6,13 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/image.dart';
 import 'package:muffed/components/markdown_body.dart';
-import 'package:muffed/content_view/post_item/more_menu_button.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../bloc/bloc.dart';
+import '../post_more_menu_button.dart';
 
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatelessWidget {

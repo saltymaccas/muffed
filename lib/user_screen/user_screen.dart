@@ -7,7 +7,7 @@ import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
-import 'package:muffed/content_view/post_item/post_view_modes/card.dart';
+import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -220,8 +220,8 @@ class _UserScreenSuccess extends StatelessWidget {
                 key: const PageStorageKey('posts'),
                 itemCount: state.posts.length,
                 itemBuilder: (context, index) {
-                  return CardLemmyPostItem(
-                    state.posts[index],
+                  return PostItem(
+                    post: state.posts[index],
                   );
                 },
               ),
