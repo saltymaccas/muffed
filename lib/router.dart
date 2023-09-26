@@ -9,7 +9,7 @@ import 'package:muffed/home_page/home_page.dart';
 import 'package:muffed/inbox_page/inbox_page.dart';
 import 'package:muffed/profile_page/login_page/login_page.dart';
 import 'package:muffed/profile_page/profile_page.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/search_dialog/search_screen.dart';
 import 'package:muffed/settings_page/content_filters/content_filters.dart';
 import 'package:muffed/settings_page/defaults/defaults.dart';
@@ -22,9 +22,11 @@ final router = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       restorationScopeId: 'indexStack',
-      builder: (BuildContext context,
-          GoRouterState state,
-          StatefulNavigationShell navigationShell,) {
+      builder: (
+        BuildContext context,
+        GoRouterState state,
+        StatefulNavigationShell navigationShell,
+      ) {
         context
             .read<DynamicNavigationBarBloc>()
             .add(GoneToNewMainPage(navigationShell.currentIndex));
@@ -65,7 +67,12 @@ final router = GoRouter(
                 GoRoute(
                   path: 'content',
                   builder: (context, state) {
-                    return CommentScreen(state.extra as LemmyPost);
+                    final values = state.extra! as (LemmyPost, BuildContext);
+
+                    return CommentScreen(
+                      post: values.$1,
+                      postItemBlocContext: values.$2,
+                    );
                   },
                 ),
                 GoRoute(

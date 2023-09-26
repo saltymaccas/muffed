@@ -15,10 +15,12 @@ import 'comment_view/comment.dart';
 
 /// Displays a screen that shows the post on top and the comments under
 class CommentScreen extends StatelessWidget {
-  const CommentScreen(this.post, {super.key});
+  const CommentScreen(
+      {required this.post, required this.postItemBlocContext, super.key});
 
   /// The post that should be shown
   final LemmyPost post;
+  final BuildContext postItemBlocContext;
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +208,7 @@ class CommentScreen extends StatelessWidget {
                         SliverToBoxAdapter(
                             child: PostItem(
                           post: post,
+                          useBlocFromContext: postItemBlocContext,
                           openOnTap: false,
                           limitHeight: false,
                           type: PostViewMode.card,

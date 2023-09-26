@@ -41,12 +41,12 @@ class CardLemmyPostItem extends StatelessWidget {
     }
 
     void openPost() {
-      context.push('/home/content', extra: post);
+      context.push('/home/content', extra: (post, context));
     }
 
     return Card(
       child: InkWell(
-        onTap: (openOnTap) ? openPost : null,
+        onTap: openOnTap ? openPost : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
