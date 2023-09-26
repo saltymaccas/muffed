@@ -71,6 +71,7 @@ class ContentView extends StatelessWidget {
                         key: ValueKey(posts[index]),
                         post: posts[index],
                         openOnTap: true,
+                        limitHeight: true,
                       );
                     }),
             ),
