@@ -26,12 +26,10 @@ class CommentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      CommentScreenBloc(
+      create: (context) => CommentScreenBloc(
         repo: context.read<ServerRepo>(),
         post: post,
-      )
-        ..add(InitializeEvent()),
+      )..add(InitializeEvent()),
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -60,16 +58,16 @@ class CommentScreen extends StatelessWidget {
                             loadingState: true,
                           );
                           context.read<CommentScreenBloc>().add(
-                            UserCommented(
-                              comment: content,
-                              onSuccess: controller.onSuccess,
-                              onError: () {
-                                controller.changeLoadingState(
-                                  loadingState: false,
-                                );
-                              },
-                            ),
-                          );
+                                UserCommented(
+                                  comment: content,
+                                  onSuccess: controller.onSuccess,
+                                  onError: () {
+                                    controller.changeLoadingState(
+                                      loadingState: false,
+                                    );
+                                  },
+                                ),
+                              );
                         },
                       );
                     },
@@ -100,17 +98,17 @@ class CommentScreen extends StatelessWidget {
                             loadingState: true,
                           );
                           context.read<CommentScreenBloc>().add(
-                            UserRepliedToComment(
-                              onSuccess: controller.onSuccess,
-                              onError: () {
-                                controller.changeLoadingState(
-                                  loadingState: false,
-                                );
-                              },
-                              comment: comment,
-                              commentId: id,
-                            ),
-                          );
+                                UserRepliedToComment(
+                                  onSuccess: controller.onSuccess,
+                                  onError: () {
+                                    controller.changeLoadingState(
+                                      loadingState: false,
+                                    );
+                                  },
+                                  comment: comment,
+                                  commentId: id,
+                                ),
+                              );
                         },
                         controller: controller,
                       );
@@ -142,28 +140,23 @@ class CommentScreen extends StatelessWidget {
                           title: 'Hot',
                           icon: Icon(Icons.local_fire_department),
                           value: LemmyCommentSortType.hot,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.hot)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.hot)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'Top',
                           icon: Icon(Icons.military_tech),
                           value: LemmyCommentSortType.top,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.top)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.top)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
                           icon: Icon(Icons.auto_awesome),
                           value: LemmyCommentSortType.latest,
-                          onTap: () =>
-                              context.read<CommentScreenBloc>().add(
+                          onTap: () => context.read<CommentScreenBloc>().add(
                                 SortTypeChanged(LemmyCommentSortType.latest),
                               ),
                         ),
@@ -171,11 +164,9 @@ class CommentScreen extends StatelessWidget {
                           title: 'Old',
                           icon: Icon(Icons.elderly),
                           value: LemmyCommentSortType.old,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.old)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.old)),
                         ),
                       ],
                     );
@@ -188,7 +179,7 @@ class CommentScreen extends StatelessWidget {
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent &&
+                            scrollInfo.metrics.maxScrollExtent &&
                         state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()
@@ -209,8 +200,7 @@ class CommentScreen extends StatelessWidget {
                         return false;
                       });
                     },
-                    child: true
-                        ? CustomScrollView(
+                    child: CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
                           child: PostItem(
@@ -226,22 +216,6 @@ class CommentScreen extends StatelessWidget {
                             comments: state.comments!,
                           ),
                       ],
-                    )
-                        : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          PostItem(
-                            post: post,
-                            useBlocFromContext: postItemBlocContext,
-                            openOnTap: false,
-                            limitHeight: false,
-                            type: PostViewMode.card,
-                          ),
-                          if (state.status == CommentScreenStatus.success)
-                            _CommentScreenSuccess(
-                                comments: state.comments!),
-                        ],
-                      ),
                     ),
                   ),
                 ),
@@ -400,14 +374,8 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
                     widget.onSubmitted(controller.text);
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
-                    foregroundColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
                   child: const Text(
                     'Comment',
