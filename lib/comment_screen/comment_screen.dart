@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/utils/comments.dart';
 
+import '../components/comment_item/comment_item.dart';
 import '../components/popup_menu/popup_menu.dart';
 import 'bloc/bloc.dart';
-import 'comment_view/comment.dart';
 
 /// Displays a screen that shows the post on top and the comments under
 class CommentScreen extends StatelessWidget {
   const CommentScreen(
       {required this.post, required this.postItemBlocContext, super.key});
+
+  // TODO: make it optional to pass post or postItemBlocContext
 
   /// The post that should be shown
   final LemmyPost post;
@@ -25,10 +26,12 @@ class CommentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CommentScreenBloc(
+      create: (context) =>
+      CommentScreenBloc(
         repo: context.read<ServerRepo>(),
         post: post,
-      )..add(InitializeEvent()),
+      )
+        ..add(InitializeEvent()),
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -57,16 +60,16 @@ class CommentScreen extends StatelessWidget {
                             loadingState: true,
                           );
                           context.read<CommentScreenBloc>().add(
-                                UserCommented(
-                                  comment: content,
-                                  onSuccess: controller.onSuccess,
-                                  onError: () {
-                                    controller.changeLoadingState(
-                                      loadingState: false,
-                                    );
-                                  },
-                                ),
-                              );
+                            UserCommented(
+                              comment: content,
+                              onSuccess: controller.onSuccess,
+                              onError: () {
+                                controller.changeLoadingState(
+                                  loadingState: false,
+                                );
+                              },
+                            ),
+                          );
                         },
                       );
                     },
@@ -97,17 +100,17 @@ class CommentScreen extends StatelessWidget {
                             loadingState: true,
                           );
                           context.read<CommentScreenBloc>().add(
-                                UserRepliedToComment(
-                                  onSuccess: controller.onSuccess,
-                                  onError: () {
-                                    controller.changeLoadingState(
-                                      loadingState: false,
-                                    );
-                                  },
-                                  comment: comment,
-                                  commentId: id,
-                                ),
-                              );
+                            UserRepliedToComment(
+                              onSuccess: controller.onSuccess,
+                              onError: () {
+                                controller.changeLoadingState(
+                                  loadingState: false,
+                                );
+                              },
+                              comment: comment,
+                              commentId: id,
+                            ),
+                          );
                         },
                         controller: controller,
                       );
@@ -139,23 +142,28 @@ class CommentScreen extends StatelessWidget {
                           title: 'Hot',
                           icon: Icon(Icons.local_fire_department),
                           value: LemmyCommentSortType.hot,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.hot)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.hot)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'Top',
                           icon: Icon(Icons.military_tech),
                           value: LemmyCommentSortType.top,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.top)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.top)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
                           icon: Icon(Icons.auto_awesome),
                           value: LemmyCommentSortType.latest,
-                          onTap: () => context.read<CommentScreenBloc>().add(
+                          onTap: () =>
+                              context.read<CommentScreenBloc>().add(
                                 SortTypeChanged(LemmyCommentSortType.latest),
                               ),
                         ),
@@ -163,9 +171,11 @@ class CommentScreen extends StatelessWidget {
                           title: 'Old',
                           icon: Icon(Icons.elderly),
                           value: LemmyCommentSortType.old,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.old)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.old)),
                         ),
                       ],
                     );
@@ -178,7 +188,7 @@ class CommentScreen extends StatelessWidget {
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent &&
+                        scrollInfo.metrics.maxScrollExtent &&
                         state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()
@@ -188,7 +198,9 @@ class CommentScreen extends StatelessWidget {
                   },
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      context.read<CommentScreenBloc>().add(PullDownRefresh());
+                      context
+                          .read<CommentScreenBloc>()
+                          .add(PullDownRefresh());
                       await context
                           .read<CommentScreenBloc>()
                           .stream
@@ -199,69 +211,20 @@ class CommentScreen extends StatelessWidget {
                         return false;
                       });
                     },
-                    child: CustomScrollView(
-                      slivers: [
-                        const SliverAppBar(
-                          title: Text('Comments'),
-                          floating: true,
-                        ),
-                        SliverToBoxAdapter(
-                            child: PostItem(
-                          post: post,
-                          useBlocFromContext: postItemBlocContext,
-                          openOnTap: false,
-                          limitHeight: false,
-                          type: PostViewMode.card,
-                        )),
-                        if (state.status == CommentScreenStatus.loading)
-                          const SliverFillRemaining(
-                            child: LoadingComponentTransparent(),
-                          )
-                        else
-                          (state.status == CommentScreenStatus.failure)
-                              ? SliverFillRemaining(
-                                  child: ErrorComponentTransparent(
-                                    message:
-                                        state.errorMessage ?? 'failed to load',
-                                  ),
-                                )
-                              : (state.status == CommentScreenStatus.initial)
-                                  ? SliverFillRemaining(
-                                      child: Container(),
-                                    )
-                                  : SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                          childCount: state.comments!.length,
-                                          (context, index) {
-                                        if (state
-                                            .comments![index].path.isEmpty) {
-                                          return Column(
-                                            key: ValueKey(
-                                              state.comments![index].id,
-                                            ),
-                                            children: [
-                                              CommentItem(
-                                                comment: state.comments![index],
-                                                onReplyPressed: showReplyDialog,
-                                                onLoadMorePressed: (id) {
-                                                  context
-                                                      .read<CommentScreenBloc>()
-                                                      .add(
-                                                        LoadMoreRepliesPressed(
-                                                          id: id,
-                                                        ),
-                                                      );
-                                                },
-                                              ),
-                                              const Divider(),
-                                            ],
-                                          );
-                                        } else {
-                                          return SizedBox();
-                                        }
-                                      }),
-                                    ),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          PostItem(
+                            post: post,
+                            useBlocFromContext: postItemBlocContext,
+                            openOnTap: false,
+                            limitHeight: false,
+                            type: PostViewMode.card,
+                          ),
+                          if (state.status == CommentScreenStatus.success)
+                            _CommentScreenSuccess(comments: state.comments!),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -277,6 +240,42 @@ class CommentScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _CommentScreenSuccess extends StatelessWidget {
+  const _CommentScreenSuccess({required this.comments, super.key});
+
+  final List<LemmyComment> comments;
+
+  @override
+  Widget build(BuildContext context) {
+    final organisedComments = organiseCommentsWithChildren(
+      0,
+      comments,
+    );
+
+    return Column(children: List.generate(organisedComments.length, (index) {
+      final key = organisedComments.keys.toList()[index];
+
+      return CommentItem(
+        comment: key,
+        children: organisedComments[key]!,
+      );
+    }),);
+
+
+    SliverList(
+      delegate: SliverChildBuilderDelegate(childCount: organisedComments.length,
+              (context, index) {
+            final key = organisedComments.keys.toList()[index];
+
+            return CommentItem(
+              comment: key,
+              children: organisedComments[key]!,
+            );
+          }),
     );
   }
 }
@@ -394,8 +393,14 @@ class _CreateCommentDialogState extends State<_CreateCommentDialog> {
                     widget.onSubmitted(controller.text);
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme
+                        .of(context)
+                        .colorScheme
+                        .primary,
+                    foregroundColor: Theme
+                        .of(context)
+                        .colorScheme
+                        .onPrimary,
                   ),
                   child: const Text(
                     'Comment',

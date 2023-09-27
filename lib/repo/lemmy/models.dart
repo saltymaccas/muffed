@@ -133,7 +133,7 @@ class LemmyPost extends Equatable {
         id = json['post']['id'],
         apId = json['post']['ap_id'],
         name = json['post']['name'],
-  // Z added to mark as UTC time
+        // Z added to mark as UTC time
         timePublished = DateTime.parse(json['post']['published'] + 'Z'),
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         thumbnailUrl = json['post']['thumbnail_url'],
@@ -181,8 +181,7 @@ class LemmyPost extends Equatable {
   final bool saved;
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         id,
         name,
         apId,
@@ -252,10 +251,9 @@ class LemmyPost extends Equatable {
   }
 }
 
-class LemmyComment with EquatableMixin {
+class LemmyComment extends Equatable {
   /// initialise object
   LemmyComment({
-    this.replies = const [],
     required this.path,
     required this.creatorName,
     required this.creatorId,
@@ -273,16 +271,16 @@ class LemmyComment with EquatableMixin {
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
       : path = (json['comment']['path'] as String)
-      .split('.')
-      .map(int.parse)
-      .toList()
-    ..removeLast()
-    ..removeAt(0),
+            .split('.')
+            .map(int.parse)
+            .toList()
+          ..removeLast()
+          ..removeAt(0),
         creatorName = json['creator']['name'],
         creatorId = json['creator']['id'],
         content = json['comment']['content'],
         id = json['comment']['id'],
-  // Z added to mark as UTC time
+        // Z added to mark as UTC time
         timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
         postId = json['comment']['post_id'],
         childCount = json['counts']['child_count'],
@@ -290,15 +288,13 @@ class LemmyComment with EquatableMixin {
         downVotes = json['counts']['downvotes'],
         score = json['counts']['score'],
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
-        hotRank = json['counts']['hot_rank'],
-        replies = [];
+        hotRank = json['counts']['hot_rank'];
 
   /// Holds the id's of the parent and ancestor comments
   ///
   /// This does not include id of the post or the comment itself.
   final List<int> path;
 
-  List<LemmyComment> replies;
   final String creatorName;
   final String content;
   final DateTime timePublished;
@@ -307,62 +303,78 @@ class LemmyComment with EquatableMixin {
   final int creatorId;
   final int childCount;
 
-  int upVotes;
-  int downVotes;
-  int score;
-  LemmyVoteType myVote;
+  final int upVotes;
+  final int downVotes;
+  final int score;
+  final LemmyVoteType myVote;
 
   final int hotRank;
 
   @override
-  List<Object?> get props => [postId, id];
+  List<Object?> get props => [
+        path,
+        creatorName,
+        content,
+        timePublished,
+        id,
+        postId,
+        creatorId,
+        childCount,
+        upVotes,
+        downVotes,
+        score,
+        myVote,
+        hotRank,
+      ];
 
-  /// Gets the number of children that have not been loaded not including grand
-  /// children
-  int getNumOfUnloadedReplies() {
-    int numOfUnloadedChildren = childCount - replies.length;
+  int getLevel() => path.length;
 
-    for (final reply in replies) {
-      numOfUnloadedChildren =
-          numOfUnloadedChildren - reply.getNumOfUnloadedReplies();
-    }
-
-    return numOfUnloadedChildren;
-  }
-
-  /// gets all the number of all the children including nested children
-  int getNumberOfReplies() {
-    int numberOfReplies = 0;
-
-    for (final reply in replies) {
-      numberOfReplies++;
-      numberOfReplies = numberOfReplies + reply.getNumberOfReplies();
-    }
-
-    return numberOfReplies;
-  }
-
-  /// Tries to add the comment into the tree will return true if success and
-  /// false if failed
-  bool addCommentToTree(LemmyComment comment) {
-    if (!comment.path.contains(id)) {
-      return false;
-    }
-
-    if (comment.path.last == id) {
-      replies = {...replies, comment}.toList();
-      return true;
-    }
-
-    for (final reply in replies) {
-      final bool value = reply.addCommentToTree(comment);
-
-      if (value) {
-        return true;
-      }
-    }
-    return false;
-  }
+// /// Gets the number of children that have not been loaded not including grand
+// /// children
+// int getNumOfUnloadedReplies() {
+//   int numOfUnloadedChildren = childCount - replies.length;
+//
+//   for (final reply in replies) {
+//     numOfUnloadedChildren =
+//         numOfUnloadedChildren - reply.getNumOfUnloadedReplies();
+//   }
+//
+//   return numOfUnloadedChildren;
+// }
+//
+// /// gets all the number of all the children including nested children
+// int getNumberOfReplies() {
+//   int numberOfReplies = 0;
+//
+//   for (final reply in replies) {
+//     numberOfReplies++;
+//     numberOfReplies = numberOfReplies + reply.getNumberOfReplies();
+//   }
+//
+//   return numberOfReplies;
+// }
+//
+// /// Tries to add the comment into the tree will return true if success and
+// /// false if failed
+// bool addCommentToTree(LemmyComment comment) {
+//   if (!comment.path.contains(id)) {
+//     return false;
+//   }
+//
+//   if (comment.path.last == id) {
+//     replies = {...replies, comment}.toList();
+//     return true;
+//   }
+//
+//   for (final reply in replies) {
+//     final bool value = reply.addCommentToTree(comment);
+//
+//     if (value) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
 }
 
 class LemmyCommunity extends Equatable {
@@ -435,7 +447,7 @@ class LemmyCommunity extends Equatable {
         instanceId = json['community']['instance_id'],
         nsfw = json['community']['nsfw'],
         postingRestrictedToMods =
-        json['community']['posting_restricted_to_mods'],
+            json['community']['posting_restricted_to_mods'],
         published = DateTime.parse(json['community']['published'] + 'Z'),
         removed = json['community']['removed'],
         title = json['community']['title'],

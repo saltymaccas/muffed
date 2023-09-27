@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/comment_screen/comment_view/comment.dart';
 import 'package:muffed/components/cards.dart';
+import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -301,10 +301,10 @@ class SearchScreen extends StatelessWidget {
                                     itemCount: state.comments.length,
                                     itemBuilder: (context, index) {
                                       return CommentItem(
-                                          key: ValueKey(
-                                              state.comments[index].id),
-                                          comment: state.comments[index],
-                                          onReplyPressed: (_, __) {});
+                                        key: ValueKey(state.comments[index].id),
+                                        comment: state.comments[index],
+                                        children: [],
+                                      );
                                     },
                                   ),
                                 ],

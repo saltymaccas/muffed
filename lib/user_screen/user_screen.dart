@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:muffed/comment_screen/comment_view/comment.dart';
 import 'package:muffed/components/block_dialog/block_dialog.dart';
+import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
@@ -231,7 +231,7 @@ class _UserScreenSuccess extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return CommentItem(
                     comment: state.comments[index],
-                    onReplyPressed: (_, __) {},
+                    children: [],
                   );
                 },
               ),

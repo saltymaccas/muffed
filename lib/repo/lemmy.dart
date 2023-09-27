@@ -200,8 +200,10 @@ interface class LemmyRepo {
 
     final List<dynamic> rawComments = response['comments'];
 
-    return List.generate(rawComments.length,
-        (index) => LemmyComment.fromCommentViewJson(rawComments[index]));
+    return List.generate(
+      rawComments.length,
+      (index) => LemmyComment.fromCommentViewJson(rawComments[index]),
+    );
   }
 
   Future<LemmyGetPersonDetailsResponse> getPersonDetails({

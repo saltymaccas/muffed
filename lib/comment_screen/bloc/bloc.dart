@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/comments.dart';
 
 part 'event.dart';
+
 part 'state.dart';
 
 final _log = Logger('CommentScreenBloc');
@@ -22,7 +22,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         final List<LemmyComment> newComments = await repo.lemmyRepo
             .getComments(postId: post.id, page: 1, sortType: state.sortType);
 
-        final comments = organiseComments(newComments);
+        final comments = newComments;
 
         emit(
           CommentScreenState(
@@ -42,7 +42,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       }
     });
     on<ReachedNearEndOfScroll>(
-      (event, emit) async {
+          (event, emit) async {
         if (!state.reachedEnd) {
           _log.info('loading page ${state.pagesLoaded + 1}');
 
@@ -54,7 +54,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
               sortType: state.sortType,
             );
             final comments =
-                organiseComments([...state.comments!, ...newComments]);
+            [...state.comments!, ...newComments];
 
             if (comments.length == state.comments!.length ||
                 newComments.isEmpty) {
@@ -110,7 +110,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         final List<LemmyComment> newComments = await repo.lemmyRepo
             .getComments(postId: post.id, page: 1, sortType: state.sortType);
 
-        final comments = organiseComments(newComments);
+        final comments = newComments;
 
         emit(
           state.copyWith(
@@ -133,7 +133,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         final newComments = await repo.lemmyRepo
             .getComments(postId: post.id, page: 1, sortType: state.sortType);
 
-        final comments = organiseComments(newComments);
+        final comments = newComments;
 
         emit(
           state.copyWith(
@@ -153,7 +153,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       }
     });
     on<LoadMoreRepliesPressed>(
-      (event, emit) async {
+          (event, emit) async {
         emit(state.copyWith(isLoading: true));
 
         _log.info('LoadMoreRepliesPressed');
@@ -169,9 +169,9 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
           emit(
             state.copyWith(
-              comments: organiseComments(
-                {...state.comments ?? [], ...comments}.toList(),
-              ),
+              comments:
+              {...state.comments ?? [], ...comments}.toList(),
+
               isLoading: false,
             ),
           );
