@@ -198,9 +198,7 @@ class CommentScreen extends StatelessWidget {
                   },
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      context
-                          .read<CommentScreenBloc>()
-                          .add(PullDownRefresh());
+                      context.read<CommentScreenBloc>().add(PullDownRefresh());
                       await context
                           .read<CommentScreenBloc>()
                           .stream
@@ -211,7 +209,25 @@ class CommentScreen extends StatelessWidget {
                         return false;
                       });
                     },
-                    child: SingleChildScrollView(
+                    child: true
+                        ? CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: PostItem(
+                            post: post,
+                            useBlocFromContext: postItemBlocContext,
+                            openOnTap: false,
+                            limitHeight: false,
+                            type: PostViewMode.card,
+                          ),
+                        ),
+                        if (state.status == CommentScreenStatus.success)
+                          _CommentScreenSuccess(
+                            comments: state.comments!,
+                          ),
+                      ],
+                    )
+                        : SingleChildScrollView(
                       child: Column(
                         children: [
                           PostItem(
@@ -222,7 +238,8 @@ class CommentScreen extends StatelessWidget {
                             type: PostViewMode.card,
                           ),
                           if (state.status == CommentScreenStatus.success)
-                            _CommentScreenSuccess(comments: state.comments!),
+                            _CommentScreenSuccess(
+                                comments: state.comments!),
                         ],
                       ),
                     ),
@@ -256,26 +273,16 @@ class _CommentScreenSuccess extends StatelessWidget {
       comments,
     );
 
-    return Column(children: List.generate(organisedComments.length, (index) {
-      final key = organisedComments.keys.toList()[index];
+    return SliverList.builder(
+      itemCount: organisedComments.length,
+      itemBuilder: (context, index) {
+        final key = organisedComments.keys.toList()[index];
 
-      return CommentItem(
-        comment: key,
-        children: organisedComments[key]!,
-      );
-    }),);
-
-
-    SliverList(
-      delegate: SliverChildBuilderDelegate(childCount: organisedComments.length,
-              (context, index) {
-            final key = organisedComments.keys.toList()[index];
-
-            return CommentItem(
-              comment: key,
-              children: organisedComments[key]!,
-            );
-          }),
+        return CommentItem(
+          comment: key,
+          children: organisedComments[key]!,
+        );
+      },
     );
   }
 }
