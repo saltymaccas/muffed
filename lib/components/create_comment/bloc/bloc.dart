@@ -12,18 +12,18 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
     required this.repo,
     required this.onSuccess,
   }) : super(initialState) {
-    on<Submitted>((event, emit) {
+    on<Submitted>((event, emit) async {
       if (state.newCommentContents.isNotEmpty) {
         emit(state.copyWith(isLoading: true));
 
         try {
-          repo.lemmyRepo.createComment(
+          final response = await repo.lemmyRepo.createComment(
             state.newCommentContents,
             state.postId,
             state.parentId,
           );
 
-          emit(state.copyWith(isLoading: false));
+          emit(state.copyWith(isLoading: false, successfullyPosted: true));
         } catch (err) {
           emit(state.copyWith(isLoading: false, error: err));
         }
