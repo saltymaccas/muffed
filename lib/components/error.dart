@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class ErrorComponentTransparent extends StatelessWidget {
   const ErrorComponentTransparent(
-      {this.message = '', this.retryFunction, super.key});
+      {this.message = '',
+      this.retryFunction,
+      this.showErrorIcon = true,
+      super.key});
 
   final Object? message;
   final void Function()? retryFunction;
+  final bool showErrorIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +23,11 @@ class ErrorComponentTransparent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(
-          Icons.error_outline,
-          color: Theme.of(context).colorScheme.error,
-        ),
+        if (showErrorIcon)
+          Icon(
+            Icons.error_outline,
+            color: Theme.of(context).colorScheme.error,
+          ),
         Text(
           errorMessage,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
