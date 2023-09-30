@@ -50,7 +50,23 @@ class CreateCommentDialog extends StatelessWidget {
         repo: context.read<ServerRepo>(),
         onSuccess: () {},
       ),
-      child: BlocBuilder<CreateCommentBloc, CreateCommentState>(
+      child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
+        listener: (context, state) {
+          // closes the dialog if the comment has been successfully posted
+          if (state.successfullyPosted) {
+            context.pop();
+          }
+        },
+        // prevents rebuilding when only the text changed and nothing else
+        buildWhen: (previous, current) {
+          if (previous.copyWith(newCommentContents: '') !=
+              current.copyWith(
+                newCommentContents: '',
+              )) {
+            return true;
+          }
+          return false;
+        },
         builder: (context, state) {
           return Dialog(
             clipBehavior: Clip.hardEdge,

@@ -22,6 +22,8 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
             state.postId,
             state.parentId,
           );
+
+          emit(state.copyWith(isLoading: false));
         } catch (err) {
           emit(state.copyWith(isLoading: false, error: err));
         }
