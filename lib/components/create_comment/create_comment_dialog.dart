@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/create_comment/bloc/bloc.dart';
+import 'package:muffed/components/error.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -55,6 +56,9 @@ class CreateCommentDialog extends StatelessWidget {
           // closes the dialog if the comment has been successfully posted
           if (state.successfullyPosted) {
             context.pop();
+            if (onSuccessfullySubmitted != null) {
+              onSuccessfullySubmitted!.call();
+            }
           }
         },
         // prevents rebuilding when only the text changed and nothing else
@@ -117,28 +121,43 @@ class CreateCommentDialog extends StatelessWidget {
                     horizontal: 8,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          context.pop();
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        onPressed: () {
-                          context.read<CreateCommentBloc>().add(Submitted());
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        child: const Text(
-                          'Comment',
-                        ),
+                      if (state.error != null)
+                        ErrorComponentTransparent(
+                          message: state.error,
+                          showErrorIcon: false,
+                          textAlign: TextAlign.start,
+                        )
+                      else
+                        const SizedBox(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () {
+                              context
+                                  .read<CreateCommentBloc>()
+                                  .add(Submitted());
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            child: const Text(
+                              'Comment',
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
