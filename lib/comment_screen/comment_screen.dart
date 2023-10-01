@@ -129,12 +129,14 @@ class CommentScreen extends StatelessWidget {
                     child: CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
-                          child: PostItem(
-                            post: post,
-                            useBlocFromContext: postItemBlocContext,
-                            openOnTap: false,
-                            limitHeight: false,
-                            type: PostViewMode.card,
+                          child: SafeArea(
+                            child: PostItem(
+                              post: post,
+                              useBlocFromContext: postItemBlocContext,
+                              openOnTap: false,
+                              limitHeight: false,
+                              type: PostViewMode.card,
+                            ),
                           ),
                         ),
                         if (state.status == CommentScreenStatus.success)
@@ -183,6 +185,17 @@ class _CommentScreenSuccess extends StatelessWidget {
           children: organisedComments[key]!,
         );
       },
+    );
+  }
+}
+
+class _CommentScreenLoading extends StatelessWidget {
+  const _CommentScreenLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: CircularProgressIndicator(),
     );
   }
 }
