@@ -14,13 +14,13 @@ import 'bloc/bloc.dart';
 /// Displays a screen that shows the post on top and the comments under
 class CommentScreen extends StatelessWidget {
   const CommentScreen(
-      {required this.post, required this.postItemBlocContext, super.key});
-
-  // TODO: make it optional to pass post or postItemBlocContext
+      {required this.post, this.postItemBlocContext, super.key});
 
   /// The post that should be shown
   final LemmyPost post;
-  final BuildContext postItemBlocContext;
+
+  /// If a post bloc already exits for the post it should be passed in here
+  final BuildContext? postItemBlocContext;
 
   @override
   Widget build(BuildContext context) {
