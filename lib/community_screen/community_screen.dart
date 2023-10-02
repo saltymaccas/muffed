@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/content_view/content_view.dart';
@@ -294,9 +293,6 @@ class CommunityScreen extends StatelessWidget {
               ],
               onRefresh: () async {},
               isContentLoading: state.postsStatus == CommunityStatus.loading,
-              onPressedPost: (post) {
-                context.push('/home/content', extra: post);
-              },
               posts: state.posts,
               reachedNearEnd: () {
                 context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());

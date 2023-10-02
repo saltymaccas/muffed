@@ -7,7 +7,6 @@ import 'package:muffed/repo/lemmy/models.dart';
 class ContentView extends StatelessWidget {
   /// initialize
   ContentView({
-    required this.onPressedPost,
     required this.posts,
     required this.reachedNearEnd,
     required this.onRefresh,
@@ -20,9 +19,6 @@ class ContentView extends StatelessWidget {
   /// When the user has reached near the end of the scroll. often used to
   /// load more posts.
   final void Function() reachedNearEnd;
-
-  /// When the user presses a post.
-  final void Function(LemmyPost post) onPressedPost;
 
   /// The posts that should be displayed.
   final List<LemmyPost> posts;

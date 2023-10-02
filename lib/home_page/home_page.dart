@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
@@ -360,9 +359,6 @@ class _HomePageSuccess extends StatelessWidget {
                   }
                   return false;
                 });
-              },
-              onPressedPost: (post) {
-                context.go('/home/content', extra: post);
               },
               posts: context.read<HomePageBloc>().state.posts!,
             ),
