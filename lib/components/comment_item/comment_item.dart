@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/comment_item/bloc/bloc.dart';
-import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -176,7 +175,7 @@ class CommentItem extends StatelessWidget {
                     ...childrenWidgets,
                     if (state.comment.childCount > 0 && state.children.isEmpty)
                       state.loadingChildren
-                          ? LoadingComponentTransparent()
+                          ? LinearProgressIndicator()
                           : InkWell(
                               onTap: () {
                                 context.read<CommentItemBloc>().add(
