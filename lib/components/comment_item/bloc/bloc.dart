@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -32,6 +33,160 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
         emit(state.copyWith(error: err, loadingChildren: false));
       }
     });
+    on<UpvotePressed>(
+      (event, emit) {
+        switch (state.comment.myVote) {
+          case (LemmyVoteType.none):
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  myVote: LemmyVoteType.upVote,
+                  upVotes: state.comment.upVotes + 1,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo
+                  .voteComment(state.comment.id, LemmyVoteType.upVote);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    myVote: LemmyVoteType.none,
+                    upVotes: state.comment.upVotes - 1,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+          case (LemmyVoteType.upVote):
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  myVote: LemmyVoteType.none,
+                  upVotes: state.comment.upVotes - 1,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo.voteComment(state.comment.id, LemmyVoteType.none);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    myVote: LemmyVoteType.upVote,
+                    score: state.comment.upVotes + 1,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+          case (LemmyVoteType.downVote):
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  downVotes: state.comment.downVotes - 1,
+                  upVotes: state.comment.upVotes + 1,
+                  myVote: LemmyVoteType.upVote,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo
+                  .voteComment(state.comment.id, LemmyVoteType.upVote);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    myVote: LemmyVoteType.downVote,
+                    downVotes: state.comment.downVotes + 1,
+                    upVotes: state.comment.upVotes - 1,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+        }
+      },
+      transformer: droppable(),
+    );
+    on<DownvotePressed>(
+      (event, emit) {
+        switch (state.comment.myVote) {
+          case LemmyVoteType.none:
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  downVotes: state.comment.downVotes + 1,
+                  myVote: LemmyVoteType.downVote,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo
+                  .voteComment(state.comment.id, LemmyVoteType.downVote);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    myVote: LemmyVoteType.none,
+                    downVotes: state.comment.downVotes - 1,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+          case LemmyVoteType.upVote:
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  downVotes: state.comment.downVotes + 1,
+                  upVotes: state.comment.upVotes - 1,
+                  myVote: LemmyVoteType.downVote,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo
+                  .voteComment(state.comment.id, LemmyVoteType.downVote);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    upVotes: state.comment.upVotes + 1,
+                    downVotes: state.comment.downVotes - 1,
+                    myVote: LemmyVoteType.upVote,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+          case LemmyVoteType.downVote:
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  myVote: LemmyVoteType.none,
+                  downVotes: state.comment.downVotes - 1,
+                ),
+              ),
+            );
+            try {
+              repo.lemmyRepo.voteComment(state.comment.id, LemmyVoteType.none);
+            } catch (err) {
+              emit(
+                state.copyWith(
+                  comment: state.comment.copyWith(
+                    downVotes: state.comment.downVotes + 1,
+                    myVote: LemmyVoteType.downVote,
+                  ),
+                  error: err,
+                ),
+              );
+            }
+        }
+      },
+      transformer: droppable(),
+    );
   }
 
   final LemmyComment comment;

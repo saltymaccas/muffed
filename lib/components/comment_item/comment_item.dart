@@ -99,27 +99,37 @@ class CommentItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read<CommentItemBloc>()
+                                .add(UpvotePressed());
+                          },
                           icon: Icon(
                             Icons.arrow_upward_rounded,
-                            color: (comment.myVote == LemmyVoteType.upVote)
-                                ? Colors.deepOrange
-                                : null,
+                            color:
+                                (state.comment.myVote == LemmyVoteType.upVote)
+                                    ? Colors.deepOrange
+                                    : null,
                           ),
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(comment.upVotes.toString()),
+                        Text(state.comment.upVotes.toString()),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read<CommentItemBloc>()
+                                .add(DownvotePressed());
+                          },
                           icon: Icon(
                             Icons.arrow_downward_rounded,
-                            color: (comment.myVote == LemmyVoteType.downVote)
-                                ? Colors.purple
-                                : null,
+                            color:
+                                (state.comment.myVote == LemmyVoteType.downVote)
+                                    ? Colors.purple
+                                    : null,
                           ),
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(comment.downVotes.toString()),
+                        Text(state.comment.downVotes.toString()),
                         const SizedBox(
                           width: 10,
                         ),
@@ -131,35 +141,6 @@ class CommentItem extends StatelessWidget {
                         MuffedPopupMenuButton(
                           icon: Icon(Icons.more_vert),
                           items: [
-                            MuffedPopupMenuItem(
-                              title: 'Show Debug Info',
-                              onTap: () {
-                                showDialog<void>(
-                                  context: context,
-                                  builder: (context) {
-                                    return Dialog(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'id: ${comment.id}',
-                                          ),
-                                          Text(
-                                            'childCount: ${comment.childCount}',
-                                          ),
-                                          Text(
-                                            'content: ${comment.content}',
-                                          ),
-                                          Text('path: ${comment.path}'),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
                             MuffedPopupMenuItem(
                               title: 'Go to user',
                               onTap: () {

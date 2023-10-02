@@ -310,6 +310,8 @@ class LemmyComment extends Equatable {
 
   final int hotRank;
 
+  int getLevel() => path.length;
+
   @override
   List<Object?> get props => [
         path,
@@ -327,54 +329,37 @@ class LemmyComment extends Equatable {
         hotRank,
       ];
 
-  int getLevel() => path.length;
-
-// /// Gets the number of children that have not been loaded not including grand
-// /// children
-// int getNumOfUnloadedReplies() {
-//   int numOfUnloadedChildren = childCount - replies.length;
-//
-//   for (final reply in replies) {
-//     numOfUnloadedChildren =
-//         numOfUnloadedChildren - reply.getNumOfUnloadedReplies();
-//   }
-//
-//   return numOfUnloadedChildren;
-// }
-//
-// /// gets all the number of all the children including nested children
-// int getNumberOfReplies() {
-//   int numberOfReplies = 0;
-//
-//   for (final reply in replies) {
-//     numberOfReplies++;
-//     numberOfReplies = numberOfReplies + reply.getNumberOfReplies();
-//   }
-//
-//   return numberOfReplies;
-// }
-//
-// /// Tries to add the comment into the tree will return true if success and
-// /// false if failed
-// bool addCommentToTree(LemmyComment comment) {
-//   if (!comment.path.contains(id)) {
-//     return false;
-//   }
-//
-//   if (comment.path.last == id) {
-//     replies = {...replies, comment}.toList();
-//     return true;
-//   }
-//
-//   for (final reply in replies) {
-//     final bool value = reply.addCommentToTree(comment);
-//
-//     if (value) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
+  LemmyComment copyWith({
+    List<int>? path,
+    String? creatorName,
+    String? content,
+    DateTime? timePublished,
+    int? id,
+    int? postId,
+    int? creatorId,
+    int? childCount,
+    int? upVotes,
+    int? downVotes,
+    int? score,
+    LemmyVoteType? myVote,
+    int? hotRank,
+  }) {
+    return LemmyComment(
+      path: path ?? this.path,
+      creatorName: creatorName ?? this.creatorName,
+      content: content ?? this.content,
+      timePublished: timePublished ?? this.timePublished,
+      id: id ?? this.id,
+      postId: postId ?? this.postId,
+      creatorId: creatorId ?? this.creatorId,
+      childCount: childCount ?? this.childCount,
+      upVotes: upVotes ?? this.upVotes,
+      downVotes: downVotes ?? this.downVotes,
+      score: score ?? this.score,
+      myVote: myVote ?? this.myVote,
+      hotRank: hotRank ?? this.hotRank,
+    );
+  }
 }
 
 class LemmyCommunity extends Equatable {
