@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-void showErrorSnackBar(BuildContext context, {String text = 'Error'}) {
+void showErrorSnackBar(BuildContext context, {Object? error = 'Error'}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       elevation: 5,
       content: Text(
-        text,
+        error.toString(),
         style: TextStyle(color: Theme.of(context).colorScheme.error),
       ),
       backgroundColor: Theme.of(context).colorScheme.errorContainer,

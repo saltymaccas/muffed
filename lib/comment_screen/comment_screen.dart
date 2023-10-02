@@ -34,7 +34,7 @@ class CommentScreen extends StatelessWidget {
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
-            showErrorSnackBar(context, text: state.errorMessage!);
+            showErrorSnackBar(context, error: state.errorMessage!);
           }
         },
         builder: (context, state) {
@@ -154,6 +154,7 @@ class CommentScreen extends StatelessWidget {
                         if (state.status == CommentScreenStatus.success)
                           _CommentScreenSuccess(
                             comments: state.comments!,
+                            sortType: state.sortType,
                           )
                         else if (state.status == CommentScreenStatus.loading)
                           const _CommentScreenLoading()
@@ -182,9 +183,11 @@ class CommentScreen extends StatelessWidget {
 }
 
 class _CommentScreenSuccess extends StatelessWidget {
-  const _CommentScreenSuccess({required this.comments, super.key});
+  const _CommentScreenSuccess(
+      {required this.comments, required this.sortType, super.key});
 
   final List<LemmyComment> comments;
+  final LemmyCommentSortType sortType;
 
   @override
   Widget build(BuildContext context) {
@@ -201,6 +204,7 @@ class _CommentScreenSuccess extends StatelessWidget {
         return CommentItem(
           comment: key,
           children: organisedComments[key]!,
+          sortType: sortType,
         );
       },
     );

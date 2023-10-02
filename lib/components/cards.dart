@@ -139,7 +139,7 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                         });
                       } catch (err) {
                         _log.warning(err);
-                        showErrorSnackBar(context, text: err.toString());
+                        showErrorSnackBar(context, error: err.toString());
                       }
                     },
                     style: (subscribedType == LemmySubscribedType.notSubscribed)

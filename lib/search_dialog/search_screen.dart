@@ -59,7 +59,7 @@ class SearchScreen extends StatelessWidget {
           return false;
         },
         listener: (context, state) {
-          showErrorSnackBar(context, text: state.errorMessage!);
+          showErrorSnackBar(context, error: state.errorMessage!);
         },
         builder: (context, state) {
           final blocContext = context;
@@ -304,6 +304,7 @@ class SearchScreen extends StatelessWidget {
                                         key: ValueKey(state.comments[index].id),
                                         comment: state.comments[index],
                                         children: [],
+                                        sortType: LemmyCommentSortType.hot,
                                       );
                                     },
                                   ),
