@@ -27,12 +27,10 @@ class CommentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      CommentScreenBloc(
+      create: (context) => CommentScreenBloc(
         repo: context.read<ServerRepo>(),
         post: post,
-      )
-        ..add(InitializeEvent()),
+      )..add(InitializeEvent()),
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -51,7 +49,15 @@ class CommentScreen extends StatelessWidget {
                   showDialog<void>(
                     context: context,
                     builder: (context) {
-                      return CreateCommentDialog(postId: post.id);
+                      return CreateCommentDialog(
+                        postId: post.id,
+                        onSuccessfullySubmitted: () {
+                          showInfoSnackBar(
+                            context,
+                            text: 'Comment successfully posted',
+                          );
+                        },
+                      );
                     },
                   );
                 },
@@ -70,28 +76,23 @@ class CommentScreen extends StatelessWidget {
                           title: 'Hot',
                           icon: Icon(Icons.local_fire_department),
                           value: LemmyCommentSortType.hot,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.hot)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.hot)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'Top',
                           icon: Icon(Icons.military_tech),
                           value: LemmyCommentSortType.top,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.top)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.top)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
                           icon: Icon(Icons.auto_awesome),
                           value: LemmyCommentSortType.latest,
-                          onTap: () =>
-                              context.read<CommentScreenBloc>().add(
+                          onTap: () => context.read<CommentScreenBloc>().add(
                                 SortTypeChanged(LemmyCommentSortType.latest),
                               ),
                         ),
@@ -99,11 +100,9 @@ class CommentScreen extends StatelessWidget {
                           title: 'Old',
                           icon: Icon(Icons.elderly),
                           value: LemmyCommentSortType.old,
-                          onTap: () =>
-                              context
-                                  .read<CommentScreenBloc>()
-                                  .add(
-                                  SortTypeChanged(LemmyCommentSortType.old)),
+                          onTap: () => context
+                              .read<CommentScreenBloc>()
+                              .add(SortTypeChanged(LemmyCommentSortType.old)),
                         ),
                       ],
                     );
@@ -116,7 +115,7 @@ class CommentScreen extends StatelessWidget {
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent &&
+                            scrollInfo.metrics.maxScrollExtent &&
                         state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()
@@ -156,11 +155,12 @@ class CommentScreen extends StatelessWidget {
                           _CommentScreenSuccess(
                             comments: state.comments!,
                           )
-                        else
-                          if (state.status == CommentScreenStatus.loading)
-                            const _CommentScreenLoading() else
-                            if (state.status == CommentScreenStatus.failure)
-                              _CommentScreenFailure(error: state.errorMessage,),
+                        else if (state.status == CommentScreenStatus.loading)
+                          const _CommentScreenLoading()
+                        else if (state.status == CommentScreenStatus.failure)
+                          _CommentScreenFailure(
+                            error: state.errorMessage,
+                          ),
                       ],
                     ),
                   ),
@@ -235,4 +235,3 @@ class _CommentScreenFailure extends StatelessWidget {
     );
   }
 }
-
