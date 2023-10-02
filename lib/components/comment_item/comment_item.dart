@@ -174,19 +174,41 @@ class CommentItem extends StatelessWidget {
                     ),
                     ...childrenWidgets,
                     if (state.comment.childCount > 0 && state.children.isEmpty)
-                      state.loadingChildren
-                          ? LinearProgressIndicator()
-                          : InkWell(
-                              onTap: () {
-                                context.read<CommentItemBloc>().add(
-                                      LoadChildrenRequested(sortType),
-                                    );
-                              },
-                              child: Container(
-                                child: Text(
-                                    'Load ${state.comment.childCount} more'),
-                              ),
-                            )
+                      InkWell(
+                        onTap: () {
+                          context.read<CommentItemBloc>().add(
+                                LoadChildrenRequested(sortType),
+                              );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              left: (comment.path.isNotEmpty)
+                                  ? BorderSide(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                      width: 1,
+                                    )
+                                  : BorderSide.none,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              state.loadingChildren
+                                  ? 'Loading...'
+                                  : 'Load ${state.comment.childCount} more',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ),
