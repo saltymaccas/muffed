@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
-
 part 'state.dart';
 
 final _log = Logger('CommentScreenBloc');
@@ -42,8 +41,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       }
     });
     on<ReachedNearEndOfScroll>(
-          (event, emit) async {
-        if (!state.reachedEnd) {
+      (event, emit) async {
+        if (!state.reachedEnd && !state.isLoading) {
           _log.info('loading page ${state.pagesLoaded + 1}');
 
           emit(state.copyWith(isLoading: true));
@@ -53,8 +52,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
               page: state.pagesLoaded + 1,
               sortType: state.sortType,
             );
-            final comments =
-            [...state.comments!, ...newComments];
+            final comments = [...state.comments!, ...newComments];
 
             if (comments.length == state.comments!.length ||
                 newComments.isEmpty) {
@@ -153,7 +151,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       }
     });
     on<LoadMoreRepliesPressed>(
-          (event, emit) async {
+      (event, emit) async {
         emit(state.copyWith(isLoading: true));
 
         _log.info('LoadMoreRepliesPressed');
@@ -169,9 +167,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
           emit(
             state.copyWith(
-              comments:
-              {...state.comments ?? [], ...comments}.toList(),
-
+              comments: {...state.comments ?? [], ...comments}.toList(),
               isLoading: false,
             ),
           );
