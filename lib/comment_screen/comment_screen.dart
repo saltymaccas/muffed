@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/create_comment/create_comment_dialog.dart';
+import 'package:muffed/components/error.dart';
+import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -25,10 +27,12 @@ class CommentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CommentScreenBloc(
+      create: (context) =>
+      CommentScreenBloc(
         repo: context.read<ServerRepo>(),
         post: post,
-      )..add(InitializeEvent()),
+      )
+        ..add(InitializeEvent()),
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -66,23 +70,28 @@ class CommentScreen extends StatelessWidget {
                           title: 'Hot',
                           icon: Icon(Icons.local_fire_department),
                           value: LemmyCommentSortType.hot,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.hot)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.hot)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'Top',
                           icon: Icon(Icons.military_tech),
                           value: LemmyCommentSortType.top,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.top)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.top)),
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
                           icon: Icon(Icons.auto_awesome),
                           value: LemmyCommentSortType.latest,
-                          onTap: () => context.read<CommentScreenBloc>().add(
+                          onTap: () =>
+                              context.read<CommentScreenBloc>().add(
                                 SortTypeChanged(LemmyCommentSortType.latest),
                               ),
                         ),
@@ -90,9 +99,11 @@ class CommentScreen extends StatelessWidget {
                           title: 'Old',
                           icon: Icon(Icons.elderly),
                           value: LemmyCommentSortType.old,
-                          onTap: () => context
-                              .read<CommentScreenBloc>()
-                              .add(SortTypeChanged(LemmyCommentSortType.old)),
+                          onTap: () =>
+                              context
+                                  .read<CommentScreenBloc>()
+                                  .add(
+                                  SortTypeChanged(LemmyCommentSortType.old)),
                         ),
                       ],
                     );
@@ -105,7 +116,7 @@ class CommentScreen extends StatelessWidget {
                 NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent &&
+                        scrollInfo.metrics.maxScrollExtent &&
                         state.isLoading == false) {
                       context
                           .read<CommentScreenBloc>()
@@ -128,21 +139,28 @@ class CommentScreen extends StatelessWidget {
                     },
                     child: CustomScrollView(
                       slivers: [
+                        const SliverAppBar(
+                          title: Text('Comments'),
+                          floating: true,
+                        ),
                         SliverToBoxAdapter(
-                          child: SafeArea(
-                            child: PostItem(
-                              post: post,
-                              useBlocFromContext: postItemBlocContext,
-                              openOnTap: false,
-                              limitHeight: false,
-                              type: PostViewMode.card,
-                            ),
+                          child: PostItem(
+                            post: post,
+                            useBlocFromContext: postItemBlocContext,
+                            openOnTap: false,
+                            limitHeight: false,
+                            type: PostViewMode.card,
                           ),
                         ),
                         if (state.status == CommentScreenStatus.success)
                           _CommentScreenSuccess(
                             comments: state.comments!,
-                          ),
+                          )
+                        else
+                          if (state.status == CommentScreenStatus.loading)
+                            const _CommentScreenLoading() else
+                            if (state.status == CommentScreenStatus.failure)
+                              _CommentScreenFailure(error: state.errorMessage,),
                       ],
                     ),
                   ),
@@ -194,8 +212,27 @@ class _CommentScreenLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: CircularProgressIndicator(),
+    return const SliverFillRemaining(
+      child: LoadingComponentTransparent(),
     );
   }
 }
+
+class _CommentScreenFailure extends StatelessWidget {
+  const _CommentScreenFailure({this.error, super.key});
+
+  final Object? error;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFillRemaining(
+      child: ErrorComponentTransparent(
+        message: error,
+        retryFunction: () {
+          context.read<CommentScreenBloc>().add(InitializeEvent());
+        },
+      ),
+    );
+  }
+}
+

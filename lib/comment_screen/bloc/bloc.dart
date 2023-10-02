@@ -42,7 +42,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        if (!state.reachedEnd && !state.isLoading) {
+        if (!state.reachedEnd && state.status != CommentScreenStatus.loading) {
           _log.info('loading page ${state.pagesLoaded + 1}');
 
           emit(state.copyWith(isLoading: true));
