@@ -14,7 +14,8 @@ import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
 
-const _HeaderExpandedHeight = 500.0;
+const _headerMaxHeight = 500.0;
+const _headerMinHeight = 130.0;
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
@@ -287,12 +288,12 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       child: CachedNetworkImage(
                         fit: BoxFit.cover,
                         width: double.maxFinite,
-                        height: _HeaderExpandedHeight / 2,
+                        height: _headerMaxHeight / 2,
                         imageUrl: user.banner!,
                       ),
                     ),
                   Container(
-                    height: _HeaderExpandedHeight,
+                    height: _headerMaxHeight,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
@@ -327,18 +328,31 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                 ],
               ),
             ),
+            Container(
+              height: _headerMaxHeight - shrinkOffset,
+              width: double.maxFinite,
+              color: Theme.of(context).colorScheme.surface.withOpacity(
+                    shrinkOffset / (_headerMaxHeight - _headerMinHeight),
+                  ),
+            ),
             SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {
                           context.pop();
                         },
                         icon: const Icon(Icons.arrow_back),
+                      ),
+                      Opacity(
+                        opacity: shrinkOffset /
+                            (_headerMaxHeight - _headerMinHeight),
+                        child: Text(user.name),
                       ),
                     ],
                   ),
@@ -365,10 +379,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => _HeaderExpandedHeight;
+  double get maxExtent => _headerMaxHeight;
 
   @override
-  double get minExtent => 130;
+  double get minExtent => _headerMinHeight;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
