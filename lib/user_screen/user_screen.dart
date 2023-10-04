@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
@@ -12,6 +13,8 @@ import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
+
+const _HeaderExpandedHeight = 500.0;
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
@@ -49,26 +52,28 @@ class UserScreen extends StatelessWidget {
                       item = const IconButtonFailure();
                     } else if (state.status == UserStatus.success) {
                       item = MuffedPopupMenuButton(
-                          changeIconToSelected: false,
-                          icon: Icon(Icons.more_vert),
-                          visualDensity: VisualDensity.compact,
-                          items: [
-                            MuffedPopupMenuItem(
-                              icon: Icon(Icons.block),
-                              title: 'Block/Unblock',
-                              onTap: () {
-                                showDialog<void>(
-                                    context: context,
-                                    builder: (context) {
-                                      return BlockDialog(
-                                        id: state.user!.id,
-                                        type: BlockDialogType.person,
-                                        name: state.user!.name,
-                                      );
-                                    });
-                              },
-                            )
-                          ]);
+                        changeIconToSelected: false,
+                        icon: Icon(Icons.more_vert),
+                        visualDensity: VisualDensity.compact,
+                        items: [
+                          MuffedPopupMenuItem(
+                            icon: Icon(Icons.block),
+                            title: 'Block/Unblock',
+                            onTap: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) {
+                                  return BlockDialog(
+                                    id: state.user!.id,
+                                    type: BlockDialogType.person,
+                                    name: state.user!.name,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      );
                     } else {
                       item = SizedBox();
                     }
@@ -85,32 +90,14 @@ class UserScreen extends StatelessWidget {
             ],
             child: DefaultTabController(
               length: 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  //title: Text(state.username ?? state.user?.displayName ?? ''),
-                  bottom: const TabBar(
-                    tabs: [
-                      Tab(
-                        text: 'About',
-                      ),
-                      Tab(
-                        text: 'Posts',
-                      ),
-                      Tab(
-                        text: 'Comments',
-                      ),
-                    ],
-                  ),
+              child: <UserStatus, Widget>{
+                UserStatus.loading: _UserScreenLoading(),
+                UserStatus.initial: _UserScreenInitial(),
+                UserStatus.failure: _UserScreenFailure(),
+                UserStatus.success: _UserScreenSuccess(
+                  state: state,
                 ),
-                body: <UserStatus, Widget>{
-                  UserStatus.loading: _UserScreenLoading(),
-                  UserStatus.initial: _UserScreenInitial(),
-                  UserStatus.failure: _UserScreenFailure(),
-                  UserStatus.success: _UserScreenSuccess(
-                    state: state,
-                  ),
-                }[state.status],
-              ),
+              }[state.status]!,
             ),
           );
         },
@@ -166,81 +153,225 @@ class _UserScreenSuccess extends StatelessWidget {
         NotificationListener(
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - 500 &&
+                    scrollInfo.metrics.maxScrollExtent - 50 &&
                 scrollInfo.metrics.axis == Axis.vertical) {
-              context.read<UserScreenBloc>().add(ReachedNearEndOfScroll());
+              //context.read<UserScreenBloc>().add(ReachedNearEndOfScroll());
             }
             return true;
           },
-          child: TabBarView(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      image: (state.user!.banner != null)
-                          ? DecorationImage(
-                              fit: BoxFit.cover,
-                              opacity: 0.5,
-                              image: CachedNetworkImageProvider(
-                                state.user!.banner!,
-                              ),
-                            )
-                          : null,
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          maxRadius: 50,
-                          child: ClipRRect(
-                            clipBehavior: Clip.hardEdge,
-                            borderRadius: BorderRadius.all(Radius.circular(45)),
-                            child: (state.user!.avatar != null)
-                                ? CachedNetworkImage(
-                                    imageUrl: state.user!.avatar!,
-                                  )
-                                : SvgPicture.asset('assets/logo.svg'),
+          child: NestedScrollView(
+            floatHeaderSlivers: false,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              // These are the slivers that show up in the "outer" scroll view.
+              return <Widget>[
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverPersistentHeader(
+                    delegate: _HeaderDelegate(state.user!),
+                    pinned: true,
+                    floating: false,
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        image: (state.user!.banner != null)
+                            ? DecorationImage(
+                                fit: BoxFit.cover,
+                                opacity: 0.5,
+                                image: CachedNetworkImageProvider(
+                                  state.user!.banner!,
+                                ),
+                              )
+                            : null,
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            maxRadius: 50,
+                            child: ClipRRect(
+                              clipBehavior: Clip.hardEdge,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(45)),
+                              child: (state.user!.avatar != null)
+                                  ? CachedNetworkImage(
+                                      imageUrl: state.user!.avatar!,
+                                    )
+                                  : SvgPicture.asset('assets/logo.svg'),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 24,
-                        ),
-                        Text(
-                          state.user!.name,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          SizedBox(
+                            width: 24,
+                          ),
+                          Text(
+                            state.user!.name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                ListView.builder(
+                  itemCount: state.posts.length,
+                  key: const PageStorageKey('posts'),
+                  itemBuilder: (context, index) {
+                    return PostItem(
+                      post: state.posts[index],
+                    );
+                  },
+                ),
+                ListView.builder(
+                  key: const PageStorageKey('comments'),
+                  itemCount: state.comments.length,
+                  itemBuilder: (context, index) {
+                    return CommentItem(
+                      comment: state.comments[index],
+                      children: [],
+                      sortType: LemmyCommentSortType.hot,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (state.loading) LinearProgressIndicator(),
+      ],
+    );
+  }
+}
+
+class _HeaderDelegate extends SliverPersistentHeaderDelegate {
+  _HeaderDelegate(this.user);
+
+  final LemmyPerson user;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Material(
+        clipBehavior: Clip.hardEdge,
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 5,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Stack(
+                children: [
+                  if (user.banner != null)
+                    ShaderMask(
+                      shaderCallback: (rect) {
+                        return LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.black, Colors.transparent],
+                        ).createShader(
+                            Rect.fromLTRB(0, 0, rect.width, rect.height));
+                      },
+                      blendMode: BlendMode.dstIn,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        width: double.maxFinite,
+                        height: _HeaderExpandedHeight / 2,
+                        imageUrl: user.banner!,
+                      ),
+                    ),
+                  Container(
+                    height: _HeaderExpandedHeight,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              maxRadius: 50,
+                              child: ClipRRect(
+                                clipBehavior: Clip.hardEdge,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(45)),
+                                child: (user.avatar != null)
+                                    ? CachedNetworkImage(
+                                        imageUrl: user.avatar!,
+                                      )
+                                    : SvgPicture.asset('assets/logo.svg'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 24,
+                            ),
+                            Text(
+                              user.name,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              ListView.builder(
-                key: const PageStorageKey('posts'),
-                itemCount: state.posts.length,
-                itemBuilder: (context, index) {
-                  return PostItem(
-                    post: state.posts[index],
-                  );
-                },
+            ),
+            SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                    ],
+                  ),
+                  const TabBar(
+                    tabs: [
+                      Tab(
+                        text: 'About',
+                      ),
+                      Tab(
+                        text: 'Posts',
+                      ),
+                      Tab(
+                        text: 'Comments',
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              ListView.builder(
-                key: const PageStorageKey('comments'),
-                itemCount: state.comments.length,
-                itemBuilder: (context, index) {
-                  return CommentItem(
-                    comment: state.comments[index],
-                    children: [],
-                    sortType: LemmyCommentSortType.hot,
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-        if (state.loading) LinearProgressIndicator(),
-      ],
+      ),
     );
+  }
+
+  @override
+  double get maxExtent => _HeaderExpandedHeight;
+
+  @override
+  double get minExtent => 130;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }
