@@ -223,21 +223,35 @@ class _UserScreenSuccess extends StatelessWidget {
                   ],
                 ),
                 ListView.builder(
-                  itemCount: state.posts.length,
+                  itemCount: state.posts.length + 1,
                   key: const PageStorageKey('posts'),
                   itemBuilder: (context, index) {
+                    // There is a bug that makes the header overlap the contents
+                    // this moves the content down so it does not overlap
+                    if (index == 0) {
+                      return const SizedBox(
+                        height: _headerMinHeight,
+                      );
+                    }
                     return PostItem(
-                      post: state.posts[index],
+                      post: state.posts[index - 1],
                     );
                   },
                 ),
                 ListView.builder(
                   key: const PageStorageKey('comments'),
-                  itemCount: state.comments.length,
+                  itemCount: state.comments.length + 1,
                   itemBuilder: (context, index) {
+                    // There is a bug that makes the header overlap the contents
+                    // this moves the content down so it does not overlap
+                    if (index == 0) {
+                      return const SizedBox(
+                        height: _headerMinHeight,
+                      );
+                    }
                     return CommentItem(
-                      comment: state.comments[index],
-                      children: [],
+                      comment: state.comments[index - 1],
+                      children: const [],
                       sortType: LemmyCommentSortType.hot,
                     );
                   },
@@ -288,40 +302,47 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       child: CachedNetworkImage(
                         fit: BoxFit.cover,
                         width: double.maxFinite,
-                        height: _headerMaxHeight / 2,
+                        height: (_headerMaxHeight - shrinkOffset) / 2,
                         imageUrl: user.banner!,
                       ),
                     ),
-                  Container(
-                    height: _headerMaxHeight,
+                  SizedBox(
+                    height: _headerMaxHeight - shrinkOffset,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              maxRadius: 50,
-                              child: ClipRRect(
-                                clipBehavior: Clip.hardEdge,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(45)),
-                                child: (user.avatar != null)
-                                    ? CachedNetworkImage(
-                                        imageUrl: user.avatar!,
-                                      )
-                                    : SvgPicture.asset('assets/logo.svg'),
-                              ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 24,
+                            horizontal: 16,
+                          ),
+                          child: CircleAvatar(
+                            maxRadius: 50,
+                            child: ClipRRect(
+                              clipBehavior: Clip.hardEdge,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(45)),
+                              child: (user.avatar != null)
+                                  ? CachedNetworkImage(
+                                      imageUrl: user.avatar!,
+                                    )
+                                  : SvgPicture.asset('assets/logo.svg'),
                             ),
-                            SizedBox(
-                              width: 24,
-                            ),
-                            Text(
-                              user.name,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ],
+                          ),
                         ),
+                        SizedBox(
+                          height: (_headerMaxHeight - shrinkOffset) / 2,
+                          child: Column(
+                            children: [
+                              Text(
+                                user.name,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
