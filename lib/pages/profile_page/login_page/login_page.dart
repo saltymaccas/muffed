@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/profile_page/login_page/bloc/bloc.dart';
+import 'package:muffed/pages/profile_page/login_page/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 class LoginPage extends StatelessWidget {

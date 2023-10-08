@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/comment_screen/comment_screen.dart';
-import 'package:muffed/community_screen/community_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/home_page/home_page.dart';
-import 'package:muffed/inbox_page/inbox_page.dart';
-import 'package:muffed/profile_page/login_page/login_page.dart';
-import 'package:muffed/profile_page/profile_page.dart';
+import 'package:muffed/pages/home_page/home_page.dart';
+import 'package:muffed/pages/inbox_page/inbox_page.dart';
+import 'package:muffed/pages/profile_page/login_page/login_page.dart';
+import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/search_dialog/search_screen.dart';
-import 'package:muffed/settings_page/content_filters/content_filters.dart';
-import 'package:muffed/settings_page/defaults/defaults.dart';
-import 'package:muffed/settings_page/settings_page.dart';
-import 'package:muffed/settings_page/theme/theme.dart';
-import 'package:muffed/user_screen/user_screen.dart';
+import 'package:muffed/screens/comment_screen/comment_screen.dart';
+import 'package:muffed/screens/community_screen/community_screen.dart';
+import 'package:muffed/screens/search/search_screen.dart';
+import 'package:muffed/screens/settings_screen/content_filters/content_filters.dart';
+import 'package:muffed/screens/settings_screen/defaults/defaults.dart';
+import 'package:muffed/screens/settings_screen/settings_screen.dart';
+import 'package:muffed/screens/settings_screen/theme/theme.dart';
+import 'package:muffed/screens/user_screen/user_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/home',

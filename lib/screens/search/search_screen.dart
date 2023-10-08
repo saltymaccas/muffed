@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
+import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import '../components/popup_menu/popup_menu.dart';
-import '../components/snackbars.dart';
 import 'bloc/bloc.dart';
 
 class SearchScreen extends StatelessWidget {

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../components/block_dialog/block_dialog.dart';
-import '../components/popup_menu/popup_menu.dart';
-import '../global_state/bloc.dart';
 import 'bloc/bloc.dart';
 
 /// The screen that displays the community including information and the

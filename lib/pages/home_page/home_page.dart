@@ -7,7 +7,7 @@ import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/search_dialog/search_dialog.dart';
+import 'package:muffed/screens/search/search_dialog.dart';
 
 import 'bloc/bloc.dart';
 
