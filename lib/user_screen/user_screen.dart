@@ -33,8 +33,10 @@ class UserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UserScreenBloc(
-          userId: userId, username: username, repo: context.read<ServerRepo>())
-        ..add(InitializeEvent()),
+        userId: userId,
+        username: username,
+        repo: context.read<ServerRepo>(),
+      )..add(InitializeEvent()),
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {
           final blocContext = context;
@@ -297,7 +299,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                 children: [
                   ShaderMask(
                     shaderCallback: (rect) {
-                      return LinearGradient(
+                      return const LinearGradient(
                         begin: Alignment.center,
                         end: Alignment.bottomCenter,
                         colors: [Colors.black, Colors.transparent],
@@ -323,7 +325,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 24,
                             horizontal: 16,
                           ),
@@ -343,13 +345,27 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                         ),
                         SizedBox(
                           height: (_headerMaxHeight - shrinkOffset) / 2,
-                          child: Column(
-                            children: [
-                              Text(
-                                user.name,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user.name,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const Divider(
+                                  color: Colors.transparent,
+                                ),
+                                Text('${user.postCount} ᛫ posts'),
+                                Text('${user.postScore} ᛫ score'),
+                                const Divider(
+                                  color: Colors.transparent,
+                                ),
+                                Text('${user.commentCount} ᛫ comments'),
+                                Text('${user.commentScore} ᛫ score'),
+                              ],
+                            ),
                           ),
                         )
                       ],
