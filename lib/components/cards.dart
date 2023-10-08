@@ -51,15 +51,15 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
         child: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            image: (widget.community.banner != null)
-                ? DecorationImage(
-                    image: CachedNetworkImageProvider(
+            image: DecorationImage(
+              image: (widget.community.banner != null)
+                  ? CachedNetworkImageProvider(
                       widget.community.banner!,
-                    ),
-                    fit: BoxFit.cover,
-                    opacity: 0.5,
-                  )
-                : null,
+                    )
+                  : Image.asset('assets/placeholder_banner.jpeg').image,
+              fit: BoxFit.cover,
+              opacity: 0.5,
+            ),
           ),
           child: Column(
             children: [
