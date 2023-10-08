@@ -7,6 +7,7 @@ import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/icon_button.dart';
+import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -24,7 +25,7 @@ class UserScreen extends StatelessWidget {
     this.userId,
     this.username,
   }) : assert(userId != null || username != null,
-            'Both userId and username equals null');
+  'Both userId and username equals null');
 
   final int? userId;
   final String? username;
@@ -32,11 +33,13 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UserScreenBloc(
+      create: (context) =>
+      UserScreenBloc(
         userId: userId,
         username: username,
         repo: context.read<ServerRepo>(),
-      )..add(InitializeEvent()),
+      )
+        ..add(InitializeEvent()),
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {
           final blocContext = context;
@@ -98,7 +101,11 @@ class UserScreen extends StatelessWidget {
                 UserStatus.initial: const _UserScreenInitial(),
                 UserStatus.failure: const _UserScreenFailure(),
                 UserStatus.success: _UserScreenSuccess(
-                  state: state,
+                  user: state.user!,
+                  posts: state.posts,
+                  comments: state.comments,
+                  isLoading: state.loading,
+
                 ),
               }[state.status]!,
             ),
@@ -138,15 +145,22 @@ class _UserScreenFailure extends StatelessWidget {
       retryFunction: () {
         context.read<UserScreenBloc>().add(InitializeEvent());
       },
-      message: context.read<UserScreenBloc>().state.errorMessage ?? '',
+      message: context
+          .read<UserScreenBloc>()
+          .state
+          .errorMessage ?? '',
     );
   }
 }
 
 class _UserScreenSuccess extends StatelessWidget {
-  const _UserScreenSuccess({required this.state});
+  const _UserScreenSuccess(
+      {required this.user, required this.posts, required this.comments, required this.isLoading,});
 
-  final UserScreenState state;
+  final LemmyPerson user;
+  final List<LemmyPost> posts;
+  final List<LemmyComment> comments;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +170,7 @@ class _UserScreenSuccess extends StatelessWidget {
         NotificationListener(
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - 50 &&
+                scrollInfo.metrics.maxScrollExtent - 50 &&
                 scrollInfo.metrics.axis == Axis.vertical) {
               //context.read<UserScreenBloc>().add(ReachedNearEndOfScroll());
             }
@@ -170,9 +184,9 @@ class _UserScreenSuccess extends StatelessWidget {
               return <Widget>[
                 SliverOverlapAbsorber(
                   handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverPersistentHeader(
-                    delegate: _HeaderDelegate(state.user!),
+                    delegate: _HeaderDelegate(user),
                     pinned: true,
                     floating: false,
                   ),
@@ -183,49 +197,15 @@ class _UserScreenSuccess extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        image: (state.user!.banner != null)
-                            ? DecorationImage(
-                                fit: BoxFit.cover,
-                                opacity: 0.5,
-                                image: CachedNetworkImageProvider(
-                                  state.user!.banner!,
-                                ),
-                              )
-                            : null,
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            maxRadius: 50,
-                            child: ClipRRect(
-                              clipBehavior: Clip.hardEdge,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(45)),
-                              child: (state.user!.avatar != null)
-                                  ? CachedNetworkImage(
-                                      imageUrl: state.user!.avatar!,
-                                    )
-                                  : SvgPicture.asset('assets/logo.svg'),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 24,
-                          ),
-                          Text(
-                            state.user!.name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ],
-                      ),
+                    SizedBox(
+                      height: _headerMinHeight,
                     ),
+                    if (user!.bio != null) MuffedMarkdownBody(
+                        data: user.bio!)
                   ],
                 ),
                 ListView.builder(
-                  itemCount: state.posts.length + 1,
+                  itemCount: posts.length + 1,
                   key: const PageStorageKey('posts'),
                   itemBuilder: (context, index) {
                     // There is a bug that makes the header overlap the contents
@@ -236,13 +216,13 @@ class _UserScreenSuccess extends StatelessWidget {
                       );
                     }
                     return PostItem(
-                      post: state.posts[index - 1],
+                      post: posts[index - 1],
                     );
                   },
                 ),
                 ListView.builder(
                   key: const PageStorageKey('comments'),
-                  itemCount: state.comments.length + 1,
+                  itemCount: comments.length + 1,
                   itemBuilder: (context, index) {
                     // There is a bug that makes the header overlap the contents
                     // this moves the content down so it does not overlap
@@ -252,7 +232,7 @@ class _UserScreenSuccess extends StatelessWidget {
                       );
                     }
                     return CommentItem(
-                      comment: state.comments[index - 1],
+                      comment: comments[index - 1],
                       children: const [],
                       sortType: LemmyCommentSortType.hot,
                     );
@@ -262,7 +242,7 @@ class _UserScreenSuccess extends StatelessWidget {
             ),
           ),
         ),
-        if (state.loading) LinearProgressIndicator(),
+        if (isLoading) LinearProgressIndicator(),
       ],
     );
   }
@@ -274,11 +254,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final LemmyPerson user;
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent,) {
     final placeholderBanner = Image.asset(
       'assets/placeholder_banner.jpeg',
       height: (_headerMaxHeight - shrinkOffset) / 2,
@@ -290,7 +268,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
       alignment: Alignment.topCenter,
       child: Material(
         clipBehavior: Clip.hardEdge,
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme
+            .of(context)
+            .colorScheme
+            .surface,
         elevation: 5,
         child: Stack(
           children: [
@@ -309,12 +290,12 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     blendMode: BlendMode.dstIn,
                     child: (user.banner != null)
                         ? CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            width: double.maxFinite,
-                            height: (_headerMaxHeight - shrinkOffset) / 2,
-                            placeholder: (context, url) => placeholderBanner,
-                            imageUrl: user.banner!,
-                          )
+                      fit: BoxFit.cover,
+                      width: double.maxFinite,
+                      height: (_headerMaxHeight - shrinkOffset) / 2,
+                      placeholder: (context, url) => placeholderBanner,
+                      imageUrl: user.banner!,
+                    )
                         : placeholderBanner,
                   ),
                   SizedBox(
@@ -334,11 +315,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                             child: ClipRRect(
                               clipBehavior: Clip.hardEdge,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(45)),
+                              BorderRadius.all(Radius.circular(45)),
                               child: (user.avatar != null)
                                   ? CachedNetworkImage(
-                                      imageUrl: user.avatar!,
-                                    )
+                                imageUrl: user.avatar!,
+                              )
                                   : SvgPicture.asset('assets/logo.svg'),
                             ),
                           ),
@@ -352,7 +333,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                               children: [
                                 Text(
                                   user.name,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleLarge,
                                 ),
                                 const Divider(
                                   color: Colors.transparent,
@@ -377,9 +361,13 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             Container(
               height: _headerMaxHeight - shrinkOffset,
               width: double.maxFinite,
-              color: Theme.of(context).colorScheme.surface.withOpacity(
-                    shrinkOffset / (_headerMaxHeight - _headerMinHeight),
-                  ),
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .surface
+                  .withOpacity(
+                shrinkOffset / (_headerMaxHeight - _headerMinHeight),
+              ),
             ),
             SafeArea(
               child: Column(
