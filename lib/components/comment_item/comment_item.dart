@@ -31,12 +31,11 @@ class CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CommentItemBloc(
-            comment: comment,
-            children: children,
-            repo: context.read<ServerRepo>(),
-          ),
+      create: (context) => CommentItemBloc(
+        comment: comment,
+        children: children,
+        repo: context.read<ServerRepo>(),
+      ),
       child: BlocConsumer<CommentItemBloc, CommentItemState>(
         listener: (context, state) {
           if (state.error != null) {
@@ -45,10 +44,12 @@ class CommentItem extends StatelessWidget {
         },
         builder: (context, state) {
           final organisedComments = organiseCommentsWithChildren(
-            comment.getLevel() + 1, state.children,);
+            comment.getLevel() + 1,
+            state.children,
+          );
 
           final List<Widget> childrenWidgets =
-          List.generate(organisedComments.length, (index) {
+              List.generate(organisedComments.length, (index) {
             final key = organisedComments.keys.toList()[index];
             return CommentItem(
               comment: key,
@@ -58,162 +59,168 @@ class CommentItem extends StatelessWidget {
             );
           });
 
-          return Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: (comment.path.isNotEmpty)
-                    ? BorderSide(
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .outline,
-                  width: 1,
-                )
-                    : BorderSide.none,
+          // TODO: create nicer looking minimised comment
+          return InkWell(
+            onLongPress: () {
+              context.read<CommentItemBloc>().add(MinimiseToggled());
+            },
+            onTap: () {
+              if (state.minimised) {
+                context.read<CommentItemBloc>().add(MinimiseToggled());
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: (comment.path.isNotEmpty)
+                      ? BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 1,
+                        )
+                      : BorderSide.none,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: AnimatedSize(
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOutCubic,
-                alignment: Alignment.topCenter,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          comment.creatorName,
-                          style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .primary,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          formattedPostedAgo(
-                            comment.timePublished,
-                          ),
-                          style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                    MuffedMarkdownBody(data: comment.content),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            context
-                                .read<CommentItemBloc>()
-                                .add(UpvotePressed());
-                          },
-                          icon: Icon(
-                            Icons.arrow_upward_rounded,
-                            color:
-                            (state.comment.myVote == LemmyVoteType.upVote)
-                                ? Colors.deepOrange
-                                : null,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        Text(state.comment.upVotes.toString()),
-                        IconButton(
-                          onPressed: () {
-                            context
-                                .read<CommentItemBloc>()
-                                .add(DownvotePressed());
-                          },
-                          icon: Icon(
-                            Icons.arrow_downward_rounded,
-                            color:
-                            (state.comment.myVote == LemmyVoteType.downVote)
-                                ? Colors.purple
-                                : null,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        Text(state.comment.downVotes.toString()),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.reply),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        MuffedPopupMenuButton(
-                          icon: Icon(Icons.more_vert),
-                          items: [
-                            MuffedPopupMenuItem(
-                              title: 'Go to user',
-                              onTap: () {
-                                context.push(
-                                  '/home/person?id=${comment.creatorId}',
-                                );
-                              },
+              child: Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: AnimatedSize(
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOutCubic,
+                  alignment: Alignment.topCenter,
+                  child: state.minimised
+                      ? Text(
+                          comment.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  comment.creatorName,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  formattedPostedAgo(
+                                    comment.timePublished,
+                                  ),
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                  ),
+                                ),
+                              ],
                             ),
+                            MuffedMarkdownBody(data: comment.content),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    context
+                                        .read<CommentItemBloc>()
+                                        .add(UpvotePressed());
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: (state.comment.myVote ==
+                                            LemmyVoteType.upVote)
+                                        ? Colors.deepOrange
+                                        : null,
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                Text(state.comment.upVotes.toString()),
+                                IconButton(
+                                  onPressed: () {
+                                    context
+                                        .read<CommentItemBloc>()
+                                        .add(DownvotePressed());
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_downward_rounded,
+                                    color: (state.comment.myVote ==
+                                            LemmyVoteType.downVote)
+                                        ? Colors.purple
+                                        : null,
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                Text(state.comment.downVotes.toString()),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.reply),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                MuffedPopupMenuButton(
+                                  icon: Icon(Icons.more_vert),
+                                  items: [
+                                    MuffedPopupMenuItem(
+                                      title: 'Go to user',
+                                      onTap: () {
+                                        context.push(
+                                          '/home/person?id=${comment.creatorId}',
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            ...childrenWidgets,
+                            if (state.comment.childCount > 0 &&
+                                state.children.isEmpty)
+                              InkWell(
+                                onTap: () {
+                                  context.read<CommentItemBloc>().add(
+                                        LoadChildrenRequested(sortType),
+                                      );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: (comment.path.isNotEmpty)
+                                          ? BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                              width: 1,
+                                            )
+                                          : BorderSide.none,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      state.loadingChildren
+                                          ? 'Loading...'
+                                          : 'Load ${state.comment.childCount} more',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (isOrphan) Divider(),
                           ],
                         ),
-                      ],
-                    ),
-                    ...childrenWidgets,
-                    if (state.comment.childCount > 0 && state.children.isEmpty)
-                      InkWell(
-                        onTap: () {
-                          context.read<CommentItemBloc>().add(
-                            LoadChildrenRequested(sortType),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: (comment.path.isNotEmpty)
-                                  ? BorderSide(
-                                color:
-                                Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .outline,
-                                width: 1,
-                              )
-                                  : BorderSide.none,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              state.loadingChildren
-                                  ? 'Loading...'
-                                  : 'Load ${state.comment.childCount} more',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                color:
-                                Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .secondary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    if(isOrphan) Divider(),
-                  ],
                 ),
               ),
             ),

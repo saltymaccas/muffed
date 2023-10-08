@@ -187,6 +187,9 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
       },
       transformer: droppable(),
     );
+    on<MinimiseToggled>((event, emit) {
+      emit(state.copyWith(minimised: !state.minimised));
+    });
   }
 
   final LemmyComment comment;

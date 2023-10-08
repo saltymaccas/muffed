@@ -6,12 +6,14 @@ class CommentItemState extends Equatable {
     required this.children,
     this.error,
     this.loadingChildren = false,
+    this.minimised = false,
   });
 
   final List<LemmyComment> children;
   final LemmyComment comment;
   final Object? error;
   final bool loadingChildren;
+  final bool minimised;
 
   @override
   List<Object?> get props => [
@@ -19,6 +21,7 @@ class CommentItemState extends Equatable {
         children,
         error,
         loadingChildren,
+        minimised,
       ];
 
   CommentItemState copyWith({
@@ -26,12 +29,14 @@ class CommentItemState extends Equatable {
     LemmyComment? comment,
     Object? error,
     bool? loadingChildren,
+    bool? minimised,
   }) {
     return CommentItemState(
       children: children ?? this.children,
       comment: comment ?? this.comment,
       error: error,
       loadingChildren: loadingChildren ?? this.loadingChildren,
+      minimised: minimised ?? this.minimised,
     );
   }
 }

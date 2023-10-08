@@ -11,3 +11,5 @@ class LoadChildrenRequested extends CommentItemEvent {
 class UpvotePressed extends CommentItemEvent {}
 
 class DownvotePressed extends CommentItemEvent {}
+
+class MinimiseToggled extends CommentItemEvent {}
