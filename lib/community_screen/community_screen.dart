@@ -470,7 +470,19 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   ),
                                 if (community.description != null)
                                   TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showDialog<void>(
+                                          context: context,
+                                          // TODO: Improve dialog
+                                          builder: (context) {
+                                            return Dialog(
+                                              child: MuffedMarkdownBody(
+                                                data: community.description!,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
                                       child: Text('View full description')),
                               ],
                             ),
