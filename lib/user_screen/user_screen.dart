@@ -94,9 +94,9 @@ class UserScreen extends StatelessWidget {
             child: DefaultTabController(
               length: 3,
               child: <UserStatus, Widget>{
-                UserStatus.loading: _UserScreenLoading(),
-                UserStatus.initial: _UserScreenInitial(),
-                UserStatus.failure: _UserScreenFailure(),
+                UserStatus.loading: const _UserScreenLoading(),
+                UserStatus.initial: const _UserScreenInitial(),
+                UserStatus.failure: const _UserScreenFailure(),
                 UserStatus.success: _UserScreenSuccess(
                   state: state,
                 ),
@@ -110,27 +110,27 @@ class UserScreen extends StatelessWidget {
 }
 
 class _UserScreenInitial extends StatelessWidget {
-  const _UserScreenInitial({super.key});
+  const _UserScreenInitial();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox();
+    return const SizedBox();
   }
 }
 
 class _UserScreenLoading extends StatelessWidget {
-  const _UserScreenLoading({super.key});
+  const _UserScreenLoading();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(),
     );
   }
 }
 
 class _UserScreenFailure extends StatelessWidget {
-  const _UserScreenFailure({super.key});
+  const _UserScreenFailure();
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +144,7 @@ class _UserScreenFailure extends StatelessWidget {
 }
 
 class _UserScreenSuccess extends StatelessWidget {
-  const _UserScreenSuccess({super.key, required this.state});
+  const _UserScreenSuccess({required this.state});
 
   final UserScreenState state;
 
