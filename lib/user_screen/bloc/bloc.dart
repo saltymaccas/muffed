@@ -9,8 +9,10 @@ part 'state.dart';
 class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
   ///
   UserScreenBloc({this.userId, this.username, required this.repo})
-      : assert(userId != null || username != null,
-            'Both username and user id == null'),
+      : assert(
+          userId != null || username != null,
+          'Both username and user id == null',
+        ),
         super(UserScreenState(userId: userId, username: username)) {
     on<InitializeEvent>((event, emit) async {
       emit(state.copyWith(status: UserStatus.loading));
