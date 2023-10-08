@@ -27,8 +27,3 @@ significant changes.
 # Contributing
 
 Contributions are welcome
-
-## Logo
-
-The logo right now is temporary, If you are able to contribute a logo please email me or create a
-pull request
