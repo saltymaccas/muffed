@@ -5,3 +5,5 @@ sealed class PostItemEvent {}
 class UpvotePressed extends PostItemEvent {}
 
 class DownvotePressed extends PostItemEvent {}
+
+class SavePostToggled extends PostItemEvent {}

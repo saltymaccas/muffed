@@ -245,6 +245,15 @@ class CardLemmyPostItem extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
+                        onPressed: () {
+                          context.read<PostItemBloc>().add(SavePostToggled());
+                        },
+                        icon: Icon(
+                          (post.saved) ? Icons.bookmark : Icons.bookmark_border,
+                        ),
+                        color: (post.saved) ? Colors.red : null,
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.arrow_upward_outlined),
                         color: (post.myVote == LemmyVoteType.upVote)
                             ? Colors.deepOrange
@@ -266,7 +275,9 @@ class CardLemmyPostItem extends StatelessWidget {
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(post.downVotes.toString()),
-                      MoreMenuButton(post: post),
+                      MoreMenuButton(
+                        post: post,
+                      ),
                     ],
                   ),
                 ],

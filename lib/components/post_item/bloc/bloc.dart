@@ -163,6 +163,21 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       },
       transformer: droppable(),
     );
+    on<SavePostToggled>((event, emit) async {
+      emit(state.copyWith(post: state.post.copyWith(saved: !state.post.saved)));
+      try {
+        final result = await repo.lemmyRepo
+            .savePost(postId: state.post.id, save: state.post.saved);
+        emit(state.copyWith(post: state.post.copyWith(saved: result)));
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+            post: state.post.copyWith(saved: !state.post.saved),
+          ),
+        );
+      }
+    });
   }
 
   final LemmyPost post;
