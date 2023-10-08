@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/components/content_view/content_view.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
-import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
