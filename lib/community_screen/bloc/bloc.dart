@@ -102,7 +102,7 @@ class CommunityScreenBloc
         final result = await repo.lemmyRepo.followCommunity(
           communityId: state.communityId,
           follow:
-              state.community!.subscribed == LemmySubscribedType.notSubscribed,
+              state.community!.subscribed != LemmySubscribedType.notSubscribed,
         );
         emit(
           state.copyWith(

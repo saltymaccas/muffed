@@ -316,7 +316,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
 
   _TopBarDelegate({required this.community});
 
-  final _headerMaxHeight = 350.0;
+  final _headerMaxHeight = 400.0;
   final _headerMinHeight = 90.0;
   final bannerEnd = 0.5;
 
@@ -400,7 +400,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                           ),
                           child: MuffedAvatar(url: community.icon, radius: 34),
                         ),
-                        // sizes from bottom up to the center of the header
+                        // sizes from bottom up to the fraction chosen
+                        // of the header
                         SizedBox(
                           height: (_headerMaxHeight - shrinkOffset) *
                               (1 - bannerEnd),
@@ -465,7 +466,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                 if (community.description != null)
                                   MuffedMarkdownBody(
                                     data: community.description!,
-                                    height: 79,
+                                    height: 104,
                                   ),
                                 if (community.description != null)
                                   TextButton(
