@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:muffed/components/cards.dart';
+import 'package:go_router/go_router.dart';
 import 'package:muffed/components/icon_button.dart';
+import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/content_view/content_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -10,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../components/block_dialog/block_dialog.dart';
 import '../components/popup_menu/popup_menu.dart';
+import '../global_state/bloc.dart';
 import 'bloc/bloc.dart';
 
 /// The screen that displays the community including information and the
@@ -50,11 +54,11 @@ class CommunityScreen extends StatelessWidget {
                   ),
                   child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                     builder: (context, state) {
-                      if (state.communityInfo != null) {
+                      if (state.community != null) {
                         return Dialog(
                           child: Markdown(
                             shrinkWrap: true,
-                            data: state.communityInfo!.description ??
+                            data: state.community!.description ??
                                 'no description',
                             selectable: true,
                             onTapLink: (text, url, title) {
@@ -261,9 +265,9 @@ class CommunityScreen extends StatelessWidget {
                                     context: context,
                                     builder: (context) {
                                       return BlockDialog(
-                                        id: state.communityInfo!.id,
+                                        id: state.community!.id,
                                         type: BlockDialogType.community,
-                                        name: state.communityInfo!.name,
+                                        name: state.community!.name,
                                       );
                                     });
                               },
@@ -286,9 +290,9 @@ class CommunityScreen extends StatelessWidget {
               leadingSlivers: [
                 if (state.communityInfoStatus == CommunityStatus.success)
                   SliverPersistentHeader(
-                    delegate: _TopBarDelegate(community: state.communityInfo!),
+                    delegate: _TopBarDelegate(community: state.community!),
                     floating: false,
-                    pinned: false,
+                    pinned: true,
                   ),
               ],
               onRefresh: () async {},
@@ -312,11 +316,15 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
 
   _TopBarDelegate({required this.community});
 
-  @override
-  double get maxExtent => 300;
+  final _headerMaxHeight = 350.0;
+  final _headerMinHeight = 90.0;
+  final bannerEnd = 0.5;
 
   @override
-  double get minExtent => 0;
+  double get maxExtent => _headerMaxHeight;
+
+  @override
+  double get minExtent => _headerMinHeight;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
@@ -330,8 +338,179 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final progress = shrinkOffset / maxExtent;
 
-    return SafeArea(
-      child: LemmyCommunityCard(community: community),
+    final fractionScrolled = shrinkOffset / _headerMaxHeight;
+
+    final placeholderBanner = Image.asset(
+      'assets/placeholder_banner.jpeg',
+      height: (_headerMaxHeight - shrinkOffset) * bannerEnd,
+      width: double.maxFinite,
+      fit: BoxFit.cover,
+    );
+
+    return Material(
+      clipBehavior: Clip.hardEdge,
+      color: Theme.of(context).colorScheme.surface,
+      elevation: 5,
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: 1 - fractionScrolled,
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  // banner
+                  ShaderMask(
+                    shaderCallback: (rect) {
+                      return const LinearGradient(
+                        begin: Alignment.center,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black, Colors.transparent],
+                      ).createShader(
+                        Rect.fromLTRB(0, 0, rect.width, rect.height),
+                      );
+                    },
+                    blendMode: BlendMode.dstIn,
+                    child: (community.banner != null)
+                        ? CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            width: double.maxFinite,
+                            height:
+                                (_headerMaxHeight - shrinkOffset) * bannerEnd,
+                            placeholder: (context, url) => placeholderBanner,
+                            imageUrl: community.banner!,
+                          )
+                        : placeholderBanner,
+                  ),
+                  // sizes to the height the the header
+                  SizedBox(
+                    height: _headerMaxHeight - shrinkOffset,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Stops the avatar from overlapping with the pinned top
+                        // bar
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 24,
+                            horizontal: 16,
+                          ),
+                          child: MuffedAvatar(url: community.icon, radius: 34),
+                        ),
+                        // sizes from bottom up to the center of the header
+                        SizedBox(
+                          height: (_headerMaxHeight - shrinkOffset) *
+                              (1 - bannerEnd),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // title
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      community.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                    // Subscribe button
+                                    if (context.read<GlobalBloc>().isLoggedIn())
+                                      TextButton(
+                                        onPressed: () {
+                                          context
+                                              .read<CommunityScreenBloc>()
+                                              .add(ToggledSubscribe());
+                                        },
+                                        style: (community.subscribed ==
+                                                LemmySubscribedType
+                                                    .notSubscribed)
+                                            ? TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryContainer,
+                                                foregroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer,
+                                              )
+                                            : TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                foregroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .outlineVariant,
+                                              ),
+                                        child: (community.subscribed ==
+                                                LemmySubscribedType.subscribed)
+                                            ? Text('Unsubscribe')
+                                            : (community.subscribed ==
+                                                    LemmySubscribedType
+                                                        .notSubscribed)
+                                                ? Text('Subscribe')
+                                                : Text('Pending'),
+                                      ),
+                                  ],
+                                ),
+                                if (community.description != null)
+                                  MuffedMarkdownBody(
+                                    data: community.description!,
+                                    height: 79,
+                                  ),
+                                if (community.description != null)
+                                  TextButton(
+                                      onPressed: () {},
+                                      child: Text('View full description')),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: _headerMaxHeight - shrinkOffset,
+            width: double.maxFinite,
+          ),
+          SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    Opacity(
+                      opacity: fractionScrolled,
+                      child: Text(community.title),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -12,11 +12,11 @@ class CommunityScreenBloc
   CommunityScreenBloc(
       {this.community, required this.communityId, required this.repo})
       : super(CommunityScreenState(
-            communityId: communityId, communityInfo: community)) {
+            communityId: communityId, community: community)) {
     on<Initialize>((event, emit) async {
       // get community info
 
-      if (state.communityInfo == null) {
+      if (state.community == null) {
         emit(state.copyWith(communityInfoStatus: CommunityStatus.loading));
 
         try {
@@ -85,6 +85,32 @@ class CommunityScreenBloc
             sortType: state.loadedSortType,
           ),
         );
+      }
+    });
+    on<ToggledSubscribe>((event, emit) async {
+      emit(
+        state.copyWith(
+          community: state.community!.copyWith(
+            subscribed: (state.community!.subscribed ==
+                    LemmySubscribedType.notSubscribed)
+                ? LemmySubscribedType.pending
+                : LemmySubscribedType.notSubscribed,
+          ),
+        ),
+      );
+      try {
+        final result = await repo.lemmyRepo.followCommunity(
+          communityId: state.communityId,
+          follow:
+              state.community!.subscribed == LemmySubscribedType.notSubscribed,
+        );
+        emit(
+          state.copyWith(
+            community: state.community!.copyWith(subscribed: result),
+          ),
+        );
+      } catch (err) {
+        emit(state.copyWith(errorMessage: err));
       }
     });
   }

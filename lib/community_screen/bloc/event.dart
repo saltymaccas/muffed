@@ -11,3 +11,5 @@ class SortTypeChanged extends CommunityScreenEvent {
 
   final LemmySortType sortType;
 }
+
+class ToggledSubscribe extends CommunityScreenEvent {}

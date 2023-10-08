@@ -11,13 +11,13 @@ final class CommunityScreenState extends Equatable {
     this.communityInfoStatus = CommunityStatus.initial,
     this.posts = const [],
     this.pagesLoaded = 0,
-    this.communityInfo,
+    this.community,
     this.sortType = LemmySortType.hot,
     this.loadedSortType = LemmySortType.hot,
     this.errorMessage,
   });
 
-  final LemmyCommunity? communityInfo;
+  final LemmyCommunity? community;
   final List<LemmyPost> posts;
   final int pagesLoaded;
   final int communityId;
@@ -35,9 +35,10 @@ final class CommunityScreenState extends Equatable {
   final Object? errorMessage;
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         isLoading,
-        communityInfo,
+        community,
         posts,
         communityId,
         pagesLoaded,
@@ -65,7 +66,7 @@ final class CommunityScreenState extends Equatable {
       communityInfoStatus: communityInfoStatus ?? this.communityInfoStatus,
       postsStatus: postsStatus ?? this.postsStatus,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
-      communityInfo: community ?? this.communityInfo,
+      community: community ?? this.community,
       posts: posts ?? this.posts,
       communityId: communityId ?? this.communityId,
       sortType: sortType ?? this.sortType,
