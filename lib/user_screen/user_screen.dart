@@ -277,6 +277,13 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    final placeholderBanner = Image.asset(
+      'assets/placeholder_banner.jpeg',
+      height: (_headerMaxHeight - shrinkOffset) / 2,
+      width: double.maxFinite,
+      fit: BoxFit.cover,
+    );
+
     return Align(
       alignment: Alignment.topCenter,
       child: Material(
@@ -288,24 +295,26 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             SingleChildScrollView(
               child: Stack(
                 children: [
-                  if (user.banner != null)
-                    ShaderMask(
-                      shaderCallback: (rect) {
-                        return LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.black, Colors.transparent],
-                        ).createShader(
-                            Rect.fromLTRB(0, 0, rect.width, rect.height));
-                      },
-                      blendMode: BlendMode.dstIn,
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        width: double.maxFinite,
-                        height: (_headerMaxHeight - shrinkOffset) / 2,
-                        imageUrl: user.banner!,
-                      ),
-                    ),
+                  ShaderMask(
+                    shaderCallback: (rect) {
+                      return LinearGradient(
+                        begin: Alignment.center,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black, Colors.transparent],
+                      ).createShader(
+                          Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    },
+                    blendMode: BlendMode.dstIn,
+                    child: (user.banner != null)
+                        ? CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            width: double.maxFinite,
+                            height: (_headerMaxHeight - shrinkOffset) / 2,
+                            placeholder: (context, url) => placeholderBanner,
+                            imageUrl: user.banner!,
+                          )
+                        : placeholderBanner,
+                  ),
                   SizedBox(
                     height: _headerMaxHeight - shrinkOffset,
                     child: Column(
