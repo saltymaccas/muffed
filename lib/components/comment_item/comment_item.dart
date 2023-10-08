@@ -17,6 +17,7 @@ class CommentItem extends StatelessWidget {
     required this.comment,
     required this.children,
     required this.sortType,
+    this.isOrphan = true,
     super.key,
   });
 
@@ -24,31 +25,36 @@ class CommentItem extends StatelessWidget {
   final List<LemmyComment> children;
   final LemmyCommentSortType sortType;
 
+  /// Whether the comment has a parent comment
+  final bool isOrphan;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CommentItemBloc(
-        comment: comment,
-        children: children,
-        repo: context.read<ServerRepo>(),
-      ),
+      create: (context) =>
+          CommentItemBloc(
+            comment: comment,
+            children: children,
+            repo: context.read<ServerRepo>(),
+          ),
       child: BlocConsumer<CommentItemBloc, CommentItemState>(
         listener: (context, state) {
           if (state.error != null) {
-            showErrorSnackBar(context, error: state.error!);
+            showErrorSnackBar(context, error: state.error);
           }
         },
         builder: (context, state) {
           final organisedComments = organiseCommentsWithChildren(
-              comment.getLevel() + 1, state.children);
+            comment.getLevel() + 1, state.children,);
 
           final List<Widget> childrenWidgets =
-              List.generate(organisedComments.length, (index) {
+          List.generate(organisedComments.length, (index) {
             final key = organisedComments.keys.toList()[index];
             return CommentItem(
               comment: key,
               children: organisedComments[key]!,
               sortType: sortType,
+              isOrphan: false,
             );
           });
 
@@ -57,9 +63,12 @@ class CommentItem extends StatelessWidget {
               border: Border(
                 left: (comment.path.isNotEmpty)
                     ? BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
-                        width: 1,
-                      )
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .outline,
+                  width: 1,
+                )
                     : BorderSide.none,
               ),
             ),
@@ -77,7 +86,10 @@ class CommentItem extends StatelessWidget {
                         Text(
                           comment.creatorName,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .primary,
                           ),
                         ),
                         const SizedBox(
@@ -88,7 +100,10 @@ class CommentItem extends StatelessWidget {
                             comment.timePublished,
                           ),
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .outline,
                           ),
                         ),
                       ],
@@ -107,9 +122,9 @@ class CommentItem extends StatelessWidget {
                           icon: Icon(
                             Icons.arrow_upward_rounded,
                             color:
-                                (state.comment.myVote == LemmyVoteType.upVote)
-                                    ? Colors.deepOrange
-                                    : null,
+                            (state.comment.myVote == LemmyVoteType.upVote)
+                                ? Colors.deepOrange
+                                : null,
                           ),
                           visualDensity: VisualDensity.compact,
                         ),
@@ -123,9 +138,9 @@ class CommentItem extends StatelessWidget {
                           icon: Icon(
                             Icons.arrow_downward_rounded,
                             color:
-                                (state.comment.myVote == LemmyVoteType.downVote)
-                                    ? Colors.purple
-                                    : null,
+                            (state.comment.myVote == LemmyVoteType.downVote)
+                                ? Colors.purple
+                                : null,
                           ),
                           visualDensity: VisualDensity.compact,
                         ),
@@ -158,18 +173,21 @@ class CommentItem extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           context.read<CommentItemBloc>().add(
-                                LoadChildrenRequested(sortType),
-                              );
+                            LoadChildrenRequested(sortType),
+                          );
                         },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border(
                               left: (comment.path.isNotEmpty)
                                   ? BorderSide(
-                                      color:
-                                          Theme.of(context).colorScheme.outline,
-                                      width: 1,
-                                    )
+                                color:
+                                Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .outline,
+                                width: 1,
+                              )
                                   : BorderSide.none,
                             ),
                           ),
@@ -179,17 +197,22 @@ class CommentItem extends StatelessWidget {
                               state.loadingChildren
                                   ? 'Loading...'
                                   : 'Load ${state.comment.childCount} more',
-                              style: Theme.of(context)
+                              style: Theme
+                                  .of(context)
                                   .textTheme
                                   .labelMedium!
                                   .copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                  ),
+                                color:
+                                Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .secondary,
+                              ),
                             ),
                           ),
                         ),
-                      )
+                      ),
+                    if(isOrphan) Divider(),
                   ],
                 ),
               ),
