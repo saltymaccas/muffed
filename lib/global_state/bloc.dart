@@ -1,10 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
 part 'event.dart';
 part 'state.dart';
+
+final _log = Logger('GlobalBloc');
 
 /// The bloc that controls the global app state
 class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
@@ -67,6 +70,18 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
   }
 
   bool isLoggedIn() => state.lemmySelectedAccount != -1;
+
+  @override
+  void onChange(Change<GlobalState> change) {
+    super.onChange(change);
+    _log.fine(change);
+  }
+
+  @override
+  void onTransition(Transition<GlobalEvent, GlobalState> transition) {
+    super.onTransition(transition);
+    _log.fine(transition);
+  }
 
   @override
   GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
