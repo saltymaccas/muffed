@@ -10,6 +10,7 @@ import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/screens/comment_screen/comment_screen.dart';
 import 'package:muffed/screens/community_screen/community_screen.dart';
+import 'package:muffed/screens/saved_posts_screen/saved_posts_screen.dart';
 import 'package:muffed/screens/search/search_screen.dart';
 import 'package:muffed/screens/settings_screen/content_filters/content_filters.dart';
 import 'package:muffed/screens/settings_screen/defaults/defaults.dart';
@@ -155,6 +156,12 @@ final router = GoRouter(
                       },
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'saved_posts',
+                  builder: (context, state) {
+                    return const SavedPostsScreen();
+                  },
                 ),
               ],
             ),
