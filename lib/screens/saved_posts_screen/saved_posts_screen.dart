@@ -23,6 +23,7 @@ class SavedPostsScreen extends StatelessWidget {
               itemCount: state.posts.length,
               itemBuilder: (context, index) {
                 return PostItem(
+                  key: ValueKey(state.posts[index].id),
                   post: state.posts[index],
                   limitHeight: true,
                 );
@@ -30,7 +31,7 @@ class SavedPostsScreen extends StatelessWidget {
             );
           } else if (state.status == SavedPostsStatus.loading) {
             contentSliver = const SliverToBoxAdapter(
-              child: CircularProgressIndicator(),
+              child: Center(child: CircularProgressIndicator()),
             );
           } else if (state.status == SavedPostsStatus.failure) {
             contentSliver = SliverToBoxAdapter(
@@ -50,12 +51,34 @@ class SavedPostsScreen extends StatelessWidget {
           return SetPageInfo(
             indexOfRelevantItem: 2,
             actions: [],
-            child: CustomScrollView(
-              slivers: [
-                const SliverAppBar(
-                  title: Text('Saved posts'),
+            child: Stack(
+              children: [
+                NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 500 &&
+                        state.status == SavedPostsStatus.success) {
+                      context
+                          .read<SavedPostsBloc>()
+                          .add(ReachedNearEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: CustomScrollView(
+                    slivers: [
+                      const SliverAppBar(
+                        floating: true,
+                        title: Text('Saved posts'),
+                      ),
+                      contentSliver,
+                    ],
+                  ),
                 ),
-                contentSliver,
+                if (state.isLoading)
+                  const Align(
+                    alignment: Alignment.topCenter,
+                    child: LinearProgressIndicator(),
+                  )
               ],
             ),
           );

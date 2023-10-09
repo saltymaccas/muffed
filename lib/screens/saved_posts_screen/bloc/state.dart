@@ -9,6 +9,8 @@ class SavedPostsState extends Equatable {
     this.sortType = LemmySortType.latest,
     this.error,
     this.pagesLoaded = 0,
+    this.isLoading = false,
+    this.reachedEnd = false,
   });
 
   final SavedPostsStatus status;
@@ -16,6 +18,8 @@ class SavedPostsState extends Equatable {
   final Object? error;
   final LemmySortType sortType;
   final int pagesLoaded;
+  final bool isLoading;
+  final bool reachedEnd;
 
   @override
   List<Object?> get props => [
@@ -23,6 +27,9 @@ class SavedPostsState extends Equatable {
         status,
         error,
         sortType,
+        pagesLoaded,
+        isLoading,
+        reachedEnd,
       ];
 
   SavedPostsState copyWith({
@@ -31,6 +38,8 @@ class SavedPostsState extends Equatable {
     Object? error,
     LemmySortType? sortType,
     int? pagesLoaded,
+    bool? isLoading,
+    bool? reachedEnd,
   }) {
     return SavedPostsState(
       status: status ?? this.status,
@@ -38,6 +47,8 @@ class SavedPostsState extends Equatable {
       error: error,
       sortType: sortType ?? this.sortType,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+      isLoading: isLoading ?? this.isLoading,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
     );
   }
 }
