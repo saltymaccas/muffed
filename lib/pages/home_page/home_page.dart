@@ -354,7 +354,11 @@ class _HomePageSuccess extends StatelessWidget {
             SliverList.builder(
               itemCount: posts.length,
               itemBuilder: (context, index) {
-                return PostItem(post: posts[index]);
+                return PostItem(
+                  key: ValueKey(posts[index]),
+                  post: posts[index],
+                  limitHeight: true,
+                );
               },
             ),
           ],
