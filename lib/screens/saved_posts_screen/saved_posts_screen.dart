@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/post_item/post_item.dart';
+import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/screens/saved_posts_screen/bloc/bloc.dart';
@@ -14,7 +15,12 @@ class SavedPostsScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           SavedPostsBloc(repo: context.read<ServerRepo>())..add(Initialize()),
-      child: BlocBuilder<SavedPostsBloc, SavedPostsState>(
+      child: BlocConsumer<SavedPostsBloc, SavedPostsState>(
+        listener: (context, state) {
+          if (state.error != null) {
+            showErrorSnackBar(context, error: state.error);
+          }
+        },
         builder: (context, state) {
           late final Widget contentSliver;
 
