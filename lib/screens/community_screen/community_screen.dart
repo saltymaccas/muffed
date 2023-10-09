@@ -8,6 +8,7 @@ import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
+import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -38,7 +39,12 @@ class CommunityScreen extends StatelessWidget {
         community: community,
         repo: context.read<ServerRepo>(),
       )..add(Initialize()),
-      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+      child: BlocConsumer<CommunityScreenBloc, CommunityScreenState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            showErrorSnackBar(context, error: state.errorMessage);
+          }
+        },
         builder: (context, state) {
           final blocContext = context;
 
