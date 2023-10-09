@@ -22,9 +22,7 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     /// Focuses on the search bar then unfocuses to make sure the back button
     /// removes the keyboard instead on popping the page
-    final textFocusNode = FocusNode()
-      ..requestFocus()
-      ..unfocus();
+    final textFocusNode = FocusNode();
     final textController = TextEditingController(
       text: searchQuery,
     );
@@ -78,7 +76,7 @@ class SearchScreen extends StatelessWidget {
                       items: [
                         MuffedPopupMenuItem(
                           title: 'Hot',
-                          icon: Icon(Icons.local_fire_department),
+                          icon: const Icon(Icons.local_fire_department),
                           value: LemmySortType.hot,
                           onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(LemmySortType.hot),
@@ -86,7 +84,7 @@ class SearchScreen extends StatelessWidget {
                         ),
                         MuffedPopupMenuItem(
                           title: 'Active',
-                          icon: Icon(Icons.rocket_launch),
+                          icon: const Icon(Icons.rocket_launch),
                           value: LemmySortType.active,
                           onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(LemmySortType.active),
@@ -94,7 +92,7 @@ class SearchScreen extends StatelessWidget {
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
-                          icon: Icon(Icons.auto_awesome),
+                          icon: const Icon(Icons.auto_awesome),
                           value: LemmySortType.latest,
                           onTap: () => context.read<SearchBloc>().add(
                                 SortTypeChanged(LemmySortType.latest),
@@ -105,7 +103,7 @@ class SearchScreen extends StatelessWidget {
                           items: [
                             MuffedPopupMenuItem(
                               title: 'All Time',
-                              icon: Icon(Icons.military_tech),
+                              icon: const Icon(Icons.military_tech),
                               value: LemmySortType.topAll,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -115,7 +113,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Year',
-                              icon: Icon(Icons.calendar_today),
+                              icon: const Icon(Icons.calendar_today),
                               value: LemmySortType.topYear,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -125,7 +123,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Month',
-                              icon: Icon(Icons.calendar_month),
+                              icon: const Icon(Icons.calendar_month),
                               value: LemmySortType.topMonth,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -135,7 +133,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Week',
-                              icon: Icon(Icons.view_week),
+                              icon: const Icon(Icons.view_week),
                               value: LemmySortType.topWeek,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -145,7 +143,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Day',
-                              icon: Icon(Icons.view_day),
+                              icon: const Icon(Icons.view_day),
                               value: LemmySortType.topDay,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -155,7 +153,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Twelve Hours',
-                              icon: Icon(Icons.schedule),
+                              icon: const Icon(Icons.schedule),
                               value: LemmySortType.topTwelveHour,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -165,7 +163,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Six Hours',
-                              icon: Icon(Icons.view_module_outlined),
+                              icon: const Icon(Icons.view_module_outlined),
                               value: LemmySortType.topSixHour,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -175,7 +173,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Hour',
-                              icon: Icon(Icons.hourglass_bottom),
+                              icon: const Icon(Icons.hourglass_bottom),
                               value: LemmySortType.topHour,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -190,7 +188,7 @@ class SearchScreen extends StatelessWidget {
                           items: [
                             MuffedPopupMenuItem(
                               title: 'Most Comments',
-                              icon: Icon(Icons.comment_bank),
+                              icon: const Icon(Icons.comment_bank),
                               value: LemmySortType.mostComments,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -200,7 +198,7 @@ class SearchScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'New Comments',
-                              icon: Icon(Icons.add_comment),
+                              icon: const Icon(Icons.add_comment),
                               value: LemmySortType.newComments,
                               onTap: () => context.read<SearchBloc>().add(
                                     SortTypeChanged(
@@ -258,7 +256,7 @@ class SearchScreen extends StatelessWidget {
                                 children: [
                                   // communities
                                   ListView.builder(
-                                    key: PageStorageKey(
+                                    key: ValueKey(
                                         'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: communitiesScrollController,
                                     itemCount: state.communities.length,
@@ -272,7 +270,7 @@ class SearchScreen extends StatelessWidget {
                                     },
                                   ),
                                   ListView.builder(
-                                    key: PageStorageKey(
+                                    key: ValueKey(
                                         'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: personsScrollController,
                                     itemCount: state.persons.length,
@@ -285,7 +283,7 @@ class SearchScreen extends StatelessWidget {
                                   ),
                                   // posts
                                   ListView.builder(
-                                    key: PageStorageKey(
+                                    key: ValueKey(
                                         'search posts ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: postsScrollController,
                                     itemCount: state.posts.length,
@@ -295,7 +293,7 @@ class SearchScreen extends StatelessWidget {
                                   ),
 
                                   ListView.builder(
-                                    key: PageStorageKey(
+                                    key: ValueKey(
                                         'search comments ${state.loadedSearchQuery}, ${state.loadedSortType}'),
                                     controller: commentsScrollController,
                                     itemCount: state.comments.length,
@@ -333,18 +331,19 @@ class SearchScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                             onPressed: () {},
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                           ),
                           prefixIcon: IconButton(
-                              visualDensity: VisualDensity.compact,
-                              onPressed: () {
-                                if (textFocusNode.hasFocus) {
-                                  textFocusNode.unfocus();
-                                } else {
-                                  context.pop();
-                                }
-                              },
-                              icon: Icon(Icons.arrow_back)),
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () {
+                              if (textFocusNode.hasFocus) {
+                                textFocusNode.unfocus();
+                              } else {
+                                context.pop();
+                              }
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                          ),
                           hintText: 'Search',
                           focusedBorder: InputBorder.none,
                           border: InputBorder.none,
