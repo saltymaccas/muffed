@@ -22,7 +22,6 @@ final router = GoRouter(
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
-      restorationScopeId: 'indexStack',
       builder: (
         BuildContext context,
         GoRouterState state,
