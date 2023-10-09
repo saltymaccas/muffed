@@ -57,11 +57,12 @@ class ProfilePage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            context.go('/profile/saved_posts');
-                          },
-                          child: Text('Show saved posts')),
+                      if (context.read<GlobalBloc>().isLoggedIn())
+                        ElevatedButton(
+                            onPressed: () {
+                              context.go('/profile/saved_posts');
+                            },
+                            child: Text('Show saved posts')),
                     ],
                   ),
                 ),
