@@ -143,6 +143,27 @@ class CommunityScreenBloc
         emit(state.copyWith(errorMessage: err));
       }
     });
+    on<PullDownReload>((event, emit) async {
+      emit(state.copyWith(isReloading: true));
+      try {
+        // gets both posts and community info
+        final result = await Future.wait([
+          repo.lemmyRepo.getPosts(communityId: state.communityId, page: 1),
+          repo.lemmyRepo.getCommunity(id: communityId),
+        ]);
+
+        emit(
+          state.copyWith(
+            community: result[1] as LemmyCommunity,
+            posts: result[0] as List<LemmyPost>,
+            pagesLoaded: 1,
+            isReloading: false,
+          ),
+        );
+      } catch (err) {
+        emit(state.copyWith(errorMessage: err, isReloading: false));
+      }
+    });
   }
 
   final int communityId;

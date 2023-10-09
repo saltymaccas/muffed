@@ -261,7 +261,18 @@ class CommunityScreen extends StatelessWidget {
                     return true;
                   },
                   child: RefreshIndicator(
-                    onRefresh: () async {},
+                    onRefresh: () async {
+                      context.read<CommunityScreenBloc>().add(PullDownReload());
+                      await context
+                          .read<CommunityScreenBloc>()
+                          .stream
+                          .firstWhere((element) {
+                        if (element.isReloading == false) {
+                          return true;
+                        }
+                        return false;
+                      });
+                    },
                     child: CustomScrollView(
                       key: ValueKey('${state.loadedSortType}'),
                       slivers: [

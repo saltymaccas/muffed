@@ -13,3 +13,5 @@ class SortTypeChanged extends CommunityScreenEvent {
 }
 
 class ToggledSubscribe extends CommunityScreenEvent {}
+
+class PullDownReload extends CommunityScreenEvent {}
