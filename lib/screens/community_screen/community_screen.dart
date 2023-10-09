@@ -248,41 +248,52 @@ class CommunityScreen extends StatelessWidget {
               ),
             ],
             indexOfRelevantItem: 0,
-            // makes presses outside of the menu not register and closes the
-            // menu
-            child: NotificationListener(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - 500) {
-                  context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
-                }
-                return true;
-              },
-              child: RefreshIndicator(
-                onRefresh: () async {},
-                child: CustomScrollView(
-                  key: ValueKey('${state.loadedSortType}'),
-                  slivers: [
-                    if (state.communityInfoStatus == CommunityStatus.success)
-                      SliverPersistentHeader(
-                        delegate: _TopBarDelegate(community: state.community!),
-                        floating: false,
-                        pinned: true,
-                      ),
-                    if (state.postsStatus == CommunityStatus.success)
-                      SliverList.builder(
-                        itemCount: state.posts.length,
-                        itemBuilder: (context, index) {
-                          return PostItem(
-                            key: ValueKey(state.posts[index]),
-                            post: state.posts[index],
-                            limitHeight: true,
-                          );
-                        },
-                      ),
-                  ],
+            child: Stack(
+              children: [
+                NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 500) {
+                      context
+                          .read<CommunityScreenBloc>()
+                          .add(ReachedEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: () async {},
+                    child: CustomScrollView(
+                      key: ValueKey('${state.loadedSortType}'),
+                      slivers: [
+                        if (state.communityInfoStatus ==
+                            CommunityStatus.success)
+                          SliverPersistentHeader(
+                            delegate:
+                                _TopBarDelegate(community: state.community!),
+                            floating: false,
+                            pinned: true,
+                          ),
+                        if (state.postsStatus == CommunityStatus.success)
+                          SliverList.builder(
+                            itemCount: state.posts.length,
+                            itemBuilder: (context, index) {
+                              return PostItem(
+                                key: ValueKey(state.posts[index]),
+                                post: state.posts[index],
+                                limitHeight: true,
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                if (state.isLoading)
+                  const Align(
+                    alignment: Alignment.topCenter,
+                    child: SafeArea(child: LinearProgressIndicator()),
+                  )
+              ],
             ),
           );
         },
