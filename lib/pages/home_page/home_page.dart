@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/content_view/content_view.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
@@ -25,8 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      HomePageBloc(repo: context.read<ServerRepo>())
+      create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocListener<GlobalBloc, GlobalState>(
         listenWhen: (previous, current) {
@@ -38,7 +36,7 @@ class _HomePageState extends State<HomePage> {
             previousAccount = null;
           } else {
             previousAccount =
-            previous.lemmyAccounts[previous.lemmySelectedAccount];
+                previous.lemmyAccounts[previous.lemmySelectedAccount];
           }
 
           late LemmyAccountData? currentAccount;
@@ -47,7 +45,7 @@ class _HomePageState extends State<HomePage> {
             currentAccount = null;
           } else {
             currentAccount =
-            current.lemmyAccounts[current.lemmySelectedAccount];
+                current.lemmyAccounts[current.lemmySelectedAccount];
           }
 
           if (previousAccount != currentAccount) {
@@ -85,8 +83,7 @@ class _HomePageState extends State<HomePage> {
                             title: 'Hot',
                             icon: Icon(Icons.local_fire_department),
                             value: LemmySortType.hot,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.hot),
                                 ),
                           ),
@@ -94,8 +91,7 @@ class _HomePageState extends State<HomePage> {
                             title: 'Active',
                             icon: Icon(Icons.rocket_launch),
                             value: LemmySortType.active,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.active),
                                 ),
                           ),
@@ -103,8 +99,7 @@ class _HomePageState extends State<HomePage> {
                             title: 'New',
                             icon: Icon(Icons.auto_awesome),
                             value: LemmySortType.latest,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.latest),
                                 ),
                           ),
@@ -115,8 +110,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'All Time',
                                 icon: Icon(Icons.military_tech),
                                 value: LemmySortType.topAll,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topAll,
                                       ),
@@ -126,8 +120,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Year',
                                 icon: Icon(Icons.calendar_today),
                                 value: LemmySortType.topYear,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topYear,
                                       ),
@@ -137,8 +130,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Month',
                                 icon: Icon(Icons.calendar_month),
                                 value: LemmySortType.topMonth,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topMonth,
                                       ),
@@ -148,8 +140,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Week',
                                 icon: Icon(Icons.view_week),
                                 value: LemmySortType.topWeek,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topWeek,
                                       ),
@@ -159,8 +150,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Day',
                                 icon: Icon(Icons.view_day),
                                 value: LemmySortType.topDay,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topDay,
                                       ),
@@ -170,8 +160,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Twelve Hours',
                                 icon: Icon(Icons.schedule),
                                 value: LemmySortType.topTwelveHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topTwelveHour,
                                       ),
@@ -181,8 +170,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Six Hours',
                                 icon: Icon(Icons.view_module_outlined),
                                 value: LemmySortType.topSixHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topSixHour,
                                       ),
@@ -192,8 +180,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Hour',
                                 icon: Icon(Icons.hourglass_bottom),
                                 value: LemmySortType.topHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topHour,
                                       ),
@@ -208,8 +195,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'Most Comments',
                                 icon: Icon(Icons.comment_bank),
                                 value: LemmySortType.mostComments,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.mostComments,
                                       ),
@@ -219,8 +205,7 @@ class _HomePageState extends State<HomePage> {
                                 title: 'New Comments',
                                 icon: Icon(Icons.add_comment),
                                 value: LemmySortType.newComments,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.newComments,
                                       ),
@@ -248,8 +233,7 @@ class _HomePageState extends State<HomePage> {
                                 MuffedPopupMenuItem(
                                   title: 'All',
                                   value: LemmyListingType.all,
-                                  onTap: () =>
-                                      context.read<HomePageBloc>().add(
+                                  onTap: () => context.read<HomePageBloc>().add(
                                         ListingTypeChanged(
                                           LemmyListingType.all,
                                         ),
@@ -258,8 +242,7 @@ class _HomePageState extends State<HomePage> {
                                 MuffedPopupMenuItem(
                                   title: 'Subscribed',
                                   value: LemmyListingType.subscribed,
-                                  onTap: () =>
-                                      context.read<HomePageBloc>().add(
+                                  onTap: () => context.read<HomePageBloc>().add(
                                         ListingTypeChanged(
                                           LemmyListingType.subscribed,
                                         ),
@@ -284,6 +267,9 @@ class _HomePageState extends State<HomePage> {
                     return _HomePageFailure(state.errorMessage ?? '');
                   } else if (state.status == HomePageStatus.success) {
                     return _HomePageSuccess(
+                      key: ValueKey(
+                        '${state.loadedSortType}, ${state.listingType}',
+                      ),
                       posts: state.posts!,
                     );
                   } else {
@@ -336,7 +322,7 @@ class _HomePageLoading extends StatelessWidget {
 }
 
 class _HomePageSuccess extends StatelessWidget {
-  const _HomePageSuccess({required this.posts});
+  const _HomePageSuccess({required this.posts, super.key});
 
   final List<LemmyPost> posts;
 
@@ -355,10 +341,7 @@ class _HomePageSuccess extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: () async {
           context.read<HomePageBloc>().add(PullDownRefresh());
-          await context
-              .read<HomePageBloc>()
-              .stream
-              .firstWhere((element) {
+          await context.read<HomePageBloc>().stream.firstWhere((element) {
             if (element.isRefreshing == false) {
               return true;
             }
@@ -376,66 +359,7 @@ class _HomePageSuccess extends StatelessWidget {
             ),
           ],
         ),
-
       ),
-    );
-
-    BlocConsumer<HomePageBloc, HomePageState>(
-      listenWhen: (previous, current) {
-        // jumps to top when sort type gets changed and loaded
-        if (previous.loadedSortType != current.loadedSortType) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      listener: (context, state) {
-        scrollController.jumpTo(0);
-      },
-      builder: (context, state) {
-        return Stack(
-          children: [
-            ContentView(
-              leadingSlivers: [
-                SliverPersistentHeader(
-                  delegate: _TopBarDelegate(),
-                  floating: false,
-                ),
-              ],
-              scrollController: scrollController,
-              reachedNearEnd: () {
-                context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-              },
-              onRefresh: () async {
-                context.read<HomePageBloc>().add(PullDownRefresh());
-                await context
-                    .read<HomePageBloc>()
-                    .stream
-                    .firstWhere((element) {
-                  if (element.isRefreshing == false) {
-                    return true;
-                  }
-                  return false;
-                });
-              },
-              posts: context
-                  .read<HomePageBloc>()
-                  .state
-                  .posts!,
-            ),
-            if (state.isLoading)
-              const SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    height: 5,
-                    child: LinearProgressIndicator(),
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
     );
   }
 }
@@ -451,14 +375,13 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 200;
 
   @override
-  Widget build(BuildContext context,
-      double shrinkOffset,
-      bool overlapsContent,) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return ColoredBox(
-      color: Theme
-          .of(context)
-          .colorScheme
-          .surface,
+      color: Theme.of(context).colorScheme.surface,
       child: const Padding(
         padding: EdgeInsets.all(8),
       ),
