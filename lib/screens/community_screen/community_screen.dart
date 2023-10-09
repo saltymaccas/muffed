@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/icon_button.dart';
@@ -12,7 +11,6 @@ import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/bloc.dart';
 
@@ -44,41 +42,6 @@ class CommunityScreen extends StatelessWidget {
         builder: (context, state) {
           final blocContext = context;
 
-          void showAboutDialog() {
-            showDialog<void>(
-              context: context,
-              builder: (context) {
-                return BlocProvider.value(
-                  value: BlocProvider.of<CommunityScreenBloc>(
-                    blocContext,
-                  ),
-                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                    builder: (context, state) {
-                      if (state.community != null) {
-                        return Dialog(
-                          child: Markdown(
-                            shrinkWrap: true,
-                            data: state.community!.description ??
-                                'no description',
-                            selectable: true,
-                            onTapLink: (text, url, title) {
-                              launchUrl(Uri.parse(url!));
-                            },
-                          ),
-                        );
-                      } else {
-                        return const Dialog(
-                          child: Text('community still loading'),
-                        );
-                      }
-                    },
-                  ),
-                );
-                final state = context.read<CommunityScreenBloc>().state;
-              },
-            );
-          }
-
           return SetPageInfo(
             actions: [
               BlocProvider.value(
@@ -92,7 +55,7 @@ class CommunityScreen extends StatelessWidget {
                       items: [
                         MuffedPopupMenuItem(
                           title: 'Hot',
-                          icon: Icon(Icons.local_fire_department),
+                          icon: const Icon(Icons.local_fire_department),
                           value: LemmySortType.hot,
                           onTap: () => context.read<CommunityScreenBloc>().add(
                                 SortTypeChanged(LemmySortType.hot),
@@ -100,7 +63,7 @@ class CommunityScreen extends StatelessWidget {
                         ),
                         MuffedPopupMenuItem(
                           title: 'Active',
-                          icon: Icon(Icons.rocket_launch),
+                          icon: const Icon(Icons.rocket_launch),
                           value: LemmySortType.active,
                           onTap: () => context.read<CommunityScreenBloc>().add(
                                 SortTypeChanged(LemmySortType.active),
@@ -108,7 +71,7 @@ class CommunityScreen extends StatelessWidget {
                         ),
                         MuffedPopupMenuItem(
                           title: 'New',
-                          icon: Icon(Icons.auto_awesome),
+                          icon: const Icon(Icons.auto_awesome),
                           value: LemmySortType.latest,
                           onTap: () => context.read<CommunityScreenBloc>().add(
                                 SortTypeChanged(LemmySortType.latest),
@@ -119,7 +82,7 @@ class CommunityScreen extends StatelessWidget {
                           items: [
                             MuffedPopupMenuItem(
                               title: 'All Time',
-                              icon: Icon(Icons.military_tech),
+                              icon: const Icon(Icons.military_tech),
                               value: LemmySortType.topAll,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -130,7 +93,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Year',
-                              icon: Icon(Icons.calendar_today),
+                              icon: const Icon(Icons.calendar_today),
                               value: LemmySortType.topYear,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -141,7 +104,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Month',
-                              icon: Icon(Icons.calendar_month),
+                              icon: const Icon(Icons.calendar_month),
                               value: LemmySortType.topMonth,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -152,7 +115,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Week',
-                              icon: Icon(Icons.view_week),
+                              icon: const Icon(Icons.view_week),
                               value: LemmySortType.topWeek,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -163,7 +126,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Day',
-                              icon: Icon(Icons.view_day),
+                              icon: const Icon(Icons.view_day),
                               value: LemmySortType.topDay,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -174,7 +137,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Twelve Hours',
-                              icon: Icon(Icons.schedule),
+                              icon: const Icon(Icons.schedule),
                               value: LemmySortType.topTwelveHour,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -185,7 +148,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Six Hours',
-                              icon: Icon(Icons.view_module_outlined),
+                              icon: const Icon(Icons.view_module_outlined),
                               value: LemmySortType.topSixHour,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -196,7 +159,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'Hour',
-                              icon: Icon(Icons.hourglass_bottom),
+                              icon: const Icon(Icons.hourglass_bottom),
                               value: LemmySortType.topHour,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -212,7 +175,7 @@ class CommunityScreen extends StatelessWidget {
                           items: [
                             MuffedPopupMenuItem(
                               title: 'Most Comments',
-                              icon: Icon(Icons.comment_bank),
+                              icon: const Icon(Icons.comment_bank),
                               value: LemmySortType.mostComments,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -223,7 +186,7 @@ class CommunityScreen extends StatelessWidget {
                             ),
                             MuffedPopupMenuItem(
                               title: 'New Comments',
-                              icon: Icon(Icons.add_comment),
+                              icon: const Icon(Icons.add_comment),
                               value: LemmySortType.newComments,
                               onTap: () =>
                                   context.read<CommunityScreenBloc>().add(
@@ -282,7 +245,7 @@ class CommunityScreen extends StatelessWidget {
                     return item;
                   },
                 ),
-              )
+              ),
             ],
             indexOfRelevantItem: 0,
             // makes presses outside of the menu not register and closes the
@@ -329,19 +292,24 @@ class CommunityScreen extends StatelessWidget {
 }
 
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
+  const _TopBarDelegate({
+    required this.community,
+    this.headerMaxHeight = 400,
+    this.headerMinHeight = 90,
+    this.bannerEnd = 0.5,
+  });
+
   final LemmyCommunity community;
 
-  _TopBarDelegate({required this.community});
-
-  final _headerMaxHeight = 400.0;
-  final _headerMinHeight = 90.0;
-  final bannerEnd = 0.5;
+  final double headerMaxHeight;
+  final double headerMinHeight;
+  final bannerEnd;
 
   @override
-  double get maxExtent => _headerMaxHeight;
+  double get maxExtent => headerMaxHeight;
 
   @override
-  double get minExtent => _headerMinHeight;
+  double get minExtent => headerMinHeight;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
@@ -355,11 +323,11 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final progress = shrinkOffset / maxExtent;
 
-    final fractionScrolled = shrinkOffset / _headerMaxHeight;
+    final fractionScrolled = shrinkOffset / headerMaxHeight;
 
     final placeholderBanner = Image.asset(
       'assets/placeholder_banner.jpeg',
-      height: (_headerMaxHeight - shrinkOffset) * bannerEnd,
+      height: (headerMaxHeight - shrinkOffset) * bannerEnd,
       width: double.maxFinite,
       fit: BoxFit.cover,
     );
@@ -392,7 +360,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                             fit: BoxFit.cover,
                             width: double.maxFinite,
                             height:
-                                (_headerMaxHeight - shrinkOffset) * bannerEnd,
+                                (headerMaxHeight - shrinkOffset) * bannerEnd,
                             placeholder: (context, url) => placeholderBanner,
                             imageUrl: community.banner!,
                           )
@@ -400,7 +368,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                   ),
                   // sizes to the height the the header
                   SizedBox(
-                    height: _headerMaxHeight - shrinkOffset,
+                    height: headerMaxHeight - shrinkOffset,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -420,7 +388,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                         // sizes from bottom up to the fraction chosen
                         // of the header
                         SizedBox(
-                          height: (_headerMaxHeight - shrinkOffset) *
+                          height: (headerMaxHeight - shrinkOffset) *
                               (1 - bannerEnd),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16),
@@ -513,7 +481,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
             ),
           ),
           SizedBox(
-            height: _headerMaxHeight - shrinkOffset,
+            height: headerMaxHeight - shrinkOffset,
             width: double.maxFinite,
           ),
           SafeArea(
