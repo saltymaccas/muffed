@@ -9,14 +9,14 @@ A Lemmy client written in flutter with a focus on usability and privacy.
 ## Screenshots
 
 <p align="center">
-  <img src="docs/assets/1.png" width="200">
-  <img src="docs/assets/4.png" width="200">
-  <img src="docs/assets/5.png" width="200">
+  <img src="docs/assets/1_dark.png" width="200">
+  <img src="docs/assets/2_dark.png" width="200">
+  <img src="docs/assets/3_dark.png" width="200">
 </p>
 <p align="center">
-  <img src="docs/assets/2.png" width="200">
-  <img src="docs/assets/3.png" width="200">
-  <img src="docs/assets/6.png" width="200">
+  <img src="docs/assets/1_light.png" width="200">
+  <img src="docs/assets/2_light.png" width="200">
+  <img src="docs/assets/3_light.png" width="200">
 </p>
 
 # Project Status
