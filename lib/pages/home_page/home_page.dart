@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                         items: [
                           MuffedPopupMenuItem(
                             title: 'Hot',
-                            icon: Icon(Icons.local_fire_department),
+                            icon: const Icon(Icons.local_fire_department),
                             value: LemmySortType.hot,
                             onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.hot),
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           MuffedPopupMenuItem(
                             title: 'Active',
-                            icon: Icon(Icons.rocket_launch),
+                            icon: const Icon(Icons.rocket_launch),
                             value: LemmySortType.active,
                             onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.active),
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           MuffedPopupMenuItem(
                             title: 'New',
-                            icon: Icon(Icons.auto_awesome),
+                            icon: const Icon(Icons.auto_awesome),
                             value: LemmySortType.latest,
                             onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.latest),
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                             items: [
                               MuffedPopupMenuItem(
                                 title: 'All Time',
-                                icon: Icon(Icons.military_tech),
+                                icon: const Icon(Icons.military_tech),
                                 value: LemmySortType.topAll,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Year',
-                                icon: Icon(Icons.calendar_today),
+                                icon: const Icon(Icons.calendar_today),
                                 value: LemmySortType.topYear,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Month',
-                                icon: Icon(Icons.calendar_month),
+                                icon: const Icon(Icons.calendar_month),
                                 value: LemmySortType.topMonth,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Week',
-                                icon: Icon(Icons.view_week),
+                                icon: const Icon(Icons.view_week),
                                 value: LemmySortType.topWeek,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Day',
-                                icon: Icon(Icons.view_day),
+                                icon: const Icon(Icons.view_day),
                                 value: LemmySortType.topDay,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Twelve Hours',
-                                icon: Icon(Icons.schedule),
+                                icon: const Icon(Icons.schedule),
                                 value: LemmySortType.topTwelveHour,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Six Hours',
-                                icon: Icon(Icons.view_module_outlined),
+                                icon: const Icon(Icons.view_module_outlined),
                                 value: LemmySortType.topSixHour,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Hour',
-                                icon: Icon(Icons.hourglass_bottom),
+                                icon: const Icon(Icons.hourglass_bottom),
                                 value: LemmySortType.topHour,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                             items: [
                               MuffedPopupMenuItem(
                                 title: 'Most Comments',
-                                icon: Icon(Icons.comment_bank),
+                                icon: const Icon(Icons.comment_bank),
                                 value: LemmySortType.mostComments,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               MuffedPopupMenuItem(
                                 title: 'New Comments',
-                                icon: Icon(Icons.add_comment),
+                                icon: const Icon(Icons.add_comment),
                                 value: LemmySortType.newComments,
                                 onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
