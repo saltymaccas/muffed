@@ -77,10 +77,13 @@ class CommunityScreenBloc
             communityId: state.communityId,
           );
 
-          emit(state.copyWith(
-              posts: [...state.posts, ...newPosts],
+          emit(
+            state.copyWith(
+              posts: {...state.posts, ...newPosts}.toList(),
               isLoading: false,
-              pagesLoaded: state.pagesLoaded + 1));
+              pagesLoaded: state.pagesLoaded + 1,
+            ),
+          );
         } catch (err) {
           emit(state.copyWith(isLoading: false, errorMessage: err));
         }
@@ -92,7 +95,10 @@ class CommunityScreenBloc
 
       try {
         final posts = await repo.lemmyRepo.getPosts(
-            sortType: event.sortType, communityId: state.communityId, page: 1);
+          sortType: event.sortType,
+          communityId: state.communityId,
+          page: 1,
+        );
         emit(
           state.copyWith(
             isLoading: false,

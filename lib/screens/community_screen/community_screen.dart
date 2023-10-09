@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/block_dialog/block_dialog.dart';
-import 'package:muffed/components/content_view/content_view.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
+import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -253,28 +253,30 @@ class CommunityScreen extends StatelessWidget {
                     } else if (state.communityInfoStatus ==
                         CommunityStatus.success) {
                       item = MuffedPopupMenuButton(
-                          changeIconToSelected: false,
-                          visualDensity: VisualDensity.compact,
-                          icon: Icon(Icons.more_vert),
-                          items: [
-                            MuffedPopupMenuItem(
-                              icon: Icon(Icons.block),
-                              title: 'Block/Unblock',
-                              onTap: () {
-                                showDialog<void>(
-                                    context: context,
-                                    builder: (context) {
-                                      return BlockDialog(
-                                        id: state.community!.id,
-                                        type: BlockDialogType.community,
-                                        name: state.community!.name,
-                                      );
-                                    });
-                              },
-                            ),
-                          ]);
+                        changeIconToSelected: false,
+                        visualDensity: VisualDensity.compact,
+                        icon: const Icon(Icons.more_vert),
+                        items: [
+                          MuffedPopupMenuItem(
+                            icon: const Icon(Icons.block),
+                            title: 'Block/Unblock',
+                            onTap: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) {
+                                  return BlockDialog(
+                                    id: state.community!.id,
+                                    type: BlockDialogType.community,
+                                    name: state.community!.name,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      );
                     } else {
-                      item = IconButtonInitial();
+                      item = const IconButtonInitial();
                     }
 
                     return item;
@@ -285,22 +287,39 @@ class CommunityScreen extends StatelessWidget {
             indexOfRelevantItem: 0,
             // makes presses outside of the menu not register and closes the
             // menu
-            child: ContentView(
-              scrollController: ScrollController(),
-              leadingSlivers: [
-                if (state.communityInfoStatus == CommunityStatus.success)
-                  SliverPersistentHeader(
-                    delegate: _TopBarDelegate(community: state.community!),
-                    floating: false,
-                    pinned: true,
-                  ),
-              ],
-              onRefresh: () async {},
-              isContentLoading: state.postsStatus == CommunityStatus.loading,
-              posts: state.posts,
-              reachedNearEnd: () {
-                context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
+            child: NotificationListener(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo.metrics.pixels >=
+                    scrollInfo.metrics.maxScrollExtent - 500) {
+                  context.read<CommunityScreenBloc>().add(ReachedEndOfScroll());
+                }
+                return true;
               },
+              child: RefreshIndicator(
+                onRefresh: () async {},
+                child: CustomScrollView(
+                  key: ValueKey('${state.loadedSortType}'),
+                  slivers: [
+                    if (state.communityInfoStatus == CommunityStatus.success)
+                      SliverPersistentHeader(
+                        delegate: _TopBarDelegate(community: state.community!),
+                        floating: false,
+                        pinned: true,
+                      ),
+                    if (state.postsStatus == CommunityStatus.success)
+                      SliverList.builder(
+                        itemCount: state.posts.length,
+                        itemBuilder: (context, index) {
+                          return PostItem(
+                            key: ValueKey(state.posts[index]),
+                            post: state.posts[index],
+                            limitHeight: true,
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
             ),
           );
         },
@@ -308,8 +327,6 @@ class CommunityScreen extends StatelessWidget {
     );
   }
 }
-
-//  TODO: make a better header
 
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   final LemmyCommunity community;
