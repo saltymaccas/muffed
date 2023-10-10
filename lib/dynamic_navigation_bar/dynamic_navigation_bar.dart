@@ -26,11 +26,11 @@ class DynamicNavigationBar extends StatelessWidget {
     return Material(
       color: Theme.of(context).colorScheme.surface,
       elevation: 2,
-      child: Container(
+      child: SizedBox(
         height: 60,
         child: BlocBuilder<DynamicNavigationBarBloc, DynamicNavigationBarState>(
           builder: (context, state) {
-            List<_DynamicNavigationBarItem> items = [
+            final items = [
               _DynamicNavigationBarItem(
                 itemIndex: 0,
                 icon: IconButton(
@@ -43,8 +43,8 @@ class DynamicNavigationBar extends StatelessWidget {
                     );
                   },
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home),
+                  icon: const Icon(Icons.home_outlined),
+                  selectedIcon: const Icon(Icons.home),
                   isSelected: state.selectedItemIndex == 0,
                 ),
                 selected: state.selectedItemIndex == 0,
@@ -54,14 +54,15 @@ class DynamicNavigationBar extends StatelessWidget {
                 icon: IconButton(
                   onPressed: () {
                     onItemTapped(
-                        1,
-                        (state.pageStackInfo[1]!.isNotEmpty)
-                            ? state.pageStackInfo[1]!.last.context
-                            : null);
+                      1,
+                      (state.pageStackInfo[1]!.isNotEmpty)
+                          ? state.pageStackInfo[1]!.last.context
+                          : null,
+                    );
                   },
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(Icons.inbox_outlined),
-                  selectedIcon: Icon(Icons.inbox),
+                  icon: const Icon(Icons.inbox_outlined),
+                  selectedIcon: const Icon(Icons.inbox),
                   isSelected: state.selectedItemIndex == 1,
                 ),
                 selected: state.selectedItemIndex == 1,
@@ -81,20 +82,23 @@ class DynamicNavigationBar extends StatelessWidget {
                             : null,
                       );
                     },
-                    icon: Icon(Icons.person_outline),
-                    selectedIcon: Icon(Icons.person),
+                    icon: const Icon(Icons.person_outline),
+                    selectedIcon: const Icon(Icons.person),
                     isSelected: state.selectedItemIndex == 2,
                   ),
                 ),
                 selected: state.selectedItemIndex == 2,
                 itemIndex: 2,
-              )
+              ),
             ];
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(items.length, (index) {
                 return AnimatedSize(
-                    curve: _animCurve, duration: _animDur, child: items[index]);
+                  curve: _animCurve,
+                  duration: _animDur,
+                  child: items[index],
+                );
               }),
             );
           },
@@ -162,7 +166,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                   ? Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: Container(
                             width: 2,
                             height: 10,
@@ -198,7 +202,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                         ),
                       ],
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
           ],
         ),
@@ -252,20 +256,23 @@ class _SetPageInfoState extends State<SetPageInfo> {
 
     for (var i = 0; i < widget.actions.length; i++) {
       final Widget action = widget.actions[i];
-      animatedActions.add(action
-          .animate(autoPlay: true)
-          .slideY(
-            duration: _animDur,
-            curve: _animCurve,
-            begin: 3,
-            delay: Duration(milliseconds: _animInterval * i),
-            end: 0,
-          )
-          .fadeIn(
+      animatedActions.add(
+        action
+            .animate(autoPlay: true)
+            .slideY(
+              duration: _animDur,
+              curve: _animCurve,
+              begin: 3,
+              delay: Duration(milliseconds: _animInterval * i),
+              end: 0,
+            )
+            .fadeIn(
               duration: _animDur,
               begin: 0,
               curve: _animCurve,
-              delay: Duration(milliseconds: _animInterval * i)));
+              delay: Duration(milliseconds: _animInterval * i),
+            ),
+      );
     }
 
     _bloc.add(
