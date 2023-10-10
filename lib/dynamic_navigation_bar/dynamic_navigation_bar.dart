@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/profile_page/account_switcher.dart';
 
 import 'bloc/bloc.dart';
@@ -134,6 +135,13 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
     /// This is used to make sure the spacer in between the item and the actions
     /// is only shown when it should be
     late final bool hasActions;
+
+    final LemmyAccountData? loadedAccount = null;
+
+    if (widget.selected) {
+      if (loadedAccount !=
+          context.watch<GlobalBloc>().getSelectedLemmyAccount()) {}
+    }
 
     if (bloc.state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
       if (bloc.state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {

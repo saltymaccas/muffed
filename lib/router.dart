@@ -22,6 +22,27 @@ final router = GoRouter(
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
+      // navigatorContainerBuilder: (
+      //   BuildContext context,
+      //   StatefulNavigationShell navigationShell,
+      //   List<Widget> children,
+      // ) {
+      //   final List<Widget> stackItems = [];
+      //
+      //   for (int i = 0; i < children.length; i++) {
+      //     stackItems.add(
+      //       Offstage(
+      //         offstage: navigationShell.currentIndex != i,
+      //         child: children[i],
+      //       ),
+      //     );
+      //   }
+      //
+      //   return IndexedStack(
+      //     index: navigationShell.currentIndex,
+      //     children: stackItems,
+      //   );
+      // },
       builder: (
         BuildContext context,
         GoRouterState state,
