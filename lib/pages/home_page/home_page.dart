@@ -19,21 +19,22 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      HomePageBloc(repo: context.read<ServerRepo>())
+      create: (context) => HomePageBloc(repo: context.read<ServerRepo>())
         ..add(LoadInitialPostsRequested()),
       child: BlocBuilder<HomePageBloc, HomePageState>(
         builder: (context, state) {
           final BuildContext blocContext = context;
           return BlocListener<GlobalBloc, GlobalState>(
             listenWhen: (previous, current) {
-              final LemmyAccountData? previousAccount = (previous
-                  .lemmySelectedAccount == -1) ? null : previous
-                  .lemmyAccounts[previous.lemmySelectedAccount];
+              final LemmyAccountData? previousAccount =
+                  (previous.lemmySelectedAccount == -1)
+                      ? null
+                      : previous.lemmyAccounts[previous.lemmySelectedAccount];
 
-              final LemmyAccountData? currentAccount = (current
-                  .lemmySelectedAccount == -1) ? null : current
-                  .lemmyAccounts[current.lemmySelectedAccount];
+              final LemmyAccountData? currentAccount =
+                  (current.lemmySelectedAccount == -1)
+                      ? null
+                      : current.lemmyAccounts[current.lemmySelectedAccount];
 
               if (previousAccount != currentAccount) {
                 return true;
@@ -66,8 +67,7 @@ class HomePage extends StatelessWidget {
                             title: 'Hot',
                             icon: const Icon(Icons.local_fire_department),
                             value: LemmySortType.hot,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.hot),
                                 ),
                           ),
@@ -75,8 +75,7 @@ class HomePage extends StatelessWidget {
                             title: 'Active',
                             icon: const Icon(Icons.rocket_launch),
                             value: LemmySortType.active,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.active),
                                 ),
                           ),
@@ -84,8 +83,7 @@ class HomePage extends StatelessWidget {
                             title: 'New',
                             icon: const Icon(Icons.auto_awesome),
                             value: LemmySortType.latest,
-                            onTap: () =>
-                                context.read<HomePageBloc>().add(
+                            onTap: () => context.read<HomePageBloc>().add(
                                   SortTypeChanged(LemmySortType.latest),
                                 ),
                           ),
@@ -96,8 +94,7 @@ class HomePage extends StatelessWidget {
                                 title: 'All Time',
                                 icon: const Icon(Icons.military_tech),
                                 value: LemmySortType.topAll,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topAll,
                                       ),
@@ -107,8 +104,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Year',
                                 icon: const Icon(Icons.calendar_today),
                                 value: LemmySortType.topYear,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topYear,
                                       ),
@@ -118,8 +114,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Month',
                                 icon: const Icon(Icons.calendar_month),
                                 value: LemmySortType.topMonth,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topMonth,
                                       ),
@@ -129,8 +124,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Week',
                                 icon: const Icon(Icons.view_week),
                                 value: LemmySortType.topWeek,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topWeek,
                                       ),
@@ -140,8 +134,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Day',
                                 icon: const Icon(Icons.view_day),
                                 value: LemmySortType.topDay,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topDay,
                                       ),
@@ -151,8 +144,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Twelve Hours',
                                 icon: const Icon(Icons.schedule),
                                 value: LemmySortType.topTwelveHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topTwelveHour,
                                       ),
@@ -162,8 +154,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Six Hours',
                                 icon: const Icon(Icons.view_module_outlined),
                                 value: LemmySortType.topSixHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topSixHour,
                                       ),
@@ -173,8 +164,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Hour',
                                 icon: const Icon(Icons.hourglass_bottom),
                                 value: LemmySortType.topHour,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.topHour,
                                       ),
@@ -189,8 +179,7 @@ class HomePage extends StatelessWidget {
                                 title: 'Most Comments',
                                 icon: const Icon(Icons.comment_bank),
                                 value: LemmySortType.mostComments,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.mostComments,
                                       ),
@@ -200,8 +189,7 @@ class HomePage extends StatelessWidget {
                                 title: 'New Comments',
                                 icon: const Icon(Icons.add_comment),
                                 value: LemmySortType.newComments,
-                                onTap: () =>
-                                    context.read<HomePageBloc>().add(
+                                onTap: () => context.read<HomePageBloc>().add(
                                       SortTypeChanged(
                                         LemmySortType.newComments,
                                       ),
@@ -229,8 +217,7 @@ class HomePage extends StatelessWidget {
                                 MuffedPopupMenuItem(
                                   title: 'All',
                                   value: LemmyListingType.all,
-                                  onTap: () =>
-                                      context.read<HomePageBloc>().add(
+                                  onTap: () => context.read<HomePageBloc>().add(
                                         ListingTypeChanged(
                                           LemmyListingType.all,
                                         ),
@@ -239,8 +226,7 @@ class HomePage extends StatelessWidget {
                                 MuffedPopupMenuItem(
                                   title: 'Subscribed',
                                   value: LemmyListingType.subscribed,
-                                  onTap: () =>
-                                      context.read<HomePageBloc>().add(
+                                  onTap: () => context.read<HomePageBloc>().add(
                                         ListingTypeChanged(
                                           LemmyListingType.subscribed,
                                         ),
@@ -268,6 +254,7 @@ class HomePage extends StatelessWidget {
                       key: ValueKey(
                         '${state.loadedSortType}, ${state.listingType}',
                       ),
+                      isLoading: state.isLoading,
                       posts: state.posts!,
                     );
                   } else {
@@ -320,51 +307,59 @@ class _HomePageLoading extends StatelessWidget {
 }
 
 class _HomePageSuccess extends StatelessWidget {
-  const _HomePageSuccess({required this.posts, super.key});
+  const _HomePageSuccess(
+      {required this.posts, required this.isLoading, super.key});
 
   final List<LemmyPost> posts;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    return NotificationListener(
-      onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels >=
-            scrollInfo.metrics.maxScrollExtent - 500) {
-          context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
-        }
-        return true;
-      },
-      child: RefreshIndicator(
-        onRefresh: () async {
-          context.read<HomePageBloc>().add(PullDownRefresh());
-          await context
-              .read<HomePageBloc>()
-              .stream
-              .firstWhere((element) {
-            if (element.isRefreshing == false) {
-              return true;
+    return Stack(
+      children: [
+        NotificationListener(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 500) {
+              context.read<HomePageBloc>().add(ReachedNearEndOfScroll());
             }
-            return false;
-          });
-        },
-        child: CustomScrollView(
-          slivers: [
-            SliverPersistentHeader(delegate: _TopBarDelegate()),
-            SliverList.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                return PostItem(
-                  key: ValueKey(posts[index]),
-                  post: posts[index],
-                  limitHeight: true,
-                );
-              },
+            return true;
+          },
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<HomePageBloc>().add(PullDownRefresh());
+              await context.read<HomePageBloc>().stream.firstWhere((element) {
+                if (element.isRefreshing == false) {
+                  return true;
+                }
+                return false;
+              });
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverPersistentHeader(delegate: _TopBarDelegate()),
+                SliverList.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    return PostItem(
+                      key: ValueKey(posts[index]),
+                      post: posts[index],
+                      limitHeight: true,
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        if (isLoading)
+          const Align(
+            alignment: Alignment.topCenter,
+            child: SafeArea(child: LinearProgressIndicator()),
+          ),
+      ],
     );
   }
 }
@@ -380,14 +375,13 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 200;
 
   @override
-  Widget build(BuildContext context,
-      double shrinkOffset,
-      bool overlapsContent,) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return ColoredBox(
-      color: Theme
-          .of(context)
-          .colorScheme
-          .surface,
+      color: Theme.of(context).colorScheme.surface,
       child: const Padding(
         padding: EdgeInsets.all(8),
       ),
