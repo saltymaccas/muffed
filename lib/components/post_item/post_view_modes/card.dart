@@ -244,15 +244,18 @@ class CardLemmyPostItem extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          context.read<PostItemBloc>().add(SavePostToggled());
-                        },
-                        icon: Icon(
-                          (post.saved) ? Icons.bookmark : Icons.bookmark_border,
+                      if (context.read<GlobalBloc>().isLoggedIn())
+                        IconButton(
+                          onPressed: () {
+                            context.read<PostItemBloc>().add(SavePostToggled());
+                          },
+                          icon: Icon(
+                            (post.saved)
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                          ),
+                          color: (post.saved) ? Colors.red : null,
                         ),
-                        color: (post.saved) ? Colors.red : null,
-                      ),
                       IconButton(
                         icon: const Icon(Icons.arrow_upward_outlined),
                         color: (post.myVote == LemmyVoteType.upVote)
