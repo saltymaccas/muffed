@@ -12,12 +12,13 @@ import 'package:muffed/utils/time.dart';
 /// Used to display a single comment in a listview, this widget will also show
 /// all the children comments,
 
-class CommentItem extends StatelessWidget {
+class CommentItem extends StatefulWidget {
   const CommentItem({
     required this.comment,
     required this.children,
     required this.sortType,
     this.isOrphan = true,
+    this.postCreatorId,
     super.key,
   });
 
@@ -25,15 +26,29 @@ class CommentItem extends StatelessWidget {
   final List<LemmyComment> children;
   final LemmyCommentSortType sortType;
 
+  /// The id of the creator of the post the comment is on, used to mark the
+  /// comment if it is by the same person who made the post
+  final int? postCreatorId;
+
   /// Whether the comment has a parent comment
   final bool isOrphan;
 
   @override
+  State<CommentItem> createState() => _CommentItemState();
+}
+
+class _CommentItemState extends State<CommentItem>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider(
       create: (context) => CommentItemBloc(
-        comment: comment,
-        children: children,
+        comment: widget.comment,
+        children: widget.children,
         repo: context.read<ServerRepo>(),
       ),
       child: BlocConsumer<CommentItemBloc, CommentItemState>(
@@ -44,7 +59,7 @@ class CommentItem extends StatelessWidget {
         },
         builder: (context, state) {
           final organisedComments = organiseCommentsWithChildren(
-            comment.getLevel() + 1,
+            widget.comment.getLevel() + 1,
             state.children,
           );
 
@@ -52,10 +67,12 @@ class CommentItem extends StatelessWidget {
               List.generate(organisedComments.length, (index) {
             final key = organisedComments.keys.toList()[index];
             return CommentItem(
+              key: ValueKey<int>(key.id),
               comment: key,
               children: organisedComments[key]!,
-              sortType: sortType,
+              sortType: widget.sortType,
               isOrphan: false,
+              postCreatorId: widget.postCreatorId,
             );
           });
 
@@ -72,7 +89,7 @@ class CommentItem extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: (comment.path.isNotEmpty)
+                  left: (widget.comment.path.isNotEmpty)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
@@ -88,7 +105,7 @@ class CommentItem extends StatelessWidget {
                   alignment: Alignment.topCenter,
                   child: state.minimised
                       ? Text(
-                          comment.content,
+                          widget.comment.content,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         )
@@ -98,7 +115,7 @@ class CommentItem extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  comment.creatorName,
+                                  widget.comment.creatorName,
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.primary,
@@ -109,16 +126,24 @@ class CommentItem extends StatelessWidget {
                                 ),
                                 Text(
                                   formattedPostedAgo(
-                                    comment.timePublished,
+                                    widget.comment.timePublished,
                                   ),
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.outline,
                                   ),
                                 ),
+                                const SizedBox(width: 10),
+                                if (widget.postCreatorId == state.comment.id)
+                                  Icon(
+                                    Icons.mic_external_on_sharp,
+                                    size: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
                               ],
                             ),
-                            MuffedMarkdownBody(data: comment.content),
+                            MuffedMarkdownBody(data: widget.comment.content),
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -170,7 +195,7 @@ class CommentItem extends StatelessWidget {
                                       title: 'Go to user',
                                       onTap: () {
                                         context.push(
-                                          '/home/person?id=${comment.creatorId}',
+                                          '/home/person?id=${widget.comment.creatorId}',
                                         );
                                       },
                                     ),
@@ -184,13 +209,13 @@ class CommentItem extends StatelessWidget {
                               InkWell(
                                 onTap: () {
                                   context.read<CommentItemBloc>().add(
-                                        LoadChildrenRequested(sortType),
+                                        LoadChildrenRequested(widget.sortType),
                                       );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border(
-                                      left: (comment.path.isNotEmpty)
+                                      left: (widget.comment.path.isNotEmpty)
                                           ? BorderSide(
                                               color: Theme.of(context)
                                                   .colorScheme
@@ -218,7 +243,7 @@ class CommentItem extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            if (isOrphan) Divider(),
+                            if (widget.isOrphan) Divider(),
                           ],
                         ),
                 ),

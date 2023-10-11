@@ -34,7 +34,7 @@ class CommentScreen extends StatelessWidget {
       child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
-            showErrorSnackBar(context, error: state.errorMessage!);
+            showErrorSnackBar(context, error: state.errorMessage);
           }
         },
         builder: (context, state) {
@@ -198,10 +198,11 @@ class _CommentScreenSuccess extends StatelessWidget {
 
     return SliverList.builder(
       itemCount: organisedComments.length,
+      addAutomaticKeepAlives: true,
       itemBuilder: (context, index) {
         final key = organisedComments.keys.toList()[index];
-
         return CommentItem(
+          key: ValueKey<int>(key.id),
           comment: key,
           children: organisedComments[key]!,
           sortType: sortType,
