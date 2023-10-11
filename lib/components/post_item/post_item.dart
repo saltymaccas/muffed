@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
@@ -62,8 +63,11 @@ class _PostItemState extends State<PostItem>
       );
     } else {
       return BlocProvider(
-        create: (context) =>
-            PostItemBloc(post: widget.post, repo: context.read<ServerRepo>()),
+        create: (context) => PostItemBloc(
+          post: widget.post,
+          repo: context.read<ServerRepo>(),
+          globalBloc: context.read<GlobalBloc>(),
+        ),
         child: postWidget,
       );
     }
