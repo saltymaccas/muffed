@@ -7,6 +7,7 @@ final class LoginPageState extends Equatable {
   final String serverAddr;
   final String? errorMessage;
   final bool loading;
+  final bool revealPassword;
 
   LoginPageState({
     this.totp = '',
@@ -15,11 +16,19 @@ final class LoginPageState extends Equatable {
     this.serverAddr = '',
     this.errorMessage,
     this.loading = false,
+    this.revealPassword = false,
   });
 
   @override
-  List<Object?> get props =>
-      [usernameOrEmail, password, totp, serverAddr, errorMessage, loading];
+  List<Object?> get props => [
+        usernameOrEmail,
+        password,
+        totp,
+        serverAddr,
+        errorMessage,
+        loading,
+        revealPassword,
+      ];
 
   LoginPageState copyWith({
     bool? loading,
@@ -28,6 +37,7 @@ final class LoginPageState extends Equatable {
     String? usernameOrEmail,
     String? totp,
     String? password,
+    bool? revealPassword,
   }) {
     return LoginPageState(
       loading: loading ?? this.loading,
@@ -36,6 +46,7 @@ final class LoginPageState extends Equatable {
       usernameOrEmail: usernameOrEmail ?? this.usernameOrEmail,
       totp: totp ?? this.totp,
       password: password ?? this.password,
+      revealPassword: revealPassword ?? this.revealPassword,
     );
   }
 }

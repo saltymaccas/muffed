@@ -20,8 +20,18 @@ class LoginPage extends StatelessWidget {
         indexOfRelevantItem: 2,
         child: BlocBuilder<LoginPageBloc, LoginPageState>(
           buildWhen: (previous, current) {
-            if (previous.loading != current.loading ||
-                previous.errorMessage != current.errorMessage) {
+            if (previous.copyWith(
+                  password: '',
+                  serverAddr: '',
+                  totp: '',
+                  usernameOrEmail: '',
+                ) !=
+                current.copyWith(
+                  password: '',
+                  serverAddr: '',
+                  totp: '',
+                  usernameOrEmail: '',
+                )) {
               return true;
             } else {
               return false;
@@ -81,10 +91,20 @@ class LoginPage extends StatelessWidget {
                             height: 16,
                           ),
                           TextField(
-                            obscureText: true,
+                            obscureText: !state.revealPassword,
                             autocorrect: false,
                             enableSuggestions: false,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<LoginPageBloc>()
+                                      .add(RevealPasswordToggled());
+                                },
+                                icon: (state.revealPassword)
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility),
+                              ),
                               filled: true,
                               label: Text('Password'),
                             ),
@@ -120,7 +140,7 @@ class LoginPage extends StatelessWidget {
                           ),
                           if (state.errorMessage != null)
                             ErrorComponentTransparent(
-                              message: state.errorMessage!,
+                              message: state.errorMessage,
                             ),
                         ],
                       ),

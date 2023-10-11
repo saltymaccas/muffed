@@ -24,6 +24,9 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<ServerAddressChanged>((event, emit) {
       emit(state.copyWith(serverAddr: event.value));
     });
+    on<RevealPasswordToggled>((event, emit) {
+      emit(state.copyWith(revealPassword: !state.revealPassword));
+    });
 
     /// when the user submits the login credentials
     on<Submitted>((event, emit) async {
