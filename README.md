@@ -8,6 +8,14 @@ A Lemmy client written in flutter with a focus on usability and privacy.
 
 [Join the Muffed Lemmy community](https://sh.itjust.works/c/muffed)
 
+# Download
+
+<div align="center">
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.freshfieldreds.muffed/">
+    <img src="docs/assets/IzzyOnDroid.png" height="90">
+  </a>
+</div>
+
 ## Screenshots
 
 <p align="center">
