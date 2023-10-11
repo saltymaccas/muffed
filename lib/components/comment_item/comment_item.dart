@@ -5,6 +5,7 @@ import 'package:muffed/components/comment_item/bloc/bloc.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
@@ -50,6 +51,7 @@ class _CommentItemState extends State<CommentItem>
         comment: widget.comment,
         children: widget.children,
         repo: context.read<ServerRepo>(),
+        globalBloc: context.read<GlobalBloc>(),
       ),
       child: BlocConsumer<CommentItemBloc, CommentItemState>(
         listener: (context, state) {
