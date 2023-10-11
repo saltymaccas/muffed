@@ -81,6 +81,9 @@ class LoginPage extends StatelessWidget {
                             height: 16,
                           ),
                           TextField(
+                            obscureText: true,
+                            autocorrect: false,
+                            enableSuggestions: false,
                             decoration: const InputDecoration(
                               filled: true,
                               label: Text('Password'),
