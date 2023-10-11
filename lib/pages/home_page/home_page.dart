@@ -341,6 +341,7 @@ class _HomePageSuccess extends StatelessWidget {
               slivers: [
                 SliverPersistentHeader(delegate: _TopBarDelegate()),
                 SliverList.builder(
+                  addAutomaticKeepAlives: true,
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
                     return PostItem(

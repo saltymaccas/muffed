@@ -10,7 +10,7 @@ enum PostViewMode { card }
 
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewMode]
-class PostItem extends StatelessWidget {
+class PostItem extends StatefulWidget {
   ///
   const PostItem({
     required this.post,
@@ -31,29 +31,39 @@ class PostItem extends StatelessWidget {
   final BuildContext? useBlocFromContext;
 
   @override
+  State<PostItem> createState() => _PostItemState();
+}
+
+class _PostItemState extends State<PostItem>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
-        switch (type) {
+        switch (widget.type) {
           case PostViewMode.card:
             return CardLemmyPostItem(
               state.post,
-              openOnTap: openOnTap,
-              limitContentHeight: limitHeight,
+              openOnTap: widget.openOnTap,
+              limitContentHeight: widget.limitHeight,
             );
         }
       },
     );
 
-    if (useBlocFromContext != null) {
+    if (widget.useBlocFromContext != null) {
       return BlocProvider.value(
-        value: BlocProvider.of<PostItemBloc>(useBlocFromContext!),
+        value: BlocProvider.of<PostItemBloc>(widget.useBlocFromContext!),
         child: postWidget,
       );
     } else {
       return BlocProvider(
         create: (context) =>
-            PostItemBloc(post: post, repo: context.read<ServerRepo>()),
+            PostItemBloc(post: widget.post, repo: context.read<ServerRepo>()),
         child: postWidget,
       );
     }
