@@ -4,20 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 final _log = Logger('LemmyRepo');
 
 /// Used to interact with the lemmy http api
 interface class LemmyRepo {
   /// initialize lemmy repo
-  LemmyRepo({required this.globalBloc})
-      : dio = Dio()
-          ..interceptors.add(
-            PrettyDioLogger(
-              logPrint: _log.finest,
-            ),
-          );
+  LemmyRepo({required this.globalBloc}) : dio = Dio();
 
   /// The dio client that will be used to send requests
   final Dio dio;

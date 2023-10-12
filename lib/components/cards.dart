@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -72,8 +71,8 @@ class _LemmyCommunityCardState extends State<LemmyCommunityCard> {
                       borderRadius: BorderRadius.circular(45),
                       child: (widget.community.icon != null)
                           ? CachedNetworkImage(imageUrl: widget.community.icon!)
-                          : SvgPicture.asset(
-                              'assets/logo.svg',
+                          : Image.asset(
+                              'assets/logo.png',
                             ),
                     ),
                   ),
@@ -209,8 +208,8 @@ class LemmyPersonCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(45),
                       child: (person.avatar != null)
                           ? CachedNetworkImage(imageUrl: person.avatar!)
-                          : SvgPicture.asset(
-                              'assets/logo.svg',
+                          : Image.asset(
+                              'assets/logo.png',
                             ),
                     ),
                   ),

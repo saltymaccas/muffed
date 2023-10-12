@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
@@ -324,7 +323,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                                   ? CachedNetworkImage(
                                       imageUrl: user.avatar!,
                                     )
-                                  : SvgPicture.asset('assets/logo.svg'),
+                                  : Image.asset('assets/logo.png'),
                             ),
                           ),
                         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -14,10 +13,9 @@ void openSearchDialog(BuildContext context) {
       final textController = TextEditingController();
 
       return BlocProvider(
-        create: (context) =>
-            SearchBloc(
-              repo: context.read<ServerRepo>(),
-            ),
+        create: (context) => SearchBloc(
+          repo: context.read<ServerRepo>(),
+        ),
         child: Dialog(
           clipBehavior: Clip.hardEdge,
           alignment: Alignment.bottomCenter,
@@ -65,17 +63,17 @@ void openSearchDialog(BuildContext context) {
                                         radius: 12,
                                         child: ClipRRect(
                                           borderRadius:
-                                          BorderRadius.circular(45),
+                                              BorderRadius.circular(45),
                                           child:
-                                          (state.communities[index].icon !=
-                                              null)
-                                              ? Image.network(state
-                                              .communities[index]
-                                              .icon! +
-                                              '?thumbnail=50')
-                                              : SvgPicture.asset(
-                                            'assets/logo.svg',
-                                          ),
+                                              (state.communities[index].icon !=
+                                                      null)
+                                                  ? Image.network(state
+                                                          .communities[index]
+                                                          .icon! +
+                                                      '?thumbnail=50')
+                                                  : Image.asset(
+                                                      'assets/logo.png',
+                                                    ),
                                         ),
                                       ),
                                       SizedBox(
@@ -83,16 +81,14 @@ void openSearchDialog(BuildContext context) {
                                       ),
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(state.communities[index].name),
                                           Text(
-                                            '${state.communities[index]
-                                                .subscribers} subscribers',
+                                            '${state.communities[index].subscribers} subscribers',
                                             style: TextStyle(
                                               fontSize: 10,
-                                              color: Theme
-                                                  .of(context)
+                                              color: Theme.of(context)
                                                   .colorScheme
                                                   .outline,
                                             ),
@@ -117,10 +113,10 @@ void openSearchDialog(BuildContext context) {
                       controller: textController,
                       onChanged: (query) {
                         context.read<SearchBloc>().add(
-                          SearchQueryChanged(
-                            searchQuery: query,
-                          ),
-                        );
+                              SearchQueryChanged(
+                                searchQuery: query,
+                              ),
+                            );
                       },
                       autofocus: true,
                       decoration: InputDecoration(
@@ -149,7 +145,7 @@ void openSearchDialog(BuildContext context) {
                     SizedBox(
                       height: 2,
                       child:
-                      (state.isLoading) ? LinearProgressIndicator() : null,
+                          (state.isLoading) ? LinearProgressIndicator() : null,
                     ),
                   ],
                 ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class LoadingComponentTransparent extends StatelessWidget {
   const LoadingComponentTransparent({super.key});
@@ -34,7 +32,7 @@ class LoadingComponentTransparentLogo extends StatelessWidget {
             ).createShader(bounds);
           },
           blendMode: BlendMode.srcATop,
-          child: SvgPicture.asset('assets/logo.svg'),
+          child: Image.asset('assets/logo.png'),
         ),
       ),
     );
