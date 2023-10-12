@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/utils/url.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -32,11 +33,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<Submitted>((event, emit) async {
       final totp = (state.totp == '') ? null : state.totp;
 
-      // if what was entered does not contain "http://" or "https://"
-      // it will be added
-      final homeServer = (state.serverAddr.contains(r'https?:/\/\'))
-          ? state.serverAddr
-          : 'https://${state.serverAddr}';
+      final homeServer = ensureProtocolSpecified(state.serverAddr);
 
       emit(state.copyWith(loading: true));
 

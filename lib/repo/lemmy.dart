@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/utils/url.dart';
 
 final _log = Logger('LemmyRepo');
 
@@ -302,22 +303,28 @@ interface class LemmyRepo {
     return LemmyCommunity.fromCommunityViewJson(response['community_view']);
   }
 
-  Future<LemmyLoginResponse> login(String password, String? totp,
-      String usernameOrEmail, String serverAddr) async {
+  Future<LemmyLoginResponse> login(
+    String password,
+    String? totp,
+    String usernameOrEmail,
+    String serverAddr,
+  ) async {
     final Map<String, dynamic> response = await postRequest(
-        path: '/user/login',
-        data: {
-          'username_or_email': usernameOrEmail,
-          'password': password,
-          if (totp != null) 'totp_2fa_token': totp,
-        },
-        mustBeLoggedIn: false,
-        serverAddress: serverAddr);
+      path: '/user/login',
+      data: {
+        'username_or_email': usernameOrEmail,
+        'password': password,
+        if (totp != null) 'totp_2fa_token': totp,
+      },
+      mustBeLoggedIn: false,
+      serverAddress: serverAddr,
+    );
 
     return LemmyLoginResponse(
-        registrationCreated: response['registration_created'],
-        verifyEmailSent: response['verify_email_sent'],
-        jwt: response['jwt']);
+      registrationCreated: response['registration_created'],
+      verifyEmailSent: response['verify_email_sent'],
+      jwt: response['jwt'],
+    );
   }
 
   Future<void> votePost(
@@ -422,10 +429,23 @@ interface class LemmyRepo {
     return response['post_view']['saved'];
   }
 
-  /// Checks whether the url is a valid lemmy url
-  Future<LemmySite> getSite(String url) async {
+  /// Gets the current lemmy site
+  Future<LemmySite> getSite() async {
     final response = await getRequest(path: '/site');
 
     return LemmySite.fromGetSiteResponse(response);
+  }
+
+  /// Gets any lemmy site
+  Future<LemmySite> getSpecificSite(String url) async {
+    final Response<Map<String, dynamic>> response = await dio.get(
+      '${ensureProtocolSpecified(url)}/api/v3/site',
+    );
+
+    if (response.data == null) {
+      throw ('response returned null');
+    }
+
+    return LemmySite.fromGetSiteResponse(response.data!);
   }
 }

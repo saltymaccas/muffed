@@ -6,6 +6,7 @@ import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/inbox_page/inbox_page.dart';
 import 'package:muffed/pages/profile_page//saved_posts_screen/saved_posts_screen.dart';
+import 'package:muffed/pages/profile_page/anon_settings_screen/anon_settings_screen.dart';
 import 'package:muffed/pages/profile_page/login_page/login_page.dart';
 import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
@@ -165,10 +166,11 @@ final router = GoRouter(
                       },
                     ),
                     GoRoute(
-                        path: 'contentfilters',
-                        builder: (context, state) {
-                          return const ContentFiltersPage();
-                        }),
+                      path: 'contentfilters',
+                      builder: (context, state) {
+                        return const ContentFiltersPage();
+                      },
+                    ),
                     GoRoute(
                       path: 'defaults',
                       builder: (context, state) {
@@ -181,6 +183,12 @@ final router = GoRouter(
                   path: 'saved_posts',
                   builder: (context, state) {
                     return const SavedPostsScreen();
+                  },
+                ),
+                GoRoute(
+                  path: 'anon_account_settings',
+                  builder: (context, state) {
+                    return const AnonSettingsScreen();
                   },
                 ),
               ],

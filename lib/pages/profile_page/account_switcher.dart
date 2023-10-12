@@ -89,6 +89,12 @@ void showAccountSwitcher(BuildContext context) {
                     UserRequestsLemmyAccountSwitch(-1),
                   );
                 },
+                trailing: IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    context.go('/profile/anon_account_settings');
+                  },
+                ),
               ),
               ListTile(
                 title: const Text('Add Account'),
