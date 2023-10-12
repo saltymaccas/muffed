@@ -105,10 +105,11 @@ interface class LemmyRepo {
 
   /// Sends a get request to the lemmy api, If logged in auth parameter will be
   /// added automatically
-  Future<Map<String, dynamic>> getRequest(
-      {required String path,
-      Map<String, dynamic> queryParameters = const {},
-      bool mustBeLoggedIn = false}) async {
+  Future<Map<String, dynamic>> getRequest({
+    required String path,
+    Map<String, dynamic> queryParameters = const {},
+    bool mustBeLoggedIn = false,
+  }) async {
     if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
       throw Exception('Not logged in');
     }
@@ -426,5 +427,12 @@ interface class LemmyRepo {
     );
 
     return response['post_view']['saved'];
+  }
+
+  /// Checks whether the url is a valid lemmy url
+  Future<LemmySite> getSite(String url) async {
+    final response = await getRequest(path: '/site');
+
+    return LemmySite.fromGetSiteResponse(response);
   }
 }

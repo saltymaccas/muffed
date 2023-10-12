@@ -656,3 +656,108 @@ class LemmyLoginResponse {
   final bool registrationCreated;
   final bool verifyEmailSent;
 }
+
+class LemmySite extends Equatable {
+  LemmySite({
+    required this.admins,
+    required this.languages,
+    required this.discussionLanguages,
+    required this.version,
+    this.banner,
+    this.description,
+    this.icon,
+    required this.id,
+    required this.instanceId,
+    required this.name,
+    this.privateKey,
+    this.publicKey,
+    required this.published,
+    this.sidebar,
+    this.updated,
+  });
+
+  final List<LemmyPerson> admins;
+  final List<LemmyLanguage> languages;
+  final List<int> discussionLanguages;
+  final String version;
+
+  // site
+  final String? banner;
+  final String? description;
+  final String? icon;
+  final int id;
+  final int instanceId;
+  final String name;
+  final String? privateKey;
+  final String? publicKey;
+  final DateTime published;
+  final String? sidebar;
+  final DateTime? updated;
+
+  LemmySite.fromGetSiteResponse(Map<String, dynamic> json)
+      : admins = List.generate(
+          json['admins'].length,
+          (index) => LemmyPerson.fromPersonViewJson(json['admins'][index]),
+        ),
+        languages = List.generate(
+          json['all_languages'].length,
+          (index) => LemmyLanguage.fromLanguage(json['all_languages'][index]),
+        ),
+        discussionLanguages = json['discussion_languages'],
+        version = json['version'],
+        banner = json['site_view']['site']['banner'],
+        description = json['site_view']['site']['description'],
+        icon = json['site_view']['site']['icon'],
+        id = json['site_view']['site']['id'],
+        instanceId = json['site_view']['site']['instance_id'],
+        name = json['site_view']['site']['name'],
+        privateKey = json['site_view']['site']['private_key'],
+        publicKey = json['site_view']['site']['public_key'],
+        published =
+            DateTime.parse('${json['site_view']['site']['published']}Z'),
+        sidebar = json['site_view']['site']['sidebar'],
+        updated = DateTime.parse('${json['site_view']['site']['updated']}Z');
+
+  @override
+  List<Object?> get props => [
+        admins,
+        languages,
+        discussionLanguages,
+        version,
+        banner,
+        description,
+        icon,
+        id,
+        instanceId,
+        name,
+        privateKey,
+        publicKey,
+        published,
+        sidebar,
+        updated,
+      ];
+}
+
+class LemmyLanguage extends Equatable {
+  LemmyLanguage({
+    required this.code,
+    required this.id,
+    required this.name,
+  });
+
+  LemmyLanguage.fromLanguage(Map<String, dynamic> json)
+      : code = json['code'],
+        id = json['id'],
+        name = json['name'];
+
+  final String code;
+  final int id;
+  final String name;
+
+  @override
+  List<Object?> get props => [
+        code,
+        id,
+        name,
+      ];
+}
