@@ -1,1 +1,20 @@
-A Lemmy client written in flutter with a focus on usability and privacy.
+<h1 id="links">Links</h1>
+
+<p><a href="https://github.com/freshfieldreds/muffed">Github repo</a></p>
+<p><a href="https://sh.itjust.works/c/muffed">Lemmy Community</a></p>
+
+<h1 id="features">Features</h1>
+
+<h2 id="privacy">Privacy</h2>
+
+<p>Muffed simply just does not contain any sort of advertisements or tracking. <em>This does not include
+the servers the user may interact with</em></p>
+
+<h2 id="active-development">Active Development</h2>
+
+<p>Muffed is always being worked on and improved.</p>
+
+<h2 id="intuitive-user-interface">Intuitive User Interface</h2>
+
+<p>Muffed is designed with the user experience in mind. Buttons are located at the bottom of the screen
+and change automatically for relevance.</p>

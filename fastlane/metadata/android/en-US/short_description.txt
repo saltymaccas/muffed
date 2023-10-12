@@ -1,1 +1,1 @@
-A Lemmy client written in flutter with a focus on usability and privacy.
+A decentralised reddit alternative that works on the Lemmy/Activity-pub network.
