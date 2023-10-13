@@ -10,15 +10,26 @@ class AnonSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AnonSettingsBloc(repo: context.read<ServerRepo>()),
-      child: Scaffold(
-        appBar: AppBar(title: Text('Anon Settings')),
-        body: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(label: Text('Home Lemmy server')),
+      child: BlocBuilder<AnonSettingsBloc, AnonSettingsState>(
+        buildWhen: (previous, current) {
+          if (previous.copyWith(urlInput: '') !=
+              current.copyWith(urlInput: '')) {
+            return true;
+          }
+          return false;
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Anon Settings')),
+            body: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(label: Text('Home Lemmy server')),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
