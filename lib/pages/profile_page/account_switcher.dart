@@ -92,6 +92,7 @@ void showAccountSwitcher(BuildContext context) {
                 trailing: IconButton(
                   icon: const Icon(Icons.settings),
                   onPressed: () {
+                    context.pop();
                     context.go('/profile/anon_account_settings');
                   },
                 ),
