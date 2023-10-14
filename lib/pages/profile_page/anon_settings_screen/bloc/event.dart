@@ -7,3 +7,5 @@ class UrlTextFieldChanged extends AnonSettingsEvent {
 
   final String text;
 }
+
+class SaveRequested extends AnonSettingsEvent {}

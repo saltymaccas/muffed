@@ -51,3 +51,9 @@ final class BlurNsfwChanged extends GlobalEvent {
 
   final bool value;
 }
+
+final class LemmyDefaultHomeServerChanged extends GlobalEvent {
+  LemmyDefaultHomeServerChanged(this.url);
+
+  final String url;
+}

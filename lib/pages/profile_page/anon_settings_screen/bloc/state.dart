@@ -24,12 +24,14 @@ class AnonSettingsState extends Equatable {
   AnonSettingsState copyWith({
     String? urlInput,
     LemmySite? siteOfInputted,
+    bool? setSiteToNull,
     bool? isLoading,
     Object? error,
   }) {
     return AnonSettingsState(
       urlInput: urlInput ?? this.urlInput,
-      siteOfInputted: siteOfInputted,
+      siteOfInputted:
+          setSiteToNull == true ? null : siteOfInputted ?? this.siteOfInputted,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );

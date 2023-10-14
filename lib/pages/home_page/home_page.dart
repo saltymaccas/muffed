@@ -36,7 +36,10 @@ class HomePage extends StatelessWidget {
                       ? null
                       : current.lemmyAccounts[current.lemmySelectedAccount];
 
-              if (previousAccount != currentAccount) {
+              if (previousAccount != currentAccount ||
+                  previous.lemmyDefaultHomeServer !=
+                          current.lemmyDefaultHomeServer &&
+                      current.lemmySelectedAccount == -1) {
                 return true;
               }
               return false;
