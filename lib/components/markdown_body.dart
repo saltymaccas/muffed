@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:muffed/components/snackbars.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MuffedMarkdownBody extends StatelessWidget {
   const MuffedMarkdownBody({
@@ -22,6 +24,17 @@ class MuffedMarkdownBody extends StatelessWidget {
     return LimitedBox(
       maxHeight: height ?? double.infinity,
       child: Markdown(
+        onTapLink: (
+          title,
+          link,
+          destination,
+        ) async {
+          if (link != null) {
+            if (!await launchUrl(Uri.parse(link))) {
+              showErrorSnackBar(context, error: 'Failed to open link');
+            }
+          }
+        },
         onTapText: onTapText,
         data: data,
         shrinkWrap: true,
@@ -32,8 +45,11 @@ class MuffedMarkdownBody extends StatelessWidget {
           blockquoteDecoration: BoxDecoration(
             color: Colors.transparent,
             border: Border(
-                left: BorderSide(
-                    color: Theme.of(context).colorScheme.outline, width: 4)),
+              left: BorderSide(
+                color: Theme.of(context).colorScheme.outline,
+                width: 4,
+              ),
+            ),
           ),
         ),
       ),
