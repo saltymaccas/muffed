@@ -26,8 +26,14 @@ class LoadingComponentTransparentLogo extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Theme.of(context).colorScheme.onPrimaryContainer,
-                Theme.of(context).colorScheme.onTertiaryContainer
+                Theme
+                    .of(context)
+                    .colorScheme
+                    .onPrimaryContainer,
+                Theme
+                    .of(context)
+                    .colorScheme
+                    .onTertiaryContainer
               ],
             ).createShader(bounds);
           },
@@ -49,7 +55,10 @@ class MuffedPageLoadingIndicator extends StatelessWidget {
     super.key,
   });
 
+  /// whether the page is loading
   final bool isLoading;
+
+  /// The page itself
   final Widget child;
 
   @override
