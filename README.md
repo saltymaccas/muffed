@@ -33,8 +33,9 @@ A decentralised reddit alternative that works on the Lemmy/Activity-pub network.
 
 ## Privacy
 
-Muffed just simply does not contain any sort of advertisements or tracking. *This does not include
-the servers the user may interact with*
+Muffed just simply does not contain any sort of advertisements or tracking. 
+
+**This does not include the servers the user may interact with*
 
 ## Active Development
 
