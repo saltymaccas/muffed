@@ -13,8 +13,10 @@ class MuffedImage extends StatefulWidget {
   ///
   const MuffedImage({
     required this.imageUrl,
-    required this.shouldBlur,
+    this.shouldBlur = false,
+    this.animateSizeChange = true,
     this.numOfRetries = 3,
+    this.initialHeight = 300,
     super.key,
   });
 
@@ -26,6 +28,12 @@ class MuffedImage extends StatefulWidget {
 
   /// The number of tries the widget will take to load the image
   final int numOfRetries;
+
+  /// The size the widget will take up before the image loads
+  final double initialHeight;
+
+  /// whether to animate the height of the widget changing when the image laods
+  final bool animateSizeChange;
 
   @override
   State<MuffedImage> createState() => _MuffedImageState();
@@ -101,7 +109,7 @@ class _MuffedImageState extends State<MuffedImage> {
           // width is double.maxFinite to make image not animate the
           // width changing size but instead only animate the height
           return SizedBox(
-            height: 300,
+            height: widget.initialHeight,
             width: double.maxFinite,
             child: Align(
               alignment: Alignment.topCenter,
@@ -124,14 +132,19 @@ class _MuffedImageState extends State<MuffedImage> {
               });
             }
           : null,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOutCubic,
-        child: SizedBox(
-          height: height,
-          child: generateImage(),
-        ),
-      ),
+      child: (widget.animateSizeChange)
+          ? AnimatedSize(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOutCubic,
+              child: SizedBox(
+                height: height,
+                child: generateImage(),
+              ),
+            )
+          : SizedBox(
+              height: height,
+              child: generateImage(),
+            ),
     );
   }
 }

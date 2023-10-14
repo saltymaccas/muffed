@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:muffed/components/image.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,6 +25,13 @@ class MuffedMarkdownBody extends StatelessWidget {
     return LimitedBox(
       maxHeight: height ?? double.infinity,
       child: Markdown(
+        imageBuilder: (uri, title, alt) {
+          return MuffedImage(
+            imageUrl: uri.toString(),
+            initialHeight: 0,
+            animateSizeChange: false,
+          );
+        },
         onTapLink: (
           title,
           link,
