@@ -38,3 +38,33 @@ class LoadingComponentTransparentLogo extends StatelessWidget {
     );
   }
 }
+
+///
+class MuffedPageLoadingIndicator extends StatelessWidget {
+  /// Meant to be wrapped around a page to provide a linear progress indicator
+  /// at the top
+  const MuffedPageLoadingIndicator({
+    required this.child,
+    required this.isLoading,
+    super.key,
+  });
+
+  final bool isLoading;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        child,
+        if (isLoading)
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: LinearProgressIndicator(),
+            ),
+          ),
+      ],
+    );
+  }
+}
