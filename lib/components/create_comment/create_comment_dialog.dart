@@ -153,7 +153,14 @@ class CreateCommentDialog extends StatelessWidget {
                         icon: const Icon(Icons.preview),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context
+                            ..push(
+                              '/home/content/create_comment',
+                              extra: state,
+                            )
+                            ..pop();
+                        },
                         icon: const Icon(Icons.open_in_new),
                       ),
                       IconButton(

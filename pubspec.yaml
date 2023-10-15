@@ -30,6 +30,7 @@ dependencies:
   cached_network_image: ^3.2.3
   flutter_colorpicker: ^1.0.3
   logging: ^1.2.0
+  markdown_editable_textinput: ^2.1.0
 
 dev_dependencies:
   flutter_test:

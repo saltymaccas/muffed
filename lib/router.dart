@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/create_comment/bloc/bloc.dart';
+import 'package:muffed/components/create_comment/create_comment_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
@@ -96,6 +98,16 @@ final router = GoRouter(
                       postItemBlocContext: values.$2,
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      path: 'create_comment',
+                      builder: (context, state) {
+                        return CreateCommentScreen(
+                          state: state.extra! as CreateCommentState,
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'community',
