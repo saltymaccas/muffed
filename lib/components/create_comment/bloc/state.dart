@@ -10,6 +10,7 @@ class CreateCommentState extends Equatable {
     this.isLoading = false,
     this.error,
     this.successfullyPosted = false,
+    this.isPreviewing = false,
   });
 
   final int postId;
@@ -22,14 +23,15 @@ class CreateCommentState extends Equatable {
   final bool isLoading;
   final Object? error;
 
+  final bool isPreviewing;
+
   /// Used to tell UI that the comment has been successfully posted
   ///
   /// Which would mean the bloc will not be needed anymore and the UI can close
   final bool successfullyPosted;
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         postId,
         parentId,
         parentCommentContents,
@@ -37,6 +39,7 @@ class CreateCommentState extends Equatable {
         isLoading,
         error,
         successfullyPosted,
+        isPreviewing,
       ];
 
   CreateCommentState copyWith({
@@ -47,16 +50,18 @@ class CreateCommentState extends Equatable {
     bool? isLoading,
     Object? error,
     bool? successfullyPosted,
+    bool? isPreviewing,
   }) {
     return CreateCommentState(
       postId: postId ?? this.postId,
       parentId: parentId ?? this.parentId,
       parentCommentContents:
-      parentCommentContents ?? this.parentCommentContents,
+          parentCommentContents ?? this.parentCommentContents,
       newCommentContents: newCommentContents ?? this.newCommentContents,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
+      isPreviewing: isPreviewing ?? this.isPreviewing,
     );
   }
 }

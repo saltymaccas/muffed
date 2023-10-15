@@ -9,3 +9,5 @@ class NewCommentTextboxChanged extends CreateCommentEvent {
 
   final String text;
 }
+
+class PreviewToggled extends CreateCommentEvent {}

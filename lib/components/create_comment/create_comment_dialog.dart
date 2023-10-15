@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/create_comment/bloc/bloc.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/repo/server_repo.dart';
+
+import '../markdown_body.dart';
+import '../snackbars.dart';
+import 'bloc/bloc.dart';
 
 /// The dialog that a user uses to post a comment
 ///
@@ -60,6 +61,9 @@ class CreateCommentDialog extends StatelessWidget {
               onSuccessfullySubmitted!.call();
             }
           }
+          if (state.error != null) {
+            showErrorSnackBar(context, error: state.error);
+          }
         },
         // prevents rebuilding when only the text changed and nothing else
         buildWhen: (previous, current) {
@@ -72,8 +76,11 @@ class CreateCommentDialog extends StatelessWidget {
           return false;
         },
         builder: (context, state) {
+          final textFieldController =
+              TextEditingController(text: state.newCommentContents);
+
           return Dialog(
-            clipBehavior: Clip.hardEdge,
+            insetPadding: EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -99,20 +106,26 @@ class CreateCommentDialog extends StatelessWidget {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(4),
-                    child: TextField(
-                      autofocus: true,
-                      autocorrect: true,
-                      keyboardType: TextInputType.multiline,
-                      minLines: 5,
-                      maxLines: null,
-                      decoration:
-                          const InputDecoration(border: InputBorder.none),
-                      onChanged: (text) {
-                        context
-                            .read<CreateCommentBloc>()
-                            .add(NewCommentTextboxChanged(text));
-                      },
-                    ),
+                    child: (state.isPreviewing)
+                        ? MuffedMarkdownBody(
+                            data: state.newCommentContents,
+                            physics: ClampingScrollPhysics(),
+                          )
+                        : TextField(
+                            controller: textFieldController,
+                            autofocus: true,
+                            autocorrect: true,
+                            keyboardType: TextInputType.multiline,
+                            minLines: 5,
+                            maxLines: null,
+                            decoration:
+                                const InputDecoration(border: InputBorder.none),
+                            onChanged: (text) {
+                              context
+                                  .read<CreateCommentBloc>()
+                                  .add(NewCommentTextboxChanged(text));
+                            },
+                          ),
                   ),
                 ),
                 const Divider(),
@@ -123,41 +136,30 @@ class CreateCommentDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (state.error != null)
-                        ErrorComponentTransparent(
-                          message: state.error,
-                          showErrorIcon: false,
-                          textAlign: TextAlign.start,
-                        )
-                      else
-                        const SizedBox(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              context.pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          const SizedBox(width: 8),
-                          TextButton(
-                            onPressed: () {
-                              context
-                                  .read<CreateCommentBloc>()
-                                  .add(Submitted());
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onPrimary,
-                            ),
-                            child: const Text(
-                              'Comment',
-                            ),
-                          ),
-                        ],
+                      IconButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context
+                              .read<CreateCommentBloc>()
+                              .add(PreviewToggled());
+                        },
+                        isSelected: state.isPreviewing,
+                        icon: const Icon(Icons.preview),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.open_in_new),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.read<CreateCommentBloc>().add(Submitted());
+                        },
+                        icon: const Icon(Icons.send),
                       ),
                     ],
                   ),

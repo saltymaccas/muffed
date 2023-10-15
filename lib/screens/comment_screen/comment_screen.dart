@@ -47,6 +47,7 @@ class CommentScreen extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   showDialog<void>(
+                    barrierDismissible: false,
                     context: context,
                     builder: (context) {
                       return CreateCommentDialog(

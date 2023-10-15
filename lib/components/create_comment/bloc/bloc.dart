@@ -39,6 +39,9 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
     on<NewCommentTextboxChanged>((event, emit) {
       emit(state.copyWith(newCommentContents: event.text));
     });
+    on<PreviewToggled>((event, emit) {
+      emit(state.copyWith(isPreviewing: !state.isPreviewing));
+    });
   }
 
   final CreateCommentState initialState;
