@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
+import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -275,9 +276,16 @@ class SearchScreen extends StatelessWidget {
                                     controller: personsScrollController,
                                     itemCount: state.persons.length,
                                     itemBuilder: (context, index) {
-                                      return LemmyPersonCard(
-                                        key: ValueKey(state.persons[index].id),
-                                        person: state.persons[index],
+                                      return ListTile(
+                                        leading: MuffedAvatar(
+                                          url: state.persons[index].avatar,
+                                          radius: 20,
+                                        ),
+                                        title: Text(state.persons[index].name),
+                                        subtitle: Text(
+                                            'score: ${state.persons[index].postScore + state.persons[index].postScore}'),
+                                        visualDensity:
+                                            VisualDensity.comfortable,
                                       );
                                     },
                                   ),
