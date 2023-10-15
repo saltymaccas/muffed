@@ -80,6 +80,7 @@ class CreateCommentDialog extends StatelessWidget {
               TextEditingController(text: state.newCommentContents);
 
           return Dialog(
+            clipBehavior: Clip.hardEdge,
             insetPadding: EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
