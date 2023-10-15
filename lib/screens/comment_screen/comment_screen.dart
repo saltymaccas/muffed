@@ -156,6 +156,7 @@ class CommentScreen extends StatelessWidget {
                           _CommentScreenSuccess(
                             comments: state.comments!,
                             sortType: state.sortType,
+                            post: post,
                           )
                         else if (state.status == CommentScreenStatus.loading)
                           const _CommentScreenLoading()
@@ -185,10 +186,14 @@ class CommentScreen extends StatelessWidget {
 
 class _CommentScreenSuccess extends StatelessWidget {
   const _CommentScreenSuccess(
-      {required this.comments, required this.sortType, super.key});
+      {required this.comments,
+      required this.sortType,
+      required this.post,
+      super.key});
 
   final List<LemmyComment> comments;
   final LemmyCommentSortType sortType;
+  final LemmyPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +212,7 @@ class _CommentScreenSuccess extends StatelessWidget {
           comment: key,
           children: organisedComments[key]!,
           sortType: sortType,
+          postCreatorId: post.creatorId,
         );
       },
     );

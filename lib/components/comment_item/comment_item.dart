@@ -137,12 +137,18 @@ class _CommentItemState extends State<CommentItem>
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                if (widget.postCreatorId == state.comment.id)
-                                  Icon(
-                                    Icons.mic_external_on_sharp,
-                                    size: 12,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                if (widget.postCreatorId ==
+                                    state.comment.creatorId)
+                                  Text(
+                                    'OP',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
                                   ),
                               ],
                             ),
