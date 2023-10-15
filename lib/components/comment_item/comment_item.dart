@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/comment_item/bloc/bloc.dart';
+import 'package:muffed/components/create_comment/create_comment_dialog.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -186,7 +187,20 @@ class _CommentItemState extends State<CommentItem>
                                   width: 10,
                                 ),
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDialog<void>(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) {
+                                        return CreateCommentDialog(
+                                          postId: state.comment.postId,
+                                          parentCommentContent:
+                                              state.comment.content,
+                                          parentId: state.comment.id,
+                                        );
+                                      },
+                                    );
+                                  },
                                   icon: const Icon(Icons.reply),
                                   visualDensity: VisualDensity.compact,
                                 ),
