@@ -30,7 +30,10 @@ dependencies:
   cached_network_image: ^3.2.3
   flutter_colorpicker: ^1.0.3
   logging: ^1.2.0
-  markdown_editable_textinput: ^2.1.0
+  markdown_editable_textinput:
+    git:
+      url: https://github.com/thunder-app/markdown-editor.git
+      ref: 017c8614c59b7081f54a7af70cc9586888d53b56
 
 dev_dependencies:
   flutter_test:

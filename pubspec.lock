@@ -323,11 +323,12 @@ packages:
   markdown_editable_textinput:
     dependency: "direct main"
     description:
-      name: markdown_editable_textinput
-      sha256: "6b46b4c9f5316767208709adfaec89a5c1a672df416ea0cd1404bf1e4228f010"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
+      path: "."
+      ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
+      resolved-ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
+      url: "https://github.com/thunder-app/markdown-editor.git"
+    source: git
+    version: "2.2.1"
   matcher:
     dependency: transitive
     description:

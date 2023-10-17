@@ -61,7 +61,7 @@ final router = GoRouter(
               if (index == navigationShell.currentIndex) {
                 if (currentContext != null) {
                   if (currentContext.canPop()) {
-                    Navigator.pop(currentContext);
+                    Navigator.maybePop(currentContext);
                   }
                 }
               } else {
