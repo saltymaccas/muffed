@@ -41,7 +41,7 @@ class CreateCommentDialog extends StatelessWidget {
   /// The function to run if the comment goes through successfully
   final void Function()? onSuccessfullySubmitted;
 
-  /// If the comment is being added to the post the context of the bloc can be
+  /// context of the post bloc can be
   /// provided to allow the screen to show the post.
   final BuildContext? postBlocContext;
 

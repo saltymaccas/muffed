@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
@@ -42,7 +43,12 @@ class CreateCommentScreen extends StatelessWidget {
       child: SetPageInfo(
         actions: const [],
         indexOfRelevantItem: 0,
-        child: BlocBuilder<CreateCommentBloc, CreateCommentState>(
+        child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
+          listener: (context, state) {
+            if (state.successfullyPosted) {
+              context.pop();
+            }
+          },
           builder: (context, state) {
             return WillPopScope(
               onWillPop: () async {
@@ -82,7 +88,22 @@ class CreateCommentScreen extends StatelessWidget {
                 isLoading: state.isLoading,
                 error: state.error,
                 child: Scaffold(
-                  appBar: AppBar(title: Text('Create Comment')),
+                  appBar: AppBar(
+                    title: Text('Create Comment'),
+                    actions: [
+                      IconButton(
+                          onPressed: () {
+                            context.read<CreateCommentBloc>().add(
+                                  Submitted(
+                                    postId: postId,
+                                    commentContents: textController.text,
+                                    commentId: parentId,
+                                  ),
+                                );
+                          },
+                          icon: Icon(Icons.send)),
+                    ],
+                  ),
                   body: Column(
                     children: [
                       Expanded(
