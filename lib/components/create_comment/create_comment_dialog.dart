@@ -18,6 +18,7 @@ class CreateCommentDialog extends StatelessWidget {
     this.parentId,
     this.parentCommentContent,
     this.onSuccessfullySubmitted,
+    this.postBlocContext,
     super.key,
   });
 
@@ -40,15 +41,16 @@ class CreateCommentDialog extends StatelessWidget {
   /// The function to run if the comment goes through successfully
   final void Function()? onSuccessfullySubmitted;
 
+  /// If the comment is being added to the post the context of the bloc can be
+  /// provided to allow the screen to show the post.
+  final BuildContext? postBlocContext;
+
   @override
   Widget build(BuildContext context) {
+    final textFieldController = TextEditingController();
+
     return BlocProvider(
       create: (context) => CreateCommentBloc(
-        initialState: CreateCommentState(
-          postId: postId,
-          parentCommentContents: parentCommentContent,
-          parentId: parentId,
-        ),
         repo: context.read<ServerRepo>(),
         onSuccess: () {},
       ),
@@ -65,33 +67,20 @@ class CreateCommentDialog extends StatelessWidget {
             showErrorSnackBar(context, error: state.error);
           }
         },
-        // prevents rebuilding when only the text changed and nothing else
-        buildWhen: (previous, current) {
-          if (previous.copyWith(newCommentContents: '') !=
-              current.copyWith(
-                newCommentContents: '',
-              )) {
-            return true;
-          }
-          return false;
-        },
         builder: (context, state) {
-          final textFieldController =
-              TextEditingController(text: state.newCommentContents);
-
           return Dialog(
             clipBehavior: Clip.hardEdge,
             insetPadding: EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.parentCommentContents != null) ...[
+                if (parentCommentContent != null) ...[
                   Flexible(
                     flex: 2,
                     child: Container(
                       constraints: const BoxConstraints(maxHeight: 200),
                       child: MuffedMarkdownBody(
-                        data: state.parentCommentContents!,
+                        data: parentCommentContent!,
                       ),
                     ),
                   ),
@@ -107,26 +96,25 @@ class CreateCommentDialog extends StatelessWidget {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(4),
-                    child: (state.isPreviewing)
-                        ? MuffedMarkdownBody(
-                            data: state.newCommentContents,
-                            physics: ClampingScrollPhysics(),
-                          )
-                        : TextField(
-                            controller: textFieldController,
-                            autofocus: true,
-                            autocorrect: true,
-                            keyboardType: TextInputType.multiline,
-                            minLines: 5,
-                            maxLines: null,
-                            decoration:
-                                const InputDecoration(border: InputBorder.none),
-                            onChanged: (text) {
-                              context
-                                  .read<CreateCommentBloc>()
-                                  .add(NewCommentTextboxChanged(text));
-                            },
-                          ),
+                    child: IndexedStack(
+                      index: (state.isPreviewing) ? 0 : 1,
+                      children: [
+                        MuffedMarkdownBody(
+                          data: textFieldController.text,
+                          physics: ClampingScrollPhysics(),
+                        ),
+                        TextField(
+                          controller: textFieldController,
+                          autofocus: true,
+                          autocorrect: true,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 5,
+                          maxLines: null,
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const Divider(),
@@ -144,20 +132,30 @@ class CreateCommentDialog extends StatelessWidget {
                         icon: const Icon(Icons.close),
                       ),
                       IconButton(
+                        isSelected: (state.isPreviewing),
+                        icon: (state.isPreviewing)
+                            ? Icon(Icons.remove_red_eye)
+                            : Icon(Icons.remove_red_eye_outlined),
                         onPressed: () {
                           context
                               .read<CreateCommentBloc>()
                               .add(PreviewToggled());
                         },
-                        isSelected: state.isPreviewing,
-                        icon: const Icon(Icons.preview),
                       ),
                       IconButton(
                         onPressed: () {
                           context
                             ..push(
-                              '/home/content/create_comment',
-                              extra: state,
+                              Uri(
+                                path: '/home/content/create_comment',
+                                queryParameters: {
+                                  'postId': postId.toString(),
+                                  if (parentId != null)
+                                    'parentCommentId': parentId,
+                                  'initialValue': textFieldController.text,
+                                },
+                              ).toString(),
+                              extra: postBlocContext,
                             )
                             ..pop();
                         },
@@ -165,7 +163,13 @@ class CreateCommentDialog extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          context.read<CreateCommentBloc>().add(Submitted());
+                          context.read<CreateCommentBloc>().add(
+                                Submitted(
+                                  postId: postId,
+                                  commentContents: textFieldController.text,
+                                  commentId: parentId,
+                                ),
+                              );
                         },
                         icon: const Icon(Icons.send),
                       ),

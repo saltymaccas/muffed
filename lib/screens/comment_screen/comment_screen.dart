@@ -51,6 +51,7 @@ class CommentScreen extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return CreateCommentDialog(
+                        postBlocContext: blocContext,
                         postId: post.id,
                         onSuccessfullySubmitted: () {
                           showInfoSnackBar(
@@ -185,11 +186,12 @@ class CommentScreen extends StatelessWidget {
 }
 
 class _CommentScreenSuccess extends StatelessWidget {
-  const _CommentScreenSuccess(
-      {required this.comments,
-      required this.sortType,
-      required this.post,
-      super.key});
+  const _CommentScreenSuccess({
+    required this.comments,
+    required this.sortType,
+    required this.post,
+    super.key,
+  });
 
   final List<LemmyComment> comments;
   final LemmyCommentSortType sortType;

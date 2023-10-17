@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/create_comment/bloc/bloc.dart';
-import 'package:muffed/components/create_comment/create_comment_screen.dart';
-import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/inbox_page/inbox_page.dart';
@@ -20,6 +17,9 @@ import 'package:muffed/screens/settings_screen/defaults/defaults.dart';
 import 'package:muffed/screens/settings_screen/settings_screen.dart';
 import 'package:muffed/screens/settings_screen/theme/theme.dart';
 import 'package:muffed/screens/user_screen/user_screen.dart';
+
+import 'components/create_comment/create_comment_screen.dart';
+import 'dynamic_navigation_bar/bloc/bloc.dart';
 
 final router = GoRouter(
   initialLocation: '/home',
@@ -103,7 +103,18 @@ final router = GoRouter(
                       path: 'create_comment',
                       builder: (context, state) {
                         return CreateCommentScreen(
-                          state: state.extra! as CreateCommentState,
+                          postId:
+                              int.parse(state.uri.queryParameters['postId']!),
+                          parentId: (state
+                                      .uri.queryParameters['parentCommentId'] !=
+                                  null)
+                              ? int.parse(
+                                  state.uri.queryParameters['parentCommentId']!,
+                                )
+                              : null,
+                          initialValue:
+                              state.uri.queryParameters['initialValue'],
+                          postBlocContext: state.extra! as BuildContext,
                         );
                       },
                     ),

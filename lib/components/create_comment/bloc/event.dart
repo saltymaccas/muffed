@@ -2,12 +2,15 @@ part of 'bloc.dart';
 
 sealed class CreateCommentEvent {}
 
-class Submitted extends CreateCommentEvent {}
+class Submitted extends CreateCommentEvent {
+  Submitted(
+      {required this.postId,
+      required this.commentContents,
+      required this.commentId});
 
-class NewCommentTextboxChanged extends CreateCommentEvent {
-  NewCommentTextboxChanged(this.text);
-
-  final String text;
+  int postId;
+  int? commentId;
+  String commentContents;
 }
 
 class PreviewToggled extends CreateCommentEvent {}

@@ -3,16 +3,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/muffed_page.dart';
+import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import '../../dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import '../muffed_page.dart';
 import 'bloc/bloc.dart';
 
 class CreateCommentScreen extends StatelessWidget {
-  const CreateCommentScreen({required this.state, super.key});
+  const CreateCommentScreen({
+    required this.postId,
+    this.initialValue,
+    this.postBlocContext,
+    this.parentId,
+    super.key,
+  });
 
-  final CreateCommentState state;
+  final int postId;
+  final String? initialValue;
+
+  /// If user is replying to a comment set this value as the comment is
+  final int? parentId;
+
+  /// If the comment is being added to the post the context of the bloc can be
+  /// provided to allow the screen to show the post.
+  final BuildContext? postBlocContext;
 
   @override
   Widget build(BuildContext context) {
@@ -23,39 +38,47 @@ class CreateCommentScreen extends StatelessWidget {
       create: (context) => CreateCommentBloc(
         repo: context.read<ServerRepo>(),
         onSuccess: () {},
-        initialState: state,
       ),
-      child: WillPopScope(
-        onWillPop: () async {
-          final bool? result = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Text('Exit while discarding changes?'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
-                      child: Text('yes')),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
-                      child: Text('no')),
-                ],
-              );
-            },
-          );
+      child: SetPageInfo(
+        actions: const [],
+        indexOfRelevantItem: 0,
+        child: BlocBuilder<CreateCommentBloc, CreateCommentState>(
+          builder: (context, state) {
+            return WillPopScope(
+              onWillPop: () async {
+                if (textController.text == '') {
+                  return true;
+                }
+                final bool? result = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Discard'),
+                      content: Text('Exit while discarding changes?'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                            child: Text('Yes')),
+                        TextButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onPrimary),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                            child: Text('No')),
+                      ],
+                    );
+                  },
+                );
 
-          return result ?? false;
-        },
-        child: SetPageInfo(
-          actions: const [],
-          indexOfRelevantItem: 0,
-          child: BlocBuilder<CreateCommentBloc, CreateCommentState>(
-            builder: (context, state) {
-              return MuffedPage(
+                return result ?? false;
+              },
+              child: MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
                 child: Scaffold(
@@ -65,13 +88,19 @@ class CreateCommentScreen extends StatelessWidget {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: MarkdownTextInputField(
-                            initialValue: state.newCommentContents,
-                            controller: textController,
-                            focusNode: textFocusNode,
-                            label: 'Comment...',
-                            minLines: 8,
-                            maxLines: null,
+                          child: IndexedStack(
+                            index: (state.isPreviewing ? 0 : 1),
+                            children: [
+                              MuffedMarkdownBody(data: textController.text),
+                              MarkdownTextInputField(
+                                initialValue: initialValue,
+                                controller: textController,
+                                focusNode: textFocusNode,
+                                label: 'Comment...',
+                                minLines: 8,
+                                maxLines: null,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -110,23 +139,17 @@ class CreateCommentScreen extends StatelessWidget {
                             // ),
                             child: Padding(
                               padding: EdgeInsets.all(4),
-                              child: (state.isPreviewing)
-                                  ? IconButton(
-                                      icon: Icon(Icons.remove_red_eye),
-                                      onPressed: () {
-                                        context
-                                            .read<CreateCommentBloc>()
-                                            .add(PreviewToggled());
-                                      },
-                                    )
-                                  : IconButton(
-                                      icon: Icon(Icons.remove_red_eye_outlined),
-                                      onPressed: () {
-                                        context
-                                            .read<CreateCommentBloc>()
-                                            .add(PreviewToggled());
-                                      },
-                                    ),
+                              child: IconButton(
+                                isSelected: (state.isPreviewing),
+                                icon: (state.isPreviewing)
+                                    ? Icon(Icons.remove_red_eye)
+                                    : Icon(Icons.remove_red_eye_outlined),
+                                onPressed: () {
+                                  context
+                                      .read<CreateCommentBloc>()
+                                      .add(PreviewToggled());
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -134,9 +157,9 @@ class CreateCommentScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

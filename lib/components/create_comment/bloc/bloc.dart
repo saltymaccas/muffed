@@ -11,20 +11,19 @@ final _log = Logger('CreateCommentBloc');
 class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
   ///
   CreateCommentBloc({
-    required this.initialState,
     required this.repo,
     required this.onSuccess,
-  }) : super(initialState) {
+  }) : super(const CreateCommentState()) {
     on<Submitted>((event, emit) async {
       _log.info('Comment submitted');
-      if (state.newCommentContents.isNotEmpty) {
+      if (event.commentContents.isNotEmpty) {
         emit(state.copyWith(isLoading: true));
 
         try {
           final response = await repo.lemmyRepo.createComment(
-            state.newCommentContents,
-            state.postId,
-            state.parentId,
+            event.commentContents,
+            event.postId,
+            event.commentId,
           );
 
           emit(state.copyWith(isLoading: false, successfullyPosted: true));
@@ -36,15 +35,11 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
         emit(state.copyWith(error: 'No text inputted'));
       }
     });
-    on<NewCommentTextboxChanged>((event, emit) {
-      emit(state.copyWith(newCommentContents: event.text));
-    });
     on<PreviewToggled>((event, emit) {
       emit(state.copyWith(isPreviewing: !state.isPreviewing));
     });
   }
 
-  final CreateCommentState initialState;
   final ServerRepo repo;
   final void Function() onSuccess;
 }
