@@ -448,4 +448,26 @@ interface class LemmyRepo {
 
     return LemmySite.fromGetSiteResponse(response.data!);
   }
+
+  /// Creates a post, returns the post id
+  Future<LemmyPost> createPost({
+    required String name,
+    required int communityId,
+    String? body,
+    String? url,
+    bool? nsfw,
+  }) async {
+    final response = await postRequest(
+      path: '/post',
+      data: {
+        'name': name,
+        'community_id': communityId,
+        if (body != null) 'body': body,
+        if (url != null) 'url': url,
+        if (nsfw != null) 'nsfw': nsfw,
+      },
+    );
+
+    return LemmyPost.fromPostViewJson(response['post_view']);
+  }
 }
