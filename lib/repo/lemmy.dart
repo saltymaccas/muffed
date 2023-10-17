@@ -111,24 +111,20 @@ interface class LemmyRepo {
     _log.info(
         'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
 
-    try {
-      final Response<Map<String, dynamic>> response = await dio.get(
-        '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
-        queryParameters: {
-          if (globalBloc.getSelectedLemmyAccount() != null)
-            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
-          ...queryParameters,
-        },
-      );
+    final Response<Map<String, dynamic>> response = await dio.get(
+      '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      queryParameters: {
+        if (globalBloc.getSelectedLemmyAccount() != null)
+          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+        ...queryParameters,
+      },
+    );
 
-      if (response.data == null) {
-        throw ('response returned null');
-      }
-
-      return response.data!;
-    } on DioException catch (e) {
-      rethrow;
+    if (response.data == null) {
+      throw ('response returned null');
     }
+
+    return response.data!;
   }
 
   Future<List<LemmyPost>> getPosts({
