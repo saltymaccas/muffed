@@ -16,6 +16,7 @@ final class CommunityScreenState extends Equatable {
     this.loadedSortType = LemmySortType.hot,
     this.errorMessage,
     this.isReloading = false,
+    this.reachedEnd = false,
   });
 
   final LemmyCommunity? community;
@@ -37,6 +38,8 @@ final class CommunityScreenState extends Equatable {
 
   final Object? errorMessage;
 
+  final bool reachedEnd;
+
   @override
   List<Object?> get props => [
         isLoading,
@@ -50,6 +53,7 @@ final class CommunityScreenState extends Equatable {
         loadedSortType,
         errorMessage,
         isReloading,
+        reachedEnd,
       ];
 
   CommunityScreenState copyWith({
@@ -64,6 +68,7 @@ final class CommunityScreenState extends Equatable {
     LemmySortType? loadedSortType,
     Object? errorMessage,
     bool? isReloading,
+    bool? reachedEnd,
   }) {
     return CommunityScreenState(
       isLoading: isLoading ?? this.isLoading,
@@ -77,6 +82,7 @@ final class CommunityScreenState extends Equatable {
       loadedSortType: loadedSortType ?? this.loadedSortType,
       errorMessage: errorMessage,
       isReloading: isReloading ?? this.isReloading,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
     );
   }
 }

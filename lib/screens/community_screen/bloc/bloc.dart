@@ -69,23 +69,29 @@ class CommunityScreenBloc
 
     on<ReachedEndOfScroll>(
       (event, emit) async {
-        emit(state.copyWith(isLoading: true));
+        if (!state.reachedEnd) {
+          emit(state.copyWith(isLoading: true));
 
-        try {
-          final newPosts = await repo.lemmyRepo.getPosts(
-            page: state.pagesLoaded + 1,
-            communityId: state.communityId,
-          );
+          try {
+            final newPosts = await repo.lemmyRepo.getPosts(
+              page: state.pagesLoaded + 1,
+              communityId: state.communityId,
+            );
 
-          emit(
-            state.copyWith(
-              posts: {...state.posts, ...newPosts}.toList(),
-              isLoading: false,
-              pagesLoaded: state.pagesLoaded + 1,
-            ),
-          );
-        } catch (err) {
-          emit(state.copyWith(isLoading: false, errorMessage: err));
+            if (newPosts.length == 0) {
+              emit(state.copyWith(isLoading: false, reachedEnd: true));
+            } else {
+              emit(
+                state.copyWith(
+                  posts: {...state.posts, ...newPosts}.toList(),
+                  isLoading: false,
+                  pagesLoaded: state.pagesLoaded + 1,
+                ),
+              );
+            }
+          } catch (err) {
+            emit(state.copyWith(isLoading: false, errorMessage: err));
+          }
         }
       },
       transformer: droppable(),
@@ -105,6 +111,7 @@ class CommunityScreenBloc
             loadedSortType: event.sortType,
             pagesLoaded: 1,
             posts: posts,
+            reachedEnd: false,
           ),
         );
       } catch (err) {
@@ -158,6 +165,7 @@ class CommunityScreenBloc
             posts: result[0] as List<LemmyPost>,
             pagesLoaded: 1,
             isReloading: false,
+            reachedEnd: false,
           ),
         );
       } catch (err) {
