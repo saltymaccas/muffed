@@ -90,9 +90,15 @@ class _MuffedImageState extends State<MuffedImage> {
               child: ClipRect(
                 child: ImageFiltered(
                   enabled: shouldBlur,
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: 10,
-                    sigmaY: 10,
+                  imageFilter: ImageFilter.compose(
+                    inner: ImageFilter.blur(
+                      sigmaX: 35,
+                      sigmaY: 35,
+                    ),
+                    outer: ImageFilter.erode(
+                      radiusX: 10,
+                      radiusY: 10,
+                    ),
                   ),
                   child: Hero(
                     tag: heroTag,
