@@ -265,7 +265,7 @@ class CommunityScreen extends StatelessWidget {
             ],
             indexOfRelevantItem: 0,
             child: MuffedPage(
-              isLoading: state.isReloading,
+              isLoading: state.isLoading,
               error: state.errorMessage,
               child: NotificationListener(
                 onNotification: (ScrollNotification scrollInfo) {

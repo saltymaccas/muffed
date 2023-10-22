@@ -11,6 +11,7 @@ import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 
+import '../../global_state/bloc.dart';
 import 'bloc/bloc.dart';
 
 /// Displays a screen that shows the post on top and the comments under
@@ -43,28 +44,29 @@ class CommentScreen extends StatelessWidget {
           return SetPageInfo(
             indexOfRelevantItem: 0,
             actions: [
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  showDialog<void>(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return CreateCommentDialog(
-                        postBlocContext: blocContext,
-                        postId: post.id,
-                        onSuccessfullySubmitted: () {
-                          showInfoSnackBar(
-                            context,
-                            text: 'Comment successfully posted',
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-                icon: const Icon(Icons.add),
-              ),
+              if (context.read<GlobalBloc>().isLoggedIn())
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () {
+                    showDialog<void>(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return CreateCommentDialog(
+                          postBlocContext: blocContext,
+                          postId: post.id,
+                          onSuccessfullySubmitted: () {
+                            showInfoSnackBar(
+                              context,
+                              text: 'Comment successfully posted',
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                ),
               BlocProvider.value(
                 value: BlocProvider.of<CommentScreenBloc>(blocContext),
                 child: BlocBuilder<CommentScreenBloc, CommentScreenState>(

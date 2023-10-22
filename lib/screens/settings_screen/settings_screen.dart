@@ -44,6 +44,24 @@ class SettingsPage extends StatelessWidget {
                     context.push('/profile/settings/contentfilters');
                   },
                 ),
+                ListTile(
+                  title: Text('About Muffed'),
+                  style: ListTileStyle.drawer,
+                  visualDensity: VisualDensity.comfortable,
+                  leading: Icon(Icons.info),
+                  onTap: () {
+                    showLicensePage(
+                      context: context,
+                      applicationName: 'Muffed',
+                      applicationVersion: '0.5.0+5',
+                      applicationIcon: Image.asset(
+                        'assets/icon.png',
+                        width: 196,
+                        height: 196,
+                      ),
+                    );
+                  },
+                ),
                 /*ListTile(
                   title: Text('Defaults'),
                   style: ListTileStyle.drawer,
