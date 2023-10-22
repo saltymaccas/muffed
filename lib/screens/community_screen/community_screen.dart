@@ -6,9 +6,9 @@ import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
+import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
-import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -39,12 +39,7 @@ class CommunityScreen extends StatelessWidget {
         community: community,
         repo: context.read<ServerRepo>(),
       )..add(Initialize()),
-      child: BlocConsumer<CommunityScreenBloc, CommunityScreenState>(
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            showErrorSnackBar(context, error: state.errorMessage);
-          }
-        },
+      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
           final blocContext = context;
 
@@ -269,63 +264,57 @@ class CommunityScreen extends StatelessWidget {
               ),
             ],
             indexOfRelevantItem: 0,
-            child: Stack(
-              children: [
-                NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent - 500) {
-                      context
-                          .read<CommunityScreenBloc>()
-                          .add(ReachedEndOfScroll());
-                    }
-                    return true;
+            child: MuffedPage(
+              isLoading: state.isReloading,
+              error: state.errorMessage,
+              child: NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                      scrollInfo.metrics.maxScrollExtent - 500) {
+                    context
+                        .read<CommunityScreenBloc>()
+                        .add(ReachedEndOfScroll());
+                  }
+                  return true;
+                },
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<CommunityScreenBloc>().add(PullDownReload());
+                    await context
+                        .read<CommunityScreenBloc>()
+                        .stream
+                        .firstWhere((element) {
+                      if (element.isReloading == false) {
+                        return true;
+                      }
+                      return false;
+                    });
                   },
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<CommunityScreenBloc>().add(PullDownReload());
-                      await context
-                          .read<CommunityScreenBloc>()
-                          .stream
-                          .firstWhere((element) {
-                        if (element.isReloading == false) {
-                          return true;
-                        }
-                        return false;
-                      });
-                    },
-                    child: CustomScrollView(
-                      key: ValueKey('${state.loadedSortType}'),
-                      slivers: [
-                        if (state.communityInfoStatus ==
-                            CommunityStatus.success)
-                          SliverPersistentHeader(
-                            delegate:
-                                _TopBarDelegate(community: state.community!),
-                            floating: false,
-                            pinned: true,
-                          ),
-                        if (state.postsStatus == CommunityStatus.success)
-                          SliverList.builder(
-                            itemCount: state.posts.length,
-                            itemBuilder: (context, index) {
-                              return PostItem(
-                                key: ValueKey(state.posts[index]),
-                                post: state.posts[index],
-                                limitHeight: true,
-                              );
-                            },
-                          ),
-                      ],
-                    ),
+                  child: CustomScrollView(
+                    key: ValueKey('${state.loadedSortType}'),
+                    slivers: [
+                      if (state.communityInfoStatus == CommunityStatus.success)
+                        SliverPersistentHeader(
+                          delegate:
+                              _TopBarDelegate(community: state.community!),
+                          floating: false,
+                          pinned: true,
+                        ),
+                      if (state.postsStatus == CommunityStatus.success)
+                        SliverList.builder(
+                          itemCount: state.posts.length,
+                          itemBuilder: (context, index) {
+                            return PostItem(
+                              key: ValueKey(state.posts[index]),
+                              post: state.posts[index],
+                              limitHeight: true,
+                            );
+                          },
+                        ),
+                    ],
                   ),
                 ),
-                if (state.isLoading)
-                  const Align(
-                    alignment: Alignment.topCenter,
-                    child: SafeArea(child: LinearProgressIndicator()),
-                  )
-              ],
+              ),
             ),
           );
         },
@@ -346,7 +335,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
 
   final double headerMaxHeight;
   final double headerMinHeight;
-  final bannerEnd;
+  final double bannerEnd;
 
   @override
   double get maxExtent => headerMaxHeight;
@@ -383,144 +372,135 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
         children: [
           Opacity(
             opacity: 1 - fractionScrolled,
-            child: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  // banner
-                  ShaderMask(
-                    shaderCallback: (rect) {
-                      return const LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black, Colors.transparent],
-                      ).createShader(
-                        Rect.fromLTRB(0, 0, rect.width, rect.height),
-                      );
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: (community.banner != null)
-                        ? CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            width: double.maxFinite,
-                            height:
-                                (headerMaxHeight - shrinkOffset) * bannerEnd,
-                            placeholder: (context, url) => placeholderBanner,
-                            imageUrl: community.banner!,
-                          )
-                        : placeholderBanner,
-                  ),
-                  // sizes to the height the the header
-                  SizedBox(
-                    height: headerMaxHeight - shrinkOffset,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Stops the avatar from overlapping with the pinned top
-                        // bar
-                        const SizedBox(
-                          height: 50,
+            child: Stack(
+              children: [
+                // banner
+                ShaderMask(
+                  shaderCallback: (rect) {
+                    return const LinearGradient(
+                      begin: Alignment.center,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.black, Colors.transparent],
+                    ).createShader(
+                      Rect.fromLTRB(0, 0, rect.width, rect.height),
+                    );
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: (community.banner != null)
+                      ? CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          width: double.maxFinite,
+                          height: (headerMaxHeight - shrinkOffset) * bannerEnd,
+                          placeholder: (context, url) => placeholderBanner,
+                          imageUrl: community.banner!,
+                        )
+                      : placeholderBanner,
+                ),
+                // sizes to the height the the header
+                SizedBox(
+                  height: headerMaxHeight - shrinkOffset,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Stops the avatar from overlapping with the pinned top
+                      // bar
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 24,
+                          horizontal: 16,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 24,
-                            horizontal: 16,
-                          ),
-                          child: MuffedAvatar(url: community.icon, radius: 34),
-                        ),
-                        // sizes from bottom up to the fraction chosen
-                        // of the header
-                        SizedBox(
-                          height: (headerMaxHeight - shrinkOffset) *
-                              (1 - bannerEnd),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // title
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      community.title,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    // Subscribe button
-                                    if (context.read<GlobalBloc>().isLoggedIn())
-                                      TextButton(
-                                        onPressed: () {
-                                          context
-                                              .read<CommunityScreenBloc>()
-                                              .add(ToggledSubscribe());
-                                        },
-                                        style: (community.subscribed ==
-                                                LemmySubscribedType
-                                                    .notSubscribed)
-                                            ? TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primaryContainer,
-                                                foregroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .onPrimaryContainer,
-                                              )
-                                            : TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                foregroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .outlineVariant,
-                                              ),
-                                        child: (community.subscribed ==
-                                                LemmySubscribedType.subscribed)
-                                            ? Text('Unsubscribe')
-                                            : (community.subscribed ==
-                                                    LemmySubscribedType
-                                                        .notSubscribed)
-                                                ? Text('Subscribe')
-                                                : Text('Pending'),
-                                      ),
-                                  ],
-                                ),
-                                if (community.description != null)
-                                  MuffedMarkdownBody(
-                                    data: community.description!,
-                                    height: 104,
+                        child: MuffedAvatar(url: community.icon, radius: 34),
+                      ),
+                      // sizes from bottom up to the fraction chosen
+                      // of the header
+                      SizedBox(
+                        height:
+                            (headerMaxHeight - shrinkOffset) * (1 - bannerEnd),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // title
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    community.title,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
                                   ),
-                                if (community.description != null)
-                                  TextButton(
+                                  // Subscribe button
+                                  if (context.read<GlobalBloc>().isLoggedIn())
+                                    TextButton(
                                       onPressed: () {
-                                        showDialog<void>(
-                                          context: context,
-                                          // TODO: Improve dialog
-                                          builder: (context) {
-                                            return Dialog(
-                                              child: MuffedMarkdownBody(
-                                                data: community.description!,
-                                              ),
-                                            );
-                                          },
-                                        );
+                                        context
+                                            .read<CommunityScreenBloc>()
+                                            .add(ToggledSubscribe());
                                       },
-                                      child: Text('View full description')),
-                              ],
-                            ),
+                                      style: (community.subscribed ==
+                                              LemmySubscribedType.notSubscribed)
+                                          ? TextButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryContainer,
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
+                                            )
+                                          : TextButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .outlineVariant,
+                                            ),
+                                      child: (community.subscribed ==
+                                              LemmySubscribedType.subscribed)
+                                          ? Text('Unsubscribe')
+                                          : (community.subscribed ==
+                                                  LemmySubscribedType
+                                                      .notSubscribed)
+                                              ? Text('Subscribe')
+                                              : Text('Pending'),
+                                    ),
+                                ],
+                              ),
+                              if (community.description != null)
+                                MuffedMarkdownBody(
+                                  data: community.description!,
+                                  height: 104,
+                                ),
+                              if (community.description != null)
+                                TextButton(
+                                    onPressed: () {
+                                      showDialog<void>(
+                                        context: context,
+                                        // TODO: Improve dialog
+                                        builder: (context) {
+                                          return Dialog(
+                                            child: MuffedMarkdownBody(
+                                              data: community.description!,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text('View full description')),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           SizedBox(
