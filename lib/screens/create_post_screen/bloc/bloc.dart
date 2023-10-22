@@ -53,7 +53,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         final response = await repo.lemmyRepo.createPost(
           name: event.title,
           body: event.body,
-          url: (event.url != null) ? ensureProtocolSpecified(event.url!) : null,
+          url: (event.url == null || event.url == '')
+              ? null
+              : ensureProtocolSpecified(event.url!),
           communityId: communityId,
         );
 

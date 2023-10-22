@@ -14,12 +14,15 @@ class DynamicNavigationBarBloc
       emit(state.copyWith(selectedItemIndex: event.index));
     });
     on<PageAdded>((event, emit) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           actions: Map.from(state.pageStackInfo)
             ..[event.itemIndex] = [
               ...state.pageStackInfo[event.itemIndex]!,
-              event.pageInfo
-            ]));
+              event.pageInfo,
+            ],
+        ),
+      );
     });
     on<PageRemoved>((event, emit) {
       emit(state.copyWith(

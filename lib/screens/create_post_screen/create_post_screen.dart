@@ -36,12 +36,14 @@ class CreatePostScreen extends StatelessWidget {
       child: BlocConsumer<CreatePostBloc, CreatePostState>(
         listener: (context, state) {
           if (state.successfullyPostedPost != null) {
-            context.go(
-              Uri(
-                path: '/home/content',
-              ).toString(),
-              extra: (state.successfullyPostedPost, null),
-            );
+            context
+              ..pop()
+              ..push(
+                Uri(
+                  path: '/home/content',
+                ).toString(),
+                extra: (state.successfullyPostedPost, null),
+              );
             showInfoSnackBar(context, text: 'Post successfully posted');
           }
         },
