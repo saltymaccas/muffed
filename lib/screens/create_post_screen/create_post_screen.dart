@@ -79,34 +79,34 @@ class CreatePostScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                body: ListView(
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: titleTextController,
-                        decoration: const InputDecoration(
-                          hintText: 'Title',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TextField(
-                        controller: urlTextController,
-                        decoration: const InputDecoration(
-                          hintText: 'Url',
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 400,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Padding(
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextField(
+                                controller: titleTextController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Title',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextField(
+                                controller: urlTextController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Url',
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: const EdgeInsets.all(8),
                               child: IndexedStack(
                                 index: (state.isPreviewingBody ? 0 : 1),
@@ -121,58 +121,58 @@ class CreatePostScreen extends StatelessWidget {
                                       controller: bodyTextController,
                                       focusNode: bodyTextFocusNode,
                                       label: 'Body',
-                                      minLines: 10,
+                                      minLines: 5,
                                       maxLines: null,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          const Divider(height: 1),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: MarkdownButtons(
-                                  controller: bodyTextController,
-                                  focusNode: bodyTextFocusNode,
-                                  actions: const [
-                                    MarkdownType.image,
-                                    MarkdownType.link,
-                                    MarkdownType.bold,
-                                    MarkdownType.italic,
-                                    MarkdownType.blockquote,
-                                    MarkdownType.strikethrough,
-                                    MarkdownType.title,
-                                    MarkdownType.list,
-                                    MarkdownType.separator,
-                                    MarkdownType.code,
-                                  ],
-                                ),
-                              ),
-                              Material(
-                                elevation: 5,
-                                child: Padding(
-                                  padding: EdgeInsets.all(4),
-                                  child: IconButton(
-                                    isSelected: (state.isPreviewingBody),
-                                    icon: (state.isPreviewingBody)
-                                        ? Icon(Icons.remove_red_eye)
-                                        : Icon(Icons.remove_red_eye_outlined),
-                                    onPressed: () {
-                                      context
-                                          .read<CreatePostBloc>()
-                                          .add(PreviewToggled());
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 1),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
+                    const Divider(height: 1),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MarkdownButtons(
+                            controller: bodyTextController,
+                            focusNode: bodyTextFocusNode,
+                            actions: const [
+                              MarkdownType.image,
+                              MarkdownType.link,
+                              MarkdownType.bold,
+                              MarkdownType.italic,
+                              MarkdownType.blockquote,
+                              MarkdownType.strikethrough,
+                              MarkdownType.title,
+                              MarkdownType.list,
+                              MarkdownType.separator,
+                              MarkdownType.code,
+                            ],
+                          ),
+                        ),
+                        Material(
+                          elevation: 5,
+                          child: Padding(
+                            padding: EdgeInsets.all(4),
+                            child: IconButton(
+                              isSelected: (state.isPreviewingBody),
+                              icon: (state.isPreviewingBody)
+                                  ? Icon(Icons.remove_red_eye)
+                                  : Icon(Icons.remove_red_eye_outlined),
+                              onPressed: () {
+                                context
+                                    .read<CreatePostBloc>()
+                                    .add(PreviewToggled());
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 1),
                   ],
                 ),
               ),
