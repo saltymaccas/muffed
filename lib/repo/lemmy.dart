@@ -445,7 +445,7 @@ interface class LemmyRepo {
     return LemmySite.fromGetSiteResponse(response.data!);
   }
 
-  /// Creates a post, returns the post id
+  /// Creates a post, returns the post that was created
   Future<LemmyPost> createPost({
     required String name,
     required int communityId,

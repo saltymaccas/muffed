@@ -148,16 +148,6 @@ class CreateCommentScreen extends StatelessWidget {
                           ),
                           Material(
                             elevation: 10,
-                            // decoration: BoxDecoration(
-                            //   border: Border(
-                            //     left: BorderSide(
-                            //       width: 1,
-                            //       color: Theme.of(context)
-                            //           .colorScheme
-                            //           .outlineVariant,
-                            //     ),
-                            //   ),
-                            // ),
                             child: Padding(
                               padding: EdgeInsets.all(4),
                               child: IconButton(

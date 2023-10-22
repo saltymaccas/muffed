@@ -11,6 +11,7 @@ import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/screens/comment_screen/comment_screen.dart';
 import 'package:muffed/screens/community_screen/community_screen.dart';
+import 'package:muffed/screens/create_post_screen/create_post_screen.dart';
 import 'package:muffed/screens/search/search_screen.dart';
 import 'package:muffed/screens/settings_screen/content_filters/content_filters.dart';
 import 'package:muffed/screens/settings_screen/defaults/defaults.dart';
@@ -91,7 +92,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'content',
                   builder: (context, state) {
-                    final values = state.extra! as (LemmyPost, BuildContext);
+                    final values = state.extra! as (LemmyPost, BuildContext?);
 
                     return CommentScreen(
                       post: values.$1,
@@ -125,6 +126,16 @@ final router = GoRouter(
                   builder: (context, state) {
                     return CommunityScreen(
                       communityId: int.parse(state.uri.queryParameters['id']!),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: 'create_post',
+                  builder: (context, state) {
+                    return CreatePostScreen(
+                      communityId:
+                          int.parse(state.uri.queryParameters['community_id']!),
+                      community: state.extra as LemmyCommunity?,
                     );
                   },
                 ),
