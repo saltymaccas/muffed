@@ -6,7 +6,7 @@ import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/inbox_page/inbox_page.dart';
 import 'package:muffed/pages/profile_page//saved_posts_screen/saved_posts_screen.dart';
 import 'package:muffed/pages/profile_page/anon_settings_screen/anon_settings_screen.dart';
-import 'package:muffed/pages/profile_page/login_page/login_page.dart';
+import 'package:muffed/pages/profile_page/login_page/login_screen.dart';
 import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/screens/comment_screen/comment_screen.dart';

@@ -27,36 +27,24 @@ interface class LemmyRepo {
     bool mustBeLoggedIn = true,
     String? serverAddress,
   }) async {
-    try {
-      if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
-        throw Exception('Not logged in');
-      }
-
-      final Response<Map<String, dynamic>> response = await dio.post(
-        '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
-        data: {
-          if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
-            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
-          ...data
-        },
-      );
-
-      if (response.statusCode != 200) {
-        throw HttpException('${response.statusCode}');
-      }
-
-      if (response.data == null) {
-        throw ('null returned in response');
-      }
-
-      return response.data!;
-    } on SocketException {
-      return Future.error('No Internet');
-    } on HttpException {
-      return Future.error('Could not find post');
-    } on FormatException {
-      return Future.error('Bad response format');
+    if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+      throw Exception('Not logged in');
     }
+
+    final Response<Map<String, dynamic>> response = await dio.post(
+      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      data: {
+        if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
+          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+        ...data,
+      },
+    );
+
+    if (response.data == null) {
+      throw ('null returned in response');
+    }
+
+    return response.data!;
   }
 
   Future<Map<String, dynamic>> putRequest({
@@ -88,12 +76,12 @@ interface class LemmyRepo {
       }
 
       return response.data!;
-    } on SocketException {
-      return Future.error('No Internet');
-    } on HttpException {
-      return Future.error('Could not find post');
-    } on FormatException {
-      return Future.error('Bad response format');
+    } catch (err) {
+      if (err is DioException) {
+        _log.severe('Dio error: ${err.response?.data}');
+        return Future.error(err.response?.data);
+      }
+      return Future.error(err);
     }
   }
 

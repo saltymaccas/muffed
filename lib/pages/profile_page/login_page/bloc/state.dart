@@ -5,7 +5,7 @@ final class LoginPageState extends Equatable {
   final String totp;
   final String password;
   final String serverAddr;
-  final String? errorMessage;
+  final Object? errorMessage;
   final bool loading;
   final bool revealPassword;
 
@@ -32,7 +32,7 @@ final class LoginPageState extends Equatable {
 
   LoginPageState copyWith({
     bool? loading,
-    String? errorMessage,
+    Object? errorMessage,
     String? serverAddr,
     String? usernameOrEmail,
     String? totp,

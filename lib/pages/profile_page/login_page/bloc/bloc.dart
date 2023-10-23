@@ -55,7 +55,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
         event.onLoginAccepted();
       } catch (err) {
-        emit(state.copyWith(errorMessage: err.toString(), loading: false));
+        emit(state.copyWith(errorMessage: err, loading: false));
       }
     });
   }

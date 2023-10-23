@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/error.dart';
+
 class ErrorComponentTransparent extends StatelessWidget {
   const ErrorComponentTransparent({
     this.message = '',
@@ -16,10 +18,7 @@ class ErrorComponentTransparent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // removes any sensitive data from the error message
-    final String errorMessage = message
-        .toString()
-        .replaceAll(RegExp(r'auth=(.*?)(?=&|$)'), '[auth redacted]');
+    final errorMessage = errorObjectToString(message);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -32,7 +31,7 @@ class ErrorComponentTransparent extends StatelessWidget {
             color: Theme.of(context).colorScheme.error,
           ),
         Text(
-          errorMessage,
+          errorMessage ?? '',
           style: TextStyle(color: Theme.of(context).colorScheme.error),
           textAlign: textAlign,
         ),
