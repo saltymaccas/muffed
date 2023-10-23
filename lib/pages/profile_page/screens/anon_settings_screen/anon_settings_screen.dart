@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/muffed_avatar.dart';
+import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/profile_page/anon_settings_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import '../../../components/muffed_page.dart';
+import 'bloc/bloc.dart';
 
 class AnonSettingsScreen extends StatelessWidget {
   const AnonSettingsScreen({super.key});
@@ -13,18 +13,14 @@ class AnonSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textFieldController = TextEditingController(
-      text: context
-          .read<GlobalBloc>()
-          .state
-          .lemmyDefaultHomeServer,
+      text: context.read<GlobalBloc>().state.lemmyDefaultHomeServer,
     );
 
     return BlocProvider(
-      create: (context) =>
-          AnonSettingsBloc(
-            repo: context.read<ServerRepo>(),
-            globalBloc: context.read<GlobalBloc>(),
-          ),
+      create: (context) => AnonSettingsBloc(
+        repo: context.read<ServerRepo>(),
+        globalBloc: context.read<GlobalBloc>(),
+      ),
       child: BlocBuilder<AnonSettingsBloc, AnonSettingsState>(
         buildWhen: (previous, current) {
           if (previous.copyWith(urlInput: '') !=
@@ -44,7 +40,6 @@ class AnonSettingsScreen extends StatelessWidget {
               );
             }
           }
-
 
           return MuffedPage(
             error: state.error,

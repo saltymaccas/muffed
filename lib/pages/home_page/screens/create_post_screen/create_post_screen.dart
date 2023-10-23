@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/screens/create_post_screen/bloc/bloc.dart';
 
-import '../../components/markdown_body.dart';
+import 'bloc/bloc.dart';
 
 class CreatePostScreen extends StatelessWidget {
   const CreatePostScreen(

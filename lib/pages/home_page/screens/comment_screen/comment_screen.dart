@@ -8,10 +8,10 @@ import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 
-import '../../global_state/bloc.dart';
 import 'bloc/bloc.dart';
 
 /// Displays a screen that shows the post on top and the comments under
