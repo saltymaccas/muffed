@@ -4,6 +4,7 @@ import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/create_comment/create_comment_dialog.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
+import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -16,8 +17,12 @@ import 'bloc/bloc.dart';
 
 /// Displays a screen that shows the post on top and the comments under
 class CommentScreen extends StatelessWidget {
-  const CommentScreen(
-      {required this.post, this.postItemBlocContext, super.key});
+  /// Displays a screen that shows the post on top and the comments under
+  const CommentScreen({
+    required this.post,
+    this.postItemBlocContext,
+    super.key,
+  });
 
   /// The post that should be shown
   final LemmyPost post;
@@ -32,12 +37,7 @@ class CommentScreen extends StatelessWidget {
         repo: context.read<ServerRepo>(),
         post: post,
       )..add(InitializeEvent()),
-      child: BlocConsumer<CommentScreenBloc, CommentScreenState>(
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            showErrorSnackBar(context, error: state.errorMessage);
-          }
-        },
+      child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
         builder: (context, state) {
           final BuildContext blocContext = context;
 
@@ -45,27 +45,31 @@ class CommentScreen extends StatelessWidget {
             indexOfRelevantItem: 0,
             actions: [
               if (context.read<GlobalBloc>().isLoggedIn())
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    showDialog<void>(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return CreateCommentDialog(
-                          postBlocContext: blocContext,
-                          postId: post.id,
-                          onSuccessfullySubmitted: () {
-                            showInfoSnackBar(
-                              context,
-                              text: 'Comment successfully posted',
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(Icons.add),
+                MuffedPage(
+                  isLoading: state.isLoading,
+                  error: state.error,
+                  child: IconButton(
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      showDialog<void>(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return CreateCommentDialog(
+                            postBlocContext: blocContext,
+                            postId: post.id,
+                            onSuccessfullySubmitted: () {
+                              showInfoSnackBar(
+                                context,
+                                text: 'Comment successfully posted',
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
                 ),
               BlocProvider.value(
                 value: BlocProvider.of<CommentScreenBloc>(blocContext),
@@ -165,7 +169,7 @@ class CommentScreen extends StatelessWidget {
                           const _CommentScreenLoading()
                         else if (state.status == CommentScreenStatus.failure)
                           _CommentScreenFailure(
-                            error: state.errorMessage,
+                            error: state.error,
                           ),
                       ],
                     ),

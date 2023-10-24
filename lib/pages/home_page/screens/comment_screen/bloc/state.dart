@@ -10,7 +10,7 @@ class CommentScreenState extends Equatable {
     this.pagesLoaded = 0,
     this.isLoading = false,
     this.reachedEnd = false,
-    this.errorMessage,
+    this.error,
     this.isRefreshing = false,
     this.sortType = LemmyCommentSortType.hot,
   });
@@ -30,7 +30,7 @@ class CommentScreenState extends Equatable {
   /// The error message that appears instead of the comments if the comment
   /// screen state is failure. If the comment screen state is loaded it will
   /// appear as a snack bar.
-  final String? errorMessage;
+  final Object? error;
 
   final bool isRefreshing;
 
@@ -41,14 +41,14 @@ class CommentScreenState extends Equatable {
         pagesLoaded,
         isLoading,
         reachedEnd,
-        errorMessage,
+        error,
         isRefreshing,
         sortType,
       ];
 
   CommentScreenState copyWith({
     bool? isRefreshing,
-    String? errorMessage,
+    Object? error,
     bool? reachedEnd,
     bool? isLoading,
     CommentScreenStatus? status,
@@ -58,7 +58,7 @@ class CommentScreenState extends Equatable {
   }) {
     return CommentScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,
-      errorMessage: errorMessage,
+      error: error,
       reachedEnd: reachedEnd ?? this.reachedEnd,
       isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,

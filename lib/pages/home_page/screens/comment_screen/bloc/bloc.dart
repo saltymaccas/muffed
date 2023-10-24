@@ -35,7 +35,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         emit(
           state.copyWith(
             status: CommentScreenStatus.failure,
-            errorMessage: err.toString(),
+            error: err,
           ),
         );
       }
@@ -72,7 +72,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
             }
           } catch (err) {
             emit(
-              state.copyWith(errorMessage: err.toString(), isLoading: false),
+              state.copyWith(error: err, isLoading: false),
             );
           }
         }
@@ -87,7 +87,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         event.onError();
         emit(
           state.copyWith(
-            errorMessage: err.toString(),
+            error: err,
           ),
         );
       }
@@ -98,7 +98,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
             .createComment(event.comment, post.id, event.commentId);
         event.onSuccess();
       } catch (err) {
-        emit(state.copyWith(errorMessage: err.toString()));
+        emit(state.copyWith(error: err));
       }
     });
     on<PullDownRefresh>((event, emit) async {
@@ -119,7 +119,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
           ),
         );
       } catch (err) {
-        emit(state.copyWith(isRefreshing: false, errorMessage: err.toString()));
+        emit(state.copyWith(isRefreshing: false, error: err));
       }
     });
     on<SortTypeChanged>((event, emit) async {
@@ -144,7 +144,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         emit(
           state.copyWith(
             isLoading: false,
-            errorMessage: err.toString(),
+            error: err,
             sortType: lastSortType,
           ),
         );
