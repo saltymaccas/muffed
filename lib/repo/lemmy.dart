@@ -454,4 +454,60 @@ interface class LemmyRepo {
 
     return LemmyPost.fromPostViewJson(response['post_view']);
   }
+
+  Future<List<LemmyComment>> getReplies({
+    int page = 1,
+    LemmyCommentSortType sort = LemmyCommentSortType.latest,
+    bool unreadOnly = true,
+  }) async {
+    final response = await getRequest(
+      mustBeLoggedIn: true,
+      path: '/user/replies',
+      queryParameters: {
+        'page': page,
+        'sort': lemmyCommentSortTypeToJson[sort],
+        'unread_only': unreadOnly,
+      },
+    );
+
+    return List.generate(
+      response['replies'].length,
+      (index) => LemmyComment.fromCommentViewJson(response['replies'][index]),
+    );
+  }
+
+  Future<List<LemmyComment>> getMention({
+    int page = 1,
+    LemmyCommentSortType sort = LemmyCommentSortType.latest,
+    bool unreadOnly = true,
+  }) async {
+    final response = await getRequest(
+      path: '/user/mention',
+      mustBeLoggedIn: true,
+      queryParameters: {
+        'page': page,
+        'sort': lemmyCommentSortTypeToJson[sort],
+        'unread_only': unreadOnly,
+      },
+    );
+
+    return List.generate(
+      response['mentions'].length,
+      (index) => LemmyComment.fromCommentViewJson(response['mentions'][index]),
+    );
+  }
+
+  Future<List<LemmyComment>> getRepliesAndMentions({
+    int page = 1,
+    LemmyCommentSortType sort = LemmyCommentSortType.latest,
+    bool unreadOnly = true,
+  }) async {
+    final repliesResponse =
+        await getReplies(page: page, sort: sort, unreadOnly: unreadOnly);
+    final mentionsResponse =
+        await getMention(page: page, sort: sort, unreadOnly: unreadOnly);
+
+    /// TODO: sort replies and mentions by sort type or date
+    return repliesResponse + mentionsResponse;
+  }
 }
