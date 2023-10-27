@@ -320,16 +320,23 @@ class _CommentItemState extends State<CommentItem>
                                         const SizedBox(
                                           width: 2,
                                         ),
-                                        Text(
-                                          widget.comment.communityName,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context.go(
+                                              '/home/community?id=${widget.comment.communityId}',
+                                            );
+                                          },
+                                          child: Text(
+                                            widget.comment.communityName,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                ),
+                                          ),
                                         ),
                                       ],
                                     ),
