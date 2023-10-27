@@ -267,6 +267,8 @@ class LemmyComment extends Equatable {
     this.myVote = LemmyVoteType.none,
     required this.score,
     required this.hotRank,
+    required this.postTitle,
+    required this.communityName,
   });
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
@@ -288,13 +290,16 @@ class LemmyComment extends Equatable {
         downVotes = json['counts']['downvotes'],
         score = json['counts']['score'],
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
-        hotRank = json['counts']['hot_rank'];
+        hotRank = json['counts']['hot_rank'],
+        postTitle = json['post']['name'], communityName = json['community']['name'];
 
   /// Holds the id's of the parent and ancestor comments
   ///
   /// This does not include id of the post or the comment itself.
   final List<int> path;
 
+  final String postTitle;
+  final String communityName;
   final String creatorName;
   final String content;
   final DateTime timePublished;
@@ -327,6 +332,8 @@ class LemmyComment extends Equatable {
         score,
         myVote,
         hotRank,
+        postTitle,
+    communityName,
       ];
 
   LemmyComment copyWith({
@@ -343,6 +350,8 @@ class LemmyComment extends Equatable {
     int? score,
     LemmyVoteType? myVote,
     int? hotRank,
+    String? postTitle,
+    String? communityName,
   }) {
     return LemmyComment(
       path: path ?? this.path,
@@ -358,6 +367,8 @@ class LemmyComment extends Equatable {
       score: score ?? this.score,
       myVote: myVote ?? this.myVote,
       hotRank: hotRank ?? this.hotRank,
+      postTitle: postTitle ?? this.postTitle,
+      communityName: communityName ?? this.communityName,
     );
   }
 }
