@@ -24,6 +24,7 @@ class CommentItem extends StatefulWidget {
     this.postCreatorId,
     this.displayAsSingle = false,
     this.markedAsReadCallback,
+    this.read = false,
     super.key,
   });
 
@@ -46,9 +47,15 @@ class CommentItem extends StatefulWidget {
   /// Whether the comment does not have a parent
   final bool isOrphan;
 
+  /// Whether the comment should be displayed as a single comment
   final bool displayAsSingle;
 
+  /// Only used for replies and mentions screen, used to mark the comment as
+  /// read
   final void Function()? markedAsReadCallback;
+
+  /// only shows id [markedAsReadCallback] is not null
+  final bool read;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -353,6 +360,7 @@ class _CommentItemState extends State<CommentItem>
                                     ),
                                     if (widget.markedAsReadCallback != null)
                                       IconButton(
+                                        isSelected: widget.read,
                                         onPressed: widget.markedAsReadCallback,
                                         icon: Icon(Icons.done),
                                       ),
