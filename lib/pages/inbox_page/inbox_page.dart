@@ -36,18 +36,57 @@ class _InboxPageState extends State<InboxPage>
       ],
       child: Builder(
         builder: (context) {
+          final blocContext = context;
+
           tabController.addListener(() {
             if (tabController.previousIndex != tabController.index) {
-              if (tabController.index == 1) {
+              if (tabController.index == 0) {
                 context.read<DynamicNavigationBarBloc>().add(EditPageActions(
                     context: context,
                     itemIndex: 1,
                     actions: [Icon(Icons.ac_unit)]));
               } else {
-                context.read<DynamicNavigationBarBloc>().add(EditPageActions(
-                    context: context,
-                    itemIndex: 1,
-                    actions: [Icon(Icons.ac_unit)]));
+                context.read<DynamicNavigationBarBloc>().add(
+                      EditPageActions(
+                        context: context,
+                        itemIndex: 1,
+                        actions: [
+                          BlocProvider.value(
+                            value: BlocProvider.of<mentions.MentionsBloc>(
+                              blocContext,
+                            ),
+                            child: BlocBuilder<mentions.MentionsBloc,
+                                mentions.MentionsState>(
+                              builder: (context, state) {
+                                return IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  onPressed: () {
+                                    context
+                                        .read<mentions.MentionsBloc>()
+                                        .add(mentions.ShowAllToggled());
+                                  },
+                                  icon: Text(
+                                    'Show all',
+                                    style: (state.showAll)
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            )
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .labelMedium,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
               }
             }
           });

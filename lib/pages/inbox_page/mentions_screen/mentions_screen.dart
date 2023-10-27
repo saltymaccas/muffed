@@ -34,6 +34,7 @@ class MentionsScreen extends StatelessWidget {
                 if (state.showAll) {
                   mentionItems = state.mentions;
                 } else {
+                  // removes the read comments
                   mentionItems =
                       state.mentions.where((element) => !element.read).toList();
                 }
@@ -46,7 +47,8 @@ class MentionsScreen extends StatelessWidget {
                       mentionItems.length,
                       (index) => CommentItem(
                         markedAsReadCallback: () {
-                          print('test');
+                          context.read<MentionsBloc>().add(MarkAsReadToggled(id: mentionItems[index].id));
+
                         },
                         read: mentionItems[index].read,
                         comment: mentionItems[index].comment,
