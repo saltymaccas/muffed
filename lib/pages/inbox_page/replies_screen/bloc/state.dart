@@ -20,7 +20,7 @@ class RepliesState extends Equatable {
   final RepliesStatus replyItemsStatus;
   final bool isLoading;
   final Object? error;
-  final List<LemmyComment> replyItems;
+  final List<LemmyInboxReply> replyItems;
   final LemmyCommentSortType sortType;
 
   @override
@@ -35,7 +35,7 @@ class RepliesState extends Equatable {
   RepliesState copyWith({
     bool? isLoading,
     Object? error,
-    List<LemmyComment>? replies,
+    List<LemmyInboxReply>? replies,
     RepliesStatus? inboxStatus,
     LemmyCommentSortType? sortType,
   }) {
