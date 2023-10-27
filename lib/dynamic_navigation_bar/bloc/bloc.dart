@@ -25,10 +25,24 @@ class DynamicNavigationBarBloc
       );
     });
     on<PageRemoved>((event, emit) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           actions: Map.from(state.pageStackInfo)
             ..[event.itemIndex] = state.pageStackInfo[event.itemIndex]!
-                .sublist(0, state.pageStackInfo[event.itemIndex]!.length - 1)));
+                .sublist(0, state.pageStackInfo[event.itemIndex]!.length - 1),
+        ),
+      );
+    });
+    on<EditPageActions>((event, emit) {
+      emit(
+        state.copyWith(
+          actions: Map.from(state.pageStackInfo)
+            ..[event.itemIndex] = [
+              ...state.pageStackInfo[event.itemIndex]!,
+              PageInfo(context: event.context, actions: event.actions),
+            ],
+        ),
+      );
     });
   }
 }
