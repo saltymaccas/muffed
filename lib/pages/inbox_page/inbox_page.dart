@@ -1,61 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/comment_item/comment_item.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/muffed_page.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/pages/inbox_page/replies_screen/replies_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'mentions_screen/bloc/bloc.dart' as mentions;
+import 'mentions_screen/mentions_screen.dart';
+import 'replies_screen/bloc/bloc.dart' as replies;
 
 class InboxPage extends StatelessWidget {
   const InboxPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          InboxBloc(repo: context.read<ServerRepo>())..add(Initialize()),
-      child: BlocBuilder<InboxBloc, InboxState>(
-        builder: (context, state) {
-          return SetPageInfo(
-            actions: [],
-            indexOfRelevantItem: 1,
-            child: Builder(
-              builder: (context) {
-                if (state.inboxItemsStatus == InboxStatus.loading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state.inboxItemsStatus == InboxStatus.failure) {
-                  return ErrorComponentTransparent(
-                    message: state.error,
-                    retryFunction: () =>
-                        context.read<InboxBloc>().add(Initialize()),
-                  );
-                } else if (state.inboxItemsStatus == InboxStatus.success) {
-                  return MuffedPage(
-                    isLoading: state.isLoading,
-                    error: state.error,
-                    child: ListView(
-                      children: List.generate(
-                        state.inboxItems.length,
-                        (index) => CommentItem(
-                          comment: state.inboxItems[index],
-                          isOrphan: true,
-                          displayAsSingle: true,
-                          sortType: state.sortType,
-                          ableToLoadChildren: false,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-            ),
-          );
-        },
-      ),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                replies.RepliesBloc(repo: context.read<ServerRepo>())
+                  ..add(replies.Initialize()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                mentions.MentionsBloc(repo: context.read<ServerRepo>())
+                  ..add(mentions.Initialize()),
+          ),
+        ],
+        child: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, _) {
+              return [
+                SliverToBoxAdapter(
+                    child: SafeArea(
+                  child: TabBar(
+                    tabs: [
+                      Tab(text: 'Replies'),
+                      Tab(text: 'Mentions'),
+                    ],
+                  ),
+                ))
+              ];
+            },
+            body: TabBarView(children: [RepliesScreen(), MentionsScreen()]),
+          ),
+        ));
   }
 }

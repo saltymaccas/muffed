@@ -6,23 +6,23 @@ part 'event.dart';
 part 'state.dart';
 
 /// The bloc for the inbox page
-class InboxBloc extends Bloc<InboxEvent, InboxState> {
+class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
   /// The bloc for the inbox page
-  InboxBloc({required this.repo}) : super(const InboxState()) {
+  RepliesBloc({required this.repo}) : super(const RepliesState()) {
     on<Initialize>((event, emit) async {
-      emit(state.copyWith(inboxStatus: InboxStatus.loading));
+      emit(state.copyWith(inboxStatus: RepliesStatus.loading));
       try {
-        final response = await repo.lemmyRepo.getRepliesAndMentions();
+        final response = await repo.lemmyRepo.getReplies();
         emit(
           state.copyWith(
-            inboxStatus: InboxStatus.success,
+            inboxStatus: RepliesStatus.success,
             replies: response,
           ),
         );
       } catch (err) {
         emit(
           state.copyWith(
-            inboxStatus: InboxStatus.failure,
+            inboxStatus: RepliesStatus.failure,
             error: err,
           ),
         );
