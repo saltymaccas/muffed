@@ -497,17 +497,19 @@ interface class LemmyRepo {
     );
   }
 
-  Future<List<LemmyComment>> getRepliesAndMentions({
-    int page = 1,
-    LemmyCommentSortType sort = LemmyCommentSortType.latest,
-    bool unreadOnly = true,
-  }) async {
-    final repliesResponse =
-        await getReplies(page: page, sort: sort, unreadOnly: unreadOnly);
-    final mentionsResponse =
-        await getMention(page: page, sort: sort, unreadOnly: unreadOnly);
+  Future<void> markReplyAsRead({required int id, bool read = true}) async {
+    await postRequest(
+      path: '/comment/mark_as_read',
+      mustBeLoggedIn: true,
+      data: {'comment_reply_id': id, 'read': read},
+    );
+  }
 
-    /// TODO: sort replies and mentions by sort type or date
-    return repliesResponse + mentionsResponse;
+  Future<void> markMentionAsRead({required int id, bool read = true}) async {
+    await postRequest(
+      path: '/user/mention/mark_as_read',
+      mustBeLoggedIn: true,
+      data: {'comment_reply_id': id, 'read': read},
+    );
   }
 }
