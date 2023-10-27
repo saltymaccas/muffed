@@ -16,7 +16,7 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
         emit(
           state.copyWith(
             inboxStatus: MentionsStatus.success,
-            replies: response,
+            mentions: response,
           ),
         );
       } catch (err) {
@@ -27,6 +27,39 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
           ),
         );
       }
+    });
+    on<MarkAsReadToggled>((event, emit) async {
+      final mentions = state.mentions.map((e) {
+        if (e.id == event.id) {
+          return e.copyWith(read: !e.read);
+        }
+        return e;
+      }).toList();
+      emit(state.copyWith(mentions: mentions));
+
+      try {
+        final response = await repo.lemmyRepo.markMentionAsRead(
+          id: event.id,
+          read: !state.mentions
+              .firstWhere((element) => element.id == event.id)
+              .read,
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+            mentions: state.mentions.map((e) {
+              if (e.id == event.id) {
+                return e.copyWith(read: !e.read);
+              }
+              return e;
+            }).toList(),
+          ),
+        );
+      }
+    });
+    on<ShowAllToggled>((event, emit) {
+      emit(state.copyWith(showAll: !state.showAll));
     });
   }
 

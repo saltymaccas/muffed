@@ -4,6 +4,7 @@ import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/repo/lemmy/models.dart';
 
 import 'bloc/bloc.dart';
 
@@ -28,14 +29,26 @@ class MentionsScreen extends StatelessWidget {
                       context.read<MentionsBloc>().add(Initialize()),
                 );
               } else if (state.replyItemsStatus == MentionsStatus.success) {
+                late final List<LemmyInboxMention> mentionItems;
+
+                if (state.showAll) {
+                  mentionItems = state.mentions;
+                } else {
+                  mentionItems =
+                      state.mentions.where((element) => !element.read).toList();
+                }
+
                 return MuffedPage(
                   isLoading: state.isLoading,
                   error: state.error,
                   child: ListView(
                     children: List.generate(
-                      state.replyItems.length,
+                      mentionItems.length,
                       (index) => CommentItem(
-                        comment: state.replyItems[index],
+                        markedAsReadCallback: () {
+                          print('test');
+                        },
+                        comment: mentionItems[index].comment,
                         isOrphan: true,
                         displayAsSingle: true,
                         sortType: state.sortType,

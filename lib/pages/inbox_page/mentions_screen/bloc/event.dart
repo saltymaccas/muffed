@@ -10,8 +10,8 @@ class ShowAllToggled extends MentionsEvent {}
 
 class Refresh extends MentionsEvent {}
 
-class MarkedAsRead extends MentionsEvent {
-  MarkedAsRead({required this.id});
+class MarkAsReadToggled extends MentionsEvent {
+  MarkAsReadToggled({required this.id});
 
   final int id;
 }

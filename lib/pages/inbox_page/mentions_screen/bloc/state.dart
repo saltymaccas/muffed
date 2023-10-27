@@ -11,40 +11,45 @@ enum MentionsStatus {
 class MentionsState extends Equatable {
   const MentionsState({
     this.isLoading = false,
-    this.replyItems = const [],
+    this.mentions = const [],
     this.error,
     this.replyItemsStatus = MentionsStatus.initial,
     this.sortType = LemmyCommentSortType.hot,
+    this.showAll = false,
   });
 
   final MentionsStatus replyItemsStatus;
   final bool isLoading;
   final Object? error;
-  final List<LemmyComment> replyItems;
+  final List<LemmyInboxMention> mentions;
   final LemmyCommentSortType sortType;
+  final bool showAll;
 
   @override
   List<Object?> get props => [
         isLoading,
         error,
-        replyItems,
+        mentions,
         replyItemsStatus,
         sortType,
+        showAll,
       ];
 
   MentionsState copyWith({
     bool? isLoading,
     Object? error,
-    List<LemmyComment>? replies,
+    List<LemmyInboxMention>? mentions,
     MentionsStatus? inboxStatus,
     LemmyCommentSortType? sortType,
+    bool? showAll,
   }) {
     return MentionsState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
-      replyItems: replies ?? this.replyItems,
+      mentions: mentions ?? this.mentions,
       replyItemsStatus: inboxStatus ?? this.replyItemsStatus,
       sortType: sortType ?? this.sortType,
+      showAll: showAll ?? this.showAll,
     );
   }
 }
