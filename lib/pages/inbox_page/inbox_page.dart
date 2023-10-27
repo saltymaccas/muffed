@@ -13,36 +13,37 @@ class InboxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) =>
-                replies.RepliesBloc(repo: context.read<ServerRepo>())
-                  ..add(replies.Initialize()),
-          ),
-          BlocProvider(
-            create: (context) =>
-                mentions.MentionsBloc(repo: context.read<ServerRepo>())
-                  ..add(mentions.Initialize()),
-          ),
-        ],
-        child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, _) {
-              return [
-                SliverToBoxAdapter(
-                    child: SafeArea(
-                  child: TabBar(
-                    tabs: [
-                      Tab(text: 'Replies'),
-                      Tab(text: 'Mentions'),
-                    ],
-                  ),
-                ))
-              ];
-            },
-            body: TabBarView(children: [RepliesScreen(), MentionsScreen()]),
-          ),
-        ));
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              replies.RepliesBloc(repo: context.read<ServerRepo>())
+                ..add(replies.Initialize()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              mentions.MentionsBloc(repo: context.read<ServerRepo>())
+                ..add(mentions.Initialize()),
+        ),
+      ],
+      child: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, _) {
+            return [
+              SliverToBoxAdapter(
+                  child: SafeArea(
+                child: TabBar(
+                  tabs: [
+                    Tab(text: 'Replies'),
+                    Tab(text: 'Mentions'),
+                  ],
+                ),
+              ))
+            ];
+          },
+          body: TabBarView(children: [RepliesScreen(), MentionsScreen()]),
+        ),
+      ),
+    );
   }
 }
