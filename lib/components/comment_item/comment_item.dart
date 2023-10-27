@@ -23,6 +23,7 @@ class CommentItem extends StatefulWidget {
     this.isOrphan = true,
     this.postCreatorId,
     this.displayAsSingle = false,
+    this.markedAsReadCallback,
     super.key,
   });
 
@@ -46,6 +47,8 @@ class CommentItem extends StatefulWidget {
   final bool isOrphan;
 
   final bool displayAsSingle;
+
+  final void Function()? markedAsReadCallback;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -295,51 +298,64 @@ class _CommentItemState extends State<CommentItem>
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 8, top: 2),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      widget.comment.postTitle,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    Row(
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'In',
+                                          widget.comment.postTitle,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .outline,
+                                              .titleMedium,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'In',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                            const SizedBox(
+                                              width: 2,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                context.go(
+                                                  '/home/community?id=${widget.comment.communityId}',
+                                                );
+                                              },
+                                              child: Text(
+                                                widget.comment.communityName,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
                                               ),
-                                        ),
-                                        const SizedBox(
-                                          width: 2,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            context.go(
-                                              '/home/community?id=${widget.comment.communityId}',
-                                            );
-                                          },
-                                          child: Text(
-                                            widget.comment.communityName,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
+                                    if (widget.markedAsReadCallback != null)
+                                      IconButton(
+                                        onPressed: widget.markedAsReadCallback,
+                                        icon: Icon(Icons.done),
+                                      ),
                                   ],
                                 ),
                               ),

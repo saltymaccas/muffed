@@ -35,7 +35,10 @@ class RepliesScreen extends StatelessWidget {
                     children: List.generate(
                       state.replyItems.length,
                       (index) => CommentItem(
-                        comment: state.replyItems[index],
+                        markedAsReadCallback: () {
+                          print('test');
+                        },
+                        comment: state.replyItems[index].comment,
                         isOrphan: true,
                         displayAsSingle: true,
                         sortType: state.sortType,
