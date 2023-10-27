@@ -48,6 +48,7 @@ class MentionsScreen extends StatelessWidget {
                         markedAsReadCallback: () {
                           print('test');
                         },
+                        read: mentionItems[index].read,
                         comment: mentionItems[index].comment,
                         isOrphan: true,
                         displayAsSingle: true,
