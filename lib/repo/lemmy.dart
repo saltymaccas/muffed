@@ -511,7 +511,7 @@ interface class LemmyRepo {
     await postRequest(
       path: '/user/mention/mark_as_read',
       mustBeLoggedIn: true,
-      data: {'comment_reply_id': id, 'read': read},
+      data: {'person_mention_id': id, 'read': read},
     );
   }
 }
