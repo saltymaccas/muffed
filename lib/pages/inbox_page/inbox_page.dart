@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
-import 'package:muffed/components/inbox_item/inbox_item.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -38,8 +38,13 @@ class InboxPage extends StatelessWidget {
                     child: ListView(
                       children: List.generate(
                         state.inboxItems.length,
-                        (index) =>
-                            InboxItem(inboxItem: state.inboxItems[index]),
+                        (index) => CommentItem(
+                          comment: state.inboxItems[index],
+                          isOrphan: true,
+                          displayAsSingle: true,
+                          sortType: state.sortType,
+                          ableToLoadChildren: false,
+                        ),
                       ),
                     ),
                   );

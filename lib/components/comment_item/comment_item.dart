@@ -18,11 +18,11 @@ class CommentItem extends StatefulWidget {
   const CommentItem({
     required this.comment,
     required this.sortType,
-    this.displayPostTitle = false,
     this.ableToLoadChildren = true,
     this.children = const [],
     this.isOrphan = true,
     this.postCreatorId,
+    this.displayAsSingle = false,
     super.key,
   });
 
@@ -45,8 +45,7 @@ class CommentItem extends StatefulWidget {
   /// Whether the comment does not have a parent
   final bool isOrphan;
 
-  /// If true the comment will display the post title alongside the creator name
-  final bool displayPostTitle;
+  final bool displayAsSingle;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -105,7 +104,8 @@ class _CommentItemState extends State<CommentItem>
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: (widget.comment.path.isNotEmpty)
+                  left: (widget.comment.path.isNotEmpty &&
+                          !widget.displayAsSingle)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
@@ -114,9 +114,10 @@ class _CommentItemState extends State<CommentItem>
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: AnimatedSize(
-                  duration: Duration(milliseconds: 500),
+                  // TODO: make animation a constant speed (ajusts time based on the height of the comment)
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOutCubic,
                   alignment: Alignment.topCenter,
                   child: Builder(
@@ -129,7 +130,7 @@ class _CommentItemState extends State<CommentItem>
                         );
                       }
 
-                      return Column(
+                      final baseCommentItem = Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -274,9 +275,78 @@ class _CommentItemState extends State<CommentItem>
                                 ),
                               ),
                             ),
-                          if (widget.isOrphan) const Divider(),
+                          if (widget.isOrphan && !widget.displayAsSingle)
+                            const Divider(),
                         ],
                       );
+
+                      if (widget.displayAsSingle) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 2),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.comment.postTitle,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'In',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                              ),
+                                        ),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
+                                        Text(
+                                          widget.comment.communityName,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Divider(thickness: 0.5),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: baseCommentItem,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return baseCommentItem;
                     },
                   ),
                 ),
