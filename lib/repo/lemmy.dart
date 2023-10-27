@@ -455,7 +455,7 @@ interface class LemmyRepo {
     return LemmyPost.fromPostViewJson(response['post_view']);
   }
 
-  Future<List<LemmyComment>> getReplies({
+  Future<List<LemmyInboxReply>> getReplies({
     int page = 1,
     LemmyCommentSortType sort = LemmyCommentSortType.latest,
     bool unreadOnly = true,
@@ -472,11 +472,11 @@ interface class LemmyRepo {
 
     return List.generate(
       response['replies'].length,
-      (index) => LemmyComment.fromCommentViewJson(response['replies'][index]),
+      (index) => LemmyInboxReply.fromReplyViewJson(response['replies'][index]),
     );
   }
 
-  Future<List<LemmyComment>> getMention({
+  Future<List<LemmyInboxMention>> getMention({
     int page = 1,
     LemmyCommentSortType sort = LemmyCommentSortType.latest,
     bool unreadOnly = true,
@@ -493,7 +493,9 @@ interface class LemmyRepo {
 
     return List.generate(
       response['mentions'].length,
-      (index) => LemmyComment.fromCommentViewJson(response['mentions'][index]),
+      (index) => LemmyInboxMention.fromPersonMentionViewJson(
+        response['mentions'][index],
+      ),
     );
   }
 
