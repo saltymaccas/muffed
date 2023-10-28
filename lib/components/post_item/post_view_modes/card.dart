@@ -108,9 +108,12 @@ class CardLemmyPostItem extends StatelessWidget {
                         ),
                         Text(
                           formattedPostedAgo(post.timePublished) + ' ago',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
                         ),
                       ],
                     ),
@@ -118,7 +121,10 @@ class CardLemmyPostItem extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(post.name, style: TextStyle(fontSize: 16)),
+                  Text(
+                    post.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ],
               ),
             ),
