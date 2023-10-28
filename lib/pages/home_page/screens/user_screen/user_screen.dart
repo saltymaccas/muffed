@@ -149,7 +149,7 @@ class _UserScreenFailure extends StatelessWidget {
       retryFunction: () {
         context.read<UserScreenBloc>().add(InitializeEvent());
       },
-      message: context.read<UserScreenBloc>().state.errorMessage ?? '',
+      error: context.read<UserScreenBloc>().state.errorMessage ?? '',
     );
   }
 }

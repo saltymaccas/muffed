@@ -89,7 +89,7 @@ class _BlockDialogFailure extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: ErrorComponentTransparent(
-        message: state.error,
+        error: state.error,
         retryFunction: () {
           context.read<BlockDialogBloc>().add(InitializeEvent());
         },

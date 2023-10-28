@@ -238,7 +238,7 @@ class _CommentScreenFailure extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverFillRemaining(
       child: ErrorComponentTransparent(
-        message: error,
+        error: error,
         retryFunction: () {
           context.read<CommentScreenBloc>().add(InitializeEvent());
         },

@@ -23,7 +23,7 @@ class RepliesScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             } else if (state.replyItemsStatus == RepliesStatus.failure) {
               return ErrorComponentTransparent(
-                message: state.error,
+                error: state.error,
                 retryFunction: () =>
                     context.read<RepliesBloc>().add(Initialize()),
               );

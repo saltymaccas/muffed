@@ -49,7 +49,7 @@ class _PostItemState extends State<PostItem>
       builder: (context, state) {
         if (state.status == PostItemStatus.failure) {
           return ErrorComponentTransparent(
-            message: state.error,
+            error: state.error,
             retryFunction: () {
               context.read<PostItemBloc>().add(Initialize());
             },

@@ -23,7 +23,7 @@ class MentionsScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             } else if (state.replyItemsStatus == MentionsStatus.failure) {
               return ErrorComponentTransparent(
-                message: state.error,
+                error: state.error,
                 retryFunction: () =>
                     context.read<MentionsBloc>().add(Initialize()),
               );

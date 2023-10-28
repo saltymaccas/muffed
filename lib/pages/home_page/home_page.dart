@@ -290,7 +290,7 @@ class _HomePageFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ErrorComponentTransparent(
-      message: errorMessage,
+      error: errorMessage,
       retryFunction: () {
         context.read<HomePageBloc>().add(LoadInitialPostsRequested());
       },

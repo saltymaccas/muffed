@@ -4,21 +4,21 @@ import '../utils/error.dart';
 
 class ErrorComponentTransparent extends StatelessWidget {
   const ErrorComponentTransparent({
-    this.message = '',
+    this.error = '',
     this.retryFunction,
     this.showErrorIcon = true,
     this.textAlign = TextAlign.center,
     super.key,
   });
 
-  final Object? message;
+  final Object? error;
   final void Function()? retryFunction;
   final bool showErrorIcon;
   final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = errorObjectToString(message);
+    final errorMessage = errorObjectToString(error);
 
     return Column(
       mainAxisSize: MainAxisSize.min,

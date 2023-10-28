@@ -43,7 +43,7 @@ class SavedPostsScreen extends StatelessWidget {
           } else if (state.status == SavedPostsStatus.failure) {
             contentSliver = SliverToBoxAdapter(
               child: ErrorComponentTransparent(
-                message: state.error,
+                error: state.error,
                 retryFunction: () {
                   context.read<SavedPostsBloc>().add(Initialize());
                 },

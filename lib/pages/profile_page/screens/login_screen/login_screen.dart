@@ -141,7 +141,7 @@ class LoginPage extends StatelessWidget {
                           ),
                           if (state.errorMessage != null)
                             ErrorComponentTransparent(
-                              message: state.errorMessage,
+                              error: state.errorMessage,
                             ),
                         ],
                       ),
