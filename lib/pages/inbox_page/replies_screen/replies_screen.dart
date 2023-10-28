@@ -15,7 +15,13 @@ class RepliesScreen extends StatelessWidget {
     return BlocBuilder<RepliesBloc, RepliesState>(
       builder: (context, state) {
         return SetPageInfo(
-          actions: [],
+          actions: [
+            Container(
+              width: 10,
+              height: 10,
+              color: Colors.blue,
+            )
+          ],
           indexOfRelevantItem: 1,
           child: Builder(
             builder: (context) {

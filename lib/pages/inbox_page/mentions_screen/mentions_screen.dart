@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/muffed_page.dart';
+import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
@@ -15,8 +16,29 @@ class MentionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MentionsBloc, MentionsState>(
       builder: (context, state) {
+        final blocContext = context;
         return SetPageInfo(
-          actions: [],
+          actions: [
+            BlocProvider.value(
+              value: BlocProvider.of<MentionsBloc>(blocContext),
+              child: BlocBuilder<MentionsBloc, MentionsState>(
+                builder: (context, state) {
+                  return MuffedPopupMenuButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: Icon(Icons.more_vert),
+                    items: [
+                      MuffedPopupMenuItem(
+                        title: (state.showAll) ? 'Show read' : 'Hide read',
+                        onTap: () {
+                          context.read<MentionsBloc>().add(ShowAllToggled());
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
           indexOfRelevantItem: 1,
           child: Builder(
             builder: (context) {
