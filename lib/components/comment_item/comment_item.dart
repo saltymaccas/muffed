@@ -6,6 +6,7 @@ import 'package:muffed/components/create_comment/create_comment_dialog.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
@@ -104,7 +105,15 @@ class _CommentItemState extends State<CommentItem>
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
               } else if (widget.displayAsSingle) {
-                context.go('/home/content?id=${widget.comment.postId}');
+                if (context
+                        .read<DynamicNavigationBarBloc>()
+                        .state
+                        .selectedItemIndex ==
+                    0) {
+                  context.push('/home/content?id=${widget.comment.postId}');
+                } else {
+                  context.go('/home/content?id=${widget.comment.postId}');
+                }
               }
             },
             child: Container(
