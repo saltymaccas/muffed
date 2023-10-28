@@ -10,8 +10,9 @@ class ShowAllToggled extends RepliesEvent {}
 
 class Refresh extends RepliesEvent {}
 
-class MarkedAsRead extends RepliesEvent {
-  MarkedAsRead({required this.id});
+class MarkAsReadToggled extends RepliesEvent {
+  MarkAsReadToggled({required this.id, required this.index});
 
   final int id;
+  final int index;
 }

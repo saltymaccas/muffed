@@ -30,18 +30,10 @@ class MentionsScreen extends StatelessWidget {
             } else if (state.replyItemsStatus == MentionsStatus.success) {
               late final List<LemmyInboxMention> mentionItems;
 
-              // if (state.showAll) {
-              mentionItems = state.mentions;
-              // } else {
-              //   // removes the read comments
-              //   mentionItems =
-              //       state.mentions.where((element) => !element.read).toList();
-              // }
-
               return MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
-                child: (mentionItems.isEmpty)
+                child: (state.mentions.isEmpty)
                     ? NothingToShow()
                     : NotificationListener(
                         onNotification: (ScrollNotification scrollInfo) {
@@ -69,7 +61,7 @@ class MentionsScreen extends StatelessWidget {
                           },
                           child: ListView.builder(
                             key: ValueKey(state.showAll),
-                            itemCount: mentionItems.length,
+                            itemCount: state.mentions.length,
                             itemBuilder: (context, index) {
                               return AnimatedSize(
                                 duration: Duration(milliseconds: 500),
@@ -77,22 +69,22 @@ class MentionsScreen extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(),
                                   clipBehavior: Clip.hardEdge,
-                                  height: (mentionItems[index].read &&
+                                  height: (state.mentions[index].read &&
                                           !state.showAll)
                                       ? 0
                                       : null,
                                   child: CommentItem(
-                                    key: ValueKey(mentionItems[index].id),
+                                    key: ValueKey(state.mentions[index].id),
                                     markedAsReadCallback: () {
                                       context.read<MentionsBloc>().add(
                                             MarkAsReadToggled(
-                                              id: mentionItems[index].id,
+                                              id: state.mentions[index].id,
                                               index: index,
                                             ),
                                           );
                                     },
-                                    read: mentionItems[index].read,
-                                    comment: mentionItems[index].comment,
+                                    read: state.mentions[index].read,
+                                    comment: state.mentions[index].comment,
                                     isOrphan: true,
                                     displayAsSingle: true,
                                     sortType: state.sortType,
