@@ -63,6 +63,9 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
         ),
       );
     });
+    on<TextScaleFactorChanged>((event, emit) {
+      emit(state.copyWith(textScaleFactor: event.value));
+    });
   }
 
   LemmyAccountData? getSelectedLemmyAccount() {

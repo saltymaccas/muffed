@@ -12,6 +12,7 @@ final class GlobalState extends Equatable {
     this.showNsfw = false,
     this.blurNsfw = true,
     this.defaultSortType = LemmySortType.active,
+    this.textScaleFactor = 1.0,
   });
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
@@ -28,6 +29,7 @@ final class GlobalState extends Equatable {
       showNsfw: map['showNsfw'],
       blurNsfw: map['blurNsfw'],
       defaultSortType: LemmySortType.values[map['defaultSortType']],
+      textScaleFactor: map['textScaleFactor'],
     );
   }
 
@@ -57,6 +59,8 @@ final class GlobalState extends Equatable {
 
   final LemmySortType defaultSortType;
 
+  final double textScaleFactor;
+
   @override
   List<Object?> get props => [
         lemmyAccounts,
@@ -68,6 +72,7 @@ final class GlobalState extends Equatable {
         showNsfw,
         blurNsfw,
         defaultSortType,
+        textScaleFactor,
       ];
 
   Map<String, dynamic> toMap() {
@@ -83,7 +88,8 @@ final class GlobalState extends Equatable {
       'seedColor': seedColor.value,
       'showNsfw': showNsfw,
       'blurNsfw': blurNsfw,
-      'defaultSortType': defaultSortType.index
+      'defaultSortType': defaultSortType.index,
+      'textScaleFactor': textScaleFactor,
     };
   }
 
@@ -97,6 +103,7 @@ final class GlobalState extends Equatable {
     bool? showNsfw,
     bool? blurNsfw,
     LemmySortType? defaultSortType,
+    double? textScaleFactor,
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
@@ -110,6 +117,7 @@ final class GlobalState extends Equatable {
       showNsfw: showNsfw ?? this.showNsfw,
       blurNsfw: blurNsfw ?? this.blurNsfw,
       defaultSortType: defaultSortType ?? this.defaultSortType,
+      textScaleFactor: textScaleFactor ?? this.textScaleFactor,
     );
   }
 }

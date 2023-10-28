@@ -6,24 +6,26 @@ import 'package:muffed/repo/lemmy/models.dart';
 void main() {
   test('GlobalState should convert to map and back', () {
     final globalState = GlobalState(
-        lemmySelectedAccount: 1,
-        themeMode: ThemeMode.light,
-        seedColor: Colors.red.shade50,
-        showNsfw: true,
-        blurNsfw: false,
-        lemmyAccounts: [
-          LemmyAccountData(
-            userName: 'testUser',
-            homeServer: 'test.home.server',
-            jwt: 'test.jwt',
-          ),
-          LemmyAccountData(
-            userName: 'testUser1',
-            homeServer: 'test.home.server1',
-            jwt: 'test.jwt1',
-          ),
-        ],
-        defaultSortType: LemmySortType.latest);
+      lemmySelectedAccount: 1,
+      themeMode: ThemeMode.light,
+      seedColor: Colors.red.shade50,
+      showNsfw: true,
+      blurNsfw: false,
+      textScaleFactor: 1.5,
+      lemmyAccounts: [
+        LemmyAccountData(
+          userName: 'testUser',
+          homeServer: 'test.home.server',
+          jwt: 'test.jwt',
+        ),
+        LemmyAccountData(
+          userName: 'testUser1',
+          homeServer: 'test.home.server1',
+          jwt: 'test.jwt1',
+        ),
+      ],
+      defaultSortType: LemmySortType.latest,
+    );
 
     final globalStateToMap = globalState.toMap();
 

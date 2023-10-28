@@ -57,3 +57,9 @@ final class LemmyDefaultHomeServerChanged extends GlobalEvent {
 
   final String url;
 }
+
+final class TextScaleFactorChanged extends GlobalEvent {
+  TextScaleFactorChanged(this.value);
+
+  final double value;
+}
