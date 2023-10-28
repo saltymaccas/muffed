@@ -33,7 +33,9 @@ class RepliesScreen extends StatelessWidget {
               return MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
-                child: (state.replies.isEmpty)
+                child: (state.replies.isEmpty ||
+                        !state.showAll &&
+                            state.replies.every((element) => element.read))
                     ? NothingToShow()
                     : NotificationListener(
                         onNotification: (ScrollNotification scrollInfo) {

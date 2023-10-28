@@ -33,7 +33,9 @@ class MentionsScreen extends StatelessWidget {
               return MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
-                child: (state.mentions.isEmpty)
+                child: (state.mentions.isEmpty ||
+                        !state.showAll &&
+                            state.mentions.every((element) => element.read))
                     ? NothingToShow()
                     : NotificationListener(
                         onNotification: (ScrollNotification scrollInfo) {
