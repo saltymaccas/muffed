@@ -310,53 +310,55 @@ class _CommentItemState extends State<CommentItem>
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          widget.comment.postTitle,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'In',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
-                                            ),
-                                            const SizedBox(
-                                              width: 2,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                context.go(
-                                                  '/home/community?id=${widget.comment.communityId}',
-                                                );
-                                              },
-                                              child: Text(
-                                                widget.comment.communityName,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            widget.comment.postTitle,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'In',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .labelMedium!
                                                     .copyWith(
                                                       color: Theme.of(context)
                                                           .colorScheme
-                                                          .primary,
+                                                          .outline,
                                                     ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                              const SizedBox(
+                                                width: 2,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  context.go(
+                                                    '/home/community?id=${widget.comment.communityId}',
+                                                  );
+                                                },
+                                                child: Text(
+                                                  widget.comment.communityName,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     if (widget.markedAsReadCallback != null)
                                       IconButton(
