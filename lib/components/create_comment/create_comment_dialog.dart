@@ -7,6 +7,29 @@ import '../markdown_body.dart';
 import '../snackbars.dart';
 import 'bloc/bloc.dart';
 
+void showCreateCommentDialog({
+  required BuildContext context,
+  required int postId,
+  int? parentId,
+  String? parentCommentContent,
+  void Function()? onSuccessfullySubmitted,
+  BuildContext? postBlocContext,
+}) {
+  showDialog<void>(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return CreateCommentDialog(
+        postId: postId,
+        parentCommentContent: parentCommentContent,
+        parentId: parentId,
+        onSuccessfullySubmitted: onSuccessfullySubmitted,
+        postBlocContext: postBlocContext,
+      );
+    },
+  );
+}
+
 /// The dialog that a user uses to post a comment
 ///
 /// This is only the widget so place it into a [showDialog] function for it to

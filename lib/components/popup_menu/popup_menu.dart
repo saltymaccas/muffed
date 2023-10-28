@@ -174,7 +174,7 @@ class MuffedPopupMenuButton extends StatefulWidget {
   });
 
   final Widget icon;
-  final List<MuffedPopupMenuItem> items;
+  final List<Widget> items;
   final bool useRootNavigator;
   final VisualDensity visualDensity;
   final Offset offset;
@@ -245,8 +245,10 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
             if (i != null) {
               return i;
             }
-          } else if (item.value == widget.selectedValue) {
-            return item.icon ?? widget.icon;
+          } else if (item is MuffedPopupMenuItem) {
+            if (item.value == widget.selectedValue) {
+              return item.icon ?? widget.icon;
+            }
           }
         }
       }

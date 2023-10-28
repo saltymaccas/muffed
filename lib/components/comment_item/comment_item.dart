@@ -12,28 +12,50 @@ import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
 
 /// Used to display a single comment in a listview, this widget will also show
-/// all the children comments,
-
+/// all the children comments if needed.
 class CommentItem extends StatefulWidget {
+  /// Used to display a single comment in a listview
   const CommentItem({
     required this.comment,
-    required this.children,
     required this.sortType,
+    this.ableToLoadChildren = true,
+    this.children = const [],
     this.isOrphan = true,
     this.postCreatorId,
+    this.displayAsSingle = false,
+    this.markedAsReadCallback,
+    this.read = false,
     super.key,
   });
 
+  /// The comment itself
   final LemmyComment comment;
+
+  /// Any children of the comment
   final List<LemmyComment> children;
+
+  /// The sort type of the listview the comment is in
   final LemmyCommentSortType sortType;
+
+  /// If true the comment will display a button to load the comments children
+  final bool ableToLoadChildren;
 
   /// The id of the creator of the post the comment is on, used to mark the
   /// comment if it is by the same person who made the post
   final int? postCreatorId;
 
-  /// Whether the comment has a parent comment
+  /// Whether the comment does not have a parent
   final bool isOrphan;
+
+  /// Whether the comment should be displayed as a single comment
+  final bool displayAsSingle;
+
+  /// Only used for replies and mentions screen, used to mark the comment as
+  /// read
+  final void Function()? markedAsReadCallback;
+
+  /// only shows id [markedAsReadCallback] is not null
+  final bool read;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -92,7 +114,8 @@ class _CommentItemState extends State<CommentItem>
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: (widget.comment.path.isNotEmpty)
+                  left: (widget.comment.path.isNotEmpty &&
+                          !widget.displayAsSingle)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
@@ -101,173 +124,263 @@ class _CommentItemState extends State<CommentItem>
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: AnimatedSize(
-                  duration: Duration(milliseconds: 500),
+                  // TODO: make animation a constant speed (ajusts time based on the height of the comment)
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOutCubic,
                   alignment: Alignment.topCenter,
-                  child: state.minimised
-                      ? Text(
+                  child: Builder(
+                    builder: (context) {
+                      if (state.minimised) {
+                        return Text(
                           widget.comment.content,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
+                        );
+                      }
+
+                      final baseCommentItem = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                widget.comment.creatorName,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                formattedPostedAgo(
+                                  widget.comment.timePublished,
+                                ),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              // Signal if the comment is from op
+                              if (widget.postCreatorId ==
+                                  state.comment.creatorId)
                                 Text(
-                                  widget.comment.creatorName,
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                  'OP',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                ),
+                            ],
+                          ),
+                          MuffedMarkdownBody(data: widget.comment.content),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<CommentItemBloc>()
+                                      .add(UpvotePressed());
+                                },
+                                icon: Icon(
+                                  Icons.arrow_upward_rounded,
+                                  color: (state.comment.myVote ==
+                                          LemmyVoteType.upVote)
+                                      ? Colors.deepOrange
+                                      : null,
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              Text(state.comment.upVotes.toString()),
+                              IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<CommentItemBloc>()
+                                      .add(DownvotePressed());
+                                },
+                                icon: Icon(
+                                  Icons.arrow_downward_rounded,
+                                  color: (state.comment.myVote ==
+                                          LemmyVoteType.downVote)
+                                      ? Colors.purple
+                                      : null,
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              Text(state.comment.downVotes.toString()),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showCreateCommentDialog(
+                                    context: context,
+                                    postId: state.comment.postId,
+                                    parentId: state.comment.id,
+                                  );
+                                },
+                                icon: const Icon(Icons.reply),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              MuffedPopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                items: [
+                                  MuffedPopupMenuItem(
+                                    title: 'Go to user',
+                                    onTap: () {
+                                      context.push(
+                                        '/home/person?id=${widget.comment.creatorId}',
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          ...childrenWidgets,
+                          if (state.comment.childCount > 0 &&
+                              state.children.isEmpty)
+                            InkWell(
+                              onTap: () {
+                                context.read<CommentItemBloc>().add(
+                                      LoadChildrenRequested(widget.sortType),
+                                    );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    left: (widget.comment.path.isNotEmpty)
+                                        ? BorderSide(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .outline,
+                                            width: 1,
+                                          )
+                                        : BorderSide.none,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  formattedPostedAgo(
-                                    widget.comment.timePublished,
-                                  ),
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                if (widget.postCreatorId ==
-                                    state.comment.creatorId)
-                                  Text(
-                                    'OP',
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    state.loadingChildren
+                                        ? 'Loading...'
+                                        : 'Load ${state.comment.childCount} more',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .labelSmall!
+                                        .labelMedium!
                                         .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .primary,
+                                              .secondary,
                                         ),
-                                  ),
-                              ],
-                            ),
-                            MuffedMarkdownBody(data: widget.comment.content),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    context
-                                        .read<CommentItemBloc>()
-                                        .add(UpvotePressed());
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_upward_rounded,
-                                    color: (state.comment.myVote ==
-                                            LemmyVoteType.upVote)
-                                        ? Colors.deepOrange
-                                        : null,
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-                                Text(state.comment.upVotes.toString()),
-                                IconButton(
-                                  onPressed: () {
-                                    context
-                                        .read<CommentItemBloc>()
-                                        .add(DownvotePressed());
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_downward_rounded,
-                                    color: (state.comment.myVote ==
-                                            LemmyVoteType.downVote)
-                                        ? Colors.purple
-                                        : null,
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-                                Text(state.comment.downVotes.toString()),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    showDialog<void>(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (context) {
-                                        return CreateCommentDialog(
-                                          postId: state.comment.postId,
-                                          parentCommentContent:
-                                              state.comment.content,
-                                          parentId: state.comment.id,
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.reply),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-                                MuffedPopupMenuButton(
-                                  icon: Icon(Icons.more_vert),
-                                  items: [
-                                    MuffedPopupMenuItem(
-                                      title: 'Go to user',
-                                      onTap: () {
-                                        context.push(
-                                          '/home/person?id=${widget.comment.creatorId}',
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            ...childrenWidgets,
-                            if (state.comment.childCount > 0 &&
-                                state.children.isEmpty)
-                              InkWell(
-                                onTap: () {
-                                  context.read<CommentItemBloc>().add(
-                                        LoadChildrenRequested(widget.sortType),
-                                      );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: (widget.comment.path.isNotEmpty)
-                                          ? BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                              width: 1,
-                                            )
-                                          : BorderSide.none,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      state.loadingChildren
-                                          ? 'Loading...'
-                                          : 'Load ${state.comment.childCount} more',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ),
-                                    ),
                                   ),
                                 ),
                               ),
-                            if (widget.isOrphan) Divider(),
-                          ],
-                        ),
+                            ),
+                          if (widget.isOrphan && !widget.displayAsSingle)
+                            const Divider(),
+                        ],
+                      );
+
+                      if (widget.displayAsSingle) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant,
+                              width: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 2),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.comment.postTitle,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'In',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                            const SizedBox(
+                                              width: 2,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                context.go(
+                                                  '/home/community?id=${widget.comment.communityId}',
+                                                );
+                                              },
+                                              child: Text(
+                                                widget.comment.communityName,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    if (widget.markedAsReadCallback != null)
+                                      IconButton(
+                                        isSelected: widget.read,
+                                        onPressed: widget.markedAsReadCallback,
+                                        selectedIcon: Icon(Icons.check_circle),
+                                        icon: Icon(Icons.check_circle_outline),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const Divider(thickness: 0.5),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: baseCommentItem,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return baseCommentItem;
+                    },
+                  ),
                 ),
               ),
             ),

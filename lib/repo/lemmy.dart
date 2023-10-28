@@ -454,4 +454,64 @@ interface class LemmyRepo {
 
     return LemmyPost.fromPostViewJson(response['post_view']);
   }
+
+  Future<List<LemmyInboxReply>> getReplies({
+    int page = 1,
+    LemmyCommentSortType sort = LemmyCommentSortType.latest,
+    bool unreadOnly = true,
+  }) async {
+    final response = await getRequest(
+      mustBeLoggedIn: true,
+      path: '/user/replies',
+      queryParameters: {
+        'page': page,
+        'sort': lemmyCommentSortTypeToJson[sort],
+        'unread_only': unreadOnly,
+      },
+    );
+
+    return List.generate(
+      response['replies'].length,
+      (index) => LemmyInboxReply.fromReplyViewJson(response['replies'][index]),
+    );
+  }
+
+  Future<List<LemmyInboxMention>> getMention({
+    int page = 1,
+    LemmyCommentSortType sort = LemmyCommentSortType.latest,
+    bool unreadOnly = true,
+  }) async {
+    final response = await getRequest(
+      path: '/user/mention',
+      mustBeLoggedIn: true,
+      queryParameters: {
+        'page': page,
+        'sort': lemmyCommentSortTypeToJson[sort],
+        'unread_only': unreadOnly,
+      },
+    );
+
+    return List.generate(
+      response['mentions'].length,
+      (index) => LemmyInboxMention.fromPersonMentionViewJson(
+        response['mentions'][index],
+      ),
+    );
+  }
+
+  Future<void> markReplyAsRead({required int id, bool read = true}) async {
+    await postRequest(
+      path: '/comment/mark_as_read',
+      mustBeLoggedIn: true,
+      data: {'comment_reply_id': id, 'read': read},
+    );
+  }
+
+  Future<void> markMentionAsRead({required int id, bool read = true}) async {
+    await postRequest(
+      path: '/user/mention/mark_as_read',
+      mustBeLoggedIn: true,
+      data: {'person_mention_id': id, 'read': read},
+    );
+  }
 }

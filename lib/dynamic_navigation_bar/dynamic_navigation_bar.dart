@@ -260,6 +260,7 @@ class _SetPageInfoState extends State<SetPageInfo> {
   @override
   void initState() {
     super.initState();
+
     _bloc = context.read<DynamicNavigationBarBloc>();
 
     for (var i = 0; i < widget.actions.length; i++) {

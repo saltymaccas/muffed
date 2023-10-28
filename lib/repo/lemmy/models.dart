@@ -267,6 +267,9 @@ class LemmyComment extends Equatable {
     this.myVote = LemmyVoteType.none,
     required this.score,
     required this.hotRank,
+    required this.postTitle,
+    required this.communityName,
+    required this.communityId,
   });
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
@@ -288,13 +291,19 @@ class LemmyComment extends Equatable {
         downVotes = json['counts']['downvotes'],
         score = json['counts']['score'],
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
-        hotRank = json['counts']['hot_rank'];
+        hotRank = json['counts']['hot_rank'],
+        postTitle = json['post']['name'],
+        communityName = json['community']['name'],
+        communityId = json['community']['id'];
 
   /// Holds the id's of the parent and ancestor comments
   ///
   /// This does not include id of the post or the comment itself.
   final List<int> path;
 
+  final String postTitle;
+  final String communityName;
+  final int communityId;
   final String creatorName;
   final String content;
   final DateTime timePublished;
@@ -327,6 +336,9 @@ class LemmyComment extends Equatable {
         score,
         myVote,
         hotRank,
+        postTitle,
+        communityName,
+        communityId,
       ];
 
   LemmyComment copyWith({
@@ -343,6 +355,9 @@ class LemmyComment extends Equatable {
     int? score,
     LemmyVoteType? myVote,
     int? hotRank,
+    String? postTitle,
+    String? communityName,
+    int? communityId,
   }) {
     return LemmyComment(
       path: path ?? this.path,
@@ -358,6 +373,67 @@ class LemmyComment extends Equatable {
       score: score ?? this.score,
       myVote: myVote ?? this.myVote,
       hotRank: hotRank ?? this.hotRank,
+      postTitle: postTitle ?? this.postTitle,
+      communityName: communityName ?? this.communityName,
+      communityId: communityId ?? this.communityId,
+    );
+  }
+}
+
+class LemmyInboxReply extends Equatable {
+  LemmyInboxReply(
+      {required this.comment, required this.read, required this.id});
+
+  LemmyInboxReply.fromReplyViewJson(Map<String, dynamic> json)
+      : comment = LemmyComment.fromCommentViewJson(json),
+        read = json['comment_reply']['read'],
+        id = json['comment_reply']['id'];
+
+  final LemmyComment comment;
+  final bool read;
+  final int id;
+
+  LemmyInboxReply copyWith({
+    LemmyComment? comment,
+    bool? read,
+    int? id,
+  }) {
+    return LemmyInboxReply(
+      comment: comment ?? this.comment,
+      read: read ?? this.read,
+      id: id ?? this.id,
+    );
+  }
+
+  @override
+  List<Object?> get props => [comment, read];
+}
+
+class LemmyInboxMention extends Equatable {
+  LemmyInboxMention(
+      {required this.comment, required this.read, required this.id});
+
+  LemmyInboxMention.fromPersonMentionViewJson(Map<String, dynamic> json)
+      : comment = LemmyComment.fromCommentViewJson(json),
+        read = json['person_mention']['read'],
+        id = json['person_mention']['id'];
+
+  final LemmyComment comment;
+  final bool read;
+  final int id;
+
+  @override
+  List<Object?> get props => [comment, read];
+
+  LemmyInboxMention copyWith({
+    LemmyComment? comment,
+    bool? read,
+    int? id,
+  }) {
+    return LemmyInboxMention(
+      comment: comment ?? this.comment,
+      read: read ?? this.read,
+      id: id ?? this.id,
     );
   }
 }
