@@ -133,6 +133,18 @@ class _CommentItemState extends State<CommentItem>
                   child: Builder(
                     builder: (context) {
                       if (state.minimised) {
+                        if (widget.displayAsSingle) {
+                          return Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                widget.comment.content,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          );
+                        }
                         return Text(
                           widget.comment.content,
                           maxLines: 1,
