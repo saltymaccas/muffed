@@ -36,6 +36,16 @@ class InboxPage extends StatelessWidget {
 
             final tabController = DefaultTabController.of(context);
 
+            tabController.animation!.addListener(() {
+              context.read<DynamicNavigationBarBloc>().add(
+                    EditPageActions(
+                      context: context,
+                      itemIndex: 1,
+                      actions: [],
+                    ),
+                  );
+            });
+
             tabController.addListener(() {
               if (tabController.index == 0) {
                 context.read<DynamicNavigationBarBloc>().add(
