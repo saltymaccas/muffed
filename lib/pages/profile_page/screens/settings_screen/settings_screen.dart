@@ -63,7 +63,7 @@ class SettingsPage extends StatelessWidget {
                     showLicensePage(
                       context: context,
                       applicationName: 'Muffed',
-                      applicationVersion: '0.5.1+6',
+                      applicationVersion: '0.6.0+7',
                       applicationIcon: Image.asset(
                         'assets/icon.png',
                         width: 196,
