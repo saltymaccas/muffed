@@ -59,6 +59,9 @@ class MyApp extends StatelessWidget {
                             ? lightDynamic
                             : ColorScheme.fromSeed(seedColor: state.seedColor),
                     useMaterial3: true,
+                    textTheme: Theme.of(context).textTheme.apply(
+                          fontSizeFactor: state.textScaleFactor,
+                        ),
                   ),
                   darkTheme: ThemeData(
                     colorScheme:
@@ -69,6 +72,9 @@ class MyApp extends StatelessWidget {
                                 brightness: Brightness.dark,
                               ),
                     useMaterial3: true,
+                    textTheme: Theme.of(context).textTheme.apply(
+                          fontSizeFactor: state.textScaleFactor,
+                        ),
                   ),
                   themeMode: state.themeMode,
                 ),
