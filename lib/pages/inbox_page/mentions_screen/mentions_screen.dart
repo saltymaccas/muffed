@@ -67,24 +67,38 @@ class MentionsScreen extends StatelessWidget {
                               return false;
                             });
                           },
-                          child: AnimatedList(
-                            initialItemCount: mentionItems.length,
-                            itemBuilder: (context, index, animation) {
-                              return CommentItem(
-                                markedAsReadCallback: () {
-                                  context.read<MentionsBloc>().add(
-                                        MarkAsReadToggled(
-                                          id: mentionItems[index].id,
-                                          index: index,
-                                        ),
-                                      );
-                                },
-                                read: mentionItems[index].read,
-                                comment: mentionItems[index].comment,
-                                isOrphan: true,
-                                displayAsSingle: true,
-                                sortType: state.sortType,
-                                ableToLoadChildren: false,
+                          child: ListView.builder(
+                            key: ValueKey(state.showAll),
+                            itemCount: mentionItems.length,
+                            itemBuilder: (context, index) {
+                              return AnimatedSize(
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.easeInOutCubic,
+                                child: Container(
+                                  decoration: BoxDecoration(),
+                                  clipBehavior: Clip.hardEdge,
+                                  height: (mentionItems[index].read &&
+                                          !state.showAll)
+                                      ? 0
+                                      : null,
+                                  child: CommentItem(
+                                    key: ValueKey(mentionItems[index].id),
+                                    markedAsReadCallback: () {
+                                      context.read<MentionsBloc>().add(
+                                            MarkAsReadToggled(
+                                              id: mentionItems[index].id,
+                                              index: index,
+                                            ),
+                                          );
+                                    },
+                                    read: mentionItems[index].read,
+                                    comment: mentionItems[index].comment,
+                                    isOrphan: true,
+                                    displayAsSingle: true,
+                                    sortType: state.sortType,
+                                    ableToLoadChildren: false,
+                                  ),
+                                ),
                               );
                             },
                           ),
