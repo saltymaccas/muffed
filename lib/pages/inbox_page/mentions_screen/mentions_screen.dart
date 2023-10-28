@@ -47,8 +47,12 @@ class MentionsScreen extends StatelessWidget {
                       mentionItems.length,
                       (index) => CommentItem(
                         markedAsReadCallback: () {
-                          context.read<MentionsBloc>().add(MarkAsReadToggled(id: mentionItems[index].id));
-
+                          context.read<MentionsBloc>().add(
+                                MarkAsReadToggled(
+                                  id: mentionItems[index].id,
+                                  index: index,
+                                ),
+                              );
                         },
                         read: mentionItems[index].read,
                         comment: mentionItems[index].comment,

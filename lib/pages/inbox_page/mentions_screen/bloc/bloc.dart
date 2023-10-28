@@ -12,7 +12,8 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
     on<Initialize>((event, emit) async {
       emit(state.copyWith(inboxStatus: MentionsStatus.loading));
       try {
-        final response = await repo.lemmyRepo.getMention();
+        final response =
+            await repo.lemmyRepo.getMention(unreadOnly: state.showAll, page: 1);
         emit(
           state.copyWith(
             inboxStatus: MentionsStatus.success,
@@ -29,37 +30,44 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
       }
     });
     on<MarkAsReadToggled>((event, emit) async {
-      final mentions = state.mentions.map((e) {
-        if (e.id == event.id) {
-          return e.copyWith(read: !e.read);
-        }
-        return e;
-      }).toList();
+      final ogMentionsList = [...state.mentions];
+
+      final mentions = [...state.mentions];
+
+      final toggledTo = !mentions[event.index].read;
+
+      mentions[event.index] = mentions[event.index].copyWith(read: toggledTo);
+
       emit(state.copyWith(mentions: mentions));
 
       try {
         final response = await repo.lemmyRepo.markMentionAsRead(
           id: event.id,
-          read: !state.mentions
-              .firstWhere((element) => element.id == event.id)
-              .read,
+          read: toggledTo,
         );
       } catch (err) {
         emit(
           state.copyWith(
             error: err,
-            mentions: state.mentions.map((e) {
-              if (e.id == event.id) {
-                return e.copyWith(read: !e.read);
-              }
-              return e;
-            }).toList(),
+            mentions: ogMentionsList,
           ),
         );
       }
     });
-    on<ShowAllToggled>((event, emit) {
-      emit(state.copyWith(showAll: !state.showAll));
+    on<ShowAllToggled>((event, emit) async {
+      emit(state.copyWith(isLoading: true, showAll: !state.showAll));
+      try {
+        final response = await repo.lemmyRepo
+            .getMention(page: 1, unreadOnly: !state.showAll);
+        emit(
+          state.copyWith(
+            isLoading: false,
+            mentions: response,
+          ),
+        );
+      } catch (err) {
+        emit(state.copyWith(error: err, showAll: state.showAll));
+      }
     });
   }
 
