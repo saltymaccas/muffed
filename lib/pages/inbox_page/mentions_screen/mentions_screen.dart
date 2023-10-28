@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/muffed_page.dart';
+import 'package:muffed/components/nothing_to_show.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/lemmy/models.dart';
@@ -17,26 +18,27 @@ class MentionsScreen extends StatelessWidget {
     return BlocBuilder<MentionsBloc, MentionsState>(
       builder: (context, state) {
         final blocContext = context;
+
         return SetPageInfo(
           actions: [
-            BlocProvider.value(
-              value: BlocProvider.of<MentionsBloc>(blocContext),
-              child: BlocBuilder<MentionsBloc, MentionsState>(
-                builder: (context, state) {
-                  return MuffedPopupMenuButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: Icon(Icons.more_vert),
-                    items: [
-                      MuffedPopupMenuItem(
-                        title: (state.showAll) ? 'Show read' : 'Hide read',
+            MuffedPopupMenuButton(
+              visualDensity: VisualDensity.compact,
+              icon: Icon(Icons.more_vert),
+              items: [
+                BlocProvider.value(
+                  value: BlocProvider.of<MentionsBloc>(blocContext),
+                  child: BlocBuilder<MentionsBloc, MentionsState>(
+                    builder: (context, state) {
+                      return MuffedPopupMenuItem(
+                        title: (state.showAll) ? 'Hide read' : 'Show read',
                         onTap: () {
                           context.read<MentionsBloc>().add(ShowAllToggled());
                         },
-                      ),
-                    ],
-                  );
-                },
-              ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
           indexOfRelevantItem: 1,
@@ -64,50 +66,55 @@ class MentionsScreen extends StatelessWidget {
                 return MuffedPage(
                   isLoading: state.isLoading,
                   error: state.error,
-                  child: NotificationListener(
-                    onNotification: (ScrollNotification scrollInfo) {
-                      if (scrollInfo.metrics.pixels >=
-                          scrollInfo.metrics.maxScrollExtent - 500) {
-                        context.read<MentionsBloc>().add(ReachedEndOfScroll());
-                      }
-                      return true;
-                    },
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<MentionsBloc>().add(Refresh());
-                        await context
-                            .read<MentionsBloc>()
-                            .stream
-                            .firstWhere((element) {
-                          if (element.isRefreshing == false) {
+                  child: (mentionItems.isEmpty)
+                      ? NothingToShow()
+                      : NotificationListener(
+                          onNotification: (ScrollNotification scrollInfo) {
+                            if (scrollInfo.metrics.pixels >=
+                                    scrollInfo.metrics.maxScrollExtent - 500 &&
+                                scrollInfo.metrics.axis == Axis.vertical) {
+                              context
+                                  .read<MentionsBloc>()
+                                  .add(ReachedEndOfScroll());
+                            }
                             return true;
-                          }
-                          return false;
-                        });
-                      },
-                      child: ListView(
-                        children: List.generate(
-                          mentionItems.length,
-                          (index) => CommentItem(
-                            markedAsReadCallback: () {
-                              context.read<MentionsBloc>().add(
-                                    MarkAsReadToggled(
-                                      id: mentionItems[index].id,
-                                      index: index,
-                                    ),
-                                  );
+                          },
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              context.read<MentionsBloc>().add(Refresh());
+                              await context
+                                  .read<MentionsBloc>()
+                                  .stream
+                                  .firstWhere((element) {
+                                if (element.isRefreshing == false) {
+                                  return true;
+                                }
+                                return false;
+                              });
                             },
-                            read: mentionItems[index].read,
-                            comment: mentionItems[index].comment,
-                            isOrphan: true,
-                            displayAsSingle: true,
-                            sortType: state.sortType,
-                            ableToLoadChildren: false,
+                            child: ListView(
+                              children: List.generate(
+                                mentionItems.length,
+                                (index) => CommentItem(
+                                  markedAsReadCallback: () {
+                                    context.read<MentionsBloc>().add(
+                                          MarkAsReadToggled(
+                                            id: mentionItems[index].id,
+                                            index: index,
+                                          ),
+                                        );
+                                  },
+                                  read: mentionItems[index].read,
+                                  comment: mentionItems[index].comment,
+                                  isOrphan: true,
+                                  displayAsSingle: true,
+                                  sortType: state.sortType,
+                                  ableToLoadChildren: false,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
                 );
               } else {
                 return const SizedBox();
