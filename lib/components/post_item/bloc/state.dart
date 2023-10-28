@@ -1,21 +1,26 @@
 part of 'bloc.dart';
 
-class PostItemState extends Equatable {
-  PostItemState({required this.post, this.error});
+enum PostItemStatus { initial, loading, success, failure }
 
-  final LemmyPost post;
+class PostItemState extends Equatable {
+  PostItemState({this.post, this.status = PostItemStatus.initial, this.error});
+
+  final PostItemStatus status;
+  final LemmyPost? post;
   final Object? error;
 
   @override
-  List<Object?> get props => [post, error];
+  List<Object?> get props => [post, error, status];
 
   PostItemState copyWith({
     LemmyPost? post,
     Object? error,
+    PostItemStatus? status,
   }) {
     return PostItemState(
       post: post ?? this.post,
       error: error,
+      status: status ?? this.status,
     );
   }
 }

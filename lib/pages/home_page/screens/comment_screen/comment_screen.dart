@@ -19,23 +19,28 @@ import 'bloc/bloc.dart';
 class CommentScreen extends StatelessWidget {
   /// Displays a screen that shows the post on top and the comments under
   const CommentScreen({
-    required this.post,
+    this.post,
+    this.postId,
     this.postItemBlocContext,
     super.key,
   });
 
   /// The post that should be shown
-  final LemmyPost post;
+  final LemmyPost? post;
+
+  final int? postId;
 
   /// If a post bloc already exits for the post it should be passed in here
   final BuildContext? postItemBlocContext;
 
   @override
   Widget build(BuildContext context) {
+    final postId = this.postId ?? post!.id;
+
     return BlocProvider(
       create: (context) => CommentScreenBloc(
         repo: context.read<ServerRepo>(),
-        post: post,
+        postId: postId,
       )..add(InitializeEvent()),
       child: BlocBuilder<CommentScreenBloc, CommentScreenState>(
         builder: (context, state) {
@@ -57,7 +62,7 @@ class CommentScreen extends StatelessWidget {
                         builder: (context) {
                           return CreateCommentDialog(
                             postBlocContext: blocContext,
-                            postId: post.id,
+                            postId: postId,
                             onSuccessfullySubmitted: () {
                               showInfoSnackBar(
                                 context,
@@ -150,6 +155,7 @@ class CommentScreen extends StatelessWidget {
                     ),
                     SliverToBoxAdapter(
                       child: PostItem(
+                        postId: postId,
                         post: post,
                         useBlocFromContext: postItemBlocContext,
                         openOnTap: false,
@@ -161,7 +167,6 @@ class CommentScreen extends StatelessWidget {
                       _CommentScreenSuccess(
                         comments: state.comments!,
                         sortType: state.sortType,
-                        post: post,
                       )
                     else if (state.status == CommentScreenStatus.loading)
                       const _CommentScreenLoading()
@@ -184,13 +189,11 @@ class _CommentScreenSuccess extends StatelessWidget {
   const _CommentScreenSuccess({
     required this.comments,
     required this.sortType,
-    required this.post,
     super.key,
   });
 
   final List<LemmyComment> comments;
   final LemmyCommentSortType sortType;
-  final LemmyPost post;
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +212,6 @@ class _CommentScreenSuccess extends StatelessWidget {
           comment: key,
           children: organisedComments[key]!,
           sortType: sortType,
-          postCreatorId: post.creatorId,
         );
       },
     );

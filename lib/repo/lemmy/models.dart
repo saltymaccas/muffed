@@ -270,6 +270,7 @@ class LemmyComment extends Equatable {
     required this.postTitle,
     required this.communityName,
     required this.communityId,
+    required this.postCreatorId,
   });
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
@@ -294,13 +295,15 @@ class LemmyComment extends Equatable {
         hotRank = json['counts']['hot_rank'],
         postTitle = json['post']['name'],
         communityName = json['community']['name'],
-        communityId = json['community']['id'];
+        communityId = json['community']['id'],
+        postCreatorId = json['post']['creator_id'];
 
   /// Holds the id's of the parent and ancestor comments
   ///
   /// This does not include id of the post or the comment itself.
   final List<int> path;
 
+  final int postCreatorId;
   final String postTitle;
   final String communityName;
   final int communityId;
@@ -339,6 +342,7 @@ class LemmyComment extends Equatable {
         postTitle,
         communityName,
         communityId,
+        postCreatorId,
       ];
 
   LemmyComment copyWith({
@@ -358,6 +362,7 @@ class LemmyComment extends Equatable {
     String? postTitle,
     String? communityName,
     int? communityId,
+    int? postCreatorId,
   }) {
     return LemmyComment(
       path: path ?? this.path,
@@ -376,6 +381,7 @@ class LemmyComment extends Equatable {
       postTitle: postTitle ?? this.postTitle,
       communityName: communityName ?? this.communityName,
       communityId: communityId ?? this.communityId,
+      postCreatorId: postCreatorId ?? this.postCreatorId,
     );
   }
 }

@@ -21,7 +21,6 @@ class CommentItem extends StatefulWidget {
     this.ableToLoadChildren = true,
     this.children = const [],
     this.isOrphan = true,
-    this.postCreatorId,
     this.displayAsSingle = false,
     this.markedAsReadCallback,
     this.read = false,
@@ -39,10 +38,6 @@ class CommentItem extends StatefulWidget {
 
   /// If true the comment will display a button to load the comments children
   final bool ableToLoadChildren;
-
-  /// The id of the creator of the post the comment is on, used to mark the
-  /// comment if it is by the same person who made the post
-  final int? postCreatorId;
 
   /// Whether the comment does not have a parent
   final bool isOrphan;
@@ -97,7 +92,6 @@ class _CommentItemState extends State<CommentItem>
               children: organisedComments[key]!,
               sortType: widget.sortType,
               isOrphan: false,
-              postCreatorId: widget.postCreatorId,
             );
           });
 
@@ -109,6 +103,8 @@ class _CommentItemState extends State<CommentItem>
             onTap: () {
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
+              } else if (widget.displayAsSingle) {
+                context.go('/home/content?id=${widget.comment.postId}');
               }
             },
             child: Container(
@@ -176,7 +172,7 @@ class _CommentItemState extends State<CommentItem>
                               ),
                               const SizedBox(width: 10),
                               // Signal if the comment is from op
-                              if (widget.postCreatorId ==
+                              if (widget.comment.postCreatorId ==
                                   state.comment.creatorId)
                                 Text(
                                   'OP',

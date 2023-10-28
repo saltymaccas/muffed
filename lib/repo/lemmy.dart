@@ -514,4 +514,13 @@ interface class LemmyRepo {
       data: {'person_mention_id': id, 'read': read},
     );
   }
+
+  Future<LemmyPost> getPost({required int id}) async {
+    final response = await getRequest(
+      path: '/post',
+      queryParameters: {'id': id},
+    );
+
+    return LemmyPost.fromPostViewJson(response['post_view']);
+  }
 }

@@ -12,14 +12,14 @@ final _log = Logger('CommentScreenBloc');
 /// The bloc for the content screen
 class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
   /// Initialize
-  CommentScreenBloc({required this.repo, required this.post})
+  CommentScreenBloc({required this.repo, required this.postId})
       : super(const CommentScreenState(status: CommentScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
       emit(const CommentScreenState(status: CommentScreenStatus.loading));
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId: post.id, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = newComments;
 
@@ -48,7 +48,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
           emit(state.copyWith(isLoading: true));
           try {
             final newComments = await repo.lemmyRepo.getComments(
-              postId: post.id,
+              postId: postId,
               page: state.pagesLoaded + 1,
               sortType: state.sortType,
             );
@@ -81,7 +81,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     );
     on<UserCommented>((event, emit) async {
       try {
-        await repo.lemmyRepo.createComment(event.comment, post.id, null);
+        await repo.lemmyRepo.createComment(event.comment, postId, null);
         event.onSuccess();
       } catch (err) {
         event.onError();
@@ -95,7 +95,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     on<UserRepliedToComment>((event, emit) async {
       try {
         await repo.lemmyRepo
-            .createComment(event.comment, post.id, event.commentId);
+            .createComment(event.comment, postId, event.commentId);
         event.onSuccess();
       } catch (err) {
         emit(state.copyWith(error: err));
@@ -106,7 +106,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId: post.id, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = newComments;
 
@@ -129,7 +129,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
       try {
         final newComments = await repo.lemmyRepo
-            .getComments(postId: post.id, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, page: 1, sortType: state.sortType);
 
         final comments = newComments;
 
@@ -158,7 +158,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
 
         try {
           final comments = await repo.lemmyRepo.getComments(
-            postId: post.id,
+            postId: postId,
             parentId: event.id,
             sortType: state.sortType,
           );
@@ -180,5 +180,5 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
   }
 
   final ServerRepo repo;
-  final LemmyPost post;
+  final int postId;
 }

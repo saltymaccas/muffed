@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/components/error.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
+import '../loading.dart';
 import 'bloc/bloc.dart';
 import 'post_view_modes/post_view_modes.dart';
 
@@ -14,7 +16,8 @@ enum PostViewMode { card }
 class PostItem extends StatefulWidget {
   ///
   const PostItem({
-    required this.post,
+    this.post,
+    this.postId,
     this.type = PostViewMode.card,
     this.openOnTap = true,
     this.limitHeight = false,
@@ -22,13 +25,12 @@ class PostItem extends StatefulWidget {
     super.key,
   });
 
-  final LemmyPost post;
+  final int? postId;
+  final LemmyPost? post;
   final PostViewMode type;
   final bool openOnTap;
   final bool limitHeight;
 
-  /// If the item should use a already existing bloc instead of creating a new
-  /// one, If it should than put the context of the bloc in
   final BuildContext? useBlocFromContext;
 
   @override
@@ -45,14 +47,32 @@ class _PostItemState extends State<PostItem>
     super.build(context);
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
-        switch (widget.type) {
-          case PostViewMode.card:
-            return CardLemmyPostItem(
-              state.post,
-              openOnTap: widget.openOnTap,
-              limitContentHeight: widget.limitHeight,
-            );
+        if (state.status == PostItemStatus.failure) {
+          return ErrorComponentTransparent(
+            message: state.error,
+            retryFunction: () {
+              context.read<PostItemBloc>().add(Initialize());
+            },
+          );
         }
+        if (state.status == PostItemStatus.loading) {
+          return const LoadingComponentTransparent();
+        }
+        if (state.status == PostItemStatus.initial) {
+          return const SizedBox();
+        }
+        if (state.status == PostItemStatus.success) {
+          switch (widget.type) {
+            case PostViewMode.card:
+              return CardLemmyPostItem(
+                state.post!,
+                openOnTap: widget.openOnTap,
+                limitContentHeight: widget.limitHeight,
+              );
+          }
+        }
+
+        return Text('Something went wrong');
       },
     );
 
@@ -65,9 +85,10 @@ class _PostItemState extends State<PostItem>
       return BlocProvider(
         create: (context) => PostItemBloc(
           post: widget.post,
+          postId: widget.postId,
           repo: context.read<ServerRepo>(),
           globalBloc: context.read<GlobalBloc>(),
-        ),
+        )..add(Initialize()),
         child: postWidget,
       );
     }

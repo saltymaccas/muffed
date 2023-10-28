@@ -93,11 +93,16 @@ final router = GoRouter(
                 GoRoute(
                   path: 'content',
                   builder: (context, state) {
-                    final values = state.extra! as (LemmyPost, BuildContext?);
+                    final values = (state.extra == null)
+                        ? null
+                        : state.extra! as (LemmyPost, BuildContext?);
 
                     return CommentScreen(
-                      post: values.$1,
-                      postItemBlocContext: values.$2,
+                      postId: (state.uri.queryParameters['id'] != null)
+                          ? int.parse(state.uri.queryParameters['id']!)
+                          : null,
+                      post: (values != null) ? values.$1 : null,
+                      postItemBlocContext: (values != null) ? values.$2 : null,
                     );
                   },
                   routes: [
