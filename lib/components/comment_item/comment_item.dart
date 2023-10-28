@@ -356,9 +356,20 @@ class _CommentItemState extends State<CommentItem>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  context.go(
-                                                    '/home/community?id=${widget.comment.communityId}',
-                                                  );
+                                                  if (context
+                                                          .read<
+                                                              DynamicNavigationBarBloc>()
+                                                          .state
+                                                          .selectedItemIndex ==
+                                                      0) {
+                                                    context.push(
+                                                      '/home/community?id=${widget.comment.communityId}',
+                                                    );
+                                                  } else {
+                                                    context.go(
+                                                      '/home/community?id=${widget.comment.communityId}',
+                                                    );
+                                                  }
                                                 },
                                                 child: Text(
                                                   widget.comment.communityName,
