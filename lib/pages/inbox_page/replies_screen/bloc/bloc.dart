@@ -13,8 +13,8 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
     on<Initialize>((event, emit) async {
       emit(state.copyWith(inboxStatus: RepliesStatus.loading));
       try {
-        final response =
-            await repo.lemmyRepo.getReplies(unreadOnly: state.showAll, page: 1);
+        final response = await repo.lemmyRepo
+            .getReplies(unreadOnly: !state.showAll, page: 1);
         emit(
           state.copyWith(
             inboxStatus: RepliesStatus.success,

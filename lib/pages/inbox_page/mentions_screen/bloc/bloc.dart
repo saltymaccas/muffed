@@ -13,8 +13,8 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
     on<Initialize>((event, emit) async {
       emit(state.copyWith(inboxStatus: MentionsStatus.loading));
       try {
-        final response =
-            await repo.lemmyRepo.getMention(unreadOnly: state.showAll, page: 1);
+        final response = await repo.lemmyRepo
+            .getMention(unreadOnly: !state.showAll, page: 1);
         emit(
           state.copyWith(
             inboxStatus: MentionsStatus.success,
