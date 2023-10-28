@@ -42,24 +42,47 @@ class MentionsScreen extends StatelessWidget {
                 return MuffedPage(
                   isLoading: state.isLoading,
                   error: state.error,
-                  child: ListView(
-                    children: List.generate(
-                      mentionItems.length,
-                      (index) => CommentItem(
-                        markedAsReadCallback: () {
-                          context.read<MentionsBloc>().add(
-                                MarkAsReadToggled(
-                                  id: mentionItems[index].id,
-                                  index: index,
-                                ),
-                              );
-                        },
-                        read: mentionItems[index].read,
-                        comment: mentionItems[index].comment,
-                        isOrphan: true,
-                        displayAsSingle: true,
-                        sortType: state.sortType,
-                        ableToLoadChildren: false,
+                  child: NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 500) {
+                        context.read<MentionsBloc>().add(ReachedEndOfScroll());
+                      }
+                      return true;
+                    },
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<MentionsBloc>().add(Refresh());
+                        await context
+                            .read<MentionsBloc>()
+                            .stream
+                            .firstWhere((element) {
+                          if (element.isRefreshing == false) {
+                            return true;
+                          }
+                          return false;
+                        });
+                      },
+                      child: ListView(
+                        children: List.generate(
+                          mentionItems.length,
+                          (index) => CommentItem(
+                            markedAsReadCallback: () {
+                              context.read<MentionsBloc>().add(
+                                    MarkAsReadToggled(
+                                      id: mentionItems[index].id,
+                                      index: index,
+                                    ),
+                                  );
+                            },
+                            read: mentionItems[index].read,
+                            comment: mentionItems[index].comment,
+                            isOrphan: true,
+                            displayAsSingle: true,
+                            sortType: state.sortType,
+                            ableToLoadChildren: false,
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -53,22 +54,69 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
           ),
         );
       }
-    });
-    on<ShowAllToggled>((event, emit) async {
-      emit(state.copyWith(isLoading: true, showAll: !state.showAll));
+    }, transformer: restartable());
+    on<ShowAllToggled>(
+      (event, emit) async {
+        emit(state.copyWith(isLoading: true, showAll: !state.showAll));
+        try {
+          final response = await repo.lemmyRepo
+              .getMention(page: 1, unreadOnly: !state.showAll);
+          emit(
+            state.copyWith(
+              isLoading: false,
+              mentions: response,
+            ),
+          );
+        } catch (err) {
+          emit(state.copyWith(error: err, showAll: state.showAll));
+        }
+      },
+      transformer: restartable(),
+    );
+    on<Refresh>((event, emit) async {
+      emit(state.copyWith(isRefreshing: true));
       try {
         final response = await repo.lemmyRepo
             .getMention(page: 1, unreadOnly: !state.showAll);
+
         emit(
           state.copyWith(
-            isLoading: false,
+            isRefreshing: false,
             mentions: response,
+            pagesLoaded: 1,
           ),
         );
       } catch (err) {
-        emit(state.copyWith(error: err, showAll: state.showAll));
+        emit(state.copyWith(error: err, isRefreshing: false));
       }
     });
+    on<ReachedEndOfScroll>(
+      (event, emit) async {
+        if (!state.reachedEnd) {
+          emit(state.copyWith(isLoading: true));
+          try {
+            final response = await repo.lemmyRepo.getMention(
+              page: state.pagesLoaded + 1,
+              unreadOnly: !state.showAll,
+            );
+            if (response.isEmpty) {
+              emit(state.copyWith(reachedEnd: true, isLoading: false));
+            } else {
+              emit(
+                state.copyWith(
+                  isLoading: false,
+                  mentions: [...state.mentions, ...response],
+                  pagesLoaded: state.pagesLoaded + 1,
+                ),
+              );
+            }
+          } catch (err) {
+            emit(state.copyWith(error: err, isLoading: false));
+          }
+        }
+      },
+      transformer: droppable(),
+    );
   }
 
   final ServerRepo repo;

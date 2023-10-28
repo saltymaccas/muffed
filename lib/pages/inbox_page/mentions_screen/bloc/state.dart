@@ -17,6 +17,8 @@ class MentionsState extends Equatable {
     this.sortType = LemmyCommentSortType.hot,
     this.showAll = false,
     this.pagesLoaded = 1,
+    this.isRefreshing = false,
+    this.reachedEnd = false,
   });
 
   final MentionsStatus replyItemsStatus;
@@ -26,6 +28,8 @@ class MentionsState extends Equatable {
   final LemmyCommentSortType sortType;
   final bool showAll;
   final int pagesLoaded;
+  final bool isRefreshing;
+  final bool reachedEnd;
 
   @override
   List<Object?> get props => [
@@ -36,6 +40,8 @@ class MentionsState extends Equatable {
         sortType,
         showAll,
         pagesLoaded,
+        isRefreshing,
+        reachedEnd,
       ];
 
   MentionsState copyWith({
@@ -46,6 +52,8 @@ class MentionsState extends Equatable {
     LemmyCommentSortType? sortType,
     bool? showAll,
     int? pagesLoaded,
+    bool? isRefreshing,
+    bool? reachedEnd,
   }) {
     return MentionsState(
       isLoading: isLoading ?? this.isLoading,
@@ -55,6 +63,8 @@ class MentionsState extends Equatable {
       sortType: sortType ?? this.sortType,
       showAll: showAll ?? this.showAll,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
     );
   }
 }
