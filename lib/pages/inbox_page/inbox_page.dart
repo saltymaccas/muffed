@@ -44,7 +44,6 @@ class InboxPage extends StatelessWidget {
               );
 
           return DefaultTabController(
-            animationDuration: Duration(milliseconds: 200),
             length: 2,
             child: Builder(
               builder: (context) {
