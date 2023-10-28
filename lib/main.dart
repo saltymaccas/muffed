@@ -53,15 +53,22 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   routerConfig: router,
                   title: 'Muffed',
+                  builder: (context, child) {
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        textTheme: Theme.of(context).textTheme.apply(
+                              fontSizeFactor: state.textScaleFactor,
+                            ),
+                      ),
+                      child: child!,
+                    );
+                  },
                   theme: ThemeData(
                     colorScheme:
                         (state.useDynamicColorScheme && lightDynamic != null)
                             ? lightDynamic
                             : ColorScheme.fromSeed(seedColor: state.seedColor),
                     useMaterial3: true,
-                    textTheme: Theme.of(context).textTheme.apply(
-                          fontSizeFactor: state.textScaleFactor,
-                        ),
                   ),
                   darkTheme: ThemeData(
                     colorScheme:
@@ -72,9 +79,6 @@ class MyApp extends StatelessWidget {
                                 brightness: Brightness.dark,
                               ),
                     useMaterial3: true,
-                    textTheme: Theme.of(context).textTheme.apply(
-                          fontSizeFactor: state.textScaleFactor,
-                        ),
                   ),
                   themeMode: state.themeMode,
                 ),

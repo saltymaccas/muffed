@@ -45,6 +45,16 @@ class SettingsPage extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  title: Text('Text size'),
+                  style: ListTileStyle.drawer,
+                  visualDensity: VisualDensity.comfortable,
+                  leading: Icon(Icons.text_fields),
+                  subtitle: Text('Adjust text size'),
+                  onTap: () {
+                    context.push('/profile/settings/text_size');
+                  },
+                ),
+                ListTile(
                   title: Text('About Muffed'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
