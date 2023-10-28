@@ -33,6 +33,8 @@ final class GlobalState extends Equatable {
     );
   }
 
+  bool isLoggedIn() => lemmySelectedAccount != -1;
+
   /// All the lemmy accounts the user has added
   final List<LemmyAccountData> lemmyAccounts;
 
