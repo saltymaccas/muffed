@@ -1,10 +1,9 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
-
 part 'state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
@@ -12,8 +11,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required this.repo,
     SearchState? initialState,
+    int? communityId,
+    String? communityName,
   }) : super(
-          initialState ?? const SearchState(),
+          initialState ??
+              SearchState(
+                communityId: communityId,
+                communityName: communityName,
+              ),
         ) {
     on<SearchQueryChanged>(
       (event, emit) async {
@@ -24,6 +29,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             query: event.searchQuery,
             sortType: state.sortType,
             searchType: LemmySearchType.all,
+            communityId: state.communityId,
           );
 
           emit(
@@ -51,8 +57,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(state.copyWith(sortType: event.sortType, isLoading: true));
 
         try {
-          final search = await repo.lemmyRepo
-              .search(query: state.searchQuery, sortType: state.sortType);
+          final search = await repo.lemmyRepo.search(
+            query: state.searchQuery,
+            sortType: state.sortType,
+            communityId: communityId,
+          );
           emit(
             state.copyWith(
               loadedSortType: event.sortType,
@@ -85,6 +94,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             sortType: state.sortType,
             searchType: LemmySearchType.all,
             page: state.pagesLoaded + 1,
+            communityId: state.communityId,
           );
           emit(
             state.copyWith(

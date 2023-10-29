@@ -150,6 +150,14 @@ final router = GoRouter(
                   builder: (context, state) {
                     return SearchScreen(
                       searchQuery: state.uri.queryParameters['query'],
+                      communityId:
+                          state.uri.queryParameters['community_id'] != null
+                              ? int.parse(
+                                  state.uri.queryParameters['community_id']!,
+                                )
+                              : null,
+                      communityName:
+                          state.uri.queryParameters['community_name'],
                       //initialState: state.extra as SearchState?,
                     );
                   },

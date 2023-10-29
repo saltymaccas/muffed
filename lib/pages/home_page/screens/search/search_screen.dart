@@ -12,10 +12,21 @@ import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
 
+/// A Screen for search communities comments posts and users
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key, this.searchQuery, this.initialState});
+  /// Creates a [SearchScreen]
+  const SearchScreen({
+    super.key,
+    this.searchQuery,
+    this.initialState,
+    this.communityId,
+    this.communityName,
+  });
 
   final String? searchQuery;
+
+  final String? communityName;
+  final int? communityId;
 
   final SearchState? initialState;
 
@@ -46,6 +57,8 @@ class SearchScreen extends StatelessWidget {
           return SearchBloc(
             repo: context.read<ServerRepo>(),
             initialState: initialState,
+            communityId: communityId,
+            communityName: communityName,
           );
         }
       },
@@ -218,18 +231,20 @@ class SearchScreen extends StatelessWidget {
             child: Scaffold(
               body: SafeArea(
                 child: DefaultTabController(
-                  length: 4,
+                  length: (communityId != null) ? 2 : 4,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const TabBar(
+                      TabBar(
                         tabs: [
-                          Tab(
-                            text: 'Communities',
-                          ),
-                          Tab(
-                            text: 'People',
-                          ),
+                          if (communityId == null)
+                            Tab(
+                              text: 'Communities',
+                            ),
+                          if (communityId == null)
+                            Tab(
+                              text: 'People',
+                            ),
                           Tab(
                             text: 'Posts',
                           ),
@@ -256,39 +271,42 @@ class SearchScreen extends StatelessWidget {
                               child: TabBarView(
                                 children: [
                                   // communities
-                                  ListView.builder(
-                                    key: ValueKey(
-                                        'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}'),
-                                    controller: communitiesScrollController,
-                                    itemCount: state.communities.length,
-                                    itemBuilder: (context, index) {
-                                      return LemmyCommunityCard(
-                                        key: ValueKey(
-                                            state.communities[index].id),
-                                        community: state.communities[index],
-                                        extraOnTap: textFocusNode.unfocus,
-                                      );
-                                    },
-                                  ),
-                                  ListView.builder(
-                                    key: ValueKey(
-                                        'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}'),
-                                    controller: personsScrollController,
-                                    itemCount: state.persons.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        leading: MuffedAvatar(
-                                          url: state.persons[index].avatar,
-                                          radius: 20,
-                                        ),
-                                        title: Text(state.persons[index].name),
-                                        subtitle: Text(
-                                            'score: ${state.persons[index].postScore + state.persons[index].postScore}'),
-                                        visualDensity:
-                                            VisualDensity.comfortable,
-                                      );
-                                    },
-                                  ),
+                                  if (communityId == null)
+                                    ListView.builder(
+                                      key: ValueKey(
+                                          'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}'),
+                                      controller: communitiesScrollController,
+                                      itemCount: state.communities.length,
+                                      itemBuilder: (context, index) {
+                                        return LemmyCommunityCard(
+                                          key: ValueKey(
+                                              state.communities[index].id),
+                                          community: state.communities[index],
+                                          extraOnTap: textFocusNode.unfocus,
+                                        );
+                                      },
+                                    ),
+                                  if (communityId == null)
+                                    ListView.builder(
+                                      key: ValueKey(
+                                          'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}'),
+                                      controller: personsScrollController,
+                                      itemCount: state.persons.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          leading: MuffedAvatar(
+                                            url: state.persons[index].avatar,
+                                            radius: 20,
+                                          ),
+                                          title:
+                                              Text(state.persons[index].name),
+                                          subtitle: Text(
+                                              'score: ${state.persons[index].postScore + state.persons[index].postScore}'),
+                                          visualDensity:
+                                              VisualDensity.comfortable,
+                                        );
+                                      },
+                                    ),
                                   // posts
                                   ListView.builder(
                                     key: ValueKey(

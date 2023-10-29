@@ -11,6 +11,9 @@ final class SearchState extends Equatable {
     this.isLoading = false,
     this.pagesLoaded = 0,
 
+  this.communityId,
+  this.communityName,
+
     // communities
     this.communities = const [],
 
@@ -22,8 +25,12 @@ final class SearchState extends Equatable {
 
     // persons
     this.persons = const [],
+
+
   });
 
+  final String? communityName;
+  final int? communityId;
   final String searchQuery;
   final String loadedSearchQuery;
   final LemmySortType sortType;
@@ -58,6 +65,9 @@ final class SearchState extends Equatable {
         persons,
         posts,
         comments,
+      communityId,
+
+    communityName
       ];
 
   SearchState copyWith({
@@ -68,6 +78,8 @@ final class SearchState extends Equatable {
     String? errorMessage,
     bool? isLoading,
     int? pagesLoaded,
+    String? communityName,
+    int? communityId,
 
     // communities
     List<LemmyCommunity>? communities,
@@ -93,6 +105,8 @@ final class SearchState extends Equatable {
       persons: persons ?? this.persons,
       posts: posts ?? this.posts,
       comments: comments ?? this.comments,
+      communityName: communityName ?? this.communityName,
+      communityId: communityId ?? this.communityId
     );
   }
 }

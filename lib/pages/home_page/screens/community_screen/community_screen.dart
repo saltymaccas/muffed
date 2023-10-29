@@ -45,6 +45,38 @@ class CommunityScreen extends StatelessWidget {
 
           return SetPageInfo(
             actions: [
+              BlocProvider.value(
+                value: BlocProvider.of<CommunityScreenBloc>(blocContext),
+                child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                  builder: (context, state) {
+                    switch (state.communityInfoStatus) {
+                      case CommunityStatus.success:
+                        return IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () {
+                            context.push(
+                              Uri(
+                                path: '/home/search',
+                                queryParameters: {
+                                  'community_id': state.communityId.toString(),
+                                  'community_name': state.community!.name,
+                                },
+                              ).toString(),
+                              extra: state.community,
+                            );
+                          },
+                          icon: Icon(Icons.search),
+                        );
+                      case CommunityStatus.loading:
+                        return const IconButtonLoading();
+                      case CommunityStatus.failure:
+                        return const IconButtonFailure();
+                      case CommunityStatus.initial:
+                        return const IconButtonInitial();
+                    }
+                  },
+                ),
+              ),
               if (context.read<GlobalBloc>().isLoggedIn())
                 IconButton(
                     visualDensity: VisualDensity.compact,
