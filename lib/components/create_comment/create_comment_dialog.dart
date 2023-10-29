@@ -174,11 +174,10 @@ class CreateCommentDialog extends StatelessWidget {
                                 queryParameters: {
                                   'postId': postId.toString(),
                                   if (parentId != null)
-                                    'parentCommentId': parentId,
+                                    'parentCommentId': parentId.toString(),
                                   'initialValue': textFieldController.text,
                                 },
                               ).toString(),
-                              extra: postBlocContext,
                             )
                             ..pop();
                         },

@@ -121,7 +121,6 @@ final router = GoRouter(
                               : null,
                           initialValue:
                               state.uri.queryParameters['initialValue'],
-                          postBlocContext: state.extra! as BuildContext,
                         );
                       },
                     ),
