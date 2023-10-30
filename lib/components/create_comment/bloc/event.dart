@@ -14,3 +14,15 @@ class Submitted extends CreateCommentEvent {
 }
 
 class PreviewToggled extends CreateCommentEvent {}
+
+class ImageToUploadSelected extends CreateCommentEvent {
+  ImageToUploadSelected({required this.filePath});
+
+  final String filePath;
+}
+
+class UploadedImageRemoved extends CreateCommentEvent {
+  UploadedImageRemoved({required this.id});
+
+  final int id;
+}

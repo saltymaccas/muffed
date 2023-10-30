@@ -2,17 +2,20 @@ part of 'bloc.dart';
 
 class CreateCommentState extends Equatable {
   ///
-  const CreateCommentState({
+  CreateCommentState({
     this.isLoading = false,
     this.error,
     this.successfullyPosted = false,
     this.isPreviewing = false,
-  });
+    SplayTreeMap<int, ImageUploadState>? images,
+  }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
   final Object? error;
 
   final bool isPreviewing;
+
+  final SplayTreeMap<int, ImageUploadState> images;
 
   /// Used to tell UI that the comment has been successfully posted
   ///
@@ -25,6 +28,7 @@ class CreateCommentState extends Equatable {
         error,
         successfullyPosted,
         isPreviewing,
+        images,
       ];
 
   CreateCommentState copyWith({
@@ -32,12 +36,14 @@ class CreateCommentState extends Equatable {
     Object? error,
     bool? successfullyPosted,
     bool? isPreviewing,
+    SplayTreeMap<int, ImageUploadState>? images,
   }) {
     return CreateCommentState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
       isPreviewing: isPreviewing ?? this.isPreviewing,
+      images: images ?? this.images,
     );
   }
 }
