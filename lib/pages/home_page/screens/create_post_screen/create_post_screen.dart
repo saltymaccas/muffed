@@ -208,14 +208,9 @@ class CreatePostScreen extends StatelessWidget {
                               ),
                             ),
                             if (state.url == null && state.image == null)
-                              OutlinedButton(
-                                onPressed: () {
-                                  showAddDialog();
-                                },
+                              ElevatedButton(
+                                onPressed: showAddDialog,
                                 child: Icon(Icons.add),
-                                style: OutlinedButton.styleFrom(
-                                  visualDensity: VisualDensity.compact,
-                                ),
                               )
                             else if (state.url != null)
                               Material(
