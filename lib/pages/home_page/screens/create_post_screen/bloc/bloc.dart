@@ -68,15 +68,16 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         emit(state.copyWith(error: err, isLoading: false));
       }
     });
-    on<ImageToUploadSelected>((event, emit) async {
-      final id =
-          (state.images.lastKey() == null) ? 0 : state.images.lastKey()! + 1;
+    on<BodyImageToUploadSelected>((event, emit) async {
+      final id = (state.bodyImages.lastKey() == null)
+          ? 0
+          : state.bodyImages.lastKey()! + 1;
 
       emit(
         state.copyWith(
           images: SplayTreeMap()
             ..addAll(
-              {...state.images, id: ImageUploadState(uploadProgress: 0)},
+              {...state.bodyImages, id: ImageUploadState(uploadProgress: 0)},
             ),
         ),
       );
@@ -88,7 +89,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         await for (final data in stream) {
           emit(
             state.copyWith(
-              images: SplayTreeMap()..addAll({...state.images, id: data}),
+              images: SplayTreeMap()..addAll({...state.bodyImages, id: data}),
             ),
           );
         }
@@ -97,19 +98,45 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           state.copyWith(
             error: err,
             images: SplayTreeMap()
-              ..addAll(state.images)
+              ..addAll(state.bodyImages)
               ..remove(id),
           ),
         );
       }
     });
-    on<UploadedImageRemoved>((event, emit) async {
-      final removedImage = state.images[event.id]!;
+    on<ImageToUploadSelected>((event, emit) async {
+      emit(
+        state.copyWith(
+          image: ImageUploadState(uploadProgress: 0),
+        ),
+      );
+
+      final stream = repo.pictrsRepo.uploadImage(filePath: event.filePath);
+
+      try {
+        await for (final data in stream) {
+          emit(
+            state.copyWith(
+              image: data,
+            ),
+          );
+        }
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+            setImageToNull: true,
+          ),
+        );
+      }
+    });
+    on<UploadedBodyImageRemoved>((event, emit) async {
+      final removedImage = state.bodyImages[event.id]!;
 
       emit(
         state.copyWith(
           images: SplayTreeMap()
-            ..addAll(state.images)
+            ..addAll(state.bodyImages)
             ..remove(event.id),
         ),
       );
@@ -125,10 +152,40 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           state.copyWith(
             error: err,
             images: SplayTreeMap()
-              ..addAll({...state.images, event.id: removedImage}),
+              ..addAll({...state.bodyImages, event.id: removedImage}),
           ),
         );
       }
+    });
+    on<ImageRemoved>((event, emit) async {
+      final removedImage = state.image!;
+
+      emit(
+        state.copyWith(
+          setImageToNull: true,
+        ),
+      );
+
+      try {
+        await repo.pictrsRepo.deleteImage(
+          removedImage.deleteToken!,
+          removedImage.imageName!,
+          removedImage.baseUrl!,
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+          ),
+        );
+      }
+    });
+    on<UrlAdded>((event, emit) {
+      print('added url: ${event.url}');
+      emit(state.copyWith(url: event.url));
+    });
+    on<UrlRemoved>((event, emit) {
+      emit(state.copyWith(setUrlToNull: true));
     });
   }
 

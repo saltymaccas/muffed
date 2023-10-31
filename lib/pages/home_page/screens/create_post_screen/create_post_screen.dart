@@ -5,30 +5,37 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/components/image.dart';
 import 'package:muffed/components/image_upload_view.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/components/url_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
 
 class CreatePostScreen extends StatelessWidget {
-  const CreatePostScreen(
-      {required this.communityId, this.community, super.key});
+  CreatePostScreen({
+    required this.communityId,
+    this.community,
+    super.key,
+  });
 
   final LemmyCommunity? community;
   final int communityId;
 
+  final TextEditingController bodyTextController = TextEditingController();
+
+  final TextEditingController titleTextController = TextEditingController();
+
+  final TextEditingController urlTextController = TextEditingController();
+
+  final FocusNode bodyTextFocusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController bodyTextController = TextEditingController();
-    final TextEditingController titleTextController = TextEditingController();
-    final TextEditingController urlTextController = TextEditingController();
-
-    final FocusNode bodyTextFocusNode = FocusNode();
-
     return BlocProvider(
       create: (context) => CreatePostBloc(
         communityId: communityId,
@@ -50,6 +57,112 @@ class CreatePostScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          final blocContext = context;
+
+          void openImagePicker() async {
+            final ImagePicker picker = ImagePicker();
+            final XFile? file = await picker.pickImage(
+              source: ImageSource.gallery,
+            );
+
+            context.read<CreatePostBloc>().add(
+                  ImageToUploadSelected(
+                    filePath: file!.path,
+                  ),
+                );
+          }
+
+          void showAddDialog() {
+            showDialog<void>(
+              context: context,
+              builder: (context) => Dialog(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.pop();
+                          showDialog<void>(
+                            context: context,
+                            builder: (context) {
+                              return BlocProvider.value(
+                                value: BlocProvider.of<CreatePostBloc>(
+                                  blocContext,
+                                ),
+                                child: Builder(
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextField(
+                                              controller: urlTextController,
+                                              decoration: const InputDecoration(
+                                                hintText: 'Url',
+                                                border: InputBorder.none,
+                                              ),
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.titleLarge,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                context.pop();
+                                                context
+                                                    .read<CreatePostBloc>()
+                                                    .add(UrlAdded(
+                                                        url: urlTextController
+                                                            .text));
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  fixedSize: Size(500, 50)),
+                                              child: Text('Add Url'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        style:
+                            ElevatedButton.styleFrom(fixedSize: Size(500, 50)),
+                        child: Text('Add Url'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          context.pop();
+
+                          openImagePicker();
+                        },
+                        style:
+                            ElevatedButton.styleFrom(fixedSize: Size(500, 50)),
+                        child: Text('Add Image'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          void runImageRemovedEvent() {
+            context.read<CreatePostBloc>().add(ImageRemoved());
+          }
+
           return SetPageInfo(
             indexOfRelevantItem: 0,
             actions: [],
@@ -88,35 +201,117 @@ class CreatePostScreen extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            ImageUploadView(
+                              images: state.bodyImages,
+                              onDelete: (id) {
+                                context
+                                    .read<CreatePostBloc>()
+                                    .add(UploadedBodyImageRemoved(id: id));
+                              },
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(8),
                               child: TextField(
                                 controller: titleTextController,
                                 decoration: const InputDecoration(
                                   hintText: 'Title',
-                                  border: OutlineInputBorder(),
+                                  border: InputBorder.none,
                                 ),
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: urlTextController,
-                                decoration: const InputDecoration(
-                                  hintText: 'Url',
-                                ),
-                              ),
-                            ),
-                            if (state.images.isNotEmpty)
-                              ImageUploadView(
-                                images: state.images,
-                                onDelete: (id) {
-                                  context
-                                      .read<CreatePostBloc>()
-                                      .add(UploadedImageRemoved(id: id));
+                            if (state.url == null && state.image == null)
+                              OutlinedButton(
+                                onPressed: () {
+                                  showAddDialog();
                                 },
-                              ),
+                                child: Icon(Icons.add),
+                                style: OutlinedButton.styleFrom(
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                              )
+                            else if (state.url != null)
+                              Material(
+                                elevation: 5,
+                                child: Stack(
+                                  children: [
+                                    UrlView(url: state.url!),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<CreatePostBloc>()
+                                                  .add(UrlRemoved());
+                                            },
+                                            style: IconButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryContainer
+                                                  .withOpacity(0.5),
+                                            ),
+                                            icon: Icon(Icons.close)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else if (state.image != null)
+                              if (state.image!.imageLink != null)
+                                Stack(
+                                  children: [
+                                    MuffedImage(
+                                      imageUrl: state.image!.imageLink!,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          showDialog<void>(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text('Delete image?'),
+                                                  content: Text(
+                                                      'Are you sure you want to delete this image from the server?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Cancel'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        runImageRemovedEvent();
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Delete'),
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        icon: Icon(Icons.delete),
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              else
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: LinearProgressIndicator(
+                                    value: state.image!.uploadProgress,
+                                  ),
+                                ),
                             Padding(
                               padding: const EdgeInsets.all(8),
                               child: IndexedStack(
@@ -169,7 +364,7 @@ class CreatePostScreen extends StatelessWidget {
                               );
 
                               context.read<CreatePostBloc>().add(
-                                    ImageToUploadSelected(
+                                    BodyImageToUploadSelected(
                                       filePath: file!.path,
                                     ),
                                   );

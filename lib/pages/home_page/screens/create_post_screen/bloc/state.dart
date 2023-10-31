@@ -11,8 +11,10 @@ class CreatePostState extends Equatable {
     this.error,
     this.successfullyPostedPost,
     this.isPreviewingBody = false,
+    this.url,
+    this.image,
     SplayTreeMap<int, ImageUploadState>? images,
-  }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
+  }) : bodyImages = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
   final LemmyCommunity? communityInfo;
@@ -21,8 +23,11 @@ class CreatePostState extends Equatable {
   final CommunityInfoStatus communityInfoStatus;
   final LemmyPost? successfullyPostedPost;
   final bool isPreviewingBody;
+  final String? url;
 
-  final SplayTreeMap<int, ImageUploadState> images;
+  final ImageUploadState? image;
+
+  final SplayTreeMap<int, ImageUploadState> bodyImages;
 
   @override
   List<Object?> get props => [
@@ -33,7 +38,9 @@ class CreatePostState extends Equatable {
         communityId,
         successfullyPostedPost,
         isPreviewingBody,
-        images,
+        bodyImages,
+        url,
+        image
       ];
 
   CreatePostState copyWith({
@@ -45,6 +52,10 @@ class CreatePostState extends Equatable {
     LemmyPost? successfullyPosted,
     bool? isPreviewingBody,
     SplayTreeMap<int, ImageUploadState>? images,
+    String? url,
+    bool setUrlToNull = false,
+    ImageUploadState? image,
+    bool setImageToNull = false,
   }) {
     return CreatePostState(
       isLoading: isLoading ?? this.isLoading,
@@ -54,7 +65,9 @@ class CreatePostState extends Equatable {
       communityId: communityId ?? this.communityId,
       successfullyPostedPost: successfullyPosted ?? this.successfullyPostedPost,
       isPreviewingBody: isPreviewingBody ?? this.isPreviewingBody,
-      images: images ?? this.images,
+      images: images ?? this.bodyImages,
+      url: setUrlToNull ? null : url ?? this.url,
+      image: setImageToNull ? null : image ?? this.image,
     );
   }
 }
