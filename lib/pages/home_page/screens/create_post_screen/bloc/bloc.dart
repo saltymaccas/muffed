@@ -181,8 +181,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       }
     });
     on<UrlAdded>((event, emit) {
-      print('added url: ${event.url}');
-      emit(state.copyWith(url: event.url));
+      emit(state.copyWith(url: ensureProtocolSpecified(event.url)));
     });
     on<UrlRemoved>((event, emit) {
       emit(state.copyWith(setUrlToNull: true));

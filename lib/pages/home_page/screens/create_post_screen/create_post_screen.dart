@@ -57,9 +57,7 @@ class CreatePostScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          final blocContext = context;
-
-          void openImagePicker() async {
+          Future<void> openImagePickerForImageUpload() async {
             final ImagePicker picker = ImagePicker();
             final XFile? file = await picker.pickImage(
               source: ImageSource.gallery,
@@ -72,6 +70,16 @@ class CreatePostScreen extends StatelessWidget {
                 );
           }
 
+          void runUrlAddedEvent() {
+            context
+                .read<CreatePostBloc>()
+                .add(UrlAdded(url: urlTextController.text));
+          }
+
+          void runImageRemovedEvent() {
+            context.read<CreatePostBloc>().add(ImageRemoved());
+          }
+
           void showAddDialog() {
             showDialog<void>(
               context: context,
@@ -80,56 +88,40 @@ class CreatePostScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () {
                           context.pop();
                           showDialog<void>(
                             context: context,
                             builder: (context) {
-                              return BlocProvider.value(
-                                value: BlocProvider.of<CreatePostBloc>(
-                                  blocContext,
-                                ),
-                                child: Builder(
-                                  builder: (context) {
-                                    return Dialog(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TextField(
-                                              controller: urlTextController,
-                                              decoration: const InputDecoration(
-                                                hintText: 'Url',
-                                                border: InputBorder.none,
-                                              ),
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.titleLarge,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                context.pop();
-                                                context
-                                                    .read<CreatePostBloc>()
-                                                    .add(UrlAdded(
-                                                        url: urlTextController
-                                                            .text));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                  fixedSize: Size(500, 50)),
-                                              child: Text('Add Url'),
-                                            ),
-                                          ),
-                                        ],
+                              return Dialog(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextField(
+                                        controller: urlTextController,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Url',
+                                          border: InputBorder.none,
+                                        ),
                                       ),
-                                    );
-                                  },
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          context.pop();
+                                          runUrlAddedEvent();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            fixedSize: Size(500, 50)),
+                                        child: Text('Add Url'),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             },
@@ -145,8 +137,7 @@ class CreatePostScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           context.pop();
-
-                          openImagePicker();
+                          openImagePickerForImageUpload();
                         },
                         style:
                             ElevatedButton.styleFrom(fixedSize: Size(500, 50)),
@@ -157,10 +148,6 @@ class CreatePostScreen extends StatelessWidget {
                 ),
               ),
             );
-          }
-
-          void runImageRemovedEvent() {
-            context.read<CreatePostBloc>().add(ImageRemoved());
           }
 
           return SetPageInfo(
