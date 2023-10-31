@@ -45,15 +45,33 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
       final id =
           (state.images.lastKey() == null) ? 0 : state.images.lastKey()! + 1;
 
-      print('filepath:${event.filePath}');
+      emit(
+        state.copyWith(
+          images: SplayTreeMap()
+            ..addAll(
+              {...state.images, id: ImageUploadState(uploadProgress: 0)},
+            ),
+        ),
+      );
 
       final stream =
           repo.pictrsRepo.uploadImage(filePath: event.filePath, id: id);
 
-      await for (final data in stream) {
+      try {
+        await for (final data in stream) {
+          emit(
+            state.copyWith(
+              images: SplayTreeMap()..addAll({...state.images, id: data}),
+            ),
+          );
+        }
+      } catch (err) {
         emit(
           state.copyWith(
-            images: SplayTreeMap()..addAll({...state.images, id: data}),
+            error: err,
+            images: SplayTreeMap()
+              ..addAll(state.images)
+              ..remove(id),
           ),
         );
       }
