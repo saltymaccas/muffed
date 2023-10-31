@@ -1,14 +1,12 @@
-import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/image.dart';
 import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/url_view.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../bloc/bloc.dart';
 import '../post_more_menu_button.dart';
@@ -133,74 +131,9 @@ class CardLemmyPostItem extends StatelessWidget {
                 return Column(
                   children: [
                     if (post.url != null) ...[
-                      Builder(
-                        builder: (context) {
-                          if (post.url!.contains('.jpg') ||
-                              post.url!.contains('.png') ||
-                              post.url!.contains('.jpeg') ||
-                              post.url!.contains('.gif') ||
-                              post.url!.contains('.webp') ||
-                              post.url!.contains('.bmp')) {
-                            return SizedBox(
-                              child: Center(
-                                child: MuffedImage(
-                                  imageUrl: post.url!,
-                                  shouldBlur: post.nsfw &&
-                                      context.read<GlobalBloc>().state.blurNsfw,
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: SizedBox(
-                                height: 100,
-                                child: AnyLinkPreview(
-                                  cache: const Duration(days: 1),
-                                  placeholderWidget: Container(
-                                    height: double.maxFinite,
-                                    width: double.maxFinite,
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                    child: const Center(
-                                      child: Text('Loading url data'),
-                                    ),
-                                  ),
-                                  errorImage: 'null',
-                                  errorBody: 'Could not load body',
-                                  errorTitle: post.name,
-                                  errorWidget: GestureDetector(
-                                    onTap: () =>
-                                        launchUrl(Uri.parse(post.url!)),
-                                    child: Container(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      padding: const EdgeInsets.all(4),
-                                      child: Text(
-                                        post.url!,
-                                        style: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  bodyTextOverflow: TextOverflow.fade,
-                                  removeElevation: true,
-                                  borderRadius: 10,
-                                  boxShadow: const [],
-                                  link: post.url!,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.background,
-                                  displayDirection:
-                                      UIDirection.uiDirectionHorizontal,
-                                  titleStyle:
-                                      Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                      UrlView(
+                        url: post.url!,
+                        nsfw: post.nsfw,
                       ),
                     ],
                     if (post.body != '' && post.body != null) ...[
