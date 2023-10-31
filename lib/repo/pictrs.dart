@@ -51,6 +51,8 @@ class PictrsRepo {
           baseUrl: baseUrl,
         ),
       );
+    }).catchError((Object err) {
+      streamController.addError(err);
     }).whenComplete(streamController.close);
 
     yield* streamController.stream;

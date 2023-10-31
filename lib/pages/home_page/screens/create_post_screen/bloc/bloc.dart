@@ -1,7 +1,11 @@
+import 'dart:collection';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/url.dart';
+
+import '../../../../../repo/pictrs/models.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -62,6 +66,68 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         emit(state.copyWith(successfullyPosted: response, isLoading: false));
       } catch (err) {
         emit(state.copyWith(error: err, isLoading: false));
+      }
+    });
+    on<ImageToUploadSelected>((event, emit) async {
+      final id =
+          (state.images.lastKey() == null) ? 0 : state.images.lastKey()! + 1;
+
+      emit(
+        state.copyWith(
+          images: SplayTreeMap()
+            ..addAll(
+              {...state.images, id: ImageUploadState(uploadProgress: 0)},
+            ),
+        ),
+      );
+
+      final stream =
+          repo.pictrsRepo.uploadImage(filePath: event.filePath, id: id);
+
+      try {
+        await for (final data in stream) {
+          emit(
+            state.copyWith(
+              images: SplayTreeMap()..addAll({...state.images, id: data}),
+            ),
+          );
+        }
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+            images: SplayTreeMap()
+              ..addAll(state.images)
+              ..remove(id),
+          ),
+        );
+      }
+    });
+    on<UploadedImageRemoved>((event, emit) async {
+      final removedImage = state.images[event.id]!;
+
+      emit(
+        state.copyWith(
+          images: SplayTreeMap()
+            ..addAll(state.images)
+            ..remove(event.id),
+        ),
+      );
+
+      try {
+        await repo.pictrsRepo.deleteImage(
+          removedImage.deleteToken!,
+          removedImage.imageName!,
+          removedImage.baseUrl!,
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            error: err,
+            images: SplayTreeMap()
+              ..addAll({...state.images, event.id: removedImage}),
+          ),
+        );
       }
     });
   }

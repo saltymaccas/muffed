@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/components/image_upload_view.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/snackbars.dart';
@@ -106,6 +108,15 @@ class CreatePostScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (state.images.isNotEmpty)
+                              ImageUploadView(
+                                images: state.images,
+                                onDelete: (id) {
+                                  context
+                                      .read<CreatePostBloc>()
+                                      .add(UploadedImageRemoved(id: id));
+                                },
+                              ),
                             Padding(
                               padding: const EdgeInsets.all(8),
                               child: IndexedStack(
@@ -151,6 +162,18 @@ class CreatePostScreen extends StatelessWidget {
                               MarkdownType.separator,
                               MarkdownType.code,
                             ],
+                            customImageButtonAction: () async {
+                              final ImagePicker picker = ImagePicker();
+                              final XFile? file = await picker.pickImage(
+                                source: ImageSource.gallery,
+                              );
+
+                              context.read<CreatePostBloc>().add(
+                                    ImageToUploadSelected(
+                                      filePath: file!.path,
+                                    ),
+                                  );
+                            },
                           ),
                         ),
                         Material(

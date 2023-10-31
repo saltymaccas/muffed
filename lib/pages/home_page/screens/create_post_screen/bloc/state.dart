@@ -3,7 +3,7 @@ part of 'bloc.dart';
 enum CommunityInfoStatus { initial, loading, failure, success }
 
 class CreatePostState extends Equatable {
-  const CreatePostState({
+  CreatePostState({
     this.isLoading = false,
     this.communityInfo,
     this.communityInfoStatus = CommunityInfoStatus.initial,
@@ -11,7 +11,8 @@ class CreatePostState extends Equatable {
     this.error,
     this.successfullyPostedPost,
     this.isPreviewingBody = false,
-  });
+    SplayTreeMap<int, ImageUploadState>? images,
+  }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
   final LemmyCommunity? communityInfo;
@@ -20,6 +21,8 @@ class CreatePostState extends Equatable {
   final CommunityInfoStatus communityInfoStatus;
   final LemmyPost? successfullyPostedPost;
   final bool isPreviewingBody;
+
+  final SplayTreeMap<int, ImageUploadState> images;
 
   @override
   List<Object?> get props => [
@@ -30,6 +33,7 @@ class CreatePostState extends Equatable {
         communityId,
         successfullyPostedPost,
         isPreviewingBody,
+        images,
       ];
 
   CreatePostState copyWith({
@@ -40,6 +44,7 @@ class CreatePostState extends Equatable {
     int? communityId,
     LemmyPost? successfullyPosted,
     bool? isPreviewingBody,
+    SplayTreeMap<int, ImageUploadState>? images,
   }) {
     return CreatePostState(
       isLoading: isLoading ?? this.isLoading,
@@ -49,6 +54,7 @@ class CreatePostState extends Equatable {
       communityId: communityId ?? this.communityId,
       successfullyPostedPost: successfullyPosted ?? this.successfullyPostedPost,
       isPreviewingBody: isPreviewingBody ?? this.isPreviewingBody,
+      images: images ?? this.images,
     );
   }
 }

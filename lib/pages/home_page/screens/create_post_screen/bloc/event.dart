@@ -13,3 +13,15 @@ class PostSubmitted extends CreatePostEvent {
   final String? body;
   final String? url;
 }
+
+class ImageToUploadSelected extends CreatePostEvent {
+  ImageToUploadSelected({required this.filePath});
+
+  final String filePath;
+}
+
+class UploadedImageRemoved extends CreatePostEvent {
+  UploadedImageRemoved({required this.id});
+
+  final int id;
+}
