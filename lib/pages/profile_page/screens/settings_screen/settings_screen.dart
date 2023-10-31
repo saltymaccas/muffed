@@ -60,16 +60,18 @@ class SettingsPage extends StatelessWidget {
                   visualDensity: VisualDensity.comfortable,
                   leading: Icon(Icons.info),
                   onTap: () {
-                    showLicensePage(
-                      context: context,
-                      applicationName: 'Muffed',
-                      applicationVersion: '0.6.0+7',
-                      applicationIcon: Image.asset(
-                        'assets/icon.png',
-                        width: 196,
-                        height: 196,
-                      ),
-                    );
+                    context.push('/profile/settings/about');
+
+                    // showLicensePage(
+                    //   context: context,
+                    //   applicationName: 'Muffed',
+                    //   applicationVersion: '0.6.0+7',
+                    //   applicationIcon: Image.asset(
+                    //     'assets/icon.png',
+                    //     width: 196,
+                    //     height: 196,
+                    //   ),
+                    // );
                   },
                 ),
                 /*ListTile(

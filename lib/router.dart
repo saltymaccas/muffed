@@ -13,6 +13,7 @@ import 'package:muffed/pages/profile_page/profile_page.dart';
 import 'package:muffed/pages/profile_page/screens/anon_settings_screen/anon_settings_screen.dart';
 import 'package:muffed/pages/profile_page/screens/login_screen/login_screen.dart';
 import 'package:muffed/pages/profile_page/screens/saved_posts_screen/saved_posts_screen.dart';
+import 'package:muffed/pages/profile_page/screens/settings_screen/about/about.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/content_filters/content_filters.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/defaults/defaults.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
@@ -230,6 +231,11 @@ final router = GoRouter(
                         return const TextSizeScreen();
                       },
                     ),
+                    GoRoute(
+                        path: 'about',
+                        builder: (context, state) {
+                          return const AboutScreen();
+                        }),
                   ],
                 ),
                 GoRoute(
