@@ -7,6 +7,7 @@ import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -51,68 +52,73 @@ class UserScreen extends StatelessWidget {
                   builder: (context, state) {
                     late Widget item;
 
-                    if (state.status == UserStatus.loading) {
-                      item = const IconButtonLoading();
-                    } else if (state.status == UserStatus.failure) {
-                      item = const IconButtonFailure();
-                    } else if (state.status == UserStatus.success) {
-                      item = MuffedPopupMenuButton(
-                        changeIconToSelected: false,
-                        icon: Icon(Icons.more_vert),
-                        visualDensity: VisualDensity.compact,
-                        items: [
-                          MuffedPopupMenuItem(
-                            icon: Icon(Icons.block),
-                            title: 'Block/Unblock',
-                            onTap: () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return BlockDialog(
-                                    id: state.user!.id,
-                                    type: BlockDialogType.person,
-                                    name: state.user!.name,
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    } else {
-                      item = SizedBox();
+                    switch (state.status) {
+                      case UserStatus.loading:
+                        item = const IconButtonLoading();
+                      case UserStatus.failure:
+                        item = const IconButtonFailure();
+                      case UserStatus.initial:
+                        item = const IconButtonInitial();
+                      case UserStatus.success:
+                        item = MuffedPopupMenuButton(
+                          changeIconToSelected: false,
+                          icon: const Icon(Icons.more_vert),
+                          visualDensity: VisualDensity.compact,
+                          items: [
+                            MuffedPopupMenuItem(
+                              icon: const Icon(Icons.block),
+                              title: 'Block/Unblock',
+                              onTap: () {
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (context) {
+                                    return BlockDialog(
+                                      id: state.user!.id,
+                                      type: BlockDialogType.person,
+                                      name: state.user!.name,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
                     }
 
                     return AnimatedSwitcher(
-                      duration: Duration(
+                      duration: const Duration(
                         milliseconds: 200,
                       ),
                       child: item,
                     );
                   },
                 ),
-              )
+              ),
             ],
-            child: DefaultTabController(
-              length: 3,
-              child: Builder(
-                builder: (context) {
-                  if (state.status == UserStatus.loading) {
-                    return const _UserScreenLoading();
-                  }
-                  if (state.status == UserStatus.failure) {
-                    return const _UserScreenFailure();
-                  }
-                  if (state.status == UserStatus.success) {
-                    return _UserScreenSuccess(
-                      user: state.user!,
-                      posts: state.posts,
-                      comments: state.comments,
-                      isLoading: state.loading,
-                    );
-                  }
-                  return const _UserScreenInitial();
-                },
+            child: MuffedPage(
+              isLoading: state.loading,
+              error: state.error,
+              child: DefaultTabController(
+                length: 3,
+                child: Builder(
+                  builder: (context) {
+                    if (state.status == UserStatus.loading) {
+                      return const _UserScreenLoading();
+                    }
+                    if (state.status == UserStatus.failure) {
+                      return const _UserScreenFailure();
+                    }
+                    if (state.status == UserStatus.success) {
+                      return _UserScreenSuccess(
+                        user: state.user!,
+                        posts: state.posts,
+                        comments: state.comments,
+                        isLoading: state.loading,
+                      );
+                    }
+                    return const _UserScreenInitial();
+                  },
+                ),
               ),
             ),
           );
@@ -137,85 +143,77 @@ class _UserScreenSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        NotificationListener(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels >=
-                    scrollInfo.metrics.maxScrollExtent - 50 &&
-                scrollInfo.metrics.axis == Axis.vertical) {
-              //context.read<UserScreenBloc>().add(ReachedNearEndOfScroll());
-            }
-            return true;
-          },
-          child: NestedScrollView(
-            floatHeaderSlivers: false,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              // These are the slivers that show up in the "outer" scroll view.
-              return <Widget>[
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverPersistentHeader(
-                    delegate: _HeaderDelegate(user),
-                    pinned: true,
-                    floating: false,
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
+    return NotificationListener(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 50 &&
+            scrollInfo.metrics.axis == Axis.vertical) {
+          //context.read<UserScreenBloc>().add(ReachedNearEndOfScroll());
+        }
+        return true;
+      },
+      child: NestedScrollView(
+        floatHeaderSlivers: false,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          // These are the slivers that show up in the "outer" scroll view.
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverPersistentHeader(
+                delegate: _HeaderDelegate(user),
+                pinned: true,
+                floating: false,
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          children: [
+            Column(
               children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: _headerMinHeight,
-                    ),
-                    if (user.bio != null) MuffedMarkdownBody(data: user.bio!)
-                  ],
+                const SizedBox(
+                  height: _headerMinHeight,
                 ),
-                ListView.builder(
-                  itemCount: posts.length + 1,
-                  key: const PageStorageKey('posts'),
-                  itemBuilder: (context, index) {
-                    // There is a bug that makes the header overlap the contents
-                    // this moves the content down so it does not overlap
-                    if (index == 0) {
-                      return const SizedBox(
-                        height: _headerMinHeight,
-                      );
-                    }
-                    return PostItem(
-                      post: posts[index - 1],
-                    );
-                  },
-                ),
-                ListView.builder(
-                  key: const PageStorageKey('comments'),
-                  itemCount: comments.length + 1,
-                  itemBuilder: (context, index) {
-                    // There is a bug that makes the header overlap the contents
-                    // this moves the content down so it does not overlap
-                    if (index == 0) {
-                      return const SizedBox(
-                        height: _headerMinHeight,
-                      );
-                    }
-                    return CommentItem(
-                      comment: comments[index - 1],
-                      children: const [],
-                      sortType: LemmyCommentSortType.hot,
-                    );
-                  },
-                ),
+                if (user.bio != null) MuffedMarkdownBody(data: user.bio!),
               ],
             ),
-          ),
+            ListView.builder(
+              itemCount: posts.length + 1,
+              key: const PageStorageKey('posts'),
+              itemBuilder: (context, index) {
+                // There is a bug that makes the header overlap the contents
+                // this moves the content down so it does not overlap
+                if (index == 0) {
+                  return const SizedBox(
+                    height: _headerMinHeight,
+                  );
+                }
+                return PostItem(
+                  post: posts[index - 1],
+                );
+              },
+            ),
+            ListView.builder(
+              key: const PageStorageKey('comments'),
+              itemCount: comments.length + 1,
+              itemBuilder: (context, index) {
+                // There is a bug that makes the header overlap the contents
+                // this moves the content down so it does not overlap
+                if (index == 0) {
+                  return const SizedBox(
+                    height: _headerMinHeight,
+                  );
+                }
+                return CommentItem(
+                  comment: comments[index - 1],
+                  children: const [],
+                  sortType: LemmyCommentSortType.hot,
+                );
+              },
+            ),
+          ],
         ),
-        if (isLoading) LinearProgressIndicator(),
-      ],
+      ),
     );
   }
 }
@@ -256,7 +254,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                         end: Alignment.bottomCenter,
                         colors: [Colors.black, Colors.transparent],
                       ).createShader(
-                          Rect.fromLTRB(0, 0, rect.width, rect.height));
+                        Rect.fromLTRB(0, 0, rect.width, rect.height),
+                      );
                     },
                     blendMode: BlendMode.dstIn,
                     child: (user.banner != null)
@@ -286,7 +285,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                             child: ClipRRect(
                               clipBehavior: Clip.hardEdge,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(45)),
+                                  const BorderRadius.all(Radius.circular(45)),
                               child: (user.avatar != null)
                                   ? CachedNetworkImage(
                                       imageUrl: user.avatar!,
@@ -319,7 +318,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

@@ -3,10 +3,9 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/repo/pictrs/models.dart';
-
-import 'icon_button.dart';
 
 /// A widget that displays uploaded images and their upload progress.
 class ImageUploadView extends StatelessWidget {
@@ -49,10 +48,10 @@ class ImageUploadView extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   if (item.imageLink == null)
-                    IconButtonLoading()
+                    const IconButtonLoading()
                   else
                     IconButton(
-                      icon: Icon(Icons.copy),
+                      icon: const Icon(Icons.copy),
                       onPressed: () async {
                         await Clipboard.setData(
                           ClipboardData(
