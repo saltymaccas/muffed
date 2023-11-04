@@ -7,7 +7,7 @@ part 'event.dart';
 part 'state.dart';
 
 class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
-  UserScreenBloc({this.userId, this.username, required this.repo})
+  UserScreenBloc({required this.repo, this.userId, this.username})
       : super(UserScreenState(userId: userId, username: username)) {
     on<InitializeEvent>((event, emit) async {
       emit(state.copyWith(status: UserStatus.loading));

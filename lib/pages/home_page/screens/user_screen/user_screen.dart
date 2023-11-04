@@ -10,9 +10,8 @@ import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/pages/home_page/screens/user_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-
-import 'bloc/bloc.dart';
 
 const _headerMaxHeight = 500.0;
 const _headerMinHeight = 130.0;
@@ -123,40 +122,6 @@ class UserScreen extends StatelessWidget {
   }
 }
 
-class _UserScreenInitial extends StatelessWidget {
-  const _UserScreenInitial();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox();
-  }
-}
-
-class _UserScreenLoading extends StatelessWidget {
-  const _UserScreenLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-}
-
-class _UserScreenFailure extends StatelessWidget {
-  const _UserScreenFailure();
-
-  @override
-  Widget build(BuildContext context) {
-    return ErrorComponentTransparent(
-      retryFunction: () {
-        context.read<UserScreenBloc>().add(InitializeEvent());
-      },
-      error: context.read<UserScreenBloc>().state.error ?? '',
-    );
-  }
-}
-
 class _UserScreenSuccess extends StatelessWidget {
   const _UserScreenSuccess({
     required this.user,
@@ -208,7 +173,7 @@ class _UserScreenSuccess extends StatelessWidget {
                     SizedBox(
                       height: _headerMinHeight,
                     ),
-                    if (user!.bio != null) MuffedMarkdownBody(data: user.bio!)
+                    if (user.bio != null) MuffedMarkdownBody(data: user.bio!)
                   ],
                 ),
                 ListView.builder(
@@ -420,5 +385,39 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return true;
+  }
+}
+
+class _UserScreenInitial extends StatelessWidget {
+  const _UserScreenInitial();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox();
+  }
+}
+
+class _UserScreenLoading extends StatelessWidget {
+  const _UserScreenLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class _UserScreenFailure extends StatelessWidget {
+  const _UserScreenFailure();
+
+  @override
+  Widget build(BuildContext context) {
+    return ErrorComponentTransparent(
+      retryFunction: () {
+        context.read<UserScreenBloc>().add(InitializeEvent());
+      },
+      error: context.read<UserScreenBloc>().state.error ?? '',
+    );
   }
 }
