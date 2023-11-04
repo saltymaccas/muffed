@@ -65,7 +65,12 @@ class CreatePostScreen extends StatelessWidget {
                 ).toString(),
                 extra: (state.successfullyPostedPost, null),
               );
-            showInfoSnackBar(context, text: 'Post successfully posted');
+            showInfoSnackBar(
+              context,
+              text: (postBeingEdited == null)
+                  ? 'Post successfully posted'
+                  : 'Post successfully edited',
+            );
           }
         },
         builder: (context, state) {
@@ -171,7 +176,8 @@ class CreatePostScreen extends StatelessWidget {
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
-                      (postBeingEdited == null) ? 'Create post' : 'Edit post'),
+                    (postBeingEdited == null) ? 'Create post' : 'Edit post',
+                  ),
                   actions: [
                     IconButton(
                       onPressed: () {
@@ -223,7 +229,7 @@ class CreatePostScreen extends StatelessWidget {
                             if (state.url == null && state.image == null)
                               ElevatedButton(
                                 onPressed: showAddDialog,
-                                child: Icon(Icons.add),
+                                child: const Icon(Icons.add),
                               )
                             else if (state.url != null)
                               Material(
