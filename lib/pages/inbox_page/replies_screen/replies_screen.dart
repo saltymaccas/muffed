@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/muffed_page.dart';
-import 'package:muffed/components/nothing_to_show.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
+import '../../../components/nothing_to_show.dart';
 import 'bloc/bloc.dart';
 
 class RepliesScreen extends StatelessWidget {
@@ -30,38 +30,42 @@ class RepliesScreen extends StatelessWidget {
             } else if (state.replyItemsStatus == RepliesStatus.success) {
               late final List<LemmyInboxMention> mentionItems;
 
+              final nothingToShow = state.replies.isEmpty ||
+                  !state.showAll &&
+                      state.replies.every((element) => element.read);
+
               return MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
-                child: (state.replies.isEmpty ||
-                        !state.showAll &&
-                            state.replies.every((element) => element.read))
-                    ? NothingToShow()
-                    : NotificationListener(
-                        onNotification: (ScrollNotification scrollInfo) {
-                          if (scrollInfo.metrics.pixels >=
-                                  scrollInfo.metrics.maxScrollExtent - 500 &&
-                              scrollInfo.metrics.axis == Axis.vertical) {
-                            context
-                                .read<RepliesBloc>()
-                                .add(ReachedEndOfScroll());
-                          }
+                child: NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 500 &&
+                        scrollInfo.metrics.axis == Axis.vertical &&
+                        !nothingToShow) {
+                      context.read<RepliesBloc>().add(ReachedEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<RepliesBloc>().add(Refresh());
+                      await context
+                          .read<RepliesBloc>()
+                          .stream
+                          .firstWhere((element) {
+                        if (element.isRefreshing == false) {
                           return true;
-                        },
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            context.read<RepliesBloc>().add(Refresh());
-                            await context
-                                .read<RepliesBloc>()
-                                .stream
-                                .firstWhere((element) {
-                              if (element.isRefreshing == false) {
-                                return true;
-                              }
-                              return false;
-                            });
-                          },
-                          child: ListView.builder(
+                        }
+                        return false;
+                      });
+                    },
+                    child: nothingToShow
+                        ? const Center(
+                            child:
+                                SingleChildScrollView(child: NothingToShow()),
+                          )
+                        : ListView.builder(
                             key: ValueKey(state.showAll),
                             itemCount: state.replies.length,
                             itemBuilder: (context, index) {
@@ -96,8 +100,8 @@ class RepliesScreen extends StatelessWidget {
                               );
                             },
                           ),
-                        ),
-                      ),
+                  ),
+                ),
               );
             } else {
               return const SizedBox();

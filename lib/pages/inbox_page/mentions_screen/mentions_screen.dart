@@ -30,38 +30,42 @@ class MentionsScreen extends StatelessWidget {
             } else if (state.replyItemsStatus == MentionsStatus.success) {
               late final List<LemmyInboxMention> mentionItems;
 
+              final nothingToShow = state.mentions.isEmpty ||
+                  !state.showAll &&
+                      state.mentions.every((element) => element.read);
+
               return MuffedPage(
                 isLoading: state.isLoading,
                 error: state.error,
-                child: (state.mentions.isEmpty ||
-                        !state.showAll &&
-                            state.mentions.every((element) => element.read))
-                    ? NothingToShow()
-                    : NotificationListener(
-                        onNotification: (ScrollNotification scrollInfo) {
-                          if (scrollInfo.metrics.pixels >=
-                                  scrollInfo.metrics.maxScrollExtent - 500 &&
-                              scrollInfo.metrics.axis == Axis.vertical) {
-                            context
-                                .read<MentionsBloc>()
-                                .add(ReachedEndOfScroll());
-                          }
+                child: NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 500 &&
+                        scrollInfo.metrics.axis == Axis.vertical &&
+                        !nothingToShow) {
+                      context.read<MentionsBloc>().add(ReachedEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<MentionsBloc>().add(Refresh());
+                      await context
+                          .read<MentionsBloc>()
+                          .stream
+                          .firstWhere((element) {
+                        if (element.isRefreshing == false) {
                           return true;
-                        },
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            context.read<MentionsBloc>().add(Refresh());
-                            await context
-                                .read<MentionsBloc>()
-                                .stream
-                                .firstWhere((element) {
-                              if (element.isRefreshing == false) {
-                                return true;
-                              }
-                              return false;
-                            });
-                          },
-                          child: ListView.builder(
+                        }
+                        return false;
+                      });
+                    },
+                    child: nothingToShow
+                        ? const Center(
+                            child:
+                                SingleChildScrollView(child: NothingToShow()),
+                          )
+                        : ListView.builder(
                             key: ValueKey(state.showAll),
                             itemCount: state.mentions.length,
                             itemBuilder: (context, index) {
@@ -96,8 +100,8 @@ class MentionsScreen extends StatelessWidget {
                               );
                             },
                           ),
-                        ),
-                      ),
+                  ),
+                ),
               );
             } else {
               return const SizedBox();
