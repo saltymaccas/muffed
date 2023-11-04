@@ -58,6 +58,32 @@ class MoreMenuButton extends StatelessWidget {
               );
             },
           ),
+        MuffedPopupMenuItem(
+          title: 'Edit Post',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(),
+                  body: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        child: SelectableText(
+                          post.body!,
+                          style: GoogleFonts.robotoMono(
+                            textStyle: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

@@ -523,4 +523,27 @@ interface class LemmyRepo {
 
     return LemmyPost.fromPostViewJson(response['post_view']);
   }
+
+  Future<LemmyPost> editPost({
+    required int id,
+    required String name,
+    String? url,
+    bool? nsfw,
+    int? languageId,
+    String? body,
+  }) async {
+    final response = await postRequest(
+      path: '/post/edit',
+      data: {
+        'post_id': id,
+        'name': name,
+        if (url != null) 'url': url,
+        if (nsfw != null) 'nsfw': nsfw,
+        if (languageId != null) 'language_id': languageId,
+        if (body != null) 'body': body,
+      },
+    );
+
+    return LemmyPost.fromPostViewJson(response['post_view']);
+  }
 }
