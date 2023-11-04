@@ -64,14 +64,13 @@ class SearchScreen extends StatelessWidget {
       },
       child: BlocConsumer<SearchBloc, SearchState>(
         listenWhen: (previous, current) {
-          if (previous.errorMessage != current.errorMessage &&
-              current.errorMessage != null) {
+          if (previous.error != current.error && current.error != null) {
             return true;
           }
           return false;
         },
         listener: (context, state) {
-          showErrorSnackBar(context, error: state.errorMessage!);
+          showErrorSnackBar(context, error: state.error!);
         },
         builder: (context, state) {
           final blocContext = context;
@@ -294,6 +293,11 @@ class SearchScreen extends StatelessWidget {
                                       itemCount: state.persons.length,
                                       itemBuilder: (context, index) {
                                         return ListTile(
+                                          onTap: () {
+                                            context.push(
+                                              '/home/person?id=${state.persons[index].id}',
+                                            );
+                                          },
                                           leading: MuffedAvatar(
                                             url: state.persons[index].avatar,
                                             radius: 20,

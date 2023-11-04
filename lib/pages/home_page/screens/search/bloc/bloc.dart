@@ -44,7 +44,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             ),
           );
         } catch (err) {
-          emit(state.copyWith(isLoading: false, errorMessage: err.toString()));
+          emit(state.copyWith(isLoading: false, error: err));
         }
       },
       transformer: restartable(),
@@ -77,7 +77,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             state.copyWith(
               isLoading: false,
               sortType: lastSortType,
-              errorMessage: err.toString(),
+              error: err,
             ),
           );
         }
@@ -116,7 +116,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           emit(
             state.copyWith(
               isLoading: false,
-              errorMessage: err.toString(),
+              error: err,
             ),
           );
         }

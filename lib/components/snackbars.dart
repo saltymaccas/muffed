@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../utils/error.dart';
 
-void showErrorSnackBar(BuildContext context, {Object? error = 'Error'}) {
+void showErrorSnackBar(
+  BuildContext context, {
+  Object? error = 'Error',
+}) {
   final errorMessage = errorObjectToString(error);
 
   ScaffoldMessenger.of(context).showSnackBar(

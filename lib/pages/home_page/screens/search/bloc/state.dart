@@ -7,12 +7,11 @@ final class SearchState extends Equatable {
     this.loadedSearchQuery = '',
     this.sortType = LemmySortType.topAll,
     this.loadedSortType = LemmySortType.topAll,
-    this.errorMessage,
+    this.error,
     this.isLoading = false,
     this.pagesLoaded = 0,
-
-  this.communityId,
-  this.communityName,
+    this.communityId,
+    this.communityName,
 
     // communities
     this.communities = const [],
@@ -25,8 +24,6 @@ final class SearchState extends Equatable {
 
     // persons
     this.persons = const [],
-
-
   });
 
   final String? communityName;
@@ -35,7 +32,7 @@ final class SearchState extends Equatable {
   final String loadedSearchQuery;
   final LemmySortType sortType;
   final LemmySortType loadedSortType;
-  final String? errorMessage;
+  final Object? error;
 
   final bool isLoading;
   final int pagesLoaded;
@@ -58,16 +55,15 @@ final class SearchState extends Equatable {
         loadedSearchQuery,
         sortType,
         loadedSortType,
-        errorMessage,
+        error,
         isLoading,
         pagesLoaded,
         communities,
         persons,
         posts,
         comments,
-      communityId,
-
-    communityName
+        communityId,
+        communityName
       ];
 
   SearchState copyWith({
@@ -75,7 +71,7 @@ final class SearchState extends Equatable {
     String? loadedSearchQuery,
     LemmySortType? sortType,
     LemmySortType? loadedSortType,
-    String? errorMessage,
+    Object? error,
     bool? isLoading,
     int? pagesLoaded,
     String? communityName,
@@ -94,19 +90,18 @@ final class SearchState extends Equatable {
     List<LemmyComment>? comments,
   }) {
     return SearchState(
-      searchQuery: searchQuery ?? this.searchQuery,
-      loadedSearchQuery: loadedSearchQuery ?? this.loadedSearchQuery,
-      sortType: sortType ?? this.sortType,
-      loadedSortType: loadedSortType ?? this.loadedSortType,
-      errorMessage: errorMessage,
-      isLoading: isLoading ?? this.isLoading,
-      pagesLoaded: pagesLoaded ?? this.pagesLoaded,
-      communities: communities ?? this.communities,
-      persons: persons ?? this.persons,
-      posts: posts ?? this.posts,
-      comments: comments ?? this.comments,
-      communityName: communityName ?? this.communityName,
-      communityId: communityId ?? this.communityId
-    );
+        searchQuery: searchQuery ?? this.searchQuery,
+        loadedSearchQuery: loadedSearchQuery ?? this.loadedSearchQuery,
+        sortType: sortType ?? this.sortType,
+        loadedSortType: loadedSortType ?? this.loadedSortType,
+        error: error,
+        isLoading: isLoading ?? this.isLoading,
+        pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+        communities: communities ?? this.communities,
+        persons: persons ?? this.persons,
+        posts: posts ?? this.posts,
+        comments: comments ?? this.comments,
+        communityName: communityName ?? this.communityName,
+        communityId: communityId ?? this.communityId);
   }
 }
