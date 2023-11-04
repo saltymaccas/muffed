@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/components/comment_item/bloc/bloc.dart';
 import 'package:muffed/components/create_comment/create_comment_dialog.dart';
 import 'package:muffed/components/markdown_body.dart';
@@ -255,6 +256,37 @@ class _CommentItemState extends State<CommentItem>
                                     onTap: () {
                                       context.push(
                                         '/home/person?id=${widget.comment.creatorId}',
+                                      );
+                                    },
+                                  ),
+                                  MuffedPopupMenuItem(
+                                    title: 'View raw',
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (context) => Scaffold(
+                                            appBar: AppBar(),
+                                            body: Center(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: SingleChildScrollView(
+                                                  child: SelectableText(
+                                                    widget.comment.content,
+                                                    style:
+                                                        GoogleFonts.robotoMono(
+                                                      textStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .bodyMedium,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       );
                                     },
                                   ),
