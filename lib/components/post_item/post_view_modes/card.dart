@@ -138,29 +138,45 @@ class CardLemmyPostItem extends StatelessWidget {
                       ),
                     ],
                     if (post.body != '' && post.body != null) ...[
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Container(
-                          width: double.maxFinite,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            color: Theme.of(context).colorScheme.surface,
-                          ),
-                          child: Padding(
+                      Builder(
+                        builder: (context) {
+                          return Padding(
                             padding: const EdgeInsets.all(4),
-                            child: MuffedMarkdownBody(
-                              data: post.body!,
-                              height: limitContentHeight ? 300 : null,
-                              onTapText: () {
-                                if (openOnTap) {
-                                  openPost();
-                                }
-                              },
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    child: MuffedMarkdownBody(
+                                      data: post.body!,
+                                      height: limitContentHeight ? 300 : null,
+                                      onTapText: () {
+                                        if (openOnTap) {
+                                          openPost();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Builder(
+                                    builder: (context) {
+                                      return SizedBox();
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ],
                   ],
