@@ -19,12 +19,15 @@ const _headerMinHeight = 130.0;
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
+  /// Shows a users profile, either the id or name needs to be defined
   const UserScreen({
     super.key,
     this.userId,
     this.username,
-  }) : assert(userId != null || username != null,
-            'Both userId and username equals null');
+  }) : assert(
+          userId != null || username != null,
+          'Both userId and username equals null',
+        );
 
   final int? userId;
   final String? username;
@@ -149,7 +152,7 @@ class _UserScreenFailure extends StatelessWidget {
       retryFunction: () {
         context.read<UserScreenBloc>().add(InitializeEvent());
       },
-      error: context.read<UserScreenBloc>().state.errorMessage ?? '',
+      error: context.read<UserScreenBloc>().state.error ?? '',
     );
   }
 }

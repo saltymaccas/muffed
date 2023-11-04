@@ -3,7 +3,7 @@ part of 'bloc.dart';
 enum UserStatus { initial, loading, success, failure }
 
 final class UserScreenState extends Equatable {
-  UserScreenState({
+  const UserScreenState({
     this.status = UserStatus.initial,
     this.userId,
     this.username,
@@ -11,11 +11,10 @@ final class UserScreenState extends Equatable {
     this.comments = const [],
     this.posts = const [],
     this.loading = false,
-    this.errorMessage,
+    this.error,
     this.page = 1,
     this.reachedEnd = false,
-  }) : assert(userId != null || userId != null,
-            'Both userId and username equals null');
+  });
 
   final int? userId;
   final String? username;
@@ -27,7 +26,7 @@ final class UserScreenState extends Equatable {
 
   final bool loading;
 
-  final Object? errorMessage;
+  final Object? error;
 
   final int page;
 
@@ -42,7 +41,7 @@ final class UserScreenState extends Equatable {
         comments,
         posts,
         loading,
-        errorMessage,
+        error,
         page,
         reachedEnd,
       ];
@@ -67,7 +66,7 @@ final class UserScreenState extends Equatable {
       comments: comments ?? this.comments,
       posts: posts ?? this.posts,
       loading: loading ?? this.loading,
-      errorMessage: errorMessage,
+      error: errorMessage,
       page: page ?? this.page,
       reachedEnd: reachedEnd ?? this.reachedEnd,
     );

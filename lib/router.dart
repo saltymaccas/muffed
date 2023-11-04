@@ -165,11 +165,11 @@ final router = GoRouter(
                 GoRoute(
                   path: 'person',
                   builder: (context, state) {
+                    final qp = state.uri.queryParameters;
+
                     return UserScreen(
-                      userId: (state.uri.queryParameters['id'] != null)
-                          ? int.parse(state.uri.queryParameters['id']!)
-                          : null,
-                      username: state.uri.queryParameters['username'],
+                      userId: (qp['id'] != null) ? int.parse(qp['id']!) : null,
+                      username: qp['username'],
                     );
                   },
                 ),
