@@ -126,13 +126,17 @@ final class GlobalState extends Equatable {
 
 final class LemmyAccountData extends Equatable {
   LemmyAccountData(
-      {required this.jwt, required this.homeServer, required this.userName});
+      {required this.jwt,
+      required this.homeServer,
+      required this.name,
+      required this.id});
 
   factory LemmyAccountData.fromMap(Map<String, dynamic> map) {
     return LemmyAccountData(
       jwt: map['jwt'] as String,
       homeServer: map['homeServer'] as String,
-      userName: map['userName'] as String,
+      name: map['userName'] as String,
+      id: map['id'] as int,
     );
   }
 
@@ -140,13 +144,16 @@ final class LemmyAccountData extends Equatable {
 
   /// home server should include the "https://" and not end with "/"
   final String homeServer;
-  final String userName;
+  final String name;
+
+  final int id;
 
   Map<String, dynamic> toMap() {
     return {
       'jwt': this.jwt,
       'homeServer': this.homeServer,
-      'userName': this.userName,
+      'userName': this.name,
+      'id': this.id,
     };
   }
 
@@ -154,6 +161,7 @@ final class LemmyAccountData extends Equatable {
   List<Object?> get props => [
         jwt,
         homeServer,
-        userName,
+        name,
+        id,
       ];
 }

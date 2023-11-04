@@ -54,7 +54,8 @@ class CardLemmyPostItem extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      context.push('/home/community?id=${post.communityId}');
+                      context.push(
+                          '/home/community?community_id=${post.communityId}');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -51,19 +51,23 @@ void openSearchDialog(BuildContext context) {
                                   return Column(
                                     children: [
                                       if (state.communities.length - 1 == index)
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 8,
                                         ),
                                       InkWell(
                                         onTap: () {
-                                          context.pop();
-                                          context.go(Uri(
-                                              path: '/home/community',
-                                              queryParameters: {
-                                                'id': state
-                                                    .communities[index].id
-                                                    .toString()
-                                              }).toString());
+                                          context
+                                            ..pop()
+                                            ..push(
+                                              Uri(
+                                                path: '/home/community',
+                                                queryParameters: {
+                                                  'community_id': state
+                                                      .communities[index].id
+                                                      .toString(),
+                                                },
+                                              ).toString(),
+                                            );
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(

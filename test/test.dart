@@ -14,12 +14,12 @@ void main() {
       textScaleFactor: 1.5,
       lemmyAccounts: [
         LemmyAccountData(
-          userName: 'testUser',
+          name: 'testUser',
           homeServer: 'test.home.server',
           jwt: 'test.jwt',
         ),
         LemmyAccountData(
-          userName: 'testUser1',
+          name: 'testUser1',
           homeServer: 'test.home.server1',
           jwt: 'test.jwt1',
         ),

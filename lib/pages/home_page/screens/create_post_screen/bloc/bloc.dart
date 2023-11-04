@@ -12,12 +12,18 @@ part 'state.dart';
 
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   ///
-  CreatePostBloc(
-      {required this.communityId, required this.repo, this.communityInfo})
-      : super(
+  CreatePostBloc({
+    required this.communityId,
+    required this.repo,
+    this.initialUrl,
+    this.communityInfo,
+    this.postBeingEdited,
+  }) : super(
           CreatePostState(
+            url: initialUrl,
             communityId: communityId,
             communityInfo: communityInfo,
+            editingPostId: postBeingEdited?.id,
             communityInfoStatus: (communityInfo == null)
                 ? CommunityInfoStatus.initial
                 : CommunityInfoStatus.success,
@@ -29,7 +35,8 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         emit(state.copyWith(communityInfoStatus: CommunityInfoStatus.loading));
 
         try {
-          final response = await repo.lemmyRepo.getCommunity(id: communityId);
+          final response = await repo.lemmyRepo
+              .getCommunity(id: communityId ?? postBeingEdited!.communityId);
 
           emit(
             state.copyWith(
@@ -54,18 +61,30 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       emit(state.copyWith(isLoading: true));
 
       try {
-        final response = await repo.lemmyRepo.createPost(
-          name: event.title,
-          body: event.body,
-          url: (event.url == null || event.url == '')
-              ? null
-              : ensureProtocolSpecified(event.url!),
-          communityId: communityId,
-        );
-
-        emit(state.copyWith(successfullyPosted: response, isLoading: false));
+        if (state.communityId != null) {
+          final response = await repo.lemmyRepo.createPost(
+            name: event.title,
+            body: event.body,
+            url: (event.url == null || event.url == '')
+                ? null
+                : ensureProtocolSpecified(event.url!),
+            communityId: communityId!,
+          );
+          emit(state.copyWith(successfullyPosted: response, isLoading: false));
+        } else if (state.editingPostId != null) {
+          final response = await repo.lemmyRepo.editPost(
+            id: state.editingPostId!,
+            name: event.title,
+            body: event.body,
+            url: (event.url == null || event.url == '')
+                ? null
+                : ensureProtocolSpecified(event.url!),
+          );
+          emit(state.copyWith(successfullyPosted: response, isLoading: false));
+        }
       } catch (err) {
         emit(state.copyWith(error: err, isLoading: false));
+        rethrow;
       }
     });
     on<BodyImageToUploadSelected>((event, emit) async {
@@ -188,7 +207,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
     });
   }
 
+  /// Only set if user is editing an existing post, should be the url in the
+  /// original post
+  final String? initialUrl;
+  final LemmyPost? postBeingEdited;
   final LemmyCommunity? communityInfo;
-  final int communityId;
+  final int? communityId;
   final ServerRepo repo;
 }

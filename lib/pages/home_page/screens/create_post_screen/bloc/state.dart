@@ -7,18 +7,19 @@ class CreatePostState extends Equatable {
     this.isLoading = false,
     this.communityInfo,
     this.communityInfoStatus = CommunityInfoStatus.initial,
-    required this.communityId,
+    this.communityId,
     this.error,
     this.successfullyPostedPost,
     this.isPreviewingBody = false,
     this.url,
     this.image,
+    this.editingPostId,
     SplayTreeMap<int, ImageUploadState>? images,
   }) : bodyImages = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
   final LemmyCommunity? communityInfo;
-  final int communityId;
+  final int? communityId;
   final Object? error;
   final CommunityInfoStatus communityInfoStatus;
   final LemmyPost? successfullyPostedPost;
@@ -26,6 +27,9 @@ class CreatePostState extends Equatable {
   final String? url;
 
   final ImageUploadState? image;
+
+  /// If the screen is editing a post this would be the id of that post.
+  final int? editingPostId;
 
   final SplayTreeMap<int, ImageUploadState> bodyImages;
 
@@ -40,7 +44,8 @@ class CreatePostState extends Equatable {
         isPreviewingBody,
         bodyImages,
         url,
-        image
+        image,
+        editingPostId,
       ];
 
   CreatePostState copyWith({
@@ -56,6 +61,7 @@ class CreatePostState extends Equatable {
     bool setUrlToNull = false,
     ImageUploadState? image,
     bool setImageToNull = false,
+    int? editingPostId,
   }) {
     return CreatePostState(
       isLoading: isLoading ?? this.isLoading,
@@ -68,6 +74,7 @@ class CreatePostState extends Equatable {
       images: images ?? this.bodyImages,
       url: setUrlToNull ? null : url ?? this.url,
       image: setImageToNull ? null : image ?? this.image,
+      editingPostId: editingPostId ?? this.editingPostId,
     );
   }
 }

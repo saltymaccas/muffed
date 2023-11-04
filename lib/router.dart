@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/components/create_comment/create_comment_screen.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/home_page/screens/comment_screen/comment_screen.dart';
@@ -21,8 +23,22 @@ import 'package:muffed/pages/profile_page/screens/settings_screen/text_size/text
 import 'package:muffed/pages/profile_page/screens/settings_screen/theme/theme.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
-import 'components/create_comment/create_comment_screen.dart';
-import 'dynamic_navigation_bar/bloc/bloc.dart';
+extension NullNumberParsing on String? {
+  int? parseInt() {
+    return (this == null) ? null : int.parse(this!);
+  }
+}
+
+extension NumberParsing on String {
+  int parseInt() {
+    return int.parse(this);
+  }
+}
+
+class CreatePostRouteData {
+  CreatePostRouteData({this.postToBeEdited});
+  final LemmyPost? postToBeEdited;
+}
 
 final router = GoRouter(
   initialLocation: '/home',
@@ -87,8 +103,8 @@ final router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: '/home',
-              pageBuilder: (context, state) {
-                return MaterialPage(child: HomePage());
+              builder: (context, state) {
+                return HomePage();
               },
               routes: [
                 GoRoute(
@@ -130,18 +146,25 @@ final router = GoRouter(
                 GoRoute(
                   path: 'community',
                   builder: (context, state) {
+                    final qp = state.uri.queryParameters;
+
                     return CommunityScreen(
-                      communityId: int.parse(state.uri.queryParameters['id']!),
+                      communityId: qp['community_id']!.parseInt(),
                     );
                   },
                 ),
                 GoRoute(
+                  name: 'create_post',
                   path: 'create_post',
                   builder: (context, state) {
+                    final qp = state.uri.queryParameters;
+
+                    final CreatePostRouteData? data =
+                        state.extra as CreatePostRouteData?;
+
                     return CreatePostScreen(
-                      communityId:
-                          int.parse(state.uri.queryParameters['community_id']!),
-                      community: state.extra as LemmyCommunity?,
+                      communityId: qp['community_id'].parseInt(),
+                      postBeingEdited: data?.postToBeEdited,
                     );
                   },
                 ),
@@ -181,8 +204,8 @@ final router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: '/inbox',
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: InboxPage());
+              builder: (context, state) {
+                return InboxPage();
               },
             ),
           ],

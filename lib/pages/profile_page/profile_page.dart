@@ -42,7 +42,7 @@ class ProfilePage extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              globalBloc.getSelectedLemmyAccount()?.userName ??
+                              globalBloc.getSelectedLemmyAccount()?.name ??
                                   'Anonymous',
                               style: TextStyle(fontSize: 24),
                             ),

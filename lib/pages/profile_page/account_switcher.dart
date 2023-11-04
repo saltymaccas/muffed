@@ -21,7 +21,7 @@ void showAccountSwitcher(BuildContext context) {
                 return ListTile(
                   selected: state.lemmySelectedAccount == index,
                   title: Text(
-                    state.lemmyAccounts[index].userName,
+                    state.lemmyAccounts[index].name,
                   ),
                   leading: const Icon(Icons.account_circle),
                   trailing: IconButton(
@@ -32,7 +32,7 @@ void showAccountSwitcher(BuildContext context) {
                           return AlertDialog(
                             title: const Text('Confirm Removal'),
                             content: Text(
-                                'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].userName}'),
+                                'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].name}'),
                             actions: [
                               TextButton(
                                 onPressed: () {

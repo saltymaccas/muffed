@@ -91,6 +91,10 @@ interface class LemmyRepo {
     required String path,
     Map<String, dynamic> queryParameters = const {},
     bool mustBeLoggedIn = false,
+    String? serverAddress,
+
+    /// The jwt to use for the request
+    String? jwt,
   }) async {
     if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
       throw Exception('Not logged in');
@@ -100,9 +104,11 @@ interface class LemmyRepo {
         'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
 
     final Response<Map<String, dynamic>> response = await dio.get(
-      '${globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
       queryParameters: {
-        if (globalBloc.getSelectedLemmyAccount() != null)
+        if (jwt != null)
+          'auth': jwt
+        else if (globalBloc.isLoggedIn())
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
         ...queryParameters,
       },
@@ -420,6 +426,18 @@ interface class LemmyRepo {
     return LemmySite.fromGetSiteResponse(response);
   }
 
+  Future<LemmyPerson> getPersonWithJwt({
+    String? jwt,
+    String? serverAddress,
+  }) async {
+    final response =
+        await getRequest(path: '/site', jwt: jwt, serverAddress: serverAddress);
+
+    return LemmyPerson.fromPersonViewJson(
+      response['my_user']['local_user_view'],
+    );
+  }
+
   /// Gets any lemmy site
   Future<LemmySite> getSpecificSite(String url) async {
     final Response<Map<String, dynamic>> response = await dio.get(
@@ -532,8 +550,8 @@ interface class LemmyRepo {
     int? languageId,
     String? body,
   }) async {
-    final response = await postRequest(
-      path: '/post/edit',
+    final response = await putRequest(
+      path: '/post',
       data: {
         'post_id': id,
         'name': name,

@@ -38,15 +38,19 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
       emit(state.copyWith(loading: true));
 
       try {
-        final result = await repo.lemmyRepo
+        final login = await repo.lemmyRepo
             .login(state.password, totp, state.usernameOrEmail, homeServer);
+
+        final getPerson = await repo.lemmyRepo
+            .getPersonWithJwt(jwt: login.jwt, serverAddress: homeServer);
 
         globalBloc.add(
           AccountLoggedIn(
             LemmyAccountData(
-              jwt: result.jwt!,
+              jwt: login.jwt!,
               homeServer: homeServer,
-              userName: state.usernameOrEmail,
+              name: getPerson.name,
+              id: getPerson.id,
             ),
           ),
         );
@@ -56,6 +60,8 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
         event.onLoginAccepted();
       } catch (err) {
         emit(state.copyWith(errorMessage: err, loading: false));
+
+        rethrow;
       }
     });
   }

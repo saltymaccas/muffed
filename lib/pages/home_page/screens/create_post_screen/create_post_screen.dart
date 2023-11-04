@@ -20,17 +20,28 @@ class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({
     required this.communityId,
     this.community,
+    this.postBeingEdited,
     super.key,
-  });
+  })  : bodyTextController = TextEditingController(text: postBeingEdited?.body),
+        titleTextController =
+            TextEditingController(text: postBeingEdited?.name),
+        urlTextController = TextEditingController(),
+        assert(postBeingEdited != null || communityId != null);
 
   final LemmyCommunity? community;
-  final int communityId;
 
-  final TextEditingController bodyTextController = TextEditingController();
+  /// should be defined if creating a new post
+  final int? communityId;
 
-  final TextEditingController titleTextController = TextEditingController();
+  final TextEditingController bodyTextController;
 
-  final TextEditingController urlTextController = TextEditingController();
+  final TextEditingController titleTextController;
+
+  final TextEditingController urlTextController;
+
+  /// set this if the user is editing an already existing post rather than
+  /// creating a new one
+  final LemmyPost? postBeingEdited;
 
   final FocusNode bodyTextFocusNode = FocusNode();
 
@@ -40,6 +51,7 @@ class CreatePostScreen extends StatelessWidget {
       create: (context) => CreatePostBloc(
         communityId: communityId,
         communityInfo: community,
+        postBeingEdited: postBeingEdited,
         repo: context.read<ServerRepo>(),
       )..add(Initalize()),
       child: BlocConsumer<CreatePostBloc, CreatePostState>(
@@ -158,7 +170,8 @@ class CreatePostScreen extends StatelessWidget {
               error: state.error,
               child: Scaffold(
                 appBar: AppBar(
-                  title: Text('Create post'),
+                  title: Text(
+                      (postBeingEdited == null) ? 'Create post' : 'Edit post'),
                   actions: [
                     IconButton(
                       onPressed: () {

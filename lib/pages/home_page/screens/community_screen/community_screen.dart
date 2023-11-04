@@ -88,7 +88,6 @@ class CommunityScreen extends StatelessWidget {
                             'community_id': state.communityId.toString(),
                           },
                         ).toString(),
-                        extra: state.community,
                       );
                     },
                     icon: Icon(Icons.add)),

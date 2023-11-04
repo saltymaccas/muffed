@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router.dart';
 
 class MoreMenuButton extends StatelessWidget {
   const MoreMenuButton({required this.post, super.key});
@@ -58,32 +61,20 @@ class MoreMenuButton extends StatelessWidget {
               );
             },
           ),
-        MuffedPopupMenuItem(
-          title: 'Edit Post',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(),
-                  body: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SingleChildScrollView(
-                        child: SelectableText(
-                          post.body!,
-                          style: GoogleFonts.robotoMono(
-                            textStyle: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+        if (post.creatorId ==
+            context.read<GlobalBloc>().getSelectedLemmyAccount()?.id)
+          MuffedPopupMenuItem(
+            title: 'Edit Post',
+            onTap: () {
+              context.pushNamed(
+                'create_post',
+                queryParameters: {},
+                extra: CreatePostRouteData(
+                  postToBeEdited: post,
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
       ],
     );
   }
