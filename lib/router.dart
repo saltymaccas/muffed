@@ -115,9 +115,7 @@ final router = GoRouter(
                         : state.extra! as (LemmyPost, BuildContext?);
 
                     return CommentScreen(
-                      postId: (state.uri.queryParameters['id'] != null)
-                          ? int.parse(state.uri.queryParameters['id']!)
-                          : null,
+                      postId: state.uri.queryParameters['id'].parseInt(),
                       post: (values != null) ? values.$1 : null,
                       postItemBlocContext: (values != null) ? values.$2 : null,
                     );
