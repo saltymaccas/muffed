@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -30,6 +31,33 @@ class MoreMenuButton extends StatelessWidget {
             );
           },
         ),
+        if (post.body != null)
+          MuffedPopupMenuItem(
+            title: 'View raw',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(),
+                    body: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: SelectableText(
+                            post.body!,
+                            style: GoogleFonts.robotoMono(
+                              textStyle: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
       ],
     );
   }
