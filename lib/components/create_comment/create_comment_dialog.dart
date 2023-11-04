@@ -92,6 +92,13 @@ class CreateCommentDialog extends StatelessWidget {
         },
         builder: (context, state) {
           return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+                width: .5,
+              ),
+            ),
             clipBehavior: Clip.hardEdge,
             insetPadding: EdgeInsets.all(16),
             child: Column(
