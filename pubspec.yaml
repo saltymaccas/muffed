@@ -37,6 +37,7 @@ dependencies:
   cross_file: ^0.3.3+6
   image_picker: ^1.0.4
   google_fonts: ^6.1.0
+  markdown: ^7.1.1
 
 dev_dependencies:
   flutter_test:
