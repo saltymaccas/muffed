@@ -30,31 +30,34 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
         );
       }
     });
-    on<MarkAsReadToggled>((event, emit) async {
-      final ogMentionsList = [...state.mentions];
+    on<MarkAsReadToggled>(
+      (event, emit) async {
+        final ogMentionsList = [...state.mentions];
 
-      final mentions = [...state.mentions];
+        final mentions = [...state.mentions];
 
-      final toggledTo = !mentions[event.index].read;
+        final toggledTo = !mentions[event.index].read;
 
-      mentions[event.index] = mentions[event.index].copyWith(read: toggledTo);
+        mentions[event.index] = mentions[event.index].copyWith(read: toggledTo);
 
-      emit(state.copyWith(mentions: mentions));
+        emit(state.copyWith(mentions: mentions));
 
-      try {
-        final response = await repo.lemmyRepo.markMentionAsRead(
-          id: event.id,
-          read: toggledTo,
-        );
-      } catch (err) {
-        emit(
-          state.copyWith(
-            error: err,
-            mentions: ogMentionsList,
-          ),
-        );
-      }
-    }, transformer: restartable());
+        try {
+          final response = await repo.lemmyRepo.markMentionAsRead(
+            id: event.id,
+            read: toggledTo,
+          );
+        } catch (err) {
+          emit(
+            state.copyWith(
+              error: err,
+              mentions: ogMentionsList,
+            ),
+          );
+        }
+      },
+      transformer: restartable(),
+    );
     on<ShowAllToggled>(
       (event, emit) async {
         emit(state.copyWith(isLoading: true, showAll: !state.showAll));
