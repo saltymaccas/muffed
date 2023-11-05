@@ -11,21 +11,22 @@ class CommunityScreenBloc
   ///
   CommunityScreenBloc({
     this.community,
-    required this.communityId,
+    this.communityName,
+    this.communityId,
     required this.repo,
   }) : super(
           CommunityScreenState(
-            communityId: communityId,
             community: community,
           ),
         ) {
     on<Initialize>((event, emit) async {
-      // get community info if none was passed in
+      // get community info if none were passed in
       if (state.community == null) {
         emit(state.copyWith(communityInfoStatus: CommunityStatus.loading));
 
         try {
-          final community = await repo.lemmyRepo.getCommunity(id: communityId);
+          final community = await repo.lemmyRepo
+              .getCommunity(id: communityId, name: communityName);
 
           emit(
             state.copyWith(
@@ -40,6 +41,7 @@ class CommunityScreenBloc
               errorMessage: err,
             ),
           );
+          rethrow;
         }
       } else {
         emit(state.copyWith(communityInfoStatus: CommunityStatus.success));
@@ -50,7 +52,7 @@ class CommunityScreenBloc
 
       try {
         final posts = await repo.lemmyRepo.getPosts(
-          communityId: state.communityId,
+          communityId: state.community!.id,
           page: state.pagesLoaded + 1,
         );
 
@@ -75,7 +77,7 @@ class CommunityScreenBloc
           try {
             final newPosts = await repo.lemmyRepo.getPosts(
               page: state.pagesLoaded + 1,
-              communityId: state.communityId,
+              communityId: state.community!.id,
             );
 
             if (newPosts.length == 0) {
@@ -102,7 +104,7 @@ class CommunityScreenBloc
       try {
         final posts = await repo.lemmyRepo.getPosts(
           sortType: event.sortType,
-          communityId: state.communityId,
+          communityId: state.community!.id,
           page: 1,
         );
         emit(
@@ -137,7 +139,7 @@ class CommunityScreenBloc
       );
       try {
         final result = await repo.lemmyRepo.followCommunity(
-          communityId: state.communityId,
+          communityId: state.community!.id,
           follow:
               state.community!.subscribed != LemmySubscribedType.notSubscribed,
         );
@@ -155,7 +157,7 @@ class CommunityScreenBloc
       try {
         // gets both posts and community info
         final result = await Future.wait([
-          repo.lemmyRepo.getPosts(communityId: state.communityId, page: 1),
+          repo.lemmyRepo.getPosts(communityId: state.community!.id, page: 1),
           repo.lemmyRepo.getCommunity(id: communityId),
         ]);
 
@@ -174,7 +176,8 @@ class CommunityScreenBloc
     });
   }
 
-  final int communityId;
+  final String? communityName;
+  final int? communityId;
   final LemmyCommunity? community;
   final ServerRepo repo;
 }

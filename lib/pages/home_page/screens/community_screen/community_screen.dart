@@ -19,10 +19,19 @@ import 'bloc/bloc.dart';
 /// post view
 class CommunityScreen extends StatelessWidget {
   /// initialize
-  const CommunityScreen({required this.communityId, this.community, super.key});
+  const CommunityScreen({
+    this.communityId,
+    this.communityName,
+    this.community,
+    super.key,
+  }) : assert(communityId != null || communityName != null,
+            'No community given: commuiityId: $communityId, communityName: $communityName');
 
   /// The community ID
-  final int communityId;
+  final int? communityId;
+
+  /// The community name
+  final String? communityName;
 
   /// The community object which contains the community information.
   ///
@@ -37,6 +46,7 @@ class CommunityScreen extends StatelessWidget {
       create: (context) => CommunityScreenBloc(
         communityId: communityId,
         community: community,
+        communityName: communityName,
         repo: context.read<ServerRepo>(),
       )..add(Initialize()),
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
@@ -58,7 +68,8 @@ class CommunityScreen extends StatelessWidget {
                               Uri(
                                 path: '/home/search',
                                 queryParameters: {
-                                  'community_id': state.communityId.toString(),
+                                  'community_id':
+                                      state.community!.id.toString(),
                                   'community_name': state.community!.name,
                                 },
                               ).toString(),
@@ -85,7 +96,7 @@ class CommunityScreen extends StatelessWidget {
                         Uri(
                           path: '/home/create_post',
                           queryParameters: {
-                            'community_id': state.communityId.toString(),
+                            'community_id': state.community!.id.toString(),
                           },
                         ).toString(),
                       );

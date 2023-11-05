@@ -38,6 +38,18 @@ class MuffedMarkdownBody extends StatelessWidget {
           destination,
         ) async {
           if (url != null) {
+            // CHECK IF EMAIL STYLE LINK TO COMMUNITY
+            // Format: !liftoff@lemmy.world
+            if (url.startsWith('!')) {
+              await context.push(
+                Uri(
+                  path: '/home/community/',
+                  queryParameters: {'community_name': url.substring(1)},
+                ).toString(),
+              );
+              return;
+            }
+
             // CHECK IF EMAIL STYLE LINK TO USER
             // Format: @user@lemmy.world
             if (url.startsWith('@')) {

@@ -147,7 +147,8 @@ final router = GoRouter(
                     final qp = state.uri.queryParameters;
 
                     return CommunityScreen(
-                      communityId: qp['community_id']!.parseInt(),
+                      communityId: qp['community_id'].parseInt(),
+                      communityName: qp['community_name'],
                     );
                   },
                 ),

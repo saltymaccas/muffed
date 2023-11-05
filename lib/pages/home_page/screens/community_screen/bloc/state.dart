@@ -5,7 +5,6 @@ enum CommunityStatus { initial, loading, success, failure }
 final class CommunityScreenState extends Equatable {
   ///
   const CommunityScreenState({
-    required this.communityId,
     this.isLoading = false,
     this.postsStatus = CommunityStatus.initial,
     this.communityInfoStatus = CommunityStatus.initial,
@@ -22,7 +21,6 @@ final class CommunityScreenState extends Equatable {
   final LemmyCommunity? community;
   final List<LemmyPost> posts;
   final int pagesLoaded;
-  final int communityId;
 
   // Whether the posts have loaded
   final CommunityStatus postsStatus;
@@ -45,7 +43,6 @@ final class CommunityScreenState extends Equatable {
         isLoading,
         community,
         posts,
-        communityId,
         pagesLoaded,
         postsStatus,
         communityInfoStatus,
@@ -77,7 +74,6 @@ final class CommunityScreenState extends Equatable {
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
       community: community ?? this.community,
       posts: posts ?? this.posts,
-      communityId: communityId ?? this.communityId,
       sortType: sortType ?? this.sortType,
       loadedSortType: loadedSortType ?? this.loadedSortType,
       errorMessage: errorMessage,
