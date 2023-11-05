@@ -234,19 +234,20 @@ class SearchScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TabBar(
+                        isScrollable: true,
                         tabs: [
                           if (communityId == null)
-                            Tab(
+                            const Tab(
                               text: 'Communities',
                             ),
                           if (communityId == null)
-                            Tab(
+                            const Tab(
                               text: 'People',
                             ),
-                          Tab(
+                          const Tab(
                             text: 'Posts',
                           ),
-                          Tab(
+                          const Tab(
                             text: 'Comments',
                           ),
                         ],
@@ -278,6 +279,9 @@ class SearchScreen extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         final theme = Theme.of(context);
 
+                                        final community =
+                                            state.communities[index];
+
                                         return InkWell(
                                           onTap: () {
                                             context.pushNamed(
@@ -299,9 +303,7 @@ class SearchScreen extends StatelessWidget {
                                                       16,
                                                     ),
                                                     child: MuffedAvatar(
-                                                      url: state
-                                                          .communities[index]
-                                                          .icon,
+                                                      url: community.icon,
                                                       radius: 16,
                                                     ),
                                                   ),
@@ -312,10 +314,7 @@ class SearchScreen extends StatelessWidget {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          state
-                                                              .communities[
-                                                                  index]
-                                                              .title,
+                                                          community.title,
                                                           style: theme.textTheme
                                                               .titleMedium!
                                                               .copyWith(
@@ -328,7 +327,7 @@ class SearchScreen extends StatelessWidget {
                                                             children: [
                                                               TextSpan(
                                                                 text:
-                                                                    '${state.communities[index].subscribers}',
+                                                                    '${community.subscribers}',
                                                                 style: theme
                                                                     .textTheme
                                                                     .bodySmall!
@@ -361,7 +360,7 @@ class SearchScreen extends StatelessWidget {
                                                               ),
                                                               TextSpan(
                                                                 text:
-                                                                    '${state.communities[index].posts}',
+                                                                    '${community.posts}',
                                                                 style: theme
                                                                     .textTheme
                                                                     .bodySmall!
@@ -394,28 +393,30 @@ class SearchScreen extends StatelessWidget {
                                                             ],
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 4,
                                                         ),
-                                                        Text(
-                                                          state
-                                                                  .communities[
-                                                                      index]
-                                                                  .description ??
-                                                              '',
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: theme.textTheme
-                                                              .bodySmall!
-                                                              .copyWith(
-                                                            color: Theme.of(
-                                                              context,
-                                                            )
-                                                                .colorScheme
-                                                                .outline,
+                                                        if (community
+                                                                .description !=
+                                                            null)
+                                                          Text(
+                                                            community
+                                                                .description!,
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: theme
+                                                                .textTheme
+                                                                .bodySmall!
+                                                                .copyWith(
+                                                              color: Theme.of(
+                                                                context,
+                                                              )
+                                                                  .colorScheme
+                                                                  .outline,
+                                                            ),
                                                           ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ),
