@@ -564,4 +564,21 @@ interface class LemmyRepo {
 
     return LemmyPost.fromPostViewJson(response['post_view']);
   }
+
+  Future<LemmyComment> editComment({
+    required int id,
+    String? content,
+    int? formId,
+  }) async {
+    final response = await putRequest(
+      path: '/comment',
+      data: {
+        'comment_id': id,
+        if (content != null) 'content': content,
+        if (formId != null) 'form_id': formId,
+      },
+    );
+
+    return LemmyComment.fromCommentViewJson(response['comment_view']);
+  }
 }

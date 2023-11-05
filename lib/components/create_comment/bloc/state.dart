@@ -7,6 +7,7 @@ class CreateCommentState extends Equatable {
     this.error,
     this.successfullyPosted = false,
     this.isPreviewing = false,
+    this.commentBeingEdited,
     SplayTreeMap<int, ImageUploadState>? images,
   }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
 
@@ -14,6 +15,8 @@ class CreateCommentState extends Equatable {
   final Object? error;
 
   final bool isPreviewing;
+
+  final LemmyComment? commentBeingEdited;
 
   final SplayTreeMap<int, ImageUploadState> images;
 
@@ -29,6 +32,7 @@ class CreateCommentState extends Equatable {
         successfullyPosted,
         isPreviewing,
         images,
+        commentBeingEdited,
       ];
 
   CreateCommentState copyWith({
@@ -37,6 +41,7 @@ class CreateCommentState extends Equatable {
     bool? successfullyPosted,
     bool? isPreviewing,
     SplayTreeMap<int, ImageUploadState>? images,
+    LemmyComment? commentBeingEdited,
   }) {
     return CreateCommentState(
       isLoading: isLoading ?? this.isLoading,
@@ -44,6 +49,7 @@ class CreateCommentState extends Equatable {
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
       isPreviewing: isPreviewing ?? this.isPreviewing,
       images: images ?? this.images,
+      commentBeingEdited: commentBeingEdited ?? this.commentBeingEdited,
     );
   }
 }

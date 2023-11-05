@@ -290,6 +290,22 @@ class _CommentItemState extends State<CommentItem>
                                       );
                                     },
                                   ),
+                                  if (context.read<GlobalBloc>().isLoggedIn())
+                                    if (widget.comment.creatorId ==
+                                        context
+                                            .read<GlobalBloc>()
+                                            .getSelectedLemmyAccount()!
+                                            .id)
+                                      MuffedPopupMenuItem(
+                                        title: 'Edit Comment',
+                                        onTap: () {
+                                          showCreateCommentDialog(
+                                            context: context,
+                                            postId: widget.comment.postId,
+                                            commentBeingEdited: widget.comment,
+                                          );
+                                        },
+                                      ),
                                 ],
                               ),
                             ],

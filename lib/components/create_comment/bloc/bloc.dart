@@ -16,20 +16,30 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
   CreateCommentBloc({
     required this.repo,
     required this.onSuccess,
-  }) : super(CreateCommentState()) {
+    this.commentBeingEdited,
+  }) : super(CreateCommentState(commentBeingEdited: commentBeingEdited)) {
     on<Submitted>((event, emit) async {
       _log.info('Comment submitted');
       if (event.commentContents.isNotEmpty) {
         emit(state.copyWith(isLoading: true));
 
         try {
-          final response = await repo.lemmyRepo.createComment(
-            event.commentContents,
-            event.postId,
-            event.commentId,
-          );
+          if (state.commentBeingEdited == null) {
+            final response = await repo.lemmyRepo.createComment(
+              event.commentContents,
+              event.postId,
+              event.commentId,
+            );
 
-          emit(state.copyWith(isLoading: false, successfullyPosted: true));
+            emit(state.copyWith(isLoading: false, successfullyPosted: true));
+          } else {
+            final response = await repo.lemmyRepo.editComment(
+              content: event.commentContents,
+              id: state.commentBeingEdited!.id,
+            );
+
+            emit(state.copyWith(isLoading: false, successfullyPosted: true));
+          }
         } catch (err) {
           emit(state.copyWith(isLoading: false, error: err));
         }
@@ -105,6 +115,7 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
     });
   }
 
+  final LemmyComment? commentBeingEdited;
   final ServerRepo repo;
   final void Function() onSuccess;
 }

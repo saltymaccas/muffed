@@ -12,6 +12,10 @@ void showCreateCommentDialog({
   required int postId,
   int? parentId,
   String? parentCommentContent,
+
+  /// If the widget is going to be editing a comment instead of creating one,
+  /// this should be set.
+  LemmyComment? commentBeingEdited,
   void Function()? onSuccessfullySubmitted,
   BuildContext? postBlocContext,
 }) {
@@ -25,6 +29,7 @@ void showCreateCommentDialog({
         parentId: parentId,
         onSuccessfullySubmitted: onSuccessfullySubmitted,
         postBlocContext: postBlocContext,
+        commentBeingEdited: commentBeingEdited,
       );
     },
   );
@@ -42,6 +47,7 @@ class CreateCommentDialog extends StatelessWidget {
     this.parentCommentContent,
     this.onSuccessfullySubmitted,
     this.postBlocContext,
+    this.commentBeingEdited,
     super.key,
   });
 
@@ -64,17 +70,22 @@ class CreateCommentDialog extends StatelessWidget {
   /// The function to run if the comment goes through successfully
   final void Function()? onSuccessfullySubmitted;
 
+  final LemmyComment? commentBeingEdited;
+
   /// context of the post bloc can be
   /// provided to allow the screen to show the post.
   final BuildContext? postBlocContext;
 
   @override
   Widget build(BuildContext context) {
-    final textFieldController = TextEditingController();
+    final textFieldController = TextEditingController(
+      text: (commentBeingEdited != null) ? commentBeingEdited!.content : '',
+    );
 
     return BlocProvider(
       create: (context) => CreateCommentBloc(
         repo: context.read<ServerRepo>(),
+        commentBeingEdited: commentBeingEdited,
         onSuccess: () {},
       ),
       child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
@@ -85,6 +96,12 @@ class CreateCommentDialog extends StatelessWidget {
             if (onSuccessfullySubmitted != null) {
               onSuccessfullySubmitted!.call();
             }
+            showInfoSnackBar(
+              context,
+              text: (state.commentBeingEdited == null)
+                  ? 'Comment successfully posted'
+                  : 'Comment successfully edited',
+            );
           }
           if (state.error != null) {
             showErrorSnackBar(context, error: state.error);
