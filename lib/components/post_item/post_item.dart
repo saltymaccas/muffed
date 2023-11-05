@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-import '../loading.dart';
 import 'bloc/bloc.dart';
 import 'post_view_modes/post_view_modes.dart';
 
@@ -47,32 +47,37 @@ class _PostItemState extends State<PostItem>
     super.build(context);
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
-        if (state.status == PostItemStatus.failure) {
-          return ErrorComponentTransparent(
-            error: state.error,
-            retryFunction: () {
-              context.read<PostItemBloc>().add(Initialize());
-            },
-          );
-        }
-        if (state.status == PostItemStatus.loading) {
-          return const LoadingComponentTransparent();
-        }
-        if (state.status == PostItemStatus.initial) {
-          return const SizedBox();
-        }
-        if (state.status == PostItemStatus.success) {
-          switch (widget.type) {
-            case PostViewMode.card:
-              return CardLemmyPostItem(
-                state.post!,
+        switch (state.status) {
+          case PostItemStatus.initial:
+            return const SizedBox();
+          case PostItemStatus.loading:
+            return Skeletonizer(
+              ignoreContainers: false,
+              justifyMultiLineText: false,
+              ignorePointers: true,
+              child: CardLemmyPostItem(
+                placeholderPost,
                 openOnTap: widget.openOnTap,
                 limitContentHeight: widget.limitHeight,
-              );
-          }
+              ),
+            );
+          case PostItemStatus.success:
+            switch (widget.type) {
+              case PostViewMode.card:
+                return CardLemmyPostItem(
+                  state.post!,
+                  openOnTap: widget.openOnTap,
+                  limitContentHeight: widget.limitHeight,
+                );
+            }
+          case PostItemStatus.failure:
+            return ErrorComponentTransparent(
+              error: state.error,
+              retryFunction: () {
+                context.read<PostItemBloc>().add(Initialize());
+              },
+            );
         }
-
-        return Text('Something went wrong');
       },
     );
 
@@ -94,3 +99,29 @@ class _PostItemState extends State<PostItem>
     }
   }
 }
+
+final placeholderPost = LemmyPost(
+  id: 213,
+  name: 'placeholder',
+  body: """Lorem ipsum dolor sit amet. 
+      Sed autem consectetur et assumenda 
+      voluptas ut expedita recusandae ad excepturi incidunt ut repellendus 
+      itaque. Et sunt totam qui consequatur quisquam eum aliquam placeat.""",
+  creatorId: 123,
+  communityId: 123,
+  nsfw: false,
+  thumbnailUrl: null,
+  url: null,
+  score: 123,
+  communityName: 'placeholder',
+  creatorName: 'placeholder',
+  read: false,
+  saved: false,
+  apId: 'placeholder',
+  timePublished: DateTime.now(),
+  commentCount: 21,
+  downVotes: 11,
+  upVotes: 11,
+  myVote: LemmyVoteType.none,
+  communityIcon: null,
+);

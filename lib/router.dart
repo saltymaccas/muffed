@@ -5,9 +5,9 @@ import 'package:muffed/components/create_comment/create_comment_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
-import 'package:muffed/pages/home_page/screens/comment_screen/comment_screen.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/pages/home_page/screens/create_post_screen/create_post_screen.dart';
+import 'package:muffed/pages/home_page/screens/post_screen/post_screen.dart';
 import 'package:muffed/pages/home_page/screens/search/search_screen.dart';
 import 'package:muffed/pages/home_page/screens/user_screen/user_screen.dart';
 import 'package:muffed/pages/inbox_page/inbox_page.dart';
@@ -114,7 +114,7 @@ final router = GoRouter(
                         ? null
                         : state.extra! as (LemmyPost, BuildContext?);
 
-                    return CommentScreen(
+                    return PostScreen(
                       postId: state.uri.queryParameters['id'].parseInt(),
                       post: (values != null) ? values.$1 : null,
                       postItemBlocContext: (values != null) ? values.$2 : null,
