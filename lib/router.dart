@@ -102,6 +102,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
+              name: 'home',
               path: '/home',
               builder: (context, state) {
                 return HomePage();
@@ -142,6 +143,7 @@ final router = GoRouter(
                   ],
                 ),
                 GoRoute(
+                  name: 'community',
                   path: 'community',
                   builder: (context, state) {
                     final qp = state.uri.queryParameters;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/cards.dart';
 import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
@@ -277,11 +276,154 @@ class SearchScreen extends StatelessWidget {
                                       controller: communitiesScrollController,
                                       itemCount: state.communities.length,
                                       itemBuilder: (context, index) {
-                                        return LemmyCommunityCard(
-                                          key: ValueKey(
-                                              state.communities[index].id),
-                                          community: state.communities[index],
-                                          extraOnTap: textFocusNode.unfocus,
+                                        final theme = Theme.of(context);
+
+                                        return InkWell(
+                                          onTap: () {
+                                            context.pushNamed(
+                                              'community',
+                                              queryParameters: {
+                                                'community_id': state
+                                                    .communities[index].id
+                                                    .toString(),
+                                              },
+                                            );
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                      16,
+                                                    ),
+                                                    child: MuffedAvatar(
+                                                      url: state
+                                                          .communities[index]
+                                                          .icon,
+                                                      radius: 16,
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          state
+                                                              .communities[
+                                                                  index]
+                                                              .name,
+                                                          style: theme.textTheme
+                                                              .titleMedium!
+                                                              .copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        RichText(
+                                                          text: TextSpan(
+                                                            children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    '${state.communities[index].subscribers}',
+                                                                style: theme
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                  color: Theme
+                                                                          .of(
+                                                                    context,
+                                                                  )
+                                                                      .colorScheme
+                                                                      .outline,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text:
+                                                                    ' members ',
+                                                                style: theme
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                  color: Theme
+                                                                          .of(
+                                                                    context,
+                                                                  )
+                                                                      .colorScheme
+                                                                      .outline,
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text:
+                                                                    '${state.communities[index].posts}',
+                                                                style: theme
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Theme
+                                                                          .of(
+                                                                    context,
+                                                                  )
+                                                                      .colorScheme
+                                                                      .outline,
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text: ' posts',
+                                                                style: theme
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                  color: Theme
+                                                                          .of(
+                                                                    context,
+                                                                  )
+                                                                      .colorScheme
+                                                                      .outline,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        Text(
+                                                          state
+                                                                  .communities[
+                                                                      index]
+                                                                  .description ??
+                                                              '',
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: theme.textTheme
+                                                              .bodySmall!
+                                                              .copyWith(
+                                                            color: Theme.of(
+                                                              context,
+                                                            )
+                                                                .colorScheme
+                                                                .outline,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const Divider(height: 1),
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),
