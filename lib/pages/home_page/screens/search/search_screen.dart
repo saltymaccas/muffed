@@ -295,128 +295,100 @@ class SearchScreen extends StatelessWidget {
                                           },
                                           child: Column(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                      16,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: MuffedAvatar(
+                                                        url: community.icon,
+                                                        radius: 16,
+                                                      ),
                                                     ),
-                                                    child: MuffedAvatar(
-                                                      url: community.icon,
-                                                      radius: 16,
-                                                    ),
-                                                  ),
-                                                  Flexible(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          community.title,
-                                                          style: theme.textTheme
-                                                              .titleMedium,
-                                                        ),
-                                                        RichText(
-                                                          text: TextSpan(
-                                                            children: [
-                                                              TextSpan(
-                                                                text:
-                                                                    '${community.subscribers}',
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                  color: Theme
-                                                                          .of(
-                                                                    context,
-                                                                  )
-                                                                      .colorScheme
-                                                                      .outline,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text:
-                                                                    ' members ',
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                  color: Theme
-                                                                          .of(
-                                                                    context,
-                                                                  )
-                                                                      .colorScheme
-                                                                      .outline,
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text:
-                                                                    '${community.posts}',
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Theme
-                                                                          .of(
-                                                                    context,
-                                                                  )
-                                                                      .colorScheme
-                                                                      .outline,
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text: ' posts',
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                  color: Theme
-                                                                          .of(
-                                                                    context,
-                                                                  )
-                                                                      .colorScheme
-                                                                      .outline,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 8,
-                                                        ),
-                                                        if (community
-                                                                .description !=
-                                                            null)
+                                                    Flexible(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
                                                           Text(
-                                                            community
-                                                                .description!,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                            community.title,
                                                             style: theme
                                                                 .textTheme
-                                                                .bodySmall!
-                                                                .copyWith(
-                                                              color: Theme.of(
-                                                                context,
-                                                              )
-                                                                  .colorScheme
-                                                                  .outline,
+                                                                .titleMedium,
+                                                          ),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text:
+                                                                      '${community.subscribers}',
+                                                                  style: theme
+                                                                      .textTheme
+                                                                      .bodySmall!
+                                                                      .copyWith(
+                                                                    color: Theme
+                                                                            .of(
+                                                                      context,
+                                                                    )
+                                                                        .colorScheme
+                                                                        .outline,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      ' members ',
+                                                                  style: theme
+                                                                      .textTheme
+                                                                      .bodySmall!
+                                                                      .copyWith(
+                                                                    color: Theme
+                                                                            .of(
+                                                                      context,
+                                                                    )
+                                                                        .colorScheme
+                                                                        .outline,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                      ],
+                                                          const SizedBox(
+                                                            height: 4,
+                                                          ),
+                                                          if (community
+                                                                  .description !=
+                                                              null)
+                                                            Text(
+                                                              community
+                                                                  .description!,
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: theme
+                                                                  .textTheme
+                                                                  .bodySmall!
+                                                                  .copyWith(
+                                                                color: Theme.of(
+                                                                  context,
+                                                                )
+                                                                    .colorScheme
+                                                                    .outline,
+                                                              ),
+                                                            ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                               const Divider(height: 1),
                                             ],
