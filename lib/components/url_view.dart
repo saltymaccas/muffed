@@ -14,12 +14,14 @@ class UrlView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (url.contains('.jpg') ||
-        url.contains('.png') ||
-        url.contains('.jpeg') ||
-        url.contains('.gif') ||
-        url.contains('.webp') ||
-        url.contains('.bmp')) {
+    final urlPath = Uri.parse(url).path;
+
+    if (urlPath.endsWith('.jpg') ||
+        urlPath.endsWith('.png') ||
+        urlPath.endsWith('.jpeg') ||
+        urlPath.endsWith('.gif') ||
+        urlPath.endsWith('.webp') ||
+        urlPath.endsWith('.bmp')) {
       return SizedBox(
         child: Center(
           child: MuffedImage(
