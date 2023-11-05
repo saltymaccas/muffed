@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/components/image_viewer.dart';
 import 'package:muffed/utils/measure_size.dart';
 
 final _log = Logger('MuffedImageViewer');
@@ -71,15 +70,12 @@ class _MuffedImageState extends State<MuffedImage> {
             // if should blur is on a tap should remove the blur and a
             // second tap should open the image
             onTap: (!shouldBlur)
-                ? () {
-                    openImageViewer(
-                      context,
-                      imageProvider,
-                      heroTag,
-                      DisposeLevel.low,
-                    );
-                  }
-                : null,
+                ? null
+                : () {
+                    setState(() {
+                      shouldBlur = false;
+                    });
+                  },
 
             child: MeasureSize(
               onChange: (size) {
@@ -100,11 +96,8 @@ class _MuffedImageState extends State<MuffedImage> {
                       radiusY: 10,
                     ),
                   ),
-                  child: Hero(
-                    tag: heroTag,
-                    child: Image(
-                      image: imageProvider,
-                    ),
+                  child: Image(
+                    image: imageProvider,
                   ),
                 ),
               ),

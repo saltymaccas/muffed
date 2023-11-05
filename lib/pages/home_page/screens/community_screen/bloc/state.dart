@@ -16,7 +16,12 @@ final class CommunityScreenState extends Equatable {
     this.errorMessage,
     this.isReloading = false,
     this.reachedEnd = false,
-  });
+  }) : assert(
+            communityInfoStatus == CommunityStatus.success &&
+                    community != null ||
+                communityInfoStatus != CommunityStatus.success &&
+                    community == null,
+            'If community info status is success then community must not be null');
 
   final LemmyCommunity? community;
   final List<LemmyPost> posts;

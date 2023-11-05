@@ -53,6 +53,8 @@ class CommunityScreen extends StatelessWidget {
         builder: (context, state) {
           final blocContext = context;
 
+          final blocValue = BlocProvider.of<CommunityScreenBloc>(blocContext);
+
           return SetPageInfo(
             actions: [
               BlocProvider.value(
@@ -89,21 +91,32 @@ class CommunityScreen extends StatelessWidget {
                 ),
               ),
               if (context.read<GlobalBloc>().isLoggedIn())
-                IconButton(
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      context.push(
-                        Uri(
-                          path: '/home/create_post',
-                          queryParameters: {
-                            'community_id': state.community!.id.toString(),
-                          },
-                        ).toString(),
+                BlocProvider.value(
+                  value: blocValue,
+                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                    builder: (context, state) {
+                      return IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: (state.community == null)
+                            ? null
+                            : () {
+                                context.push(
+                                  Uri(
+                                    path: '/home/create_post',
+                                    queryParameters: {
+                                      'community_id':
+                                          state.community!.id.toString(),
+                                    },
+                                  ).toString(),
+                                );
+                              },
+                        icon: const Icon(Icons.add),
                       );
                     },
-                    icon: Icon(Icons.add)),
+                  ),
+                ),
               BlocProvider.value(
-                value: BlocProvider.of<CommunityScreenBloc>(blocContext),
+                value: blocValue,
                 child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                   builder: (context, state) {
                     return MuffedPopupMenuButton(
