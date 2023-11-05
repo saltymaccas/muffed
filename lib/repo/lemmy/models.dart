@@ -504,6 +504,12 @@ class LemmyCommunity extends Equatable {
 
   final LemmySubscribedType subscribed;
 
+  String getTag() {
+    final regex = RegExp('https://([^/]+)/c/([^/]+)');
+    final match = regex.firstMatch(actorId);
+    return '!${match?.group(2)}@${match?.group(1)}';
+  }
+
   LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
       : id = json['community']['id'],
         actorId = json['community']['actor_id'],

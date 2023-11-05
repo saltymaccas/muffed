@@ -445,96 +445,157 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Stops the avatar from overlapping with the pinned top
-                      // bar
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 24,
-                          horizontal: 16,
-                        ),
-                        child: MuffedAvatar(url: community.icon, radius: 34),
-                      ),
                       // sizes from bottom up to the fraction chosen
                       // of the header
                       SizedBox(
-                        height:
-                            (headerMaxHeight - shrinkOffset) * (1 - bannerEnd),
+                        height: (headerMaxHeight - shrinkOffset) *
+                            (1 - (bannerEnd - 0.05)),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16),
+                          padding: const EdgeInsets.only(left: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // title
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    community.title,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  // Subscribe button
-                                  if (context.read<GlobalBloc>().isLoggedIn())
-                                    TextButton(
-                                      onPressed: () {
-                                        context
-                                            .read<CommunityScreenBloc>()
-                                            .add(ToggledSubscribe());
-                                      },
-                                      style: (community.subscribed ==
-                                              LemmySubscribedType.notSubscribed)
-                                          ? TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryContainer,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryContainer,
-                                            )
-                                          : TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
+                                  MuffedAvatar(url: community.icon, radius: 34),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        community.title,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      Text(
+                                        community.getTag(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: Theme.of(context)
                                                   .colorScheme
                                                   .outline,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .outlineVariant,
                                             ),
-                                      child: (community.subscribed ==
-                                              LemmySubscribedType.subscribed)
-                                          ? Text('Unsubscribe')
-                                          : (community.subscribed ==
-                                                  LemmySubscribedType
-                                                      .notSubscribed)
-                                              ? Text('Subscribe')
-                                              : Text('Pending'),
-                                    ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: community.subscribers
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text: ' members',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text: ' ⋅ ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text: community.usersActiveDay
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text: ' active',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Subscribe button
                                 ],
                               ),
                               if (community.description != null)
                                 MuffedMarkdownBody(
-                                  data: community.description!,
+                                  // gets only the first paragraph
+                                  data: RegExp(r'^.*?\n\n', dotAll: true)
+                                      .firstMatch(community.description!)!
+                                      .group(0)!,
                                   height: 104,
                                 ),
-                              if (community.description != null)
+                              if (context.read<GlobalBloc>().isLoggedIn())
                                 TextButton(
-                                    onPressed: () {
-                                      showDialog<void>(
-                                        context: context,
-                                        // TODO: Improve dialog
-                                        builder: (context) {
-                                          return Dialog(
-                                            child: MuffedMarkdownBody(
-                                              data: community.description!,
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Text('View full description')),
+                                  onPressed: () {
+                                    context
+                                        .read<CommunityScreenBloc>()
+                                        .add(ToggledSubscribe());
+                                  },
+                                  style: (community.subscribed ==
+                                          LemmySubscribedType.notSubscribed)
+                                      ? TextButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
+                                        )
+                                      : TextButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .outline,
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .outlineVariant,
+                                        ),
+                                  child: (community.subscribed ==
+                                          LemmySubscribedType.subscribed)
+                                      ? Text('Unsubscribe')
+                                      : (community.subscribed ==
+                                              LemmySubscribedType.notSubscribed)
+                                          ? Text('Subscribe')
+                                          : Text('Pending'),
+                                ),
                             ],
                           ),
                         ),
