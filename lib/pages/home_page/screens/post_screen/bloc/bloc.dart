@@ -10,12 +10,12 @@ part 'state.dart';
 final _log = Logger('CommentScreenBloc');
 
 /// The bloc for the content screen
-class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
+class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
   /// Initialize
-  CommentScreenBloc({required this.repo, required this.postId})
-      : super(const CommentScreenState(status: CommentScreenStatus.initial)) {
+  PostScreenBloc({required this.repo, required this.postId})
+      : super(const PostScreenState(status: PostScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
-      emit(const CommentScreenState(status: CommentScreenStatus.loading));
+      emit(const PostScreenState(status: PostScreenStatus.loading));
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
@@ -24,8 +24,8 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
         final comments = newComments;
 
         emit(
-          CommentScreenState(
-            status: CommentScreenStatus.success,
+          PostScreenState(
+            status: PostScreenStatus.success,
             comments: comments,
             isLoading: false,
             pagesLoaded: 1,
@@ -34,7 +34,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
       } catch (err) {
         emit(
           state.copyWith(
-            status: CommentScreenStatus.failure,
+            status: PostScreenStatus.failure,
             error: err,
           ),
         );
@@ -42,7 +42,7 @@ class CommentScreenBloc extends Bloc<CommentScreenEvent, CommentScreenState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        if (!state.reachedEnd && state.status != CommentScreenStatus.loading) {
+        if (!state.reachedEnd && state.status != PostScreenStatus.loading) {
           _log.info('loading page ${state.pagesLoaded + 1}');
 
           emit(state.copyWith(isLoading: true));

@@ -1,10 +1,10 @@
 part of 'bloc.dart';
 
-enum CommentScreenStatus { initial, loading, success, failure }
+enum PostScreenStatus { initial, loading, success, failure }
 
-class CommentScreenState extends Equatable {
+class PostScreenState extends Equatable {
   ///
-  const CommentScreenState({
+  const PostScreenState({
     required this.status,
     this.comments,
     this.pagesLoaded = 0,
@@ -15,7 +15,7 @@ class CommentScreenState extends Equatable {
     this.sortType = LemmyCommentSortType.hot,
   });
 
-  final CommentScreenStatus status;
+  final PostScreenStatus status;
 
   final List<LemmyComment>? comments;
 
@@ -46,17 +46,17 @@ class CommentScreenState extends Equatable {
         sortType,
       ];
 
-  CommentScreenState copyWith({
+  PostScreenState copyWith({
     bool? isRefreshing,
     Object? error,
     bool? reachedEnd,
     bool? isLoading,
-    CommentScreenStatus? status,
+    PostScreenStatus? status,
     List<LemmyComment>? comments,
     int? pagesLoaded,
     LemmyCommentSortType? sortType,
   }) {
-    return CommentScreenState(
+    return PostScreenState(
       isRefreshing: isRefreshing ?? this.isRefreshing,
       error: error,
       reachedEnd: reachedEnd ?? this.reachedEnd,

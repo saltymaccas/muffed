@@ -1,12 +1,12 @@
 part of 'bloc.dart';
 
-sealed class CommentScreenEvent {}
+sealed class PostScreenEvent {}
 
-final class InitializeEvent extends CommentScreenEvent {}
+final class InitializeEvent extends PostScreenEvent {}
 
-final class ReachedNearEndOfScroll extends CommentScreenEvent {}
+final class ReachedNearEndOfScroll extends PostScreenEvent {}
 
-final class UserCommented extends CommentScreenEvent {
+final class UserCommented extends PostScreenEvent {
   UserCommented({
     required this.comment,
     required this.onSuccess,
@@ -18,7 +18,7 @@ final class UserCommented extends CommentScreenEvent {
   final String comment;
 }
 
-final class UserRepliedToComment extends CommentScreenEvent {
+final class UserRepliedToComment extends PostScreenEvent {
   UserRepliedToComment({
     required this.onSuccess,
     required this.onError,
@@ -32,15 +32,15 @@ final class UserRepliedToComment extends CommentScreenEvent {
   final String comment;
 }
 
-final class PullDownRefresh extends CommentScreenEvent {}
+final class PullDownRefresh extends PostScreenEvent {}
 
-final class SortTypeChanged extends CommentScreenEvent {
+final class SortTypeChanged extends PostScreenEvent {
   SortTypeChanged(this.sortType);
 
   final LemmyCommentSortType sortType;
 }
 
-final class LoadMoreRepliesPressed extends CommentScreenEvent {
+final class LoadMoreRepliesPressed extends PostScreenEvent {
   LoadMoreRepliesPressed({required this.id});
 
   final int id;
