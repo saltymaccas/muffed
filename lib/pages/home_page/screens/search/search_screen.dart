@@ -316,11 +316,7 @@ class SearchScreen extends StatelessWidget {
                                                         Text(
                                                           community.title,
                                                           style: theme.textTheme
-                                                              .titleMedium!
-                                                              .copyWith(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                              .titleMedium,
                                                         ),
                                                         RichText(
                                                           text: TextSpan(
@@ -394,7 +390,7 @@ class SearchScreen extends StatelessWidget {
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                          height: 4,
+                                                          height: 8,
                                                         ),
                                                         if (community
                                                                 .description !=
