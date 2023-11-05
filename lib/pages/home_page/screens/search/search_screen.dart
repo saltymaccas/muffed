@@ -315,7 +315,7 @@ class SearchScreen extends StatelessWidget {
                                                           state
                                                               .communities[
                                                                   index]
-                                                              .name,
+                                                              .title,
                                                           style: theme.textTheme
                                                               .titleMedium!
                                                               .copyWith(
