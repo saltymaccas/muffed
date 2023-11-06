@@ -22,17 +22,26 @@ class ContentFiltersPage extends StatelessWidget {
         body: ListView(
           children: [
             SwitchListTile(
-                title: Text('Show NSFW posts'),
-                value: state.showNsfw,
-                onChanged: (value) {
-                  context.read<GlobalBloc>().add(ShowNsfwChanged(value));
-                }),
+              title: Text('Show NSFW posts'),
+              value: state.showNsfw,
+              onChanged: (value) {
+                context.read<GlobalBloc>().add(
+                      SettingChanged(
+                        state.copyWith(
+                          showNsfw: value,
+                        ),
+                      ),
+                    );
+              },
+            ),
             if (state.showNsfw)
               SwitchListTile(
                   title: Text('Blur NSFW posts'),
                   value: state.blurNsfw,
                   onChanged: (value) {
-                    context.read<GlobalBloc>().add(BlurNsfwChanged(value));
+                    context
+                        .read<GlobalBloc>()
+                        .add(SettingChanged(state.copyWith(blurNsfw: value)));
                   }),
           ],
         ),

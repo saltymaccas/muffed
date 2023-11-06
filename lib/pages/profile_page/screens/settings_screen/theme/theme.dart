@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsThemePage extends StatelessWidget {
   const SettingsThemePage({super.key});
@@ -35,9 +35,9 @@ class SettingsThemePage extends StatelessWidget {
                 value: ThemeMode.system,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context
-                      .read<GlobalBloc>()
-                      .add(ThemeModeChanged(ThemeMode.system));
+                  context.read<GlobalBloc>().add(
+                        SettingChanged(state.copyWith(themeMode: themeMode)),
+                      );
                 },
               ),
               RadioListTile<ThemeMode>(
@@ -45,9 +45,9 @@ class SettingsThemePage extends StatelessWidget {
                 value: ThemeMode.light,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context
-                      .read<GlobalBloc>()
-                      .add(ThemeModeChanged(ThemeMode.light));
+                  context.read<GlobalBloc>().add(
+                        SettingChanged(state.copyWith(themeMode: themeMode)),
+                      );
                 },
               ),
               RadioListTile<ThemeMode>(
@@ -55,9 +55,9 @@ class SettingsThemePage extends StatelessWidget {
                 value: ThemeMode.dark,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context
-                      .read<GlobalBloc>()
-                      .add(ThemeModeChanged(ThemeMode.dark));
+                  context.read<GlobalBloc>().add(
+                        SettingChanged(state.copyWith(themeMode: themeMode)),
+                      );
                 },
               ),
               Padding(
@@ -71,9 +71,11 @@ class SettingsThemePage extends StatelessWidget {
                 title: Text('Auto set color scheme'),
                 value: context.read<GlobalBloc>().state.useDynamicColorScheme,
                 onChanged: (bool value) {
-                  context
-                      .read<GlobalBloc>()
-                      .add(UseDynamicColorSchemeChanged(value));
+                  context.read<GlobalBloc>().add(
+                        SettingChanged(
+                          state.copyWith(useDynamicColorScheme: value),
+                        ),
+                      );
                 },
               ),
               if (!context.read<GlobalBloc>().state.useDynamicColorScheme)
@@ -97,9 +99,11 @@ class SettingsThemePage extends StatelessWidget {
                               pickerColor:
                                   context.read<GlobalBloc>().state.seedColor,
                               onColorChanged: (color) {
-                                context
-                                    .read<GlobalBloc>()
-                                    .add(SeedColorChanged(color));
+                                context.read<GlobalBloc>().add(
+                                      SettingChanged(
+                                        state.copyWith(seedColor: color),
+                                      ),
+                                    );
                               },
                             ),
                           ),
@@ -108,6 +112,134 @@ class SettingsThemePage extends StatelessWidget {
                     );
                   },
                 ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Text Sizes',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Title Size',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    ToggleButtons(
+                      borderWidth: 2,
+                      borderRadius: BorderRadius.circular(8),
+                      isSelected: [
+                        (state.titleTextScaleFactor == 0.9),
+                        (state.titleTextScaleFactor == 1),
+                        (state.titleTextScaleFactor == 1.1),
+                        (state.titleTextScaleFactor == 1.3),
+                      ],
+                      onPressed: (index) {
+                        final List<double> values = [0.9, 1, 1.1, 1.3];
+
+                        context.read<GlobalBloc>().add(
+                              SettingChanged(
+                                state.copyWith(
+                                  titleTextScaleFactor: values[index],
+                                ),
+                              ),
+                            );
+                      },
+                      children: const [
+                        Text('0.9x'),
+                        Text('1x'),
+                        Text('1.1x'),
+                        Text('1.3x')
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Label Size',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    ToggleButtons(
+                      borderWidth: 2,
+                      borderRadius: BorderRadius.circular(8),
+                      isSelected: [
+                        (state.labelTextScaleFactor == 0.9),
+                        (state.labelTextScaleFactor == 1),
+                        (state.labelTextScaleFactor == 1.1),
+                        (state.labelTextScaleFactor == 1.3),
+                      ],
+                      onPressed: (index) {
+                        final List<double> values = [0.9, 1, 1.1, 1.3];
+
+                        context.read<GlobalBloc>().add(
+                              SettingChanged(
+                                state.copyWith(
+                                  labelTextScaleFactor: values[index],
+                                ),
+                              ),
+                            );
+                      },
+                      children: const [
+                        Text('0.9x'),
+                        Text('1x'),
+                        Text('1.1x'),
+                        Text('1.3x'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Body Size',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    ToggleButtons(
+                      borderWidth: 2,
+                      borderRadius: BorderRadius.circular(8),
+                      isSelected: [
+                        (state.bodyTextScaleFactor == 0.9),
+                        (state.bodyTextScaleFactor == 1),
+                        (state.bodyTextScaleFactor == 1.1),
+                        (state.bodyTextScaleFactor == 1.3),
+                      ],
+                      onPressed: (index) {
+                        final List<double> values = [0.9, 1, 1.1, 1.3];
+
+                        context.read<GlobalBloc>().add(
+                              SettingChanged(
+                                state.copyWith(
+                                  bodyTextScaleFactor: values[index],
+                                ),
+                              ),
+                            );
+                      },
+                      children: const [
+                        Text('0.9x'),
+                        Text('1x'),
+                        Text('1.1x'),
+                        Text('1.3x'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         );

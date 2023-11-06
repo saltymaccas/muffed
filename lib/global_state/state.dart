@@ -12,7 +12,9 @@ final class GlobalState extends Equatable {
     this.showNsfw = false,
     this.blurNsfw = true,
     this.defaultSortType = LemmySortType.active,
-    this.textScaleFactor = 1.0,
+    this.bodyTextScaleFactor = 1.0,
+    this.labelTextScaleFactor = 1.0,
+    this.titleTextScaleFactor = 1.0,
   });
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
@@ -29,7 +31,9 @@ final class GlobalState extends Equatable {
       showNsfw: map['showNsfw'],
       blurNsfw: map['blurNsfw'],
       defaultSortType: LemmySortType.values[map['defaultSortType']],
-      textScaleFactor: map['textScaleFactor'],
+      bodyTextScaleFactor: map['bodyTextScaleFactor'],
+      labelTextScaleFactor: map['labelTextScaleFactor'],
+      titleTextScaleFactor: map['titleTextScaleFactor'],
     );
   }
 
@@ -61,7 +65,9 @@ final class GlobalState extends Equatable {
 
   final LemmySortType defaultSortType;
 
-  final double textScaleFactor;
+  final double bodyTextScaleFactor;
+  final double labelTextScaleFactor;
+  final double titleTextScaleFactor;
 
   @override
   List<Object?> get props => [
@@ -74,7 +80,9 @@ final class GlobalState extends Equatable {
         showNsfw,
         blurNsfw,
         defaultSortType,
-        textScaleFactor,
+        bodyTextScaleFactor,
+        labelTextScaleFactor,
+        titleTextScaleFactor,
       ];
 
   Map<String, dynamic> toMap() {
@@ -91,7 +99,9 @@ final class GlobalState extends Equatable {
       'showNsfw': showNsfw,
       'blurNsfw': blurNsfw,
       'defaultSortType': defaultSortType.index,
-      'textScaleFactor': textScaleFactor,
+      'bodyTextScaleFactor': bodyTextScaleFactor,
+      'labelTextScaleFactor': labelTextScaleFactor,
+      'titleTextScaleFactor': titleTextScaleFactor,
     };
   }
 
@@ -105,7 +115,9 @@ final class GlobalState extends Equatable {
     bool? showNsfw,
     bool? blurNsfw,
     LemmySortType? defaultSortType,
-    double? textScaleFactor,
+    double? bodyTextScaleFactor,
+    double? labelTextScaleFactor,
+    double? titleTextScaleFactor,
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
@@ -119,7 +131,9 @@ final class GlobalState extends Equatable {
       showNsfw: showNsfw ?? this.showNsfw,
       blurNsfw: blurNsfw ?? this.blurNsfw,
       defaultSortType: defaultSortType ?? this.defaultSortType,
-      textScaleFactor: textScaleFactor ?? this.textScaleFactor,
+      bodyTextScaleFactor: bodyTextScaleFactor ?? this.bodyTextScaleFactor,
+      labelTextScaleFactor: labelTextScaleFactor ?? this.labelTextScaleFactor,
+      titleTextScaleFactor: titleTextScaleFactor ?? this.titleTextScaleFactor,
     );
   }
 }

@@ -53,10 +53,37 @@ class MyApp extends StatelessWidget {
                   routerConfig: router,
                   title: 'Muffed',
                   builder: (context, child) {
+                    final textTheme = Theme.of(context).textTheme;
                     return Theme(
                       data: Theme.of(context).copyWith(
-                        textTheme: Theme.of(context).textTheme.apply(
-                              fontSizeFactor: state.textScaleFactor,
+                        textTheme: textTheme.apply().copyWith(
+                              titleLarge: textTheme.titleLarge!.apply(
+                                fontSizeFactor: state.titleTextScaleFactor,
+                              ),
+                              titleMedium: textTheme.titleMedium!.apply(
+                                fontSizeFactor: state.titleTextScaleFactor,
+                              ),
+                              titleSmall: textTheme.titleSmall!.apply(
+                                fontSizeFactor: state.titleTextScaleFactor,
+                              ),
+                              labelLarge: textTheme.labelLarge!.apply(
+                                fontSizeFactor: state.labelTextScaleFactor,
+                              ),
+                              labelMedium: textTheme.labelMedium!.apply(
+                                fontSizeFactor: state.labelTextScaleFactor,
+                              ),
+                              labelSmall: textTheme.labelSmall!.apply(
+                                fontSizeFactor: state.labelTextScaleFactor,
+                              ),
+                              bodyLarge: textTheme.bodyLarge!.apply(
+                                fontSizeFactor: state.bodyTextScaleFactor,
+                              ),
+                              bodyMedium: textTheme.bodyMedium!.apply(
+                                fontSizeFactor: state.bodyTextScaleFactor,
+                              ),
+                              bodySmall: textTheme.bodySmall!.apply(
+                                fontSizeFactor: state.bodyTextScaleFactor,
+                              ),
                             ),
                       ),
                       child: child!,

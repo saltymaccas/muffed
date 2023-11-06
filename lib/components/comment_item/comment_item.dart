@@ -165,9 +165,13 @@ class _CommentItemState extends State<CommentItem>
                             children: [
                               Text(
                                 widget.comment.creatorName,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
                               ),
                               const SizedBox(
                                 width: 10,
@@ -176,9 +180,13 @@ class _CommentItemState extends State<CommentItem>
                                 formattedPostedAgo(
                                   widget.comment.timePublished,
                                 ),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
                               ),
                               const SizedBox(width: 10),
                               // Signal if the comment is from op

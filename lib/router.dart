@@ -19,7 +19,6 @@ import 'package:muffed/pages/profile_page/screens/settings_screen/about/about.da
 import 'package:muffed/pages/profile_page/screens/settings_screen/content_filters/content_filters.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/defaults/defaults.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/text_size/text_size.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/theme/theme.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
@@ -247,12 +246,6 @@ final router = GoRouter(
                       path: 'defaults',
                       builder: (context, state) {
                         return const DefaultsSettingsPage();
-                      },
-                    ),
-                    GoRoute(
-                      path: 'text_size',
-                      builder: (context, state) {
-                        return const TextSizeScreen();
                       },
                     ),
                     GoRoute(

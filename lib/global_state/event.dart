@@ -9,57 +9,21 @@ class AccountLoggedIn extends GlobalEvent {
   AccountLoggedIn(this.account);
 }
 
-class UserRequestsLemmyAccountSwitch extends GlobalEvent {
+class AccountSwitched extends GlobalEvent {
   final int accountIndex;
 
-  UserRequestsLemmyAccountSwitch(this.accountIndex);
+  AccountSwitched(this.accountIndex);
 }
 
-class UserRequestsAccountRemoval extends GlobalEvent {
-  UserRequestsAccountRemoval(this.index);
+class AccountRemoved extends GlobalEvent {
+  AccountRemoved(this.index);
 
   /// The index of the account that should be removed from the global state
   final int index;
 }
 
-class ThemeModeChanged extends GlobalEvent {
-  ThemeModeChanged(this.themeMode);
+class SettingChanged extends GlobalEvent {
+  SettingChanged(this.newState);
 
-  final ThemeMode themeMode;
-}
-
-class UseDynamicColorSchemeChanged extends GlobalEvent {
-  UseDynamicColorSchemeChanged(this.useDynamicColorScheme);
-
-  final bool useDynamicColorScheme;
-}
-
-class SeedColorChanged extends GlobalEvent {
-  SeedColorChanged(this.seedColor);
-
-  final Color seedColor;
-}
-
-final class ShowNsfwChanged extends GlobalEvent {
-  ShowNsfwChanged(this.value);
-
-  final bool value;
-}
-
-final class BlurNsfwChanged extends GlobalEvent {
-  BlurNsfwChanged(this.value);
-
-  final bool value;
-}
-
-final class LemmyDefaultHomeServerChanged extends GlobalEvent {
-  LemmyDefaultHomeServerChanged(this.url);
-
-  final String url;
-}
-
-final class TextScaleFactorChanged extends GlobalEvent {
-  TextScaleFactorChanged(this.value);
-
-  final double value;
+  final GlobalState newState;
 }

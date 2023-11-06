@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/utils/url.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -22,10 +21,10 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
         ),
       );
     });
-    on<UserRequestsLemmyAccountSwitch>((event, emit) {
+    on<AccountSwitched>((event, emit) {
       emit(state.copyWith(lemmySelectedAccount: event.accountIndex));
     });
-    on<UserRequestsAccountRemoval>((event, emit) {
+    on<AccountRemoved>((event, emit) {
       emit(
         state.copyWith(
           lemmySelectedAccount: -1,
@@ -33,38 +32,8 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
         ),
       );
     });
-    on<ThemeModeChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          themeMode: event.themeMode,
-        ),
-      );
-    });
-    on<UseDynamicColorSchemeChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          useDynamicColorScheme: event.useDynamicColorScheme,
-        ),
-      );
-    });
-    on<SeedColorChanged>((event, emit) {
-      emit(state.copyWith(seedColor: event.seedColor));
-    });
-    on<ShowNsfwChanged>((event, emit) {
-      emit(state.copyWith(showNsfw: event.value));
-    });
-    on<BlurNsfwChanged>((event, emit) {
-      emit(state.copyWith(blurNsfw: event.value));
-    });
-    on<LemmyDefaultHomeServerChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          lemmyDefaultHomeServer: ensureProtocolSpecified(event.url),
-        ),
-      );
-    });
-    on<TextScaleFactorChanged>((event, emit) {
-      emit(state.copyWith(textScaleFactor: event.value));
+    on<SettingChanged>((event, emit) {
+      emit(event.newState);
     });
   }
 

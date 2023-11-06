@@ -37,7 +37,7 @@ void showAccountSwitcher(BuildContext context) {
                               TextButton(
                                 onPressed: () {
                                   globalBloc.add(
-                                    UserRequestsAccountRemoval(
+                                    AccountRemoved(
                                       index,
                                     ),
                                   );
@@ -72,7 +72,7 @@ void showAccountSwitcher(BuildContext context) {
                   onTap: () {
                     context.pop();
                     globalBloc.add(
-                      UserRequestsLemmyAccountSwitch(
+                      AccountSwitched(
                         index,
                       ),
                     );
@@ -86,7 +86,7 @@ void showAccountSwitcher(BuildContext context) {
                 onTap: () {
                   context.pop();
                   globalBloc.add(
-                    UserRequestsLemmyAccountSwitch(-1),
+                    AccountSwitched(-1),
                   );
                 },
                 trailing: IconButton(

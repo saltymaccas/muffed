@@ -24,7 +24,13 @@ class AnonSettingsBloc extends Bloc<AnonSettingsEvent, AnonSettingsState> {
 
           emit(state.copyWith(isLoading: false, siteOfInputted: response));
 
-          globalBloc.add(LemmyDefaultHomeServerChanged(state.urlInput));
+          globalBloc.add(
+            SettingChanged(
+              globalBloc.state.copyWith(
+                lemmyDefaultHomeServer: state.urlInput,
+              ),
+            ),
+          );
         } catch (err) {
           emit(
             state.copyWith(
