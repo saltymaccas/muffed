@@ -69,13 +69,13 @@ class CardLemmyPostItem extends StatelessWidget {
                                   radius: 12,
                                 ),
                                 const SizedBox(
-                                  width: 2,
+                                  width: 6,
                                 ),
                                 Text(
                                   post.communityName,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .labelMedium!
+                                      .labelLarge!
                                       .copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -94,7 +94,7 @@ class CardLemmyPostItem extends StatelessWidget {
                                     post.creatorName,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .labelMedium!
+                                        .labelLarge!
                                         .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -110,7 +110,7 @@ class CardLemmyPostItem extends StatelessWidget {
                           formattedPostedAgo(post.timePublished) + ' ago',
                           style: Theme.of(context)
                               .textTheme
-                              .labelMedium!
+                              .labelLarge!
                               .copyWith(
                                 color: Theme.of(context).colorScheme.outline,
                               ),

@@ -167,7 +167,7 @@ class _CommentItemState extends State<CommentItem>
                                 widget.comment.creatorName,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .labelMedium!
+                                    .labelLarge!
                                     .copyWith(
                                       color:
                                           Theme.of(context).colorScheme.primary,
@@ -182,7 +182,7 @@ class _CommentItemState extends State<CommentItem>
                                 ),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .labelMedium!
+                                    .labelLarge!
                                     .copyWith(
                                       color:
                                           Theme.of(context).colorScheme.outline,
@@ -348,7 +348,7 @@ class _CommentItemState extends State<CommentItem>
                                         : 'Load ${state.comment.childCount} more',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .labelMedium!
+                                        .labelLarge!
                                         .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -400,7 +400,7 @@ class _CommentItemState extends State<CommentItem>
                                                 'In',
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .labelMedium!
+                                                    .labelLarge!
                                                     .copyWith(
                                                       color: Theme.of(context)
                                                           .colorScheme
@@ -431,7 +431,7 @@ class _CommentItemState extends State<CommentItem>
                                                   widget.comment.communityName,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .labelMedium!
+                                                      .labelLarge!
                                                       .copyWith(
                                                         color: Theme.of(context)
                                                             .colorScheme
