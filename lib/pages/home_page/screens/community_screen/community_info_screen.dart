@@ -17,9 +17,11 @@ class CommunityInfoScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(),
             body: (state.communityInfoStatus == CommunityStatus.success)
-                ? MuffedMarkdownBody(
-                    data: state.community!.description ??
-                        'Community Has no description',
+                ? SingleChildScrollView(
+                    child: MuffedMarkdownBody(
+                      data: state.community!.description ??
+                          'Community Has no description',
+                    ),
                   )
                 : const Center(child: CircularProgressIndicator()),
           );
