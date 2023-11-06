@@ -16,7 +16,7 @@ class MuffedAvatar extends StatelessWidget {
       radius: radius,
       child: ClipRRect(
         clipBehavior: Clip.hardEdge,
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.circular(5),
         child: (url != null)
             ? CachedNetworkImage(
                 imageUrl: url!,

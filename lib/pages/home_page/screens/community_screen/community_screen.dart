@@ -55,318 +55,333 @@ class CommunityScreen extends StatelessWidget {
 
           final blocValue = BlocProvider.of<CommunityScreenBloc>(blocContext);
 
-          return SetPageInfo(
-            actions: [
-              BlocProvider.value(
-                value: BlocProvider.of<CommunityScreenBloc>(blocContext),
-                child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                  builder: (context, state) {
-                    switch (state.communityInfoStatus) {
-                      case CommunityStatus.success:
+          return Scaffold(
+            endDrawer: Drawer(
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(),
+              ),
+            ),
+            body: SetPageInfo(
+              actions: [
+                BlocProvider.value(
+                  value: BlocProvider.of<CommunityScreenBloc>(blocContext),
+                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                    builder: (context, state) {
+                      switch (state.communityInfoStatus) {
+                        case CommunityStatus.success:
+                          return IconButton(
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () {
+                              context.push(
+                                Uri(
+                                  path: '/home/search',
+                                  queryParameters: {
+                                    'community_id':
+                                        state.community!.id.toString(),
+                                    'community_name': state.community!.name,
+                                  },
+                                ).toString(),
+                                extra: state.community,
+                              );
+                            },
+                            icon: Icon(Icons.search),
+                          );
+                        case CommunityStatus.loading:
+                          return const IconButtonLoading();
+                        case CommunityStatus.failure:
+                          return const IconButtonFailure();
+                        case CommunityStatus.initial:
+                          return const IconButtonInitial();
+                      }
+                    },
+                  ),
+                ),
+                if (context.read<GlobalBloc>().isLoggedIn())
+                  BlocProvider.value(
+                    value: blocValue,
+                    child:
+                        BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                      builder: (context, state) {
                         return IconButton(
                           visualDensity: VisualDensity.compact,
-                          onPressed: () {
-                            context.push(
-                              Uri(
-                                path: '/home/search',
-                                queryParameters: {
-                                  'community_id':
-                                      state.community!.id.toString(),
-                                  'community_name': state.community!.name,
+                          onPressed: (state.community == null)
+                              ? null
+                              : () {
+                                  context.push(
+                                    Uri(
+                                      path: '/home/create_post',
+                                      queryParameters: {
+                                        'community_id':
+                                            state.community!.id.toString(),
+                                      },
+                                    ).toString(),
+                                  );
                                 },
-                              ).toString(),
-                              extra: state.community,
-                            );
-                          },
-                          icon: Icon(Icons.search),
+                          icon: const Icon(Icons.add),
                         );
-                      case CommunityStatus.loading:
-                        return const IconButtonLoading();
-                      case CommunityStatus.failure:
-                        return const IconButtonFailure();
-                      case CommunityStatus.initial:
-                        return const IconButtonInitial();
-                    }
-                  },
-                ),
-              ),
-              if (context.read<GlobalBloc>().isLoggedIn())
+                      },
+                    ),
+                  ),
                 BlocProvider.value(
                   value: blocValue,
                   child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                     builder: (context, state) {
-                      return IconButton(
+                      return MuffedPopupMenuButton(
                         visualDensity: VisualDensity.compact,
-                        onPressed: (state.community == null)
-                            ? null
-                            : () {
-                                context.push(
-                                  Uri(
-                                    path: '/home/create_post',
-                                    queryParameters: {
-                                      'community_id':
-                                          state.community!.id.toString(),
-                                    },
-                                  ).toString(),
-                                );
-                              },
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.sort),
+                        selectedValue: state.sortType,
+                        items: [
+                          MuffedPopupMenuItem(
+                            title: 'Hot',
+                            icon: const Icon(Icons.local_fire_department),
+                            value: LemmySortType.hot,
+                            onTap: () =>
+                                context.read<CommunityScreenBloc>().add(
+                                      SortTypeChanged(LemmySortType.hot),
+                                    ),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Active',
+                            icon: const Icon(Icons.rocket_launch),
+                            value: LemmySortType.active,
+                            onTap: () =>
+                                context.read<CommunityScreenBloc>().add(
+                                      SortTypeChanged(LemmySortType.active),
+                                    ),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'New',
+                            icon: const Icon(Icons.auto_awesome),
+                            value: LemmySortType.latest,
+                            onTap: () =>
+                                context.read<CommunityScreenBloc>().add(
+                                      SortTypeChanged(LemmySortType.latest),
+                                    ),
+                          ),
+                          MuffedPopupMenuExpandableItem(
+                            title: 'Top',
+                            items: [
+                              MuffedPopupMenuItem(
+                                title: 'All Time',
+                                icon: const Icon(Icons.military_tech),
+                                value: LemmySortType.topAll,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topAll,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Year',
+                                icon: const Icon(Icons.calendar_today),
+                                value: LemmySortType.topYear,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topYear,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Month',
+                                icon: const Icon(Icons.calendar_month),
+                                value: LemmySortType.topMonth,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topMonth,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Week',
+                                icon: const Icon(Icons.view_week),
+                                value: LemmySortType.topWeek,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topWeek,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Day',
+                                icon: const Icon(Icons.view_day),
+                                value: LemmySortType.topDay,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topDay,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Twelve Hours',
+                                icon: const Icon(Icons.schedule),
+                                value: LemmySortType.topTwelveHour,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topTwelveHour,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Six Hours',
+                                icon: const Icon(Icons.view_module_outlined),
+                                value: LemmySortType.topSixHour,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topSixHour,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'Hour',
+                                icon: const Icon(Icons.hourglass_bottom),
+                                value: LemmySortType.topHour,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.topHour,
+                                          ),
+                                        ),
+                              ),
+                            ],
+                          ),
+                          MuffedPopupMenuExpandableItem(
+                            title: 'Comments',
+                            items: [
+                              MuffedPopupMenuItem(
+                                title: 'Most Comments',
+                                icon: const Icon(Icons.comment_bank),
+                                value: LemmySortType.mostComments,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.mostComments,
+                                          ),
+                                        ),
+                              ),
+                              MuffedPopupMenuItem(
+                                title: 'New Comments',
+                                icon: const Icon(Icons.add_comment),
+                                value: LemmySortType.newComments,
+                                onTap: () =>
+                                    context.read<CommunityScreenBloc>().add(
+                                          SortTypeChanged(
+                                            LemmySortType.newComments,
+                                          ),
+                                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       );
                     },
                   ),
                 ),
-              BlocProvider.value(
-                value: blocValue,
-                child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                  builder: (context, state) {
-                    return MuffedPopupMenuButton(
-                      visualDensity: VisualDensity.compact,
-                      icon: const Icon(Icons.sort),
-                      selectedValue: state.sortType,
-                      items: [
-                        MuffedPopupMenuItem(
-                          title: 'Hot',
-                          icon: const Icon(Icons.local_fire_department),
-                          value: LemmySortType.hot,
-                          onTap: () => context.read<CommunityScreenBloc>().add(
-                                SortTypeChanged(LemmySortType.hot),
-                              ),
-                        ),
-                        MuffedPopupMenuItem(
-                          title: 'Active',
-                          icon: const Icon(Icons.rocket_launch),
-                          value: LemmySortType.active,
-                          onTap: () => context.read<CommunityScreenBloc>().add(
-                                SortTypeChanged(LemmySortType.active),
-                              ),
-                        ),
-                        MuffedPopupMenuItem(
-                          title: 'New',
-                          icon: const Icon(Icons.auto_awesome),
-                          value: LemmySortType.latest,
-                          onTap: () => context.read<CommunityScreenBloc>().add(
-                                SortTypeChanged(LemmySortType.latest),
-                              ),
-                        ),
-                        MuffedPopupMenuExpandableItem(
-                          title: 'Top',
-                          items: [
-                            MuffedPopupMenuItem(
-                              title: 'All Time',
-                              icon: const Icon(Icons.military_tech),
-                              value: LemmySortType.topAll,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topAll,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Year',
-                              icon: const Icon(Icons.calendar_today),
-                              value: LemmySortType.topYear,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topYear,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Month',
-                              icon: const Icon(Icons.calendar_month),
-                              value: LemmySortType.topMonth,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topMonth,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Week',
-                              icon: const Icon(Icons.view_week),
-                              value: LemmySortType.topWeek,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topWeek,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Day',
-                              icon: const Icon(Icons.view_day),
-                              value: LemmySortType.topDay,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topDay,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Twelve Hours',
-                              icon: const Icon(Icons.schedule),
-                              value: LemmySortType.topTwelveHour,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topTwelveHour,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Six Hours',
-                              icon: const Icon(Icons.view_module_outlined),
-                              value: LemmySortType.topSixHour,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topSixHour,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'Hour',
-                              icon: const Icon(Icons.hourglass_bottom),
-                              value: LemmySortType.topHour,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.topHour,
-                                        ),
-                                      ),
-                            ),
-                          ],
-                        ),
-                        MuffedPopupMenuExpandableItem(
-                          title: 'Comments',
-                          items: [
-                            MuffedPopupMenuItem(
-                              title: 'Most Comments',
-                              icon: const Icon(Icons.comment_bank),
-                              value: LemmySortType.mostComments,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.mostComments,
-                                        ),
-                                      ),
-                            ),
-                            MuffedPopupMenuItem(
-                              title: 'New Comments',
-                              icon: const Icon(Icons.add_comment),
-                              value: LemmySortType.newComments,
-                              onTap: () =>
-                                  context.read<CommunityScreenBloc>().add(
-                                        SortTypeChanged(
-                                          LemmySortType.newComments,
-                                        ),
-                                      ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              BlocProvider.value(
-                value: BlocProvider.of<CommunityScreenBloc>(blocContext),
-                child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                  builder: (context, state) {
-                    late Widget item;
+                BlocProvider.value(
+                  value: BlocProvider.of<CommunityScreenBloc>(blocContext),
+                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                    builder: (context, state) {
+                      late Widget item;
 
-                    if (state.communityInfoStatus == CommunityStatus.loading) {
-                      item = const IconButtonLoading();
-                    } else if (state.communityInfoStatus ==
-                        CommunityStatus.failure) {
-                      item = const IconButtonFailure();
-                    } else if (state.communityInfoStatus ==
-                        CommunityStatus.success) {
-                      item = MuffedPopupMenuButton(
-                        changeIconToSelected: false,
-                        visualDensity: VisualDensity.compact,
-                        icon: const Icon(Icons.more_vert),
-                        items: [
-                          MuffedPopupMenuItem(
-                            icon: const Icon(Icons.block),
-                            title: 'Block/Unblock',
-                            onTap: () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return BlockDialog(
-                                    id: state.community!.id,
-                                    type: BlockDialogType.community,
-                                    name: state.community!.name,
-                                  );
-                                },
+                      if (state.communityInfoStatus ==
+                          CommunityStatus.loading) {
+                        item = const IconButtonLoading();
+                      } else if (state.communityInfoStatus ==
+                          CommunityStatus.failure) {
+                        item = const IconButtonFailure();
+                      } else if (state.communityInfoStatus ==
+                          CommunityStatus.success) {
+                        item = MuffedPopupMenuButton(
+                          changeIconToSelected: false,
+                          visualDensity: VisualDensity.compact,
+                          icon: const Icon(Icons.more_vert),
+                          items: [
+                            MuffedPopupMenuItem(
+                              icon: const Icon(Icons.block),
+                              title: 'Block/Unblock',
+                              onTap: () {
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (context) {
+                                    return BlockDialog(
+                                      id: state.community!.id,
+                                      type: BlockDialogType.community,
+                                      name: state.community!.name,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      } else {
+                        item = const IconButtonInitial();
+                      }
+
+                      return item;
+                    },
+                  ),
+                ),
+              ],
+              indexOfRelevantItem: 0,
+              child: MuffedPage(
+                isLoading: state.isLoading,
+                error: state.errorMessage,
+                child: NotificationListener(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 500) {
+                      context
+                          .read<CommunityScreenBloc>()
+                          .add(ReachedEndOfScroll());
+                    }
+                    return true;
+                  },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<CommunityScreenBloc>().add(PullDownReload());
+                      await context
+                          .read<CommunityScreenBloc>()
+                          .stream
+                          .firstWhere((element) {
+                        if (element.isReloading == false) {
+                          return true;
+                        }
+                        return false;
+                      });
+                    },
+                    child: CustomScrollView(
+                      key: ValueKey('${state.loadedSortType}'),
+                      slivers: [
+                        if (state.communityInfoStatus ==
+                            CommunityStatus.success)
+                          SliverPersistentHeader(
+                            delegate: _TopBarDelegate(
+                              community: state.community!,
+                            ),
+                            floating: false,
+                            pinned: true,
+                          ),
+                        if (state.postsStatus == CommunityStatus.success)
+                          SliverList.builder(
+                            itemCount: state.posts.length,
+                            itemBuilder: (context, index) {
+                              return PostItem(
+                                key: ValueKey(state.posts[index]),
+                                post: state.posts[index],
+                                limitHeight: true,
                               );
                             },
                           ),
-                        ],
-                      );
-                    } else {
-                      item = const IconButtonInitial();
-                    }
-
-                    return item;
-                  },
-                ),
-              ),
-            ],
-            indexOfRelevantItem: 0,
-            child: MuffedPage(
-              isLoading: state.isLoading,
-              error: state.errorMessage,
-              child: NotificationListener(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels >=
-                      scrollInfo.metrics.maxScrollExtent - 500) {
-                    context
-                        .read<CommunityScreenBloc>()
-                        .add(ReachedEndOfScroll());
-                  }
-                  return true;
-                },
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<CommunityScreenBloc>().add(PullDownReload());
-                    await context
-                        .read<CommunityScreenBloc>()
-                        .stream
-                        .firstWhere((element) {
-                      if (element.isReloading == false) {
-                        return true;
-                      }
-                      return false;
-                    });
-                  },
-                  child: CustomScrollView(
-                    key: ValueKey('${state.loadedSortType}'),
-                    slivers: [
-                      if (state.communityInfoStatus == CommunityStatus.success)
-                        SliverPersistentHeader(
-                          delegate:
-                              _TopBarDelegate(community: state.community!),
-                          floating: false,
-                          pinned: true,
-                        ),
-                      if (state.postsStatus == CommunityStatus.success)
-                        SliverList.builder(
-                          itemCount: state.posts.length,
-                          itemBuilder: (context, index) {
-                            return PostItem(
-                              key: ValueKey(state.posts[index]),
-                              post: state.posts[index],
-                              limitHeight: true,
-                            );
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -381,16 +396,13 @@ class CommunityScreen extends StatelessWidget {
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   const _TopBarDelegate({
     required this.community,
-    this.headerMaxHeight = 400,
-    this.headerMinHeight = 90,
-    this.bannerEnd = 0.5,
   });
 
   final LemmyCommunity community;
 
-  final double headerMaxHeight;
-  final double headerMinHeight;
-  final double bannerEnd;
+  double get headerMaxHeight => 400;
+  double get headerMinHeight => 90;
+  double get bannerEnd => 0.5;
 
   @override
   double get maxExtent => headerMaxHeight;
@@ -408,8 +420,6 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    final progress = shrinkOffset / maxExtent;
-
     final fractionScrolled = shrinkOffset / headerMaxHeight;
 
     final placeholderBanner = Image.asset(
@@ -418,7 +428,6 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
       width: double.maxFinite,
       fit: BoxFit.cover,
     );
-
     return Material(
       clipBehavior: Clip.hardEdge,
       color: Theme.of(context).colorScheme.surface,
@@ -569,12 +578,21 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                 ],
                               ),
                               if (community.description != null)
-                                MuffedMarkdownBody(
-                                  // gets only the first paragraph
-                                  data: RegExp(r'^.*?\n\n', dotAll: true)
-                                      .firstMatch(community.description!)!
-                                      .group(0)!,
-                                  height: 104,
+                                Builder(
+                                  builder: (context) {
+                                    // gets only the first paragraph
+                                    final matches =
+                                        RegExp(r'^.*?\n', dotAll: true)
+                                            .firstMatch(community.description!);
+
+                                    final text = matches?.group(0) ??
+                                        community.description!;
+
+                                    return MuffedMarkdownBody(
+                                      maxHeight: 104,
+                                      data: text,
+                                    );
+                                  },
                                 ),
                               if (context.read<GlobalBloc>().isLoggedIn())
                                 TextButton(
@@ -630,16 +648,44 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context.pop();
+                          },
+                          icon: const Icon(Icons.arrow_back),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Opacity(
+                          opacity:
+                              Curves.easeInCirc.transform(fractionScrolled),
+                          child: Row(
+                            children: [
+                              MuffedAvatar(url: community.icon, radius: 16),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                community.title,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     IconButton(
                       onPressed: () {
-                        context.pop();
+                        Scaffold.of(context).openEndDrawer();
                       },
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    Opacity(
-                      opacity: fractionScrolled,
-                      child: Text(community.title),
+                      icon: const Icon(Icons.menu),
                     ),
                   ],
                 ),

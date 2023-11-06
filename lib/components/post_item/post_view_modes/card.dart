@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/url_view.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -64,16 +64,9 @@ class CardLemmyPostItem extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
+                                MuffedAvatar(
+                                  url: post.communityIcon,
                                   radius: 12,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(45),
-                                    child: (post.communityIcon != null)
-                                        ? CachedNetworkImage(
-                                            imageUrl: post.communityIcon!,
-                                          )
-                                        : Image.asset('assets/logo.png'),
-                                  ),
                                 ),
                                 const SizedBox(
                                   width: 2,
@@ -159,7 +152,8 @@ class CardLemmyPostItem extends StatelessWidget {
                                     ),
                                     child: MuffedMarkdownBody(
                                       data: post.body!,
-                                      height: limitContentHeight ? 300 : null,
+                                      maxHeight:
+                                          limitContentHeight ? 300 : null,
                                       onTapText: () {
                                         if (openOnTap) {
                                           openPost();
