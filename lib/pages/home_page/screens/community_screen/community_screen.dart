@@ -11,6 +11,7 @@ import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'bloc/bloc.dart';
@@ -53,15 +54,9 @@ class CommunityScreen extends StatelessWidget {
         builder: (context, state) {
           final blocContext = context;
 
-          final blocValue = BlocProvider.of<CommunityScreenBloc>(blocContext);
+          final bloc = BlocProvider.of<CommunityScreenBloc>(blocContext);
 
           return Scaffold(
-            endDrawer: Drawer(
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(),
-              ),
-            ),
             body: SetPageInfo(
               actions: [
                 BlocProvider.value(
@@ -99,7 +94,7 @@ class CommunityScreen extends StatelessWidget {
                 ),
                 if (context.read<GlobalBloc>().isLoggedIn())
                   BlocProvider.value(
-                    value: blocValue,
+                    value: bloc,
                     child:
                         BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                       builder: (context, state) {
@@ -124,7 +119,7 @@ class CommunityScreen extends StatelessWidget {
                     ),
                   ),
                 BlocProvider.value(
-                  value: blocValue,
+                  value: bloc,
                   child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                     builder: (context, state) {
                       return MuffedPopupMenuButton(
@@ -365,6 +360,7 @@ class CommunityScreen extends StatelessWidget {
                           SliverPersistentHeader(
                             delegate: _TopBarDelegate(
                               community: state.community!,
+                              bloc: bloc,
                             ),
                             floating: false,
                             pinned: true,
@@ -396,9 +392,12 @@ class CommunityScreen extends StatelessWidget {
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   const _TopBarDelegate({
     required this.community,
+    required this.bloc,
   });
 
   final LemmyCommunity community;
+
+  final CommunityScreenBloc bloc;
 
   double get headerMaxHeight => 400;
   double get headerMinHeight => 90;
@@ -574,7 +573,6 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                       ),
                                     ],
                                   ),
-                                  // Subscribe button
                                 ],
                               ),
                               if (community.description != null)
@@ -594,39 +592,61 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     );
                                   },
                                 ),
-                              if (context.read<GlobalBloc>().isLoggedIn())
-                                TextButton(
-                                  onPressed: () {
-                                    context
-                                        .read<CommunityScreenBloc>()
-                                        .add(ToggledSubscribe());
-                                  },
-                                  style: (community.subscribed ==
-                                          LemmySubscribedType.notSubscribed)
-                                      ? TextButton.styleFrom(
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .primaryContainer,
-                                          foregroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimaryContainer,
-                                        )
-                                      : TextButton.styleFrom(
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .outline,
-                                          foregroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .outlineVariant,
-                                        ),
-                                  child: (community.subscribed ==
-                                          LemmySubscribedType.subscribed)
-                                      ? Text('Unsubscribe')
-                                      : (community.subscribed ==
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          // TODO: This is temporary for now
+                                          MaterialPageRoute<void>(
+                                            builder: (context) =>
+                                                CommunityInfoScreen(
+                                              bloc: bloc,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text('See community info')),
+                                  if (context.read<GlobalBloc>().isLoggedIn())
+                                    TextButton(
+                                      onPressed: () {
+                                        context
+                                            .read<CommunityScreenBloc>()
+                                            .add(ToggledSubscribe());
+                                      },
+                                      style: (community.subscribed ==
                                               LemmySubscribedType.notSubscribed)
-                                          ? Text('Subscribe')
-                                          : Text('Pending'),
-                                ),
+                                          ? TextButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryContainer,
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
+                                            )
+                                          : TextButton.styleFrom(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .outlineVariant,
+                                            ),
+                                      child: (community.subscribed ==
+                                              LemmySubscribedType.subscribed)
+                                          ? Text('Unsubscribe')
+                                          : (community.subscribed ==
+                                                  LemmySubscribedType
+                                                      .notSubscribed)
+                                              ? Text('Subscribe')
+                                              : Text('Pending'),
+                                    ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -680,12 +700,6 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                           ),
                         ),
                       ],
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                      icon: const Icon(Icons.menu),
                     ),
                   ],
                 ),
