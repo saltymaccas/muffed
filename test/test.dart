@@ -11,14 +11,20 @@ void main() {
       seedColor: Colors.red.shade50,
       showNsfw: true,
       blurNsfw: false,
-      textScaleFactor: 1.5,
+      bodyTextScaleFactor: 23,
+      labelTextScaleFactor: 23,
+      lemmyDefaultHomeServer: 'test.home.server',
+      titleTextScaleFactor: 23,
+      useDynamicColorScheme: false,
       lemmyAccounts: [
         LemmyAccountData(
+          id: 12,
           name: 'testUser',
           homeServer: 'test.home.server',
           jwt: 'test.jwt',
         ),
         LemmyAccountData(
+          id: 13,
           name: 'testUser1',
           homeServer: 'test.home.server1',
           jwt: 'test.jwt1',
