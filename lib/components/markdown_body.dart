@@ -66,7 +66,7 @@ class MuffedMarkdownBody extends StatelessWidget {
               return;
             }
 
-            launchUrl(Uri.parse(url));
+            await launchUrl(Uri.parse(url));
           }
         },
         onTapText: onTapText,
