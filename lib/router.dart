@@ -18,8 +18,8 @@ import 'package:muffed/pages/profile_page/screens/saved_posts_screen/saved_posts
 import 'package:muffed/pages/profile_page/screens/settings_screen/about/about.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/content_filters/content_filters.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/defaults/defaults.dart';
+import 'package:muffed/pages/profile_page/screens/settings_screen/look/look.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/theme/theme.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
 extension NullNumberParsing on String? {
@@ -233,7 +233,7 @@ final router = GoRouter(
                     GoRoute(
                       path: 'look',
                       builder: (context, state) {
-                        return const SettingsThemePage();
+                        return const SettingsLookPage();
                       },
                     ),
                     GoRoute(

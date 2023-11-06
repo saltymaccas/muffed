@@ -4,8 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/global_state/bloc.dart';
 
-class SettingsThemePage extends StatelessWidget {
-  const SettingsThemePage({super.key});
+class SettingsLookPage extends StatelessWidget {
+  const SettingsLookPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class SettingsThemePage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Theme'),
+            title: Text('User Interface'),
             leading: IconButton(
               onPressed: () {
                 context.pop();

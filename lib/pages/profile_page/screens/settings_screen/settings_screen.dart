@@ -25,11 +25,11 @@ class SettingsPage extends StatelessWidget {
             body: ListView(
               children: [
                 ListTile(
-                  title: Text('Theme Management'),
+                  title: Text('User Interface'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
                   leading: Icon(Icons.color_lens),
-                  subtitle: Text('Change app colors'),
+                  subtitle: Text('Change how Muffed looks'),
                   onTap: () {
                     context.push('/profile/settings/look');
                   },
