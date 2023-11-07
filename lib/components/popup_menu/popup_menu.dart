@@ -374,11 +374,13 @@ class _MuffedPopupMenu extends StatelessWidget {
     final double unit = 1.0 / (route.items.length + 1.5);
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
 
-    final CurveTween opacity =
-        CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
-    final CurveTween width = CurveTween(curve: Interval(0.0, unit));
-    final CurveTween height =
-        CurveTween(curve: Interval(0.0, unit * route.items.length));
+    final CurveTween opacity = CurveTween(
+        curve: const Interval(0.0, 1.0 / 3.0, curve: Curves.easeInOutCubic));
+    final CurveTween width =
+        CurveTween(curve: Interval(0.0, unit, curve: Curves.easeInOutCubic));
+    final CurveTween height = CurveTween(
+        curve: Interval(0.0, unit * route.items.length,
+            curve: Curves.easeInOutCubic));
 
     return BlocProvider(
       create: (context) => MuffedPopupMenuBloc(
@@ -387,7 +389,6 @@ class _MuffedPopupMenu extends StatelessWidget {
       ),
       child: BlocBuilder<MuffedPopupMenuBloc, MuffedPopupMenuState>(
         builder: (context, state) {
-          print('built');
           final child = ConstrainedBox(
             constraints: const BoxConstraints(
               minWidth: _kMenuMinWidth,
