@@ -69,7 +69,7 @@ class SearchScreen extends StatelessWidget {
           return false;
         },
         listener: (context, state) {
-          showErrorSnackBar(context, error: state.error!);
+          showErrorSnackBar(context, error: state.error);
         },
         builder: (context, state) {
           final blocContext = context;
@@ -229,18 +229,19 @@ class SearchScreen extends StatelessWidget {
             child: Scaffold(
               body: SafeArea(
                 child: DefaultTabController(
-                  length: (communityId != null) ? 2 : 4,
+                  length: (state.communityId != null) ? 2 : 4,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TabBar(
                         isScrollable: true,
                         tabs: [
-                          if (communityId == null)
+                          if (state.communityId == null)
                             const Tab(
                               text: 'Communities',
                             ),
-                          if (communityId == null)
+                          if (state.communityId == null)
                             const Tab(
                               text: 'People',
                             ),
@@ -270,7 +271,7 @@ class SearchScreen extends StatelessWidget {
                               child: TabBarView(
                                 children: [
                                   // communities
-                                  if (communityId == null)
+                                  if (state.communityId == null)
                                     ListView.builder(
                                       key: ValueKey(
                                           'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}'),
@@ -396,7 +397,7 @@ class SearchScreen extends StatelessWidget {
                                         );
                                       },
                                     ),
-                                  if (communityId == null)
+                                  if (state.communityId == null)
                                     ListView.builder(
                                       key: ValueKey(
                                           'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}'),
@@ -459,6 +460,58 @@ class SearchScreen extends StatelessWidget {
                               ),
                           ],
                         ),
+                      ),
+                      if (state.communityId != null) ...[
+                        const Divider(
+                          height: 1,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Searching in ',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .outline,
+                                          ),
+                                    ),
+                                    TextSpan(
+                                      text: state.communityName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    context.read<SearchBloc>().add(SearchAll());
+                                  },
+                                  child: Text('Search all')),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const Divider(
+                        height: 1,
                       ),
                       TextField(
                         focusNode: textFocusNode,

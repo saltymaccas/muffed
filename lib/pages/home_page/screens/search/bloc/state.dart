@@ -63,7 +63,7 @@ final class SearchState extends Equatable {
         posts,
         comments,
         communityId,
-        communityName
+        communityName,
       ];
 
   SearchState copyWith({
@@ -76,6 +76,7 @@ final class SearchState extends Equatable {
     int? pagesLoaded,
     String? communityName,
     int? communityId,
+    bool setCommunityNameAndIdToNull = false,
 
     // communities
     List<LemmyCommunity>? communities,
@@ -90,18 +91,22 @@ final class SearchState extends Equatable {
     List<LemmyComment>? comments,
   }) {
     return SearchState(
-        searchQuery: searchQuery ?? this.searchQuery,
-        loadedSearchQuery: loadedSearchQuery ?? this.loadedSearchQuery,
-        sortType: sortType ?? this.sortType,
-        loadedSortType: loadedSortType ?? this.loadedSortType,
-        error: error,
-        isLoading: isLoading ?? this.isLoading,
-        pagesLoaded: pagesLoaded ?? this.pagesLoaded,
-        communities: communities ?? this.communities,
-        persons: persons ?? this.persons,
-        posts: posts ?? this.posts,
-        comments: comments ?? this.comments,
-        communityName: communityName ?? this.communityName,
-        communityId: communityId ?? this.communityId);
+      searchQuery: searchQuery ?? this.searchQuery,
+      loadedSearchQuery: loadedSearchQuery ?? this.loadedSearchQuery,
+      sortType: sortType ?? this.sortType,
+      loadedSortType: loadedSortType ?? this.loadedSortType,
+      error: error,
+      isLoading: isLoading ?? this.isLoading,
+      pagesLoaded: pagesLoaded ?? this.pagesLoaded,
+      communities: communities ?? this.communities,
+      persons: persons ?? this.persons,
+      posts: posts ?? this.posts,
+      comments: comments ?? this.comments,
+      communityName: setCommunityNameAndIdToNull
+          ? null
+          : communityName ?? this.communityName,
+      communityId:
+          setCommunityNameAndIdToNull ? null : communityId ?? this.communityId,
+    );
   }
 }

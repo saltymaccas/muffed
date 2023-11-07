@@ -15,3 +15,5 @@ class SortTypeChanged extends SearchEvent {
 }
 
 class ReachedNearEndOfPage extends SearchEvent {}
+
+class SearchAll extends SearchEvent {}

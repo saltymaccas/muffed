@@ -124,6 +124,23 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
       transformer: droppable(),
     );
+    on<SearchAll>((event, emit) {
+      final communityName = state.communityName;
+      final communityId = state.communityId;
+
+      emit(state.copyWith(setCommunityNameAndIdToNull: true));
+
+      try {
+        add(SearchQueryChanged(searchQuery: state.searchQuery));
+      } catch (err) {
+        emit(
+          state.copyWith(
+            communityName: communityName,
+            communityId: communityId,
+          ),
+        );
+      }
+    });
   }
 
   final ServerRepo repo;
