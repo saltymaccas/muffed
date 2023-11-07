@@ -92,7 +92,7 @@ class MentionsScreen extends StatelessWidget {
                                     read: state.mentions[index].read,
                                     comment: state.mentions[index].comment,
                                     isOrphan: true,
-                                    displayAsSingle: true,
+                                    displayMode: CommentItemDisplayMode.single,
                                     sortType: state.sortType,
                                     ableToLoadChildren: false,
                                   ),

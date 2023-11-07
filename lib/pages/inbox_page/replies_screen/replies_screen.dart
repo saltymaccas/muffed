@@ -92,7 +92,7 @@ class RepliesScreen extends StatelessWidget {
                                     read: state.replies[index].read,
                                     comment: state.replies[index].comment,
                                     isOrphan: true,
-                                    displayAsSingle: true,
+                                    displayMode: CommentItemDisplayMode.single,
                                     sortType: state.sortType,
                                     ableToLoadChildren: false,
                                   ),

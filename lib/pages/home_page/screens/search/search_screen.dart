@@ -440,7 +440,8 @@ class SearchScreen extends StatelessWidget {
                                     itemCount: state.comments.length,
                                     itemBuilder: (context, index) {
                                       return CommentItem(
-                                        displayAsSingle: true,
+                                        displayMode:
+                                            CommentItemDisplayMode.single,
                                         key: ValueKey(state.comments[index].id),
                                         comment: state.comments[index],
                                         children: [],

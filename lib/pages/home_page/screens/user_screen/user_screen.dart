@@ -205,7 +205,7 @@ class _UserScreenSuccess extends StatelessWidget {
                   );
                 }
                 return CommentItem(
-                  displayAsSingle: true,
+                  displayMode: CommentItemDisplayMode.single,
                   comment: comments[index - 1],
                   children: const [],
                   sortType: LemmyCommentSortType.hot,

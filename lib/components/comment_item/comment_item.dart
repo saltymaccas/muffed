@@ -13,6 +13,8 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
 
+enum CommentItemDisplayMode { single, tree }
+
 /// Used to display a single comment in a listview, this widget will also show
 /// all the children comments if needed.
 class CommentItem extends StatefulWidget {
@@ -23,7 +25,7 @@ class CommentItem extends StatefulWidget {
     this.ableToLoadChildren = true,
     this.children = const [],
     this.isOrphan = true,
-    this.displayAsSingle = false,
+    this.displayMode = CommentItemDisplayMode.tree,
     this.markedAsReadCallback,
     this.read = false,
     super.key,
@@ -45,7 +47,7 @@ class CommentItem extends StatefulWidget {
   final bool isOrphan;
 
   /// Whether the comment should be displayed as a single comment
-  final bool displayAsSingle;
+  final CommentItemDisplayMode displayMode;
 
   /// Only used for replies and mentions screen, used to mark the comment as
   /// read
@@ -105,7 +107,7 @@ class _CommentItemState extends State<CommentItem>
             onTap: () {
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
-              } else if (widget.displayAsSingle) {
+              } else if (widget.displayMode == CommentItemDisplayMode.single) {
                 if (context
                         .read<DynamicNavigationBarBloc>()
                         .state
@@ -121,7 +123,7 @@ class _CommentItemState extends State<CommentItem>
               decoration: BoxDecoration(
                 border: Border(
                   left: (widget.comment.path.isNotEmpty &&
-                          !widget.displayAsSingle)
+                          widget.displayMode == CommentItemDisplayMode.tree)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
@@ -139,7 +141,8 @@ class _CommentItemState extends State<CommentItem>
                   child: Builder(
                     builder: (context) {
                       if (state.minimised) {
-                        if (widget.displayAsSingle) {
+                        if (widget.displayMode ==
+                            CommentItemDisplayMode.single) {
                           return Card(
                             child: Padding(
                               padding: const EdgeInsets.all(8),
@@ -358,12 +361,13 @@ class _CommentItemState extends State<CommentItem>
                                 ),
                               ),
                             ),
-                          if (widget.isOrphan && !widget.displayAsSingle)
+                          if (widget.isOrphan &&
+                              widget.displayMode == CommentItemDisplayMode.tree)
                             const Divider(),
                         ],
                       );
 
-                      if (widget.displayAsSingle) {
+                      if (widget.displayMode == CommentItemDisplayMode.single) {
                         return Card(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
