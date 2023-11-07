@@ -670,7 +670,9 @@ class LemmyPerson extends Equatable {
         postCount = json['counts']['post_count'],
         postScore = json['counts']['post_score'],
         avatar = json['person']['avatar'],
-        banExpires = json['person']['ban_expires'],
+        banExpires = (json['person']['ban_expires'] != null)
+            ? DateTime.parse(json['person']['ban_expires'] + 'Z')
+            : null,
         banner = json['person']['banner'],
         bio = json['person']['bio'],
         displayName = json['person']['display_name'],

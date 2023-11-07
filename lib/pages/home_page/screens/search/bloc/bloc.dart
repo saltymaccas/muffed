@@ -45,6 +45,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           );
         } catch (err) {
           emit(state.copyWith(isLoading: false, error: err));
+          rethrow;
         }
       },
       transformer: restartable(),
