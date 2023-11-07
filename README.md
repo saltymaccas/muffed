@@ -1,7 +1,7 @@
 # Muffed
 
 <p align="center">
-  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="200">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="200">
 </p>
 
 A decentralised reddit alternative that works on the Lemmy/Activity-pub network.
