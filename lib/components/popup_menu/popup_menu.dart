@@ -243,11 +243,14 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
           if (item is MuffedPopupMenuExpandableItem) {
             final i = item.getSelectedItemIcon(widget.selectedValue);
             if (i != null) {
-              return i;
+              return Container(key: ValueKey(widget.selectedValue), child: i);
             }
           } else if (item is MuffedPopupMenuItem) {
             if (item.value == widget.selectedValue) {
-              return item.icon ?? widget.icon;
+              return Container(
+                key: ValueKey(widget.selectedValue),
+                child: item.icon ?? widget.icon,
+              );
             }
           }
         }
@@ -255,10 +258,20 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
       return widget.icon;
     }
 
+    final icon = getIcon();
+
     return IconButton(
       onPressed: showMuffedMenu,
       isSelected: menuOpen,
-      icon: getIcon(),
+      icon: AnimatedSwitcher(
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return ScaleTransition(scale: animation, child: child);
+        },
+        duration: Duration(milliseconds: 500),
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        child: icon,
+      ),
       visualDensity: widget.visualDensity,
     );
   }
