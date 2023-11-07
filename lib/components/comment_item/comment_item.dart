@@ -166,15 +166,23 @@ class _CommentItemState extends State<CommentItem>
                         children: [
                           Row(
                             children: [
-                              Text(
-                                widget.comment.creatorName,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    ),
+                              GestureDetector(
+                                onTap: () {
+                                  context.push(
+                                    '/home/person?id=${widget.comment.creatorId}',
+                                  );
+                                },
+                                child: Text(
+                                  widget.comment.creatorName,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                ),
                               ),
                               const SizedBox(
                                 width: 10,
@@ -194,18 +202,38 @@ class _CommentItemState extends State<CommentItem>
                               const SizedBox(width: 10),
                               // Signal if the comment is from op
                               if (widget.comment.postCreatorId ==
-                                  state.comment.creatorId)
+                                  state.comment.creatorId) ...[
                                 Text(
                                   'OP',
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelSmall!
                                       .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Colors.blue,
                                       ),
                                 ),
+                                const SizedBox(width: 4),
+                              ],
+
+                              // displays if the user created the comment
+                              if (context
+                                      .read<GlobalBloc>()
+                                      .getSelectedLemmyAccount() !=
+                                  null)
+                                if (widget.comment.creatorId ==
+                                    context
+                                        .read<GlobalBloc>()
+                                        .getSelectedLemmyAccount()!
+                                        .id)
+                                  Text(
+                                    'YOU',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall!
+                                        .copyWith(
+                                          color: Colors.green,
+                                        ),
+                                  ),
                             ],
                           ),
                           MuffedMarkdownBody(data: widget.comment.content),
