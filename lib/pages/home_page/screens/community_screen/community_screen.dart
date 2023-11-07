@@ -605,7 +605,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                           MaterialPageRoute<void>(
                                             builder: (context) =>
                                                 CommunityInfoScreen(
-                                              bloc: bloc,
+                                              community: community,
                                             ),
                                           ),
                                         );
