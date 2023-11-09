@@ -44,7 +44,7 @@ class CreateCommentScreen extends StatelessWidget {
       ),
       child: SetPageInfo(
         actions: const [],
-        indexOfRelevantItem: 0,
+        page: Pages.home,
         child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
           listener: (context, state) {
             if (state.successfullyPosted) {

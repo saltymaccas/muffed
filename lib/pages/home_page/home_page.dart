@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
               context.read<HomePageBloc>().add(LoadInitialPostsRequested());
             },
             child: SetPageInfo(
-              indexOfRelevantItem: 0,
+              page: Pages.home,
               actions: [
                 IconButton(
                   onPressed: () {

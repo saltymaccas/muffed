@@ -77,7 +77,7 @@ class InboxPage extends StatelessWidget {
                       }
 
                       return SetPageInfo(
-                        indexOfRelevantItem: 1,
+                        page: Pages.inbox,
                         actions: [
                           BlocProvider.value(
                             value: BlocProvider.of<m.MentionsBloc>(blocContext),

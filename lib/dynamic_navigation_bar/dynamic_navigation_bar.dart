@@ -6,6 +6,8 @@ import 'package:muffed/pages/profile_page/account_switcher.dart';
 
 import 'bloc/bloc.dart';
 
+export 'bloc/bloc.dart';
+
 const Duration _animDur = Duration(milliseconds: 500);
 const int _animInterval = 200;
 const Curve _animCurve = Curves.easeInOutCubic;
@@ -33,40 +35,59 @@ class DynamicNavigationBar extends StatelessWidget {
           builder: (context, state) {
             final items = [
               _DynamicNavigationBarItem(
-                itemIndex: 0,
+                itemIndex: Pages.home.index,
                 icon: IconButton(
                   onPressed: () {
                     onItemTapped(
-                      0,
-                      (state.pageStackInfo[0]!.isNotEmpty)
-                          ? state.pageStackInfo[0]!.last.context
+                      Pages.home.index,
+                      (state.pageStackInfo[Pages.home.index]!.isNotEmpty)
+                          ? state.pageStackInfo[Pages.home.index]!.last.context
                           : null,
                     );
                   },
                   visualDensity: VisualDensity.compact,
                   icon: const Icon(Icons.home_outlined),
                   selectedIcon: const Icon(Icons.home),
-                  isSelected: state.selectedItemIndex == 0,
+                  isSelected: state.selectedItemIndex == Pages.home.index,
                 ),
-                selected: state.selectedItemIndex == 0,
+                selected: state.selectedItemIndex == Pages.home.index,
               ),
               _DynamicNavigationBarItem(
-                itemIndex: 1,
+                itemIndex: Pages.messages.index,
                 icon: IconButton(
                   onPressed: () {
                     onItemTapped(
-                      1,
-                      (state.pageStackInfo[1]!.isNotEmpty)
-                          ? state.pageStackInfo[1]!.last.context
+                      Pages.messages.index,
+                      (state.pageStackInfo[Pages.messages.index]!.isNotEmpty)
+                          ? state
+                              .pageStackInfo[Pages.messages.index]!.last.context
+                          : null,
+                    );
+                  },
+                  visualDensity: VisualDensity.compact,
+                  icon: const Icon(Icons.message_outlined),
+                  selectedIcon: const Icon(Icons.message),
+                  isSelected: state.selectedItemIndex == Pages.messages.index,
+                ),
+                selected: state.selectedItemIndex == Pages.messages.index,
+              ),
+              _DynamicNavigationBarItem(
+                itemIndex: Pages.inbox.index,
+                icon: IconButton(
+                  onPressed: () {
+                    onItemTapped(
+                      Pages.inbox.index,
+                      (state.pageStackInfo[Pages.inbox.index]!.isNotEmpty)
+                          ? state.pageStackInfo[Pages.inbox.index]!.last.context
                           : null,
                     );
                   },
                   visualDensity: VisualDensity.compact,
                   icon: const Icon(Icons.inbox_outlined),
                   selectedIcon: const Icon(Icons.inbox),
-                  isSelected: state.selectedItemIndex == 1,
+                  isSelected: state.selectedItemIndex == Pages.inbox.index,
                 ),
-                selected: state.selectedItemIndex == 1,
+                selected: state.selectedItemIndex == Pages.inbox.index,
               ),
               _DynamicNavigationBarItem(
                 icon: GestureDetector(
@@ -77,19 +98,20 @@ class DynamicNavigationBar extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     onPressed: () {
                       onItemTapped(
-                        2,
-                        (state.pageStackInfo[2]!.isNotEmpty)
-                            ? state.pageStackInfo[2]!.last.context
+                        Pages.profile.index,
+                        (state.pageStackInfo[Pages.profile.index]!.isNotEmpty)
+                            ? state.pageStackInfo[Pages.profile.index]!.last
+                                .context
                             : null,
                       );
                     },
                     icon: const Icon(Icons.person_outline),
                     selectedIcon: const Icon(Icons.person),
-                    isSelected: state.selectedItemIndex == 2,
+                    isSelected: state.selectedItemIndex == Pages.profile.index,
                   ),
                 ),
-                selected: state.selectedItemIndex == 2,
-                itemIndex: 2,
+                selected: state.selectedItemIndex == Pages.profile.index,
+                itemIndex: Pages.profile.index,
               ),
             ];
             return Row(
@@ -224,7 +246,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
 class SetPageInfo extends StatefulWidget {
   /// initialize
   const SetPageInfo({
-    required this.indexOfRelevantItem,
+    required this.page,
     required this.actions,
     required this.child,
     super.key,
@@ -235,7 +257,7 @@ class SetPageInfo extends StatefulWidget {
   /// Basically just set this to the base page index that the page is on.
   ///
   /// *Fuck this shit is hard to explain properly
-  final int indexOfRelevantItem;
+  final Pages page;
 
   /// The actions that will appear next to the item when it is on the page
   final List<Widget> actions;
@@ -287,7 +309,7 @@ class _SetPageInfoState extends State<SetPageInfo> {
     _bloc.add(
       PageAdded(
         PageInfo(context: context, actions: animatedActions),
-        widget.indexOfRelevantItem,
+        widget.page,
       ),
     );
   }
@@ -295,7 +317,7 @@ class _SetPageInfoState extends State<SetPageInfo> {
   @override
   void dispose() {
     super.dispose();
-    _bloc.add(PageRemoved(widget.indexOfRelevantItem));
+    _bloc.add(PageRemoved(widget.page));
   }
 
   @override

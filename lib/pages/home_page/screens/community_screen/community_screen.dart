@@ -325,7 +325,7 @@ class CommunityScreen extends StatelessWidget {
                   ),
                 ),
               ],
-              indexOfRelevantItem: 0,
+              page: Pages.home,
               child: MuffedPage(
                 isLoading: state.isLoading,
                 error: state.errorMessage,

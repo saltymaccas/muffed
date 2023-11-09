@@ -10,15 +10,15 @@ final class GoneToNewMainPage extends DynamicNavigationBarEvent {
 
 final class PageAdded extends DynamicNavigationBarEvent {
   final PageInfo pageInfo;
-  final int itemIndex;
+  final Pages page;
 
-  PageAdded(this.pageInfo, this.itemIndex);
+  PageAdded(this.pageInfo, this.page);
 }
 
 final class PageRemoved extends DynamicNavigationBarEvent {
-  final int itemIndex;
+  final Pages page;
 
-  PageRemoved(this.itemIndex);
+  PageRemoved(this.page);
 }
 
 final class EditPageActions extends DynamicNavigationBarEvent {

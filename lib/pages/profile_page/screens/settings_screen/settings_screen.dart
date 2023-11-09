@@ -13,7 +13,7 @@ class SettingsPage extends StatelessWidget {
       builder: (context, state) {
         return SetPageInfo(
           actions: [],
-          indexOfRelevantItem: 2,
+          page: Pages.profile,
           child: Scaffold(
             appBar: AppBar(
               title: const Text('Settings'),

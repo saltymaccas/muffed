@@ -22,8 +22,8 @@ class DynamicNavigationBarBloc
       emit(
         state.copyWith(
           actions: Map.from(state.pageStackInfo)
-            ..[event.itemIndex] = [
-              ...state.pageStackInfo[event.itemIndex]!,
+            ..[event.page.index] = [
+              ...state.pageStackInfo[event.page.index]!,
               event.pageInfo,
             ],
         ),
@@ -33,8 +33,8 @@ class DynamicNavigationBarBloc
       emit(
         state.copyWith(
           actions: Map.from(state.pageStackInfo)
-            ..[event.itemIndex] = state.pageStackInfo[event.itemIndex]!
-                .sublist(0, state.pageStackInfo[event.itemIndex]!.length - 1),
+            ..[event.page.index] = state.pageStackInfo[event.page.index]!
+                .sublist(0, state.pageStackInfo[event.page.index]!.length - 1),
         ),
       );
     });

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/create_comment/create_comment_screen.dart';
-import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
@@ -198,6 +197,15 @@ final router = GoRouter(
                 ),
               ],
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+                path: '/messages',
+                builder: (context, state) {
+                  return Placeholder();
+                }),
           ],
         ),
         StatefulShellBranch(

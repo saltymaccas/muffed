@@ -48,7 +48,7 @@ class PostScreen extends StatelessWidget {
             final BuildContext blocContext = context;
 
             return SetPageInfo(
-              indexOfRelevantItem: 0,
+              page: Pages.home,
               actions: [
                 if (context.read<GlobalBloc>().isLoggedIn())
                   IconButton(

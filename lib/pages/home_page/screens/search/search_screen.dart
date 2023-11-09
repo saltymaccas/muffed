@@ -75,7 +75,7 @@ class SearchScreen extends StatelessWidget {
           final blocContext = context;
 
           return SetPageInfo(
-            indexOfRelevantItem: 0,
+            page: Pages.home,
             actions: [
               BlocProvider.value(
                 value: BlocProvider.of<SearchBloc>(blocContext),

@@ -44,7 +44,7 @@ class UserScreen extends StatelessWidget {
         builder: (context, state) {
           final blocContext = context;
           return SetPageInfo(
-            indexOfRelevantItem: 0,
+            page: Pages.home,
             actions: [
               BlocProvider.value(
                 value: BlocProvider.of<UserScreenBloc>(blocContext),

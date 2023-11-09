@@ -168,7 +168,7 @@ class CreatePostScreen extends StatelessWidget {
           }
 
           return SetPageInfo(
-            indexOfRelevantItem: 0,
+            page: Pages.home,
             actions: [],
             child: MuffedPage(
               isLoading: state.isLoading,

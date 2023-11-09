@@ -14,7 +14,7 @@ class ProfilePage extends StatelessWidget {
     final globalBloc = context.read<GlobalBloc>();
 
     return SetPageInfo(
-      indexOfRelevantItem: 2,
+      page: Pages.profile,
       actions: [
         IconButton(
           visualDensity: VisualDensity.compact,

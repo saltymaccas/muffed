@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
           LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
       child: SetPageInfo(
         actions: [],
-        indexOfRelevantItem: 2,
+        page: Pages.profile,
         child: BlocBuilder<LoginPageBloc, LoginPageState>(
           buildWhen: (previous, current) {
             if (previous.copyWith(

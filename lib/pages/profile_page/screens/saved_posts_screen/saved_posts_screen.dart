@@ -56,7 +56,7 @@ class SavedPostsScreen extends StatelessWidget {
           }
 
           return SetPageInfo(
-            indexOfRelevantItem: 2,
+            page: Pages.profile,
             actions: [],
             child: Stack(
               children: [
