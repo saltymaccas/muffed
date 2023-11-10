@@ -13,6 +13,7 @@ final class HomePageViewState extends Equatable {
     this.errorMessage,
     this.sortType = LemmySortType.hot,
     this.loadedSortType = LemmySortType.hot,
+    this.reachedEnd = false,
   });
 
   /// Status should only be changed after posts have been loaded
@@ -38,6 +39,8 @@ final class HomePageViewState extends Equatable {
   /// This sort type gets changed when the sort type gets successfully loaded
   final LemmySortType loadedSortType;
 
+  final bool reachedEnd;
+
   @override
   List<Object?> get props => [
         posts,
@@ -48,6 +51,7 @@ final class HomePageViewState extends Equatable {
         errorMessage,
         sortType,
         loadedSortType,
+        reachedEnd,
       ];
 
   HomePageViewState copyWith({
@@ -60,6 +64,7 @@ final class HomePageViewState extends Equatable {
     LemmyListingType? listingType,
     LemmySortType? sortType,
     LemmySortType? loadedSortType,
+    bool? reachedEnd,
   }) {
     return HomePageViewState(
       errorMessage: errorMessage,
@@ -70,6 +75,7 @@ final class HomePageViewState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       sortType: sortType ?? this.sortType,
       loadedSortType: loadedSortType ?? this.loadedSortType,
+      reachedEnd: reachedEnd ?? this.reachedEnd,
     );
   }
 }

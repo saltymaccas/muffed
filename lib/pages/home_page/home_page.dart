@@ -44,13 +44,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               SliverOverlapAbsorber(
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  floating: true,
-                  flexibleSpace: SafeArea(
+                sliver: SliverToBoxAdapter(
+                  child: SafeArea(
                     child: TabBar(
+                      padding: const EdgeInsets.only(top: 8),
                       isScrollable: true,
                       controller: tabController,
-                      tabs: [Text('Home'), Text('Popular')],
+                      tabs: const [Text('Home'), Text('Popular')],
                     ),
                   ),
                 ),

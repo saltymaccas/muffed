@@ -57,24 +57,30 @@ class HomeViewPageBloc extends Bloc<HomePageViewEvent, HomePageViewState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        _log.info('Loading page ${state.pagesLoaded + 1}');
-        emit(state.copyWith(isLoading: true));
+        if (!state.reachedEnd) {
+          _log.info('Loading page ${state.pagesLoaded + 1}');
+          emit(state.copyWith(isLoading: true));
 
-        final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
-          listingType: mode.listingType,
-          page: state.pagesLoaded + 1,
-          sortType: state.sortType,
-        );
+          final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+            listingType: mode.listingType,
+            page: state.pagesLoaded + 1,
+            sortType: state.sortType,
+          );
 
-        emit(
-          state.copyWith(
-            posts: {...state.posts!, ...posts}.toList(),
-            pagesLoaded: state.pagesLoaded + 1,
-            isLoading: false,
-          ),
-        );
+          if (posts.isEmpty) {
+            emit(state.copyWith(isLoading: false, reachedEnd: true));
+          } else {
+            emit(
+              state.copyWith(
+                posts: {...state.posts!, ...posts}.toList(),
+                pagesLoaded: state.pagesLoaded + 1,
+                isLoading: false,
+              ),
+            );
+          }
 
-        _log.info('Loaded page ${state.pagesLoaded}');
+          _log.info('Loaded page ${state.pagesLoaded}');
+        }
       },
       transformer: droppable(),
     );
