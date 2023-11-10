@@ -52,25 +52,28 @@ class DynamicNavigationBar extends StatelessWidget {
                 ),
                 selected: state.selectedItemIndex == Pages.home.index,
               ),
-              _DynamicNavigationBarItem(
-                itemIndex: Pages.messages.index,
-                icon: IconButton(
-                  onPressed: () {
-                    onItemTapped(
-                      Pages.messages.index,
-                      (state.pageStackInfo[Pages.messages.index]!.isNotEmpty)
-                          ? state
-                              .pageStackInfo[Pages.messages.index]!.last.context
-                          : null,
-                    );
-                  },
-                  visualDensity: VisualDensity.compact,
-                  icon: const Icon(Icons.message_outlined),
-                  selectedIcon: const Icon(Icons.message),
-                  isSelected: state.selectedItemIndex == Pages.messages.index,
-                ),
-                selected: state.selectedItemIndex == Pages.messages.index,
-              ),
+
+              // removed temporarily until messages gets implemented
+
+              // _DynamicNavigationBarItem(
+              //   itemIndex: Pages.messages.index,
+              //   icon: IconButton(
+              //     onPressed: () {
+              //       onItemTapped(
+              //         Pages.messages.index,
+              //         (state.pageStackInfo[Pages.messages.index]!.isNotEmpty)
+              //             ? state
+              //                 .pageStackInfo[Pages.messages.index]!.last.context
+              //             : null,
+              //       );
+              //     },
+              //     visualDensity: VisualDensity.compact,
+              //     icon: const Icon(Icons.message_outlined),
+              //     selectedIcon: const Icon(Icons.message),
+              //     isSelected: state.selectedItemIndex == Pages.messages.index,
+              //   ),
+              //   selected: state.selectedItemIndex == Pages.messages.index,
+              // ),
               _DynamicNavigationBarItem(
                 itemIndex: Pages.inbox.index,
                 icon: IconButton(
