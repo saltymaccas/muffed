@@ -2,6 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/pages/home_page/HomePageView/home_page_view.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
@@ -10,24 +11,24 @@ part 'state.dart';
 final _log = Logger('HomePageBloc');
 
 /// The bloc that controls the home page
-class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
+class HomeViewPageBloc extends Bloc<HomePageViewEvent, HomePageViewState> {
   ///
-  HomePageBloc({required ServerRepo repo})
+  HomeViewPageBloc({required ServerRepo repo, required this.mode})
       : _repo = repo,
-        super(const HomePageState(status: HomePageStatus.initial)) {
+        super(const HomePageViewState(status: HomePageStatus.initial)) {
     on<LoadInitialPostsRequested>((event, emit) async {
-      emit(const HomePageState(status: HomePageStatus.loading));
+      emit(const HomePageViewState(status: HomePageStatus.loading));
 
       _log.info('Loading initial posts');
 
       try {
         final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+          listingType: mode.listingType,
           page: 1,
-          listingType: state.listingType,
           sortType: state.sortType,
         );
         emit(
-          HomePageState(
+          HomePageViewState(
             status: HomePageStatus.success,
             posts: posts,
             pagesLoaded: 1,
@@ -36,7 +37,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       } catch (err) {
         _log.shout('Loading initial posts failed', err);
         emit(
-          HomePageState(
+          HomePageViewState(
             status: HomePageStatus.failure,
             errorMessage: err.toString(),
           ),
@@ -47,8 +48,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       emit(state.copyWith(isRefreshing: true));
 
       final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+        listingType: mode.listingType,
         page: 1,
-        listingType: state.listingType,
         sortType: state.sortType,
       );
 
@@ -60,8 +61,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         emit(state.copyWith(isLoading: true));
 
         final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+          listingType: mode.listingType,
           page: state.pagesLoaded + 1,
-          listingType: state.listingType,
           sortType: state.sortType,
         );
 
@@ -82,12 +83,12 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         emit(state.copyWith(posts: [], pagesLoaded: 0));
         try {
           final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
+            listingType: mode.listingType,
             page: 1,
-            listingType: state.listingType,
             sortType: state.sortType,
           );
           emit(
-            HomePageState(
+            HomePageViewState(
               status: HomePageStatus.success,
               posts: posts,
               pagesLoaded: 1,
@@ -95,7 +96,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           );
         } catch (err) {
           emit(
-            HomePageState(
+            HomePageViewState(
               status: HomePageStatus.failure,
               errorMessage: err.toString(),
             ),
@@ -104,26 +105,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       },
       transformer: restartable(),
     );
-    on<ListingTypeChanged>((event, emit) async {
-      // Saves last listing type so it can be reverted if error occurs
-      final LemmyListingType lastListingType = state.listingType;
-
-      emit(state.copyWith(listingType: event.listingType, isLoading: true));
-
-      try {
-        final List<LemmyPost> posts = await _repo.lemmyRepo
-            .getPosts(listingType: state.listingType, sortType: state.sortType);
-        emit(state.copyWith(posts: posts, isLoading: false));
-      } catch (err) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            listingType: lastListingType,
-            errorMessage: err.toString(),
-          ),
-        );
-      }
-    });
     on<SortTypeChanged>((event, emit) async {
       // Saves last listing type so it can be reverted if error occurs
       final LemmySortType lastSortType = state.sortType;
@@ -132,7 +113,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       try {
         final List<LemmyPost> posts = await _repo.lemmyRepo.getPosts(
-          listingType: state.listingType,
+          listingType: mode.listingType,
           sortType: state.sortType,
           page: 1,
         );
@@ -158,15 +139,17 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   final ServerRepo _repo;
+  final HomePageViewMode mode;
 
   @override
-  void onChange(Change<HomePageState> change) {
+  void onChange(Change<HomePageViewState> change) {
     super.onChange(change);
     _log.fine(change);
   }
 
   @override
-  void onTransition(Transition<HomePageEvent, HomePageState> transition) {
+  void onTransition(
+      Transition<HomePageViewEvent, HomePageViewState> transition) {
     super.onTransition(transition);
     _log.fine(transition);
   }

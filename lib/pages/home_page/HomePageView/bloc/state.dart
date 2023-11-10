@@ -2,9 +2,9 @@ part of 'bloc.dart';
 
 enum HomePageStatus { initial, loading, success, failure }
 
-final class HomePageState extends Equatable {
+final class HomePageViewState extends Equatable {
   ///
-  const HomePageState({
+  const HomePageViewState({
     required this.status,
     this.posts,
     this.isRefreshing = false,
@@ -13,7 +13,6 @@ final class HomePageState extends Equatable {
     this.errorMessage,
     this.sortType = LemmySortType.hot,
     this.loadedSortType = LemmySortType.hot,
-    this.listingType = LemmyListingType.all,
   });
 
   /// Status should only be changed after posts have been loaded
@@ -39,8 +38,6 @@ final class HomePageState extends Equatable {
   /// This sort type gets changed when the sort type gets successfully loaded
   final LemmySortType loadedSortType;
 
-  final LemmyListingType listingType;
-
   @override
   List<Object?> get props => [
         posts,
@@ -49,12 +46,11 @@ final class HomePageState extends Equatable {
         pagesLoaded,
         isLoading,
         errorMessage,
-        listingType,
         sortType,
-    loadedSortType,
+        loadedSortType,
       ];
 
-  HomePageState copyWith({
+  HomePageViewState copyWith({
     String? errorMessage,
     HomePageStatus? status,
     List<LemmyPost>? posts,
@@ -65,14 +61,13 @@ final class HomePageState extends Equatable {
     LemmySortType? sortType,
     LemmySortType? loadedSortType,
   }) {
-    return HomePageState(
+    return HomePageViewState(
       errorMessage: errorMessage,
       status: status ?? this.status,
       posts: posts ?? this.posts,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
       isLoading: isLoading ?? this.isLoading,
-      listingType: listingType ?? this.listingType,
       sortType: sortType ?? this.sortType,
       loadedSortType: loadedSortType ?? this.loadedSortType,
     );
