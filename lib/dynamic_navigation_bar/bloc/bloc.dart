@@ -65,8 +65,8 @@ class DynamicNavigationBarBloc
       emit(
         state.copyWith(
           actions: Map.from(state.pageStackInfo)
-            ..[event.itemIndex] = [
-              ...state.pageStackInfo[event.itemIndex]!,
+            ..[event.page.index] = [
+              ...state.pageStackInfo[event.page.index]!,
               PageInfo(context: event.context, actions: animatedActions),
             ],
         ),

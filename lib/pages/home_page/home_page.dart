@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/HomePageView/home_page_view.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-
-import 'package:muffed/global_state/bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,57 +42,62 @@ class _HomePageState extends State<HomePage> {
           ),
         ];
 
-        return NestedScrollView(
-          clipBehavior: Clip.hardEdge,
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                clipBehavior: Clip.hardEdge,
-                expandedHeight: 43,
-                toolbarHeight: 43,
-                primary: true,
-                floating: true,
-                backgroundColor: Theme.of(context).colorScheme.background,
-                foregroundColor: Theme.of(context).colorScheme.background,
-                surfaceTintColor: Theme.of(context).colorScheme.background,
-                snap: true,
-                flexibleSpace: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _PageTab(
-                          name: 'Subscribed',
-                          selected: pageIndex == 0,
-                          onTap: () {
-                            setState(() {
-                              pageIndex = 0;
-                            });
-                          },
-                        ),
-                        _PageTab(
-                          name: 'Popular',
-                          selected: pageIndex == 1,
-                          onTap: () {
-                            setState(() {
-                              pageIndex = 1;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                      height: 0.5,
-                    ),
-                  ],
+        return SetPageInfo(
+          actions: [],
+          page: Pages.home,
+          child: NestedScrollView(
+            clipBehavior: Clip.hardEdge,
+            floatHeaderSlivers: true,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  clipBehavior: Clip.hardEdge,
+                  expandedHeight: 43,
+                  toolbarHeight: 43,
+                  primary: true,
+                  floating: true,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  foregroundColor: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  snap: true,
+                  flexibleSpace: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).padding.top),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _PageTab(
+                            name: 'Subscribed',
+                            selected: pageIndex == 0,
+                            onTap: () {
+                              setState(() {
+                                pageIndex = 0;
+                              });
+                            },
+                          ),
+                          _PageTab(
+                            name: 'Popular',
+                            selected: pageIndex == 1,
+                            onTap: () {
+                              setState(() {
+                                pageIndex = 1;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        height: 0.5,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: pages[pageIndex],
+              ];
+            },
+            body: pages[pageIndex],
+          ),
         );
       },
     );
