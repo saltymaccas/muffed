@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import '../block_dialog.dart';
+import 'package:muffed/components/block_dialog/block_dialog.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -11,14 +11,14 @@ part 'state.dart';
 class BlockDialogBloc extends Bloc<BlockDialogEvent, BlockDialogState> {
   ///
   BlockDialogBloc({required this.repo, required this.id, required this.type})
-      : super(BlockDialogState()) {
+      : super(const BlockDialogState()) {
     on<InitializeEvent>((event, emit) async {
       emit(state.copyWith(status: BlockDialogStatus.loading));
       try {
         if (type == BlockDialogType.person) {
           final isBlocked = await repo.lemmyRepo.getIsPersonBlocked(id);
           emit(state.copyWith(
-              isBlocked: isBlocked, status: BlockDialogStatus.success));
+              isBlocked: isBlocked, status: BlockDialogStatus.success,),);
         } else if (type == BlockDialogType.community) {
           final isBlocked = await repo.lemmyRepo.getIsCommunityBlocked(id);
           emit(
@@ -58,7 +58,7 @@ class BlockDialogBloc extends Bloc<BlockDialogEvent, BlockDialogState> {
         emit(state.copyWith(error: err, isLoading: false));
         rethrow;
       }
-    }, transformer: droppable());
+    }, transformer: droppable(),);
   }
 
   final ServerRepo repo;

@@ -5,8 +5,8 @@ import 'package:muffed/components/error.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
-import '../../../components/nothing_to_show.dart';
-import 'bloc/bloc.dart';
+import 'package:muffed/components/nothing_to_show.dart';
+import 'package:muffed/pages/inbox_page/replies_screen/bloc/bloc.dart';
 
 class RepliesScreen extends StatelessWidget {
   const RepliesScreen({super.key});
@@ -20,7 +20,7 @@ class RepliesScreen extends StatelessWidget {
         return Builder(
           builder: (context) {
             if (state.replyItemsStatus == RepliesStatus.loading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (state.replyItemsStatus == RepliesStatus.failure) {
               return ErrorComponentTransparent(
                 error: state.error,
@@ -70,10 +70,10 @@ class RepliesScreen extends StatelessWidget {
                             itemCount: state.replies.length,
                             itemBuilder: (context, index) {
                               return AnimatedSize(
-                                duration: Duration(milliseconds: 500),
+                                duration: const Duration(milliseconds: 500),
                                 curve: Curves.easeInOutCubic,
                                 child: Container(
-                                  decoration: BoxDecoration(),
+                                  decoration: const BoxDecoration(),
                                   clipBehavior: Clip.hardEdge,
                                   height: (state.replies[index].read &&
                                           !state.showAll)

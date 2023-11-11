@@ -43,7 +43,7 @@ class IconButtonInitial extends StatelessWidget {
     return IconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () {},
-      icon: SizedBox(
+      icon: const SizedBox(
         height: 15,
         width: 15,
       ),

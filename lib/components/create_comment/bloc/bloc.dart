@@ -59,7 +59,7 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
         state.copyWith(
           images: SplayTreeMap()
             ..addAll(
-              {...state.images, id: ImageUploadState(uploadProgress: 0)},
+              {...state.images, id: const ImageUploadState(uploadProgress: 0)},
             ),
         ),
       );

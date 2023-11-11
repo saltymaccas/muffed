@@ -14,7 +14,7 @@ import 'package:muffed/components/url_view.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/create_post_screen/bloc/bloc.dart';
 
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({
@@ -117,7 +117,7 @@ class CreatePostScreen extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8),
                                       child: TextField(
                                         controller: urlTextController,
                                         decoration: const InputDecoration(
@@ -134,8 +134,8 @@ class CreatePostScreen extends StatelessWidget {
                                           runUrlAddedEvent();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                            fixedSize: Size(500, 50)),
-                                        child: Text('Add Url'),
+                                            fixedSize: const Size(500, 50),),
+                                        child: const Text('Add Url'),
                                       ),
                                     ),
                                   ],
@@ -145,20 +145,20 @@ class CreatePostScreen extends StatelessWidget {
                           );
                         },
                         style:
-                            ElevatedButton.styleFrom(fixedSize: Size(500, 50)),
-                        child: Text('Add Url'),
+                            ElevatedButton.styleFrom(fixedSize: const Size(500, 50)),
+                        child: const Text('Add Url'),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () async {
                           context.pop();
-                          openImagePickerForImageUpload();
+                          await openImagePickerForImageUpload();
                         },
                         style:
-                            ElevatedButton.styleFrom(fixedSize: Size(500, 50)),
-                        child: Text('Add Image'),
+                            ElevatedButton.styleFrom(fixedSize: const Size(500, 50)),
+                        child: const Text('Add Image'),
                       ),
                     ),
                   ],
@@ -169,7 +169,7 @@ class CreatePostScreen extends StatelessWidget {
 
           return SetPageInfo(
             page: Pages.home,
-            actions: [],
+            actions: const [],
             child: MuffedPage(
               isLoading: state.isLoading,
               error: state.error,
@@ -253,7 +253,7 @@ class CreatePostScreen extends StatelessWidget {
                                                   .primaryContainer
                                                   .withOpacity(0.5),
                                             ),
-                                            icon: Icon(Icons.close)),
+                                            icon: const Icon(Icons.close),),
                                       ),
                                     ),
                                   ],
@@ -274,28 +274,28 @@ class CreatePostScreen extends StatelessWidget {
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
-                                                  title: Text('Delete image?'),
-                                                  content: Text(
-                                                      'Are you sure you want to delete this image from the server?'),
+                                                  title: const Text('Delete image?'),
+                                                  content: const Text(
+                                                      'Are you sure you want to delete this image from the server?',),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                       },
-                                                      child: Text('Cancel'),
+                                                      child: const Text('Cancel'),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
                                                         runImageRemovedEvent();
                                                         Navigator.pop(context);
                                                       },
-                                                      child: Text('Delete'),
+                                                      child: const Text('Delete'),
                                                     ),
                                                   ],
                                                 );
-                                              });
+                                              },);
                                         },
-                                        icon: Icon(Icons.delete),
+                                        icon: const Icon(Icons.delete),
                                         style: IconButton.styleFrom(
                                           backgroundColor: Theme.of(context)
                                               .colorScheme
@@ -375,12 +375,12 @@ class CreatePostScreen extends StatelessWidget {
                         Material(
                           elevation: 5,
                           child: Padding(
-                            padding: EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(4),
                             child: IconButton(
-                              isSelected: (state.isPreviewingBody),
+                              isSelected: state.isPreviewingBody,
                               icon: (state.isPreviewingBody)
-                                  ? Icon(Icons.remove_red_eye)
-                                  : Icon(Icons.remove_red_eye_outlined),
+                                  ? const Icon(Icons.remove_red_eye)
+                                  : const Icon(Icons.remove_red_eye_outlined),
                               onPressed: () {
                                 context
                                     .read<CreatePostBloc>()

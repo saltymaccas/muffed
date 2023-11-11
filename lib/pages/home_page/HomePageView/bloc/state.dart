@@ -10,7 +10,7 @@ final class HomePageViewState extends Equatable {
     this.isRefreshing = false,
     this.pagesLoaded = 0,
     this.isLoading = false,
-    this.errorMessage,
+    this.error,
     this.sortType = LemmySortType.hot,
     this.loadedSortType = LemmySortType.hot,
     this.reachedEnd = false,
@@ -26,7 +26,7 @@ final class HomePageViewState extends Equatable {
   /// If status set to failure error message should display instead of posts.
   /// If status is success the error message should appear as a snack bar so
   /// the posts are still visible.
-  final String? errorMessage;
+  final Object? error;
 
   /// The sort type the user selected
   ///
@@ -48,7 +48,7 @@ final class HomePageViewState extends Equatable {
         isRefreshing,
         pagesLoaded,
         isLoading,
-        errorMessage,
+        error,
         sortType,
         loadedSortType,
         reachedEnd,
@@ -67,7 +67,7 @@ final class HomePageViewState extends Equatable {
     bool? reachedEnd,
   }) {
     return HomePageViewState(
-      errorMessage: errorMessage,
+      error: errorMessage,
       status: status ?? this.status,
       posts: posts ?? this.posts,
       isRefreshing: isRefreshing ?? this.isRefreshing,

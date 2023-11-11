@@ -14,7 +14,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 
 /// The screen that displays the community including information and the
 /// post view
@@ -26,7 +26,7 @@ class CommunityScreen extends StatelessWidget {
     this.community,
     super.key,
   }) : assert(communityId != null || communityName != null,
-            'No community given: commuiityId: $communityId, communityName: $communityName');
+            'No community given: commuiityId: $communityId, communityName: $communityName',);
 
   /// The community ID
   final int? communityId;
@@ -80,7 +80,7 @@ class CommunityScreen extends StatelessWidget {
                                 extra: state.community,
                               );
                             },
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                           );
                         case CommunityStatus.loading:
                           return const IconButtonLoading();
@@ -610,7 +610,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                           ),
                                         );
                                       },
-                                      child: Text('See community info')),
+                                      child: const Text('See community info'),),
                                   if (context.read<GlobalBloc>().isLoggedIn())
                                     TextButton(
                                       onPressed: () {
@@ -638,12 +638,12 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                             ),
                                       child: (community.subscribed ==
                                               LemmySubscribedType.subscribed)
-                                          ? Text('Unsubscribe')
+                                          ? const Text('Unsubscribe')
                                           : (community.subscribed ==
                                                   LemmySubscribedType
                                                       .notSubscribed)
-                                              ? Text('Subscribe')
-                                              : Text('Pending'),
+                                              ? const Text('Subscribe')
+                                              : const Text('Pending'),
                                     ),
                                 ],
                               ),

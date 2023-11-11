@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 
-import 'account_switcher.dart';
+import 'package:muffed/pages/profile_page/account_switcher.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -44,7 +44,7 @@ class ProfilePage extends StatelessWidget {
                             Text(
                               globalBloc.getSelectedLemmyAccount()?.name ??
                                   'Anonymous',
-                              style: TextStyle(fontSize: 24),
+                              style: const TextStyle(fontSize: 24),
                             ),
                             const Icon(Icons.arrow_drop_down_outlined),
                           ],
@@ -62,7 +62,7 @@ class ProfilePage extends StatelessWidget {
                             onPressed: () {
                               context.go('/profile/saved_posts');
                             },
-                            child: Text('Show saved posts')),
+                            child: const Text('Show saved posts'),),
                     ],
                   ),
                 ),

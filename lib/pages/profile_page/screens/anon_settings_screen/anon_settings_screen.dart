@@ -5,7 +5,7 @@ import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/profile_page/screens/anon_settings_screen/bloc/bloc.dart';
 
 class AnonSettingsScreen extends StatelessWidget {
   const AnonSettingsScreen({super.key});
@@ -45,7 +45,7 @@ class AnonSettingsScreen extends StatelessWidget {
             error: state.error,
             isLoading: state.isLoading,
             child: Scaffold(
-              appBar: AppBar(title: Text('Anon Settings')),
+              appBar: AppBar(title: const Text('Anon Settings')),
               body: Column(
                 children: [
                   SizedBox(
@@ -53,7 +53,7 @@ class AnonSettingsScreen extends StatelessWidget {
                     child: siteAvatar,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: TextField(
                       controller: textFieldController,
                       onChanged: (text) {
@@ -71,7 +71,7 @@ class AnonSettingsScreen extends StatelessWidget {
                       onPressed: () {
                         context.read<AnonSettingsBloc>().add(SaveRequested());
                       },
-                      child: Text('Save'))
+                      child: const Text('Save'),),
                 ],
               ),
             ),

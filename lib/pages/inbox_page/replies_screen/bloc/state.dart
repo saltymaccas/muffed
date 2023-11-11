@@ -59,7 +59,7 @@ class RepliesState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       replies: replies ?? this.replies,
-      replyItemsStatus: inboxStatus ?? this.replyItemsStatus,
+      replyItemsStatus: inboxStatus ?? replyItemsStatus,
       sortType: sortType ?? this.sortType,
       showAll: showAll ?? this.showAll,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,

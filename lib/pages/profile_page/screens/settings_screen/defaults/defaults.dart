@@ -12,7 +12,7 @@ class DefaultsSettingsPage extends StatelessWidget {
     return BlocBuilder<GlobalBloc, GlobalState>(builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Defaults'),
+          title: const Text('Defaults'),
           leading: IconButton(
             onPressed: () {
               context.pop();
@@ -23,14 +23,14 @@ class DefaultsSettingsPage extends StatelessWidget {
         body: ListView(
           children: [
             ListTile(
-              title: Text('Sort Type'),
+              title: const Text('Sort Type'),
               trailing: MuffedPopupMenuButton(
-                  icon: Text(state.defaultSortType.toString()), items: [
-              ]),
+                  icon: Text(state.defaultSortType.toString()), items: const [
+              ],),
             ),
           ],
         ),
       );
-    });
+    },);
   }
 }

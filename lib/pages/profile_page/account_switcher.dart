@@ -32,7 +32,7 @@ void showAccountSwitcher(BuildContext context) {
                           return AlertDialog(
                             title: const Text('Confirm Removal'),
                             content: Text(
-                                'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].name}'),
+                                'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].name}',),
                             actions: [
                               TextButton(
                                 onPressed: () {

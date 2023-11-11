@@ -288,7 +288,7 @@ class _CommentItemState extends State<CommentItem>
                                 visualDensity: VisualDensity.compact,
                               ),
                               MuffedPopupMenuButton(
-                                icon: Icon(Icons.more_vert),
+                                icon: const Icon(Icons.more_vert),
                                 items: [
                                   MuffedPopupMenuItem(
                                     title: 'Go to user',
@@ -309,7 +309,7 @@ class _CommentItemState extends State<CommentItem>
                                             body: Center(
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.all(8.0),
+                                                    const EdgeInsets.all(8),
                                                 child: SingleChildScrollView(
                                                   child: SelectableText(
                                                     widget.comment.content,
@@ -480,8 +480,8 @@ class _CommentItemState extends State<CommentItem>
                                       IconButton(
                                         isSelected: widget.read,
                                         onPressed: widget.markedAsReadCallback,
-                                        selectedIcon: Icon(Icons.check_circle),
-                                        icon: Icon(Icons.check_circle_outline),
+                                        selectedIcon: const Icon(Icons.check_circle),
+                                        icon: const Icon(Icons.check_circle_outline),
                                       ),
                                   ],
                                 ),

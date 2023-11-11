@@ -33,7 +33,7 @@ class LoadingComponentTransparentLogo extends StatelessWidget {
                 Theme
                     .of(context)
                     .colorScheme
-                    .onTertiaryContainer
+                    .onTertiaryContainer,
               ],
             ).createShader(bounds);
           },

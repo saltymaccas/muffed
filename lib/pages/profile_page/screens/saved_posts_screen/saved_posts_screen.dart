@@ -6,7 +6,7 @@ import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/profile_page/screens/saved_posts_screen/bloc/bloc.dart';
 
 class SavedPostsScreen extends StatelessWidget {
   const SavedPostsScreen({super.key});
@@ -57,7 +57,7 @@ class SavedPostsScreen extends StatelessWidget {
 
           return SetPageInfo(
             page: Pages.profile,
-            actions: [],
+            actions: const [],
             child: Stack(
               children: [
                 NotificationListener(
@@ -85,7 +85,7 @@ class SavedPostsScreen extends StatelessWidget {
                   const Align(
                     alignment: Alignment.topCenter,
                     child: LinearProgressIndicator(),
-                  )
+                  ),
               ],
             ),
           );

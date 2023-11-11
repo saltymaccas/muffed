@@ -14,7 +14,7 @@ const Curve _animCurve = Curves.easeInOutCubic;
 class DynamicNavigationBarBloc
     extends Bloc<DynamicNavigationBarEvent, DynamicNavigationBarState> {
   ///
-  DynamicNavigationBarBloc() : super(DynamicNavigationBarState()) {
+  DynamicNavigationBarBloc() : super(const DynamicNavigationBarState()) {
     on<GoneToNewMainPage>((event, emit) {
       emit(state.copyWith(selectedItemIndex: event.index));
     });

@@ -5,9 +5,9 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/inbox_page/replies_screen/replies_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'mentions_screen/bloc/bloc.dart' as m;
-import 'mentions_screen/mentions_screen.dart';
-import 'replies_screen/bloc/bloc.dart' as r;
+import 'package:muffed/pages/inbox_page/mentions_screen/bloc/bloc.dart' as m;
+import 'package:muffed/pages/inbox_page/mentions_screen/mentions_screen.dart';
+import 'package:muffed/pages/inbox_page/replies_screen/bloc/bloc.dart' as r;
 
 class InboxPage extends StatelessWidget {
   const InboxPage({super.key});
@@ -87,8 +87,8 @@ class InboxPage extends StatelessWidget {
                                     visualDensity: VisualDensity.compact,
                                     isSelected: state.showAll,
                                     onPressed: toggleRead,
-                                    selectedIcon: Icon(Icons.remove_red_eye),
-                                    icon: Icon(Icons.remove_red_eye_outlined));
+                                    selectedIcon: const Icon(Icons.remove_red_eye),
+                                    icon: const Icon(Icons.remove_red_eye_outlined),);
                               },
                             ),
                           ),
@@ -96,7 +96,7 @@ class InboxPage extends StatelessWidget {
                         child: NestedScrollView(
                           headerSliverBuilder: (context, _) {
                             return [
-                              SliverToBoxAdapter(
+                              const SliverToBoxAdapter(
                                 child: SafeArea(
                                   child: TabBar(
                                     tabs: [
@@ -108,7 +108,7 @@ class InboxPage extends StatelessWidget {
                               ),
                             ];
                           },
-                          body: TabBarView(
+                          body: const TabBarView(
                             children: [RepliesScreen(), MentionsScreen()],
                           ),
                         ),

@@ -20,5 +20,5 @@ String? errorObjectToString(Object? error) {
   }
 
   return errorString.replaceAll(
-      RegExp(r'auth=(.*?)(?=&|$)'), '[auth redacted]');
+      RegExp(r'auth=(.*?)(?=&|$)'), '[auth redacted]',);
 }

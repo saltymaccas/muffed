@@ -6,7 +6,7 @@ class Submitted extends CreateCommentEvent {
   Submitted(
       {required this.postId,
       required this.commentContents,
-      required this.commentId});
+      required this.commentId,});
 
   int postId;
   int? commentId;

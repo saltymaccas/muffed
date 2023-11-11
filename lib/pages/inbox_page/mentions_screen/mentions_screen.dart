@@ -6,7 +6,7 @@ import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/nothing_to_show.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/inbox_page/mentions_screen/bloc/bloc.dart';
 
 class MentionsScreen extends StatelessWidget {
   const MentionsScreen({super.key});
@@ -20,7 +20,7 @@ class MentionsScreen extends StatelessWidget {
         return Builder(
           builder: (context) {
             if (state.replyItemsStatus == MentionsStatus.loading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (state.replyItemsStatus == MentionsStatus.failure) {
               return ErrorComponentTransparent(
                 error: state.error,
@@ -70,10 +70,10 @@ class MentionsScreen extends StatelessWidget {
                             itemCount: state.mentions.length,
                             itemBuilder: (context, index) {
                               return AnimatedSize(
-                                duration: Duration(milliseconds: 500),
+                                duration: const Duration(milliseconds: 500),
                                 curve: Curves.easeInOutCubic,
                                 child: Container(
-                                  decoration: BoxDecoration(),
+                                  decoration: const BoxDecoration(),
                                   clipBehavior: Clip.hardEdge,
                                   height: (state.mentions[index].read &&
                                           !state.showAll)

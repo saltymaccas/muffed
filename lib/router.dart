@@ -103,7 +103,7 @@ final router = GoRouter(
               name: 'home',
               path: '/home',
               builder: (context, state) {
-                return HomePage();
+                return const HomePage();
               },
               routes: [
                 GoRoute(
@@ -204,8 +204,8 @@ final router = GoRouter(
             GoRoute(
                 path: '/messages',
                 builder: (context, state) {
-                  return Placeholder();
-                }),
+                  return const Placeholder();
+                },),
           ],
         ),
         StatefulShellBranch(
@@ -213,7 +213,7 @@ final router = GoRouter(
             GoRoute(
               path: '/inbox',
               builder: (context, state) {
-                return InboxPage();
+                return const InboxPage();
               },
             ),
           ],
@@ -229,13 +229,13 @@ final router = GoRouter(
                 GoRoute(
                   path: 'login',
                   builder: (context, state) {
-                    return LoginPage();
+                    return const LoginPage();
                   },
                 ),
                 GoRoute(
                   path: 'settings',
                   builder: (context, state) {
-                    return SettingsPage();
+                    return const SettingsPage();
                   },
                   routes: [
                     GoRoute(
@@ -260,7 +260,7 @@ final router = GoRouter(
                         path: 'about',
                         builder: (context, state) {
                           return const AboutScreen();
-                        }),
+                        },),
                   ],
                 ),
                 GoRoute(

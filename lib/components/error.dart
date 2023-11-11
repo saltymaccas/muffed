@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/error.dart';
+import 'package:muffed/utils/error.dart';
 
 class ErrorComponentTransparent extends StatelessWidget {
   const ErrorComponentTransparent({
@@ -42,7 +42,7 @@ class ErrorComponentTransparent extends StatelessWidget {
               'Retry',
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-          )
+          ),
       ],
     );
   }

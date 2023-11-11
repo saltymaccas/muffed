@@ -13,7 +13,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/post_screen/bloc/bloc.dart';
 
 /// Displays a screen that shows the post on top and the comments under
 class PostScreen extends StatelessWidget {
@@ -78,13 +78,13 @@ class PostScreen extends StatelessWidget {
                   child: BlocBuilder<PostScreenBloc, PostScreenState>(
                     builder: (context, state) {
                       return MuffedPopupMenuButton(
-                        icon: Icon(Icons.sort),
+                        icon: const Icon(Icons.sort),
                         visualDensity: VisualDensity.compact,
                         selectedValue: state.sortType,
                         items: [
                           MuffedPopupMenuItem(
                             title: 'Hot',
-                            icon: Icon(Icons.local_fire_department),
+                            icon: const Icon(Icons.local_fire_department),
                             value: LemmyCommentSortType.hot,
                             onTap: () => context
                                 .read<PostScreenBloc>()
@@ -92,7 +92,7 @@ class PostScreen extends StatelessWidget {
                           ),
                           MuffedPopupMenuItem(
                             title: 'Top',
-                            icon: Icon(Icons.military_tech),
+                            icon: const Icon(Icons.military_tech),
                             value: LemmyCommentSortType.top,
                             onTap: () => context
                                 .read<PostScreenBloc>()
@@ -100,7 +100,7 @@ class PostScreen extends StatelessWidget {
                           ),
                           MuffedPopupMenuItem(
                             title: 'New',
-                            icon: Icon(Icons.auto_awesome),
+                            icon: const Icon(Icons.auto_awesome),
                             value: LemmyCommentSortType.latest,
                             onTap: () => context.read<PostScreenBloc>().add(
                                   SortTypeChanged(LemmyCommentSortType.latest),
@@ -108,7 +108,7 @@ class PostScreen extends StatelessWidget {
                           ),
                           MuffedPopupMenuItem(
                             title: 'Old',
-                            icon: Icon(Icons.elderly),
+                            icon: const Icon(Icons.elderly),
                             value: LemmyCommentSortType.old,
                             onTap: () => context
                                 .read<PostScreenBloc>()
@@ -191,7 +191,6 @@ class _CommentScreenSuccess extends StatelessWidget {
   const _CommentScreenSuccess({
     required this.comments,
     required this.sortType,
-    super.key,
   });
 
   final List<LemmyComment> comments;
@@ -221,7 +220,7 @@ class _CommentScreenSuccess extends StatelessWidget {
 }
 
 class _CommentScreenLoading extends StatelessWidget {
-  const _CommentScreenLoading({super.key});
+  const _CommentScreenLoading();
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +231,7 @@ class _CommentScreenLoading extends StatelessWidget {
 }
 
 class _CommentScreenFailure extends StatelessWidget {
-  const _CommentScreenFailure({this.error, super.key});
+  const _CommentScreenFailure({this.error});
 
   final Object? error;
 

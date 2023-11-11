@@ -4,15 +4,15 @@ sealed class GlobalEvent {}
 
 /// When the user has successfully logged in from the login page
 class AccountLoggedIn extends GlobalEvent {
-  final LemmyAccountData account;
 
   AccountLoggedIn(this.account);
+  final LemmyAccountData account;
 }
 
 class AccountSwitched extends GlobalEvent {
-  final int accountIndex;
 
   AccountSwitched(this.accountIndex);
+  final int accountIndex;
 }
 
 class AccountRemoved extends GlobalEvent {

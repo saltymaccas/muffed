@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import '../markdown_body.dart';
-import '../snackbars.dart';
-import 'bloc/bloc.dart';
+import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/components/create_comment/bloc/bloc.dart';
 
 void showCreateCommentDialog({
   required BuildContext context,
@@ -117,7 +117,7 @@ class CreateCommentDialog extends StatelessWidget {
               ),
             ),
             clipBehavior: Clip.hardEdge,
-            insetPadding: EdgeInsets.all(16),
+            insetPadding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -148,7 +148,7 @@ class CreateCommentDialog extends StatelessWidget {
                       children: [
                         MuffedMarkdownBody(
                           data: textFieldController.text,
-                          physics: ClampingScrollPhysics(),
+                          physics: const ClampingScrollPhysics(),
                         ),
                         TextField(
                           controller: textFieldController,
@@ -179,10 +179,10 @@ class CreateCommentDialog extends StatelessWidget {
                         icon: const Icon(Icons.close),
                       ),
                       IconButton(
-                        isSelected: (state.isPreviewing),
+                        isSelected: state.isPreviewing,
                         icon: (state.isPreviewing)
-                            ? Icon(Icons.remove_red_eye)
-                            : Icon(Icons.remove_red_eye_outlined),
+                            ? const Icon(Icons.remove_red_eye)
+                            : const Icon(Icons.remove_red_eye_outlined),
                         onPressed: () {
                           context
                               .read<CreateCommentBloc>()

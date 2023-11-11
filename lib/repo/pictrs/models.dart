@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class ImageUploadState extends Equatable {
-  ImageUploadState({
+  const ImageUploadState({
     this.uploadProgress = 0,
     this.imageLink,
     this.deleteToken,

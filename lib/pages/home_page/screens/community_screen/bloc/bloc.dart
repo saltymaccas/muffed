@@ -10,10 +10,9 @@ class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
   ///
   CommunityScreenBloc({
-    this.community,
+    required this.repo, this.community,
     this.communityName,
     this.communityId,
-    required this.repo,
   }) : super(
           CommunityScreenState(
             community: community,
@@ -80,7 +79,7 @@ class CommunityScreenBloc
               communityId: state.community!.id,
             );
 
-            if (newPosts.length == 0) {
+            if (newPosts.isEmpty) {
               emit(state.copyWith(isLoading: false, reachedEnd: true));
             } else {
               emit(

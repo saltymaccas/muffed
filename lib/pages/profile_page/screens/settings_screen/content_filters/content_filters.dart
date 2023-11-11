@@ -11,7 +11,7 @@ class ContentFiltersPage extends StatelessWidget {
     return BlocBuilder<GlobalBloc, GlobalState>(builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Content Filters'),
+          title: const Text('Content Filters'),
           leading: IconButton(
             onPressed: () {
               context.pop();
@@ -22,7 +22,7 @@ class ContentFiltersPage extends StatelessWidget {
         body: ListView(
           children: [
             SwitchListTile(
-              title: Text('Show NSFW posts'),
+              title: const Text('Show NSFW posts'),
               value: state.showNsfw,
               onChanged: (value) {
                 context.read<GlobalBloc>().add(
@@ -36,16 +36,16 @@ class ContentFiltersPage extends StatelessWidget {
             ),
             if (state.showNsfw)
               SwitchListTile(
-                  title: Text('Blur NSFW posts'),
+                  title: const Text('Blur NSFW posts'),
                   value: state.blurNsfw,
                   onChanged: (value) {
                     context
                         .read<GlobalBloc>()
                         .add(SettingChanged(state.copyWith(blurNsfw: value)));
-                  }),
+                  },),
           ],
         ),
       );
-    });
+    },);
   }
 }

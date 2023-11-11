@@ -54,7 +54,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
           ),
         );
       }
-    }, transformer: restartable());
+    }, transformer: restartable(),);
     on<ShowAllToggled>(
       (event, emit) async {
         emit(state.copyWith(isLoading: true, showAll: !state.showAll));

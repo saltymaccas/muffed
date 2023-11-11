@@ -2,9 +2,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-
-import '../../../global_state/bloc.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -14,10 +13,8 @@ final _log = Logger('PostItemBloc');
 class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
   ///
   PostItemBloc({
-    this.post,
+    required this.repo, required this.globalBloc, this.post,
     this.postId,
-    required this.repo,
-    required this.globalBloc,
   }) : super(PostItemState(post: post)) {
     on<Initialize>((event, emit) async {
       if (post != null) {
@@ -31,8 +28,8 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
           emit(state.copyWith(status: PostItemStatus.failure, error: err));
         }
       } else
-        (emit(state.copyWith(
-            status: PostItemStatus.failure, error: 'No post or postId given')));
+        emit(state.copyWith(
+            status: PostItemStatus.failure, error: 'No post or postId given',),);
     });
     on<UpvotePressed>(
       (event, emit) {
@@ -190,7 +187,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     );
     on<SavePostToggled>((event, emit) async {
       emit(state.copyWith(
-          post: state.post!.copyWith(saved: !state.post!.saved)));
+          post: state.post!.copyWith(saved: !state.post!.saved),),);
       try {
         final result = await repo.lemmyRepo
             .savePost(postId: state.post!.id, save: state.post!.saved);

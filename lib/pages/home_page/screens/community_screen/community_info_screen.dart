@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/components/markdown_body.dart';
 
-import '../../../../repo/lemmy/models.dart';
+import 'package:muffed/repo/lemmy/models.dart';
 
 class CommunityInfoScreen extends StatelessWidget {
   const CommunityInfoScreen({required this.community, super.key});

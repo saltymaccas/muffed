@@ -41,7 +41,7 @@ interface class LemmyRepo {
     );
 
     if (response.data == null) {
-      throw ('null returned in response');
+      throw 'null returned in response';
     }
 
     return response.data!;
@@ -72,7 +72,7 @@ interface class LemmyRepo {
       }
 
       if (response.data == null) {
-        throw ('null returned in response');
+        throw 'null returned in response';
       }
 
       return response.data!;
@@ -101,7 +101,7 @@ interface class LemmyRepo {
     }
 
     _log.info(
-        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters');
+        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters',);
 
     final Response<Map<String, dynamic>> response = await dio.get(
       '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
@@ -115,7 +115,7 @@ interface class LemmyRepo {
     );
 
     if (response.data == null) {
-      throw ('response returned null');
+      throw 'response returned null';
     }
 
     return response.data!;
@@ -167,7 +167,7 @@ interface class LemmyRepo {
     LemmyCommentSortType sortType = LemmyCommentSortType.hot,
   }) async {
     if (parentId == null && postId == null) {
-      throw ('No id provided');
+      throw 'No id provided';
     }
 
     final Map<String, dynamic> response = await getRequest(
@@ -198,7 +198,7 @@ interface class LemmyRepo {
     LemmySortType? sortType,
   }) async {
     if (id == null && username == null) {
-      throw ('Both id and username equals null');
+      throw 'Both id and username equals null';
     }
     final response = await getRequest(
       path: '/user',
@@ -226,7 +226,7 @@ interface class LemmyRepo {
         ),
       ),
       moderates: List.generate((response['moderates'] as List).length,
-          (index) => response['moderates'][index]['community']['title']),
+          (index) => response['moderates'][index]['community']['title'],),
     );
   }
 
@@ -279,7 +279,7 @@ interface class LemmyRepo {
 
   Future<LemmyCommunity> getCommunity({int? id, String? name}) async {
     if (id == null && name == null) {
-      throw ('Both community id and name are not provided');
+      throw 'Both community id and name are not provided';
     }
 
     final response = await getRequest(
@@ -324,7 +324,7 @@ interface class LemmyRepo {
       postRequest(path: '/post/like', data: {
         'post_id': postId,
         'score': lemmyVoteTypeJson[vote],
-      });
+      },);
 
   Future<void> voteComment(
     int commentId,
@@ -333,7 +333,7 @@ interface class LemmyRepo {
       postRequest(path: '/comment/like', data: {
         'comment_id': commentId,
         'score': lemmyVoteTypeJson[vote],
-      });
+      },);
 
   Future<void> createComment(
     String content,
@@ -344,7 +344,7 @@ interface class LemmyRepo {
         'post_id': postId,
         'content': content,
         if (parentId != null) 'parent_id': parentId,
-      });
+      },);
 
   Future<LemmySubscribedType> followCommunity({
     required int communityId,
@@ -367,7 +367,7 @@ interface class LemmyRepo {
           'block': block,
           'person_id': personId,
         },
-        mustBeLoggedIn: true);
+        mustBeLoggedIn: true,);
     return response['blocked'];
   }
 
@@ -445,7 +445,7 @@ interface class LemmyRepo {
     );
 
     if (response.data == null) {
-      throw ('response returned null');
+      throw 'response returned null';
     }
 
     return LemmySite.fromGetSiteResponse(response.data!);

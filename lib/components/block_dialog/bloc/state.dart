@@ -3,7 +3,7 @@ part of 'bloc.dart';
 enum BlockDialogStatus { initial, loading, success, failure }
 
 class BlockDialogState extends Equatable {
-  BlockDialogState({
+  const BlockDialogState({
     this.status = BlockDialogStatus.initial,
     this.isLoading = false,
     this.error,

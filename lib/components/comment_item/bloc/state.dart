@@ -1,7 +1,7 @@
 part of 'bloc.dart';
 
 class CommentItemState extends Equatable {
-  CommentItemState({
+  const CommentItemState({
     required this.comment,
     required this.children,
     this.error,

@@ -5,8 +5,8 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'bloc/bloc.dart';
-import 'post_view_modes/post_view_modes.dart';
+import 'package:muffed/components/post_item/bloc/bloc.dart';
+import 'package:muffed/components/post_item/post_view_modes/post_view_modes.dart';
 
 /// The forms posts can be displayed in
 enum PostViewMode { card }
@@ -103,10 +103,11 @@ class _PostItemState extends State<PostItem>
 final placeholderPost = LemmyPost(
   id: 213,
   name: 'placeholder',
-  body: """Lorem ipsum dolor sit amet. 
+  body: '''
+Lorem ipsum dolor sit amet. 
       Sed autem consectetur et assumenda 
       voluptas ut expedita recusandae ad excepturi incidunt ut repellendus 
-      itaque. Et sunt totam qui consequatur quisquam eum aliquam placeat.""",
+      itaque. Et sunt totam qui consequatur quisquam eum aliquam placeat.''',
   creatorId: 123,
   communityId: 123,
   nsfw: false,

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/profile_page/account_switcher.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 
 export 'bloc/bloc.dart';
 
@@ -135,15 +135,15 @@ class DynamicNavigationBar extends StatelessWidget {
 }
 
 class _DynamicNavigationBarItem extends StatefulWidget {
-  final Widget icon;
-  final bool selected;
-  final int itemIndex;
 
   const _DynamicNavigationBarItem({
     required this.icon,
     required this.selected,
     required this.itemIndex,
   });
+  final Widget icon;
+  final bool selected;
+  final int itemIndex;
 
   @override
   State<_DynamicNavigationBarItem> createState() =>
@@ -161,7 +161,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
     /// is only shown when it should be
     late final bool hasActions;
 
-    final LemmyAccountData? loadedAccount = null;
+    const LemmyAccountData? loadedAccount = null;
 
     if (widget.selected) {
       if (loadedAccount !=
@@ -224,7 +224,7 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                               // key needs to be set so the actions get animated in when page
                               // is pushed
                               key: Key(
-                                  'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}'),
+                                  'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}',),
                               children: bloc
                                   .state
                                   .pageStackInfo[widget.itemIndex]!
@@ -255,11 +255,6 @@ class SetPageInfo extends StatefulWidget {
     super.key,
   });
 
-  /// The index of the item that the information will be added to.
-  ///
-  /// Basically just set this to the base page index that the page is on.
-  ///
-  /// *Fuck this shit is hard to explain properly
   final Pages page;
 
   /// The actions that will appear next to the item when it is on the page

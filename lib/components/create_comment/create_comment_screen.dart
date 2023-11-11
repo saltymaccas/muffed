@@ -11,7 +11,7 @@ import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/components/create_comment/bloc/bloc.dart';
 
 class CreateCommentScreen extends StatelessWidget {
   const CreateCommentScreen({
@@ -61,24 +61,24 @@ class CreateCommentScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Discard'),
-                      content: Text('Exit while discarding changes?'),
+                      title: const Text('Discard'),
+                      content: const Text('Exit while discarding changes?'),
                       actions: [
                         TextButton(
                             onPressed: () {
                               Navigator.pop(context, true);
                             },
-                            child: Text('Yes')),
+                            child: const Text('Yes'),),
                         TextButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     Theme.of(context).colorScheme.primary,
                                 foregroundColor:
-                                    Theme.of(context).colorScheme.onPrimary),
+                                    Theme.of(context).colorScheme.onPrimary,),
                             onPressed: () {
                               Navigator.pop(context, false);
                             },
-                            child: Text('No')),
+                            child: const Text('No'),),
                       ],
                     );
                   },
@@ -91,7 +91,7 @@ class CreateCommentScreen extends StatelessWidget {
                 error: state.error,
                 child: Scaffold(
                   appBar: AppBar(
-                    title: Text('Create Comment'),
+                    title: const Text('Create Comment'),
                     actions: [
                       IconButton(
                           onPressed: () {
@@ -103,7 +103,7 @@ class CreateCommentScreen extends StatelessWidget {
                                   ),
                                 );
                           },
-                          icon: Icon(Icons.send)),
+                          icon: const Icon(Icons.send),),
                     ],
                   ),
                   body: Column(
@@ -181,12 +181,12 @@ class CreateCommentScreen extends StatelessWidget {
                           Material(
                             elevation: 10,
                             child: Padding(
-                              padding: EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(4),
                               child: IconButton(
-                                isSelected: (state.isPreviewing),
+                                isSelected: state.isPreviewing,
                                 icon: (state.isPreviewing)
-                                    ? Icon(Icons.remove_red_eye)
-                                    : Icon(Icons.remove_red_eye_outlined),
+                                    ? const Icon(Icons.remove_red_eye)
+                                    : const Icon(Icons.remove_red_eye_outlined),
                                 onPressed: () {
                                   context
                                       .read<CreateCommentBloc>()

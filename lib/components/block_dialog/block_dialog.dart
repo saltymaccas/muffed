@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/components/block_dialog/bloc/bloc.dart';
 
 enum BlockDialogType { person, community }
 
@@ -52,36 +52,36 @@ class BlockDialog extends StatelessWidget {
         }
 
         return AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           child: dialog,
         );
-      }),
+      },),
     );
   }
 }
 
 class _BlockDialogLoading extends StatelessWidget {
-  const _BlockDialogLoading({required this.name, super.key});
+  const _BlockDialogLoading({required this.name});
 
   final String name;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: LinearProgressIndicator(),
+      title: const LinearProgressIndicator(),
       actions: [
         TextButton(
             onPressed: () {
               context.pop();
             },
-            child: Text('Cancel'))
+            child: const Text('Cancel'),),
       ],
     );
   }
 }
 
 class _BlockDialogFailure extends StatelessWidget {
-  const _BlockDialogFailure({required this.state, super.key});
+  const _BlockDialogFailure({required this.state});
 
   final BlockDialogState state;
 
@@ -102,7 +102,6 @@ class _BlockDialogSuccess extends StatelessWidget {
   const _BlockDialogSuccess({
     required this.state,
     required this.name,
-    super.key,
   });
 
   final BlockDialogState state;
@@ -112,23 +111,27 @@ class _BlockDialogSuccess extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-          '$name is currently ${state.isBlocked! ? 'blocked' : 'not blocked'}'),
+          '$name is currently ${state.isBlocked! ? 'blocked' : 'not blocked'}',),
       actions: [
         TextButton(
           onPressed: () {
             context.pop();
           },
-          child: Text('Done'),
+          child: const Text('Done'),
         ),
         AnimatedSize(
           curve: Curves.easeInOutCubic,
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           child: TextButton(
             onPressed: () {
               context.read<BlockDialogBloc>().add(BlockOrUnblockRequested());
             },
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+            ),
             child: state.isLoading
-                ? SizedBox(
+                ? const SizedBox(
                     height: 15,
                     width: 15,
                     child: CircularProgressIndicator(
@@ -136,10 +139,6 @@ class _BlockDialogSuccess extends StatelessWidget {
                     ),
                   )
                 : Text((state.isBlocked!) ? 'Unblock' : 'Block'),
-            style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.errorContainer,
-              foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
-            ),
           ),
         ),
       ],

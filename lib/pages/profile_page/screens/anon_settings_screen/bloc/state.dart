@@ -1,7 +1,7 @@
 part of 'bloc.dart';
 
 class AnonSettingsState extends Equatable {
-  AnonSettingsState({
+  const AnonSettingsState({
     this.urlInput = '',
     this.siteOfInputted,
     this.isLoading = false,

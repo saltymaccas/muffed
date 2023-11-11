@@ -12,7 +12,7 @@ class SettingsPage extends StatelessWidget {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         return SetPageInfo(
-          actions: [],
+          actions: const [],
           page: Pages.profile,
           child: Scaffold(
             appBar: AppBar(
@@ -25,30 +25,30 @@ class SettingsPage extends StatelessWidget {
             body: ListView(
               children: [
                 ListTile(
-                  title: Text('User Interface'),
+                  title: const Text('User Interface'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
-                  leading: Icon(Icons.color_lens),
-                  subtitle: Text('Change how Muffed looks'),
+                  leading: const Icon(Icons.color_lens),
+                  subtitle: const Text('Change how Muffed looks'),
                   onTap: () {
                     context.push('/profile/settings/look');
                   },
                 ),
                 ListTile(
-                  title: Text('Content Filters'),
+                  title: const Text('Content Filters'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
-                  leading: Icon(Icons.filter_list),
-                  subtitle: Text('Filter certain posts'),
+                  leading: const Icon(Icons.filter_list),
+                  subtitle: const Text('Filter certain posts'),
                   onTap: () {
                     context.push('/profile/settings/contentfilters');
                   },
                 ),
                 ListTile(
-                  title: Text('About Muffed'),
+                  title: const Text('About Muffed'),
                   style: ListTileStyle.drawer,
                   visualDensity: VisualDensity.comfortable,
-                  leading: Icon(Icons.info),
+                  leading: const Icon(Icons.info),
                   onTap: () {
                     context.push('/profile/settings/about');
 

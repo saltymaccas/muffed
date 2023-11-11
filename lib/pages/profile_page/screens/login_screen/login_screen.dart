@@ -6,7 +6,7 @@ import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/profile_page/screens/login_screen/bloc/bloc.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
       create: (context) =>
           LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
       child: SetPageInfo(
-        actions: [],
+        actions: const [],
         page: Pages.profile,
         child: BlocBuilder<LoginPageBloc, LoginPageState>(
           buildWhen: (previous, current) {
@@ -107,7 +107,7 @@ class LoginPage extends StatelessWidget {
                                     : const Icon(Icons.visibility),
                               ),
                               filled: true,
-                              label: Text('Password'),
+                              label: const Text('Password'),
                             ),
                             onChanged: (value) {
                               context

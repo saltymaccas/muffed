@@ -45,7 +45,7 @@ class MoreMenuButton extends StatelessWidget {
                     appBar: AppBar(),
                     body: Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: SingleChildScrollView(
                           child: SelectableText(
                             post.body!,

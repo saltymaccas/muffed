@@ -44,7 +44,7 @@ final class DynamicNavigationBarState extends Equatable {
   }) {
     return DynamicNavigationBarState(
       selectedItemIndex: selectedItemIndex ?? this.selectedItemIndex,
-      pageStackInfo: actions ?? this.pageStackInfo,
+      pageStackInfo: actions ?? pageStackInfo,
     );
   }
 }

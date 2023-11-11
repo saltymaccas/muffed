@@ -29,7 +29,7 @@ class ImageUploadView extends StatelessWidget {
           ...List.generate(images.length, (index) {
             final item = images[images.keys.toList()[index]]!;
             return Container(
-              padding: EdgeInsets.only(left: 4),
+              padding: const EdgeInsets.only(left: 4),
               decoration: (item.imageName == null)
                   ? null
                   : BoxDecoration(
@@ -71,7 +71,7 @@ class ImageUploadView extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     onPressed: (item.deleteToken == null)
                         ? null
                         : () {
@@ -79,9 +79,9 @@ class ImageUploadView extends StatelessWidget {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text('Delete image?'),
-                                  content: Text(
-                                      'Are you sure you want to delete this image?'),
+                                  title: const Text('Delete image?'),
+                                  content: const Text(
+                                      'Are you sure you want to delete this image?',),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
@@ -90,7 +90,7 @@ class ImageUploadView extends StatelessWidget {
                                         );
                                         onDelete(item.id!);
                                       },
-                                      child: Text('Yes'),
+                                      child: const Text('Yes'),
                                     ),
                                     ElevatedButton(
                                       onPressed: () {
@@ -106,7 +106,7 @@ class ImageUploadView extends StatelessWidget {
                                             .colorScheme
                                             .onPrimary,
                                       ),
-                                      child: Text('No'),
+                                      child: const Text('No'),
                                     ),
                                   ],
                                 );

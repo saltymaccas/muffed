@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/url.dart';
 
-import '../../../../../repo/pictrs/models.dart';
+import 'package:muffed/repo/pictrs/models.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -96,7 +96,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         state.copyWith(
           images: SplayTreeMap()
             ..addAll(
-              {...state.bodyImages, id: ImageUploadState(uploadProgress: 0)},
+              {...state.bodyImages, id: const ImageUploadState(uploadProgress: 0)},
             ),
         ),
       );
@@ -126,7 +126,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
     on<ImageToUploadSelected>((event, emit) async {
       emit(
         state.copyWith(
-          image: ImageUploadState(uploadProgress: 0),
+          image: const ImageUploadState(uploadProgress: 0),
         ),
       );
 

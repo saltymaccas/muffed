@@ -21,7 +21,7 @@ final class CommunityScreenState extends Equatable {
                     community != null ||
                 communityInfoStatus != CommunityStatus.success &&
                     community == null,
-            'If community info status is success then community must not be null');
+            'If community info status is success then community must not be null',);
 
   final LemmyCommunity? community;
   final List<LemmyPost> posts;

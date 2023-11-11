@@ -8,8 +8,8 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
 
-import '../bloc/bloc.dart';
-import '../post_more_menu_button.dart';
+import 'package:muffed/components/post_item/bloc/bloc.dart';
+import 'package:muffed/components/post_item/post_more_menu_button.dart';
 
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatelessWidget {
@@ -48,66 +48,60 @@ class CardLemmyPostItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () {
                       context.push(
-                          '/home/community?community_id=${post.communityId}');
+                          '/home/community?community_id=${post.communityId}',);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Row(
-                              children: [
-                                MuffedAvatar(
-                                  url: post.communityIcon,
-                                  radius: 12,
-                                ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                Text(
-                                  post.communityName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    context.push(
-                                        '/home/person?id=${post.creatorId}');
-                                  },
-                                  child: Text(
-                                    post.creatorName,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline,
-                                        ),
+                            MuffedAvatar(
+                              url: post.communityIcon,
+                              radius: 12,
+                            ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(
+                              post.communityName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
-                                ),
-                              ],
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                context
+                                    .push('/home/person?id=${post.creatorId}');
+                              },
+                              child: Text(
+                                post.creatorName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                              ),
                             ),
                           ],
                         ),
                         Text(
-                          formattedPostedAgo(post.timePublished) + ' ago',
+                          '${formattedPostedAgo(post.timePublished)} ago',
                           style: Theme.of(context)
                               .textTheme
                               .labelLarge!
@@ -152,29 +146,25 @@ class CardLemmyPostItem extends StatelessWidget {
                                 ),
                                 color: Theme.of(context).colorScheme.surface,
                               ),
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                    ),
-                                    child: MuffedMarkdownBody(
-                                      data: post.body!,
-                                      maxHeight:
-                                          limitContentHeight ? 300 : null,
-                                      onTapText: () {
-                                        if (openOnTap) {
-                                          openPost();
-                                        }
-                                      },
-                                    ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: MuffedMarkdownBody(
+                                  padding: EdgeInsets.only(
+                                    top: 4,
+                                    left: 4,
+                                    right: 4,
+                                    bottom: limitContentHeight ? 0 : 4,
                                   ),
-                                  Builder(
-                                    builder: (context) {
-                                      return SizedBox();
-                                    },
-                                  ),
-                                ],
+                                  data: post.body!,
+                                  maxHeight: limitContentHeight ? 300 : null,
+                                  onTapText: () {
+                                    if (openOnTap) {
+                                      openPost();
+                                    }
+                                  },
+                                ),
                               ),
                             ),
                           );

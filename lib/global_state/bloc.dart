@@ -12,7 +12,7 @@ final _log = Logger('GlobalBloc');
 /// The bloc that controls the global app state
 class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
   ///
-  GlobalBloc() : super(GlobalState()) {
+  GlobalBloc() : super(const GlobalState()) {
     on<AccountLoggedIn>((event, emit) {
       emit(
         state.copyWith(

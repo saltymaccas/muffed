@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/error.dart';
+import 'package:muffed/utils/error.dart';
 
 void showErrorSnackBar(
   BuildContext context, {

@@ -10,23 +10,23 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('About'),
+        title: const Text('About'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Text('Muffed', style: Theme.of(context).textTheme.titleLarge),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Image.asset('assets/icon.png', width: 180, height: 180),
-            Text(version),
-            SizedBox(height: 24),
+            const Text(version),
+            const SizedBox(height: 24),
             ListTile(
-              title: Text('GitHub'),
-              subtitle: Text('github.com/freshfieldreds/muffed'),
-              leading: Icon(Icons.code),
+              title: const Text('GitHub'),
+              subtitle: const Text('github.com/freshfieldreds/muffed'),
+              leading: const Icon(Icons.code),
               onTap: () {
                 launchUrl(
                   Uri.parse('https://github.com/freshfieldreds/muffed'),
@@ -34,24 +34,24 @@ class AboutScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text('Lemmy Community'),
-              subtitle: Text('sh.itjust.works/c/muffed'),
-              leading: Icon(Icons.group),
+              title: const Text('Lemmy Community'),
+              subtitle: const Text('sh.itjust.works/c/muffed'),
+              leading: const Icon(Icons.group),
               onTap: () {
                 launchUrl(Uri.parse('https://sh.itjust.works/c/muffed'));
               },
             ),
             ListTile(
-              title: Text('Email'),
-              subtitle: Text('freshfieldreds@gmail.com'),
-              leading: Icon(Icons.email),
+              title: const Text('Email'),
+              subtitle: const Text('freshfieldreds@gmail.com'),
+              leading: const Icon(Icons.email),
               onTap: () {
                 launchUrl(Uri.parse('mailto:freshfieldreds@gmail.com'));
               },
             ),
             ListTile(
-              title: Text('Licences'),
-              leading: Icon(Icons.library_books),
+              title: const Text('Licences'),
+              leading: const Icon(Icons.library_books),
               onTap: () {
                 showLicensePage(
                   context: context,

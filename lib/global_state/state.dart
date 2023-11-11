@@ -139,11 +139,11 @@ final class GlobalState extends Equatable {
 }
 
 final class LemmyAccountData extends Equatable {
-  LemmyAccountData(
+  const LemmyAccountData(
       {required this.jwt,
       required this.homeServer,
       required this.name,
-      required this.id});
+      required this.id,});
 
   factory LemmyAccountData.fromMap(Map<String, dynamic> map) {
     return LemmyAccountData(
@@ -164,10 +164,10 @@ final class LemmyAccountData extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'jwt': this.jwt,
-      'homeServer': this.homeServer,
-      'userName': this.name,
-      'id': this.id,
+      'jwt': jwt,
+      'homeServer': homeServer,
+      'userName': name,
+      'id': id,
     };
   }
 

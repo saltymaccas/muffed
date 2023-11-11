@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../global_state/bloc.dart';
-import 'image.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/components/image.dart';
 
 class UrlView extends StatelessWidget {
   const UrlView({required this.url, this.nsfw = false, super.key});

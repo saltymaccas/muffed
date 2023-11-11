@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
@@ -23,7 +23,7 @@ void openSearchDialog(BuildContext context) {
             child: Dialog(
               clipBehavior: Clip.hardEdge,
               alignment: Alignment.bottomCenter,
-              insetPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+              insetPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               child: BlocConsumer<SearchBloc, SearchState>(
                 listener: (context, state) {
                   if (state.error != null) {
@@ -32,7 +32,7 @@ void openSearchDialog(BuildContext context) {
                 },
                 builder: (context, state) {
                   return AnimatedSize(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOutCubic,
                     alignment: Alignment.bottomCenter,
                     child: Column(
@@ -81,16 +81,15 @@ void openSearchDialog(BuildContext context) {
                                               child: (state.communities[index]
                                                           .icon !=
                                                       null)
-                                                  ? Image.network(state
+                                                  ? Image.network('${state
                                                           .communities[index]
-                                                          .icon! +
-                                                      '?thumbnail=50')
+                                                          .icon!}?thumbnail=50',)
                                                   : Image.asset(
                                                       'assets/logo.png',
                                                     ),
                                             ),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
                                           Column(
@@ -98,7 +97,7 @@ void openSearchDialog(BuildContext context) {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(state
-                                                  .communities[index].name),
+                                                  .communities[index].name,),
                                               Text(
                                                 '${state.communities[index].subscribers} subscribers',
                                                 style: TextStyle(
@@ -114,13 +113,13 @@ void openSearchDialog(BuildContext context) {
                                       ),
                                     ),
                                   ),
-                                  Divider(),
+                                  const Divider(),
                                 ],
                               );
                             },
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 2,
                         ),
                         TextField(
@@ -144,14 +143,14 @@ void openSearchDialog(BuildContext context) {
                                 );
                                 context.pop();
                               },
-                              icon: Icon(Icons.open_in_new),
+                              icon: const Icon(Icons.open_in_new),
                             ),
                             prefixIcon: IconButton(
                                 visualDensity: VisualDensity.compact,
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                icon: Icon(Icons.arrow_back)),
+                                icon: const Icon(Icons.arrow_back),),
                             hintText: 'Search',
                             focusedBorder: InputBorder.none,
                             border: InputBorder.none,
@@ -160,7 +159,7 @@ void openSearchDialog(BuildContext context) {
                         SizedBox(
                           height: 2,
                           child: (state.isLoading)
-                              ? LinearProgressIndicator()
+                              ? const LinearProgressIndicator()
                               : null,
                         ),
                       ],

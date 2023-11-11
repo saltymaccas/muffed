@@ -10,7 +10,7 @@ class AnonSettingsBloc extends Bloc<AnonSettingsEvent, AnonSettingsState> {
   ///
   AnonSettingsBloc({required this.repo, required this.globalBloc})
       : super(AnonSettingsState(
-            urlInput: globalBloc.state.lemmyDefaultHomeServer)) {
+            urlInput: globalBloc.state.lemmyDefaultHomeServer,),) {
     on<UrlTextFieldChanged>(
       (event, emit) {
         emit(state.copyWith(urlInput: event.text, setSiteToNull: true));

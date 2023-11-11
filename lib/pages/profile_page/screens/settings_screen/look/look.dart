@@ -13,7 +13,7 @@ class SettingsLookPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('User Interface'),
+            title: const Text('User Interface'),
             leading: IconButton(
               onPressed: () {
                 context.pop();
@@ -31,7 +31,7 @@ class SettingsLookPage extends StatelessWidget {
                 ),
               ),
               RadioListTile<ThemeMode>(
-                title: Text('System'),
+                title: const Text('System'),
                 value: ThemeMode.system,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
@@ -41,7 +41,7 @@ class SettingsLookPage extends StatelessWidget {
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: Text('Light'),
+                title: const Text('Light'),
                 value: ThemeMode.light,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
@@ -51,7 +51,7 @@ class SettingsLookPage extends StatelessWidget {
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: Text('Dark'),
+                title: const Text('Dark'),
                 value: ThemeMode.dark,
                 groupValue: context.read<GlobalBloc>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
@@ -68,7 +68,7 @@ class SettingsLookPage extends StatelessWidget {
                 ),
               ),
               SwitchListTile(
-                title: Text('Auto set color scheme'),
+                title: const Text('Auto set color scheme'),
                 value: context.read<GlobalBloc>().state.useDynamicColorScheme,
                 onChanged: (bool value) {
                   context.read<GlobalBloc>().add(
@@ -80,7 +80,7 @@ class SettingsLookPage extends StatelessWidget {
               ),
               if (!context.read<GlobalBloc>().state.useDynamicColorScheme)
                 ListTile(
-                  title: Text('Seed Color'),
+                  title: const Text('Seed Color'),
                   leading: Container(
                     width: 20,
                     height: 20,
@@ -112,7 +112,7 @@ class SettingsLookPage extends StatelessWidget {
                     );
                   },
                 ),
-              Divider(),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
@@ -154,7 +154,7 @@ class SettingsLookPage extends StatelessWidget {
                         Text('0.9x'),
                         Text('1x'),
                         Text('1.1x'),
-                        Text('1.3x')
+                        Text('1.3x'),
                       ],
                     ),
                   ],

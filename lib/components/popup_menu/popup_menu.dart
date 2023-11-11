@@ -284,7 +284,6 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
     required this.items,
     // padded on bottom to avoid navigation bar
     this.initialSelectedValue,
-    this.padding = const EdgeInsets.only(bottom: 40),
     this.barrierLabel = '',
   });
 
@@ -296,7 +295,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
 
   final List<Widget> items;
 
-  final EdgeInsets padding;
+  EdgeInsets get padding => const EdgeInsets.only(bottom: 40);
 
   @override
   Animation<double> createAnimation() {

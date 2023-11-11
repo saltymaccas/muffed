@@ -24,9 +24,9 @@ Map<LemmySortType, String> lemmySortTypeToJson = {
   LemmySortType.old: 'Old',
   LemmySortType.topDay: 'TopDay',
   LemmySortType.topWeek: 'TopWeek',
-  LemmySortType.topMonth: "TopMonth",
-  LemmySortType.topYear: "TopYear",
-  LemmySortType.topAll: "TopAll",
+  LemmySortType.topMonth: 'TopMonth',
+  LemmySortType.topYear: 'TopYear',
+  LemmySortType.topAll: 'TopAll',
   LemmySortType.mostComments: 'MostComments',
   LemmySortType.newComments: 'NewComments',
   LemmySortType.topHour: 'TopHour',
@@ -90,7 +90,7 @@ Map<LemmyVoteType, int> lemmyVoteTypeJson = {
 Map<int, LemmyVoteType> jsonToLemmyVoteType = {
   1: LemmyVoteType.upVote,
   0: LemmyVoteType.none,
-  -1: LemmyVoteType.downVote
+  -1: LemmyVoteType.downVote,
 };
 
 enum LemmyCommentSortType { hot, top, latest, old }
@@ -104,7 +104,7 @@ Map<LemmyCommentSortType, String> lemmyCommentSortTypeToJson = {
 
 class LemmyPost extends Equatable {
   /// initialize object
-  LemmyPost({
+  const LemmyPost({
     required this.apId,
     required this.id,
     required this.name,
@@ -253,7 +253,7 @@ class LemmyPost extends Equatable {
 
 class LemmyComment extends Equatable {
   /// initialise object
-  LemmyComment({
+  const LemmyComment({
     required this.path,
     required this.creatorName,
     required this.creatorId,
@@ -264,13 +264,7 @@ class LemmyComment extends Equatable {
     required this.childCount,
     required this.upVotes,
     required this.downVotes,
-    this.myVote = LemmyVoteType.none,
-    required this.score,
-    required this.hotRank,
-    required this.postTitle,
-    required this.communityName,
-    required this.communityId,
-    required this.postCreatorId,
+    required this.score, required this.hotRank, required this.postTitle, required this.communityName, required this.communityId, required this.postCreatorId, this.myVote = LemmyVoteType.none,
   });
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
@@ -387,8 +381,8 @@ class LemmyComment extends Equatable {
 }
 
 class LemmyInboxReply extends Equatable {
-  LemmyInboxReply(
-      {required this.comment, required this.read, required this.id});
+  const LemmyInboxReply(
+      {required this.comment, required this.read, required this.id,});
 
   LemmyInboxReply.fromReplyViewJson(Map<String, dynamic> json)
       : comment = LemmyComment.fromCommentViewJson(json),
@@ -416,8 +410,8 @@ class LemmyInboxReply extends Equatable {
 }
 
 class LemmyInboxMention extends Equatable {
-  LemmyInboxMention(
-      {required this.comment, required this.read, required this.id});
+  const LemmyInboxMention(
+      {required this.comment, required this.read, required this.id,});
 
   LemmyInboxMention.fromPersonMentionViewJson(Map<String, dynamic> json)
       : comment = LemmyComment.fromCommentViewJson(json),
@@ -445,34 +439,43 @@ class LemmyInboxMention extends Equatable {
 }
 
 class LemmyCommunity extends Equatable {
-  LemmyCommunity({
+  const LemmyCommunity({
     required this.id,
     required this.actorId,
-    this.banner,
-    required this.deleted,
+    required this.deleted, required this.hidden, required this.name, required this.local, required this.instanceId, required this.nsfw, required this.postingRestrictedToMods, required this.published, required this.removed, required this.title, required this.comments, required this.hotRank, required this.posts, required this.subscribers, required this.usersActiveDay, required this.usersActiveHalfYear, required this.usersActiveMonth, required this.usersActiveWeek, required this.blocked, required this.subscribed, this.banner,
     this.description,
-    required this.hidden,
     this.icon,
-    required this.name,
-    required this.local,
-    required this.instanceId,
-    required this.nsfw,
-    required this.postingRestrictedToMods,
-    required this.published,
-    required this.removed,
-    required this.title,
     this.updated,
-    required this.comments,
-    required this.hotRank,
-    required this.posts,
-    required this.subscribers,
-    required this.usersActiveDay,
-    required this.usersActiveHalfYear,
-    required this.usersActiveMonth,
-    required this.usersActiveWeek,
-    required this.blocked,
-    required this.subscribed,
   });
+
+  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
+      : id = json['community']['id'],
+        actorId = json['community']['actor_id'],
+        deleted = json['community']['deleted'],
+        hidden = json['community']['hidden'],
+        name = json['community']['name'],
+        local = json['community']['local'],
+        instanceId = json['community']['instance_id'],
+        nsfw = json['community']['nsfw'],
+        postingRestrictedToMods =
+            json['community']['posting_restricted_to_mods'],
+        published = DateTime.parse(json['community']['published'] + 'Z'),
+        removed = json['community']['removed'],
+        title = json['community']['title'],
+        comments = json['counts']['comments'],
+        hotRank = json['counts']['hot_rank'],
+        posts = json['counts']['posts'],
+        subscribers = json['counts']['subscribers'],
+        usersActiveDay = json['counts']['users_active_day'],
+        usersActiveHalfYear = json['counts']['users_active_half_year'],
+        usersActiveMonth = json['counts']['users_active_month'],
+        usersActiveWeek = json['counts']['users_active_week'],
+        blocked = json['blocked'],
+        subscribed = jsonToLemmySubscribedType[json['subscribed']]!,
+        icon = json['community']['icon'],
+        description = json['community']['description'],
+        banner = json['community']['banner'],
+        updated = json['community']['update'];
 
   final int id;
   final String actorId;
@@ -509,35 +512,6 @@ class LemmyCommunity extends Equatable {
     final match = regex.firstMatch(actorId);
     return '!${match?.group(2)}@${match?.group(1)}';
   }
-
-  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
-      : id = json['community']['id'],
-        actorId = json['community']['actor_id'],
-        deleted = json['community']['deleted'],
-        hidden = json['community']['hidden'],
-        name = json['community']['name'],
-        local = json['community']['local'],
-        instanceId = json['community']['instance_id'],
-        nsfw = json['community']['nsfw'],
-        postingRestrictedToMods =
-            json['community']['posting_restricted_to_mods'],
-        published = DateTime.parse(json['community']['published'] + 'Z'),
-        removed = json['community']['removed'],
-        title = json['community']['title'],
-        comments = json['counts']['comments'],
-        hotRank = json['counts']['hot_rank'],
-        posts = json['counts']['posts'],
-        subscribers = json['counts']['subscribers'],
-        usersActiveDay = json['counts']['users_active_day'],
-        usersActiveHalfYear = json['counts']['users_active_half_year'],
-        usersActiveMonth = json['counts']['users_active_month'],
-        usersActiveWeek = json['counts']['users_active_week'],
-        blocked = json['blocked'],
-        subscribed = jsonToLemmySubscribedType[json['subscribed']]!,
-        icon = json['community']['icon'],
-        description = json['community']['description'],
-        banner = json['community']['banner'],
-        updated = json['community']['update'];
 
   @override
   List<Object?> get props => [
@@ -630,28 +604,16 @@ class LemmyCommunity extends Equatable {
 }
 
 class LemmyPerson extends Equatable {
-  LemmyPerson({
+  const LemmyPerson({
     required this.actorId,
     required this.admin,
-    this.avatar,
+    required this.banned, required this.botAccount, required this.deleted, required this.id, required this.instanceId, required this.local, required this.name, required this.published, required this.commentCount, required this.commentScore, required this.postCount, required this.postScore, this.avatar,
     this.banExpires,
-    required this.banned,
     this.banner,
     this.bio,
-    required this.botAccount,
-    required this.deleted,
     this.displayName,
-    required this.id,
-    required this.instanceId,
-    required this.local,
     this.matrixUserId,
-    required this.name,
-    required this.published,
     this.updated,
-    required this.commentCount,
-    required this.commentScore,
-    required this.postCount,
-    required this.postScore,
   });
 
   LemmyPerson.fromPersonViewJson(Map<String, dynamic> json)
@@ -737,9 +699,7 @@ class LemmySearchResponse {
 
 class LemmyLoginResponse {
   LemmyLoginResponse({
-    this.jwt,
-    required this.registrationCreated,
-    required this.verifyEmailSent,
+    required this.registrationCreated, required this.verifyEmailSent, this.jwt,
   });
 
   final String? jwt;
@@ -748,23 +708,44 @@ class LemmyLoginResponse {
 }
 
 class LemmySite extends Equatable {
-  LemmySite({
+  const LemmySite({
     required this.admins,
     required this.languages,
     required this.discussionLanguages,
     required this.version,
-    this.banner,
+    required this.id, required this.instanceId, required this.name, required this.published, this.banner,
     this.description,
     this.icon,
-    required this.id,
-    required this.instanceId,
-    required this.name,
     this.privateKey,
     this.publicKey,
-    required this.published,
     this.sidebar,
     this.updated,
   });
+
+  LemmySite.fromGetSiteResponse(Map<String, dynamic> json)
+      : admins = List.generate(
+          json['admins'].length,
+          (index) => LemmyPerson.fromPersonViewJson(json['admins'][index]),
+        ),
+        languages = List.generate(
+          json['all_languages'].length,
+          (index) => LemmyLanguage.fromLanguage(json['all_languages'][index]),
+        ),
+        discussionLanguages = List.generate(json['discussion_languages'].length,
+            (index) => json['discussion_languages'][index],),
+        version = json['version'],
+        banner = json['site_view']['site']['banner'],
+        description = json['site_view']['site']['description'],
+        icon = json['site_view']['site']['icon'],
+        id = json['site_view']['site']['id'],
+        instanceId = json['site_view']['site']['instance_id'],
+        name = json['site_view']['site']['name'],
+        privateKey = json['site_view']['site']['private_key'],
+        publicKey = json['site_view']['site']['public_key'],
+        published =
+            DateTime.parse('${json['site_view']['site']['published']}Z'),
+        sidebar = json['site_view']['site']['sidebar'],
+        updated = DateTime.parse('${json['site_view']['site']['updated']}Z');
 
   final List<LemmyPerson> admins;
   final List<LemmyLanguage> languages;
@@ -783,31 +764,6 @@ class LemmySite extends Equatable {
   final DateTime published;
   final String? sidebar;
   final DateTime? updated;
-
-  LemmySite.fromGetSiteResponse(Map<String, dynamic> json)
-      : admins = List.generate(
-          json['admins'].length,
-          (index) => LemmyPerson.fromPersonViewJson(json['admins'][index]),
-        ),
-        languages = List.generate(
-          json['all_languages'].length,
-          (index) => LemmyLanguage.fromLanguage(json['all_languages'][index]),
-        ),
-        discussionLanguages = List.generate(json['discussion_languages'].length,
-            (index) => json['discussion_languages'][index]),
-        version = json['version'],
-        banner = json['site_view']['site']['banner'],
-        description = json['site_view']['site']['description'],
-        icon = json['site_view']['site']['icon'],
-        id = json['site_view']['site']['id'],
-        instanceId = json['site_view']['site']['instance_id'],
-        name = json['site_view']['site']['name'],
-        privateKey = json['site_view']['site']['private_key'],
-        publicKey = json['site_view']['site']['public_key'],
-        published =
-            DateTime.parse('${json['site_view']['site']['published']}Z'),
-        sidebar = json['site_view']['site']['sidebar'],
-        updated = DateTime.parse('${json['site_view']['site']['updated']}Z');
 
   @override
   List<Object?> get props => [
@@ -830,7 +786,7 @@ class LemmySite extends Equatable {
 }
 
 class LemmyLanguage extends Equatable {
-  LemmyLanguage({
+  const LemmyLanguage({
     required this.code,
     required this.id,
     required this.name,

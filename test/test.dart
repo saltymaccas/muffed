@@ -16,7 +16,7 @@ void main() {
       lemmyDefaultHomeServer: 'test.home.server',
       titleTextScaleFactor: 23,
       useDynamicColorScheme: false,
-      lemmyAccounts: [
+      lemmyAccounts: const [
         LemmyAccountData(
           id: 12,
           name: 'testUser',

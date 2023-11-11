@@ -12,7 +12,7 @@ class MuffedPopupMenuBloc
   ///
   MuffedPopupMenuBloc({required this.initialItems, this.initialSelectedValue})
       : super(MuffedPopupMenuState(
-            items: [initialItems], selectedValue: initialSelectedValue ?? 1)) {
+            items: [initialItems], selectedValue: initialSelectedValue ?? 1,),) {
     on<ExpandableItemPressed>((event, emit) {
       emit(state.copyWith(items: [...state.items, event.items]));
     });
