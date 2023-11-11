@@ -32,7 +32,7 @@ class HomePageView extends StatelessWidget {
             ..add(LoadInitialPostsRequested()),
       child: Builder(
         builder: (context) {
-          BuildContext blocContext = context;
+          final blocContext = context;
 
           context.read<DynamicNavigationBarBloc>().add(
                 EditPageActions(

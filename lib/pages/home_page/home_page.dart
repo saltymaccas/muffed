@@ -96,7 +96,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ];
             },
-            body: pages[pageIndex],
+            body: IndexedStack(
+              index: pageIndex,
+              children: pages,
+            ),
           ),
         );
       },
