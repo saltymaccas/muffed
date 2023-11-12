@@ -197,6 +197,8 @@ class _MuffedImageState extends State<MuffedImage> {
   }
 }
 
+// the below code was taken and modified from https://github.com/liftoff-app/liftoff/blob/3055896657ef05772dc5fa18c5b3ab285b93f54a/lib/pages/media_view.dart#L166
+
 void showFullScreenImageView(BuildContext context, String url, String heroTag) {
   Navigator.push(
     context,
@@ -233,6 +235,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Listener(
         onPointerMove: scaleIsInitial
             ? (event) {
