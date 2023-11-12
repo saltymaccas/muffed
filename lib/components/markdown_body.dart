@@ -27,101 +27,101 @@ class MuffedMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: OverflowBox(
+    return ConstrainedBox(
+      constraints: BoxConstraints(
         maxHeight: maxHeight ?? double.infinity,
-        child: MarkdownBody(
-          listItemCrossAxisAlignment: MarkdownListItemCrossAxisAlignment.start,
-          shrinkWrap: true,
-          // extensionSet: md.ExtensionSet.gitHubWeb,
-          data: data,
-          imageBuilder: (uri, title, alt) {
-            return MuffedImage(
-              imageUrl: uri.toString(),
-              initialHeight: 0,
-              animateSizeChange: false,
-            );
-          },
-          onTapLink: (
-            title,
-            url,
-            destination,
-          ) async {
-            if (url != null) {
-              // check if link to community
-              if (url.startsWith('!')) {
-                await context.push(
-                  Uri(
-                    path: '/home/community/',
-                    queryParameters: {'community_name': url.substring(1)},
-                  ).toString(),
-                );
-                return;
-              }
-
-              // check if link to user
-              if (url.startsWith('@')) {
-                // remove the '@'
-                final username = url.substring(1);
-
-                await context.push(
-                  Uri(
-                    path: '/home/person/',
-                    queryParameters: {'username': username},
-                  ).toString(),
-                );
-                return;
-              }
-
-              final path = Uri.parse(url).path;
-              final spiltPath = path.split('/');
-              final host = Uri.parse(url).host;
-
-              print(host);
-
-              final chonks = url.split('/');
-
-              if (chonks.length == 1) {
-                await launchUrl(Uri.parse(url));
-                return;
-              }
-
-              // check if link to user
-              if (path.startsWith('/u/')) {
-                await context.pushNamed(
-                  'person',
-                  queryParameters: {
-                    'username': '${spiltPath[2]}@$host',
-                  },
-                );
-                return;
-              }
-
-              // check if link to community
-              if (path.startsWith('/c/')) {
-                await context.pushNamed(
-                  'community',
-                  queryParameters: {
-                    'community_name': '${spiltPath[2]}@$host',
-                  },
-                );
-                return;
-              }
-
-              await launchUrl(Uri.parse(url));
+      ),
+      child: MarkdownBody(
+        listItemCrossAxisAlignment: MarkdownListItemCrossAxisAlignment.start,
+        shrinkWrap: true,
+        // extensionSet: md.ExtensionSet.gitHubWeb,
+        data: data,
+        imageBuilder: (uri, title, alt) {
+          return MuffedImage(
+            imageUrl: uri.toString(),
+            initialHeight: 0,
+            animateSizeChange: false,
+          );
+        },
+        onTapLink: (
+          title,
+          url,
+          destination,
+        ) async {
+          if (url != null) {
+            // check if link to community
+            if (url.startsWith('!')) {
+              await context.push(
+                Uri(
+                  path: '/home/community/',
+                  queryParameters: {'community_name': url.substring(1)},
+                ).toString(),
+              );
+              return;
             }
-          },
-          onTapText: onTapText,
-          selectable: false,
-          inlineSyntaxes: [LemmyLinkSyntax()],
-          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-            blockquoteDecoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border(
-                left: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
-                  width: 4,
-                ),
+
+            // check if link to user
+            if (url.startsWith('@')) {
+              // remove the '@'
+              final username = url.substring(1);
+
+              await context.push(
+                Uri(
+                  path: '/home/person/',
+                  queryParameters: {'username': username},
+                ).toString(),
+              );
+              return;
+            }
+
+            final path = Uri.parse(url).path;
+            final spiltPath = path.split('/');
+            final host = Uri.parse(url).host;
+
+            print(host);
+
+            final chonks = url.split('/');
+
+            if (chonks.length == 1) {
+              await launchUrl(Uri.parse(url));
+              return;
+            }
+
+            // check if link to user
+            if (path.startsWith('/u/')) {
+              await context.pushNamed(
+                'person',
+                queryParameters: {
+                  'username': '${spiltPath[2]}@$host',
+                },
+              );
+              return;
+            }
+
+            // check if link to community
+            if (path.startsWith('/c/')) {
+              await context.pushNamed(
+                'community',
+                queryParameters: {
+                  'community_name': '${spiltPath[2]}@$host',
+                },
+              );
+              return;
+            }
+
+            await launchUrl(Uri.parse(url));
+          }
+        },
+        onTapText: onTapText,
+        selectable: false,
+        inlineSyntaxes: [LemmyLinkSyntax()],
+        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+          blockquoteDecoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border(
+              left: BorderSide(
+                color: Theme.of(context).colorScheme.outline,
+                width: 4,
               ),
             ),
           ),
