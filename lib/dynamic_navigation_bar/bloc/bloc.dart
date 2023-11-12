@@ -21,7 +21,7 @@ class DynamicNavigationBarBloc
     on<PageAdded>((event, emit) {
       emit(
         state.copyWith(
-          actions: Map.from(state.pageStackInfo)
+          pageStackInfo: Map.from(state.pageStackInfo)
             ..[event.page.index] = [
               ...state.pageStackInfo[event.page.index]!,
               event.pageInfo,
@@ -32,7 +32,7 @@ class DynamicNavigationBarBloc
     on<PageRemoved>((event, emit) {
       emit(
         state.copyWith(
-          actions: Map.from(state.pageStackInfo)
+          pageStackInfo: Map.from(state.pageStackInfo)
             ..[event.page.index] = state.pageStackInfo[event.page.index]!
                 .sublist(0, state.pageStackInfo[event.page.index]!.length - 1),
         ),
@@ -62,13 +62,21 @@ class DynamicNavigationBarBloc
         );
       }
 
+      final indexToEdit = state.pageStackInfo[event.page.index]!.indexWhere(
+        (element) => element.id == event.id,
+      );
+
+      final copyOfPageInfoMap = {...state.pageStackInfo};
+
+      copyOfPageInfoMap[event.page.index]![indexToEdit] = PageInfo(
+        context: event.context,
+        actions: animatedActions,
+        id: event.id,
+      );
+
       emit(
         state.copyWith(
-          actions: Map.from(state.pageStackInfo)
-            ..[event.page.index] = [
-              ...state.pageStackInfo[event.page.index]!,
-              PageInfo(context: event.context, actions: animatedActions),
-            ],
+          pageStackInfo: copyOfPageInfoMap,
         ),
       );
     });

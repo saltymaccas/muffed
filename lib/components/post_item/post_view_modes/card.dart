@@ -131,46 +131,41 @@ class CardLemmyPostItem extends StatelessWidget {
                       ),
                     ],
                     if (post.body != '' && post.body != null) ...[
-                      Builder(
-                        builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Container(
-                              clipBehavior: Clip.hardEdge,
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Theme.of(context).colorScheme.surface,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                child: MuffedMarkdownBody(
-                                  padding: EdgeInsets.only(
-                                    top: 4,
-                                    left: 4,
-                                    right: 4,
-                                    bottom: displayType == PostDisplayType.list
-                                        ? 0
-                                        : 4,
-                                  ),
-                                  data: post.body!,
-                                  maxHeight: displayType == PostDisplayType.list
-                                      ? 300
-                                      : null,
-                                  onTapText: () {
-                                    if (displayType == PostDisplayType.list) {
-                                      openPost();
-                                    }
-                                  },
-                                ),
-                              ),
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
                             ),
-                          );
-                        },
+                            color: Theme.of(context).colorScheme.surface,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                            ),
+                            child: MuffedMarkdownBody(
+                              padding: EdgeInsets.only(
+                                top: 4,
+                                left: 4,
+                                right: 4,
+                                bottom:
+                                    displayType == PostDisplayType.list ? 0 : 4,
+                              ),
+                              data: post.body!,
+                              maxHeight: displayType == PostDisplayType.list
+                                  ? 300
+                                  : null,
+                              onTapText: () {
+                                if (displayType == PostDisplayType.list) {
+                                  openPost();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ],

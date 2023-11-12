@@ -16,22 +16,31 @@ final class CommunityScreenState extends Equatable {
     this.errorMessage,
     this.isReloading = false,
     this.reachedEnd = false,
+    this.fullCommunityInfoStatus = CommunityStatus.initial,
   }) : assert(
-            communityInfoStatus == CommunityStatus.success &&
-                    community != null ||
-                communityInfoStatus != CommunityStatus.success &&
-                    community == null,
-            'If community info status is success then community must not be null',);
+          communityInfoStatus == CommunityStatus.success && community != null ||
+              communityInfoStatus != CommunityStatus.success &&
+                  community == null,
+          'If community info status is success then community must not be null',
+        );
 
   final LemmyCommunity? community;
   final List<LemmyPost> posts;
   final int pagesLoaded;
 
-  // Whether the posts have loaded
+  /// The status of the community posts
   final CommunityStatus postsStatus;
 
-  // Whether the community info has loaded
+  /// The status of the community info
   final CommunityStatus communityInfoStatus;
+
+  /// the status of the community info with moderators and languages
+  ///
+  /// The reason there are two community info statuses is because
+  /// the search screen does not return the moderates and languages
+  /// so they will need to be loaded if they are not provided
+  final CommunityStatus fullCommunityInfoStatus;
+
   final bool isLoading;
 
   final bool isReloading;
@@ -56,6 +65,7 @@ final class CommunityScreenState extends Equatable {
         errorMessage,
         isReloading,
         reachedEnd,
+        communityInfoStatus,
       ];
 
   CommunityScreenState copyWith({
@@ -68,9 +78,10 @@ final class CommunityScreenState extends Equatable {
     int? communityId,
     LemmySortType? sortType,
     LemmySortType? loadedSortType,
-    Object? errorMessage,
+    Object? error,
     bool? isReloading,
     bool? reachedEnd,
+    CommunityStatus? fullCommunityInfoStatus,
   }) {
     return CommunityScreenState(
       isLoading: isLoading ?? this.isLoading,
@@ -81,9 +92,11 @@ final class CommunityScreenState extends Equatable {
       posts: posts ?? this.posts,
       sortType: sortType ?? this.sortType,
       loadedSortType: loadedSortType ?? this.loadedSortType,
-      errorMessage: errorMessage,
+      errorMessage: error,
       isReloading: isReloading ?? this.isReloading,
       reachedEnd: reachedEnd ?? this.reachedEnd,
+      fullCommunityInfoStatus:
+          fullCommunityInfoStatus ?? this.fullCommunityInfoStatus,
     );
   }
 }

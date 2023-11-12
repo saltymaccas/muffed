@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -36,6 +35,7 @@ class HomePageView extends StatelessWidget {
 
           context.read<DynamicNavigationBarBloc>().add(
                 EditPageActions(
+                  id: 'main_feed',
                   context: context,
                   page: Pages.home,
                   actions: [
@@ -214,55 +214,50 @@ class HomePageView extends StatelessWidget {
           return BlocBuilder<HomeViewPageBloc, HomePageViewState>(
             builder: (context, state) {
               final BuildContext blocContext = context;
-              return MuffedPage(
-                isLoading: state.isLoading,
-                error: state.error,
-                child: BlocListener<GlobalBloc, GlobalState>(
-                  listenWhen: (previous, current) {
-                    final LemmyAccountData? previousAccount =
-                        (previous.lemmySelectedAccount == -1)
-                            ? null
-                            : previous
-                                .lemmyAccounts[previous.lemmySelectedAccount];
+              return BlocListener<GlobalBloc, GlobalState>(
+                listenWhen: (previous, current) {
+                  final LemmyAccountData? previousAccount =
+                      (previous.lemmySelectedAccount == -1)
+                          ? null
+                          : previous
+                              .lemmyAccounts[previous.lemmySelectedAccount];
 
-                    final LemmyAccountData? currentAccount =
-                        (current.lemmySelectedAccount == -1)
-                            ? null
-                            : current
-                                .lemmyAccounts[current.lemmySelectedAccount];
+                  final LemmyAccountData? currentAccount =
+                      (current.lemmySelectedAccount == -1)
+                          ? null
+                          : current.lemmyAccounts[current.lemmySelectedAccount];
 
-                    if (previousAccount != currentAccount ||
-                        previous.lemmyDefaultHomeServer !=
-                                current.lemmyDefaultHomeServer &&
-                            current.lemmySelectedAccount == -1) {
-                      return true;
+                  if (previousAccount != currentAccount ||
+                      previous.lemmyDefaultHomeServer !=
+                              current.lemmyDefaultHomeServer &&
+                          current.lemmySelectedAccount == -1) {
+                    return true;
+                  }
+                  return false;
+                },
+                listener: (context, state) {
+                  context
+                      .read<HomeViewPageBloc>()
+                      .add(LoadInitialPostsRequested());
+                },
+                child: Builder(
+                  builder: (BuildContext context) {
+                    if (state.status == HomePageStatus.loading) {
+                      return const _HomePageLoading();
+                    } else if (state.status == HomePageStatus.failure) {
+                      return _HomePageFailure(state.error);
+                    } else if (state.status == HomePageStatus.success) {
+                      return _HomePageSuccess(
+                        key: ValueKey(
+                          '${state.loadedSortType}',
+                        ),
+                        isLoading: state.isLoading,
+                        posts: state.posts!,
+                      );
+                    } else {
+                      return const _HomePageInitial();
                     }
-                    return false;
                   },
-                  listener: (context, state) {
-                    context
-                        .read<HomeViewPageBloc>()
-                        .add(LoadInitialPostsRequested());
-                  },
-                  child: Builder(
-                    builder: (BuildContext context) {
-                      if (state.status == HomePageStatus.loading) {
-                        return const _HomePageLoading();
-                      } else if (state.status == HomePageStatus.failure) {
-                        return _HomePageFailure(state.error);
-                      } else if (state.status == HomePageStatus.success) {
-                        return _HomePageSuccess(
-                          key: ValueKey(
-                            '${state.loadedSortType}',
-                          ),
-                          isLoading: state.isLoading,
-                          posts: state.posts!,
-                        );
-                      } else {
-                        return const _HomePageInitial();
-                      }
-                    },
-                  ),
                 ),
               );
             },

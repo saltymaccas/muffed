@@ -7,9 +7,8 @@ import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/repo/server_repo.dart';
-
 import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 /// A Screen for search communities comments posts and users
 class SearchScreen extends StatelessWidget {
@@ -274,7 +273,8 @@ class SearchScreen extends StatelessWidget {
                                   if (state.communityId == null)
                                     ListView.builder(
                                       key: ValueKey(
-                                          'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}',),
+                                        'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}',
+                                      ),
                                       controller: communitiesScrollController,
                                       itemCount: state.communities.length,
                                       itemBuilder: (context, index) {
@@ -400,7 +400,8 @@ class SearchScreen extends StatelessWidget {
                                   if (state.communityId == null)
                                     ListView.builder(
                                       key: ValueKey(
-                                          'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}',),
+                                        'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}',
+                                      ),
                                       controller: personsScrollController,
                                       itemCount: state.persons.length,
                                       itemBuilder: (context, index) {
@@ -416,8 +417,6 @@ class SearchScreen extends StatelessWidget {
                                           ),
                                           title:
                                               Text(state.persons[index].name),
-                                          subtitle: Text(
-                                              'score: ${state.persons[index].postScore + state.persons[index].postScore}',),
                                           visualDensity:
                                               VisualDensity.comfortable,
                                         );
@@ -426,7 +425,8 @@ class SearchScreen extends StatelessWidget {
                                   // posts
                                   ListView.builder(
                                     key: ValueKey(
-                                        'search posts ${state.loadedSearchQuery}, ${state.loadedSortType}',),
+                                      'search posts ${state.loadedSearchQuery}, ${state.loadedSortType}',
+                                    ),
                                     controller: postsScrollController,
                                     itemCount: state.posts.length,
                                     itemBuilder: (context, index) {
@@ -436,7 +436,8 @@ class SearchScreen extends StatelessWidget {
 
                                   ListView.builder(
                                     key: ValueKey(
-                                        'search comments ${state.loadedSearchQuery}, ${state.loadedSortType}',),
+                                      'search comments ${state.loadedSearchQuery}, ${state.loadedSortType}',
+                                    ),
                                     controller: commentsScrollController,
                                     itemCount: state.comments.length,
                                     itemBuilder: (context, index) {
@@ -502,10 +503,11 @@ class SearchScreen extends StatelessWidget {
                                 ),
                               ),
                               TextButton(
-                                  onPressed: () {
-                                    context.read<SearchBloc>().add(SearchAll());
-                                  },
-                                  child: const Text('Search all'),),
+                                onPressed: () {
+                                  context.read<SearchBloc>().add(SearchAll());
+                                },
+                                child: const Text('Search all'),
+                              ),
                             ],
                           ),
                         ),

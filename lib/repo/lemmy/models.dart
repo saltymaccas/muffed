@@ -264,7 +264,13 @@ class LemmyComment extends Equatable {
     required this.childCount,
     required this.upVotes,
     required this.downVotes,
-    required this.score, required this.hotRank, required this.postTitle, required this.communityName, required this.communityId, required this.postCreatorId, this.myVote = LemmyVoteType.none,
+    required this.score,
+    required this.hotRank,
+    required this.postTitle,
+    required this.communityName,
+    required this.communityId,
+    required this.postCreatorId,
+    this.myVote = LemmyVoteType.none,
   });
 
   LemmyComment.fromCommentViewJson(Map<String, dynamic> json)
@@ -381,8 +387,11 @@ class LemmyComment extends Equatable {
 }
 
 class LemmyInboxReply extends Equatable {
-  const LemmyInboxReply(
-      {required this.comment, required this.read, required this.id,});
+  const LemmyInboxReply({
+    required this.comment,
+    required this.read,
+    required this.id,
+  });
 
   LemmyInboxReply.fromReplyViewJson(Map<String, dynamic> json)
       : comment = LemmyComment.fromCommentViewJson(json),
@@ -410,8 +419,11 @@ class LemmyInboxReply extends Equatable {
 }
 
 class LemmyInboxMention extends Equatable {
-  const LemmyInboxMention(
-      {required this.comment, required this.read, required this.id,});
+  const LemmyInboxMention({
+    required this.comment,
+    required this.read,
+    required this.id,
+  });
 
   LemmyInboxMention.fromPersonMentionViewJson(Map<String, dynamic> json)
       : comment = LemmyComment.fromCommentViewJson(json),
@@ -442,10 +454,31 @@ class LemmyCommunity extends Equatable {
   const LemmyCommunity({
     required this.id,
     required this.actorId,
-    required this.deleted, required this.hidden, required this.name, required this.local, required this.instanceId, required this.nsfw, required this.postingRestrictedToMods, required this.published, required this.removed, required this.title, required this.comments, required this.hotRank, required this.posts, required this.subscribers, required this.usersActiveDay, required this.usersActiveHalfYear, required this.usersActiveMonth, required this.usersActiveWeek, required this.blocked, required this.subscribed, this.banner,
+    required this.deleted,
+    required this.hidden,
+    required this.name,
+    required this.local,
+    required this.instanceId,
+    required this.nsfw,
+    required this.postingRestrictedToMods,
+    required this.published,
+    required this.removed,
+    required this.title,
+    required this.comments,
+    required this.hotRank,
+    required this.posts,
+    required this.subscribers,
+    required this.usersActiveDay,
+    required this.usersActiveHalfYear,
+    required this.usersActiveMonth,
+    required this.usersActiveWeek,
+    required this.blocked,
+    required this.subscribed,
+    this.banner,
     this.description,
     this.icon,
     this.updated,
+    this.moderators,
   });
 
   LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
@@ -475,7 +508,15 @@ class LemmyCommunity extends Equatable {
         icon = json['community']['icon'],
         description = json['community']['description'],
         banner = json['community']['banner'],
-        updated = json['community']['update'];
+        updated = json['community']['update'],
+        moderators = (json['moderators'] != null)
+            ? List.generate(
+                json['moderators'].length,
+                (index) => LemmyPerson.fromPersonViewJson(
+                  json['moderators']['moderator'][index],
+                ),
+              )
+            : null;
 
   final int id;
   final String actorId;
@@ -507,11 +548,17 @@ class LemmyCommunity extends Equatable {
 
   final LemmySubscribedType subscribed;
 
+  final List<LemmyPerson>? moderators;
+
   String getTag() {
     final regex = RegExp('https://([^/]+)/c/([^/]+)');
     final match = regex.firstMatch(actorId);
     return '!${match?.group(2)}@${match?.group(1)}';
   }
+
+  /// Some api calls in lemmy do not return some parameters
+  /// so this is here to say whether all the information has been received
+  bool isFullyLoaded() => moderators != null;
 
   @override
   List<Object?> get props => [
@@ -607,7 +654,19 @@ class LemmyPerson extends Equatable {
   const LemmyPerson({
     required this.actorId,
     required this.admin,
-    required this.banned, required this.botAccount, required this.deleted, required this.id, required this.instanceId, required this.local, required this.name, required this.published, required this.commentCount, required this.commentScore, required this.postCount, required this.postScore, this.avatar,
+    required this.banned,
+    required this.botAccount,
+    required this.deleted,
+    required this.id,
+    required this.instanceId,
+    required this.local,
+    required this.name,
+    required this.published,
+    this.commentCount,
+    this.commentScore,
+    this.postCount,
+    this.postScore,
+    this.avatar,
     this.banExpires,
     this.banner,
     this.bio,
@@ -659,13 +718,41 @@ class LemmyPerson extends Equatable {
   final DateTime published;
   final String? updated;
 
-  final int commentCount;
-  final int commentScore;
-  final int postCount;
-  final int postScore;
+  final int? commentCount;
+  final int? commentScore;
+  final int? postCount;
+  final int? postScore;
+
+  bool isFullyLoaded() =>
+      commentCount != null &&
+      postCount != null &&
+      commentScore != null &&
+      postScore != null;
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [
+        actorId,
+        admin,
+        avatar,
+        banExpires,
+        banned,
+        banner,
+        bio,
+        botAccount,
+        deleted,
+        displayName,
+        id,
+        instanceId,
+        local,
+        matrixUserId,
+        name,
+        published,
+        updated,
+        commentCount,
+        commentScore,
+        postCount,
+        postScore,
+      ];
 }
 
 class LemmyGetPersonDetailsResponse {
@@ -699,7 +786,9 @@ class LemmySearchResponse {
 
 class LemmyLoginResponse {
   LemmyLoginResponse({
-    required this.registrationCreated, required this.verifyEmailSent, this.jwt,
+    required this.registrationCreated,
+    required this.verifyEmailSent,
+    this.jwt,
   });
 
   final String? jwt;
@@ -713,7 +802,11 @@ class LemmySite extends Equatable {
     required this.languages,
     required this.discussionLanguages,
     required this.version,
-    required this.id, required this.instanceId, required this.name, required this.published, this.banner,
+    required this.id,
+    required this.instanceId,
+    required this.name,
+    required this.published,
+    this.banner,
     this.description,
     this.icon,
     this.privateKey,
@@ -731,8 +824,10 @@ class LemmySite extends Equatable {
           json['all_languages'].length,
           (index) => LemmyLanguage.fromLanguage(json['all_languages'][index]),
         ),
-        discussionLanguages = List.generate(json['discussion_languages'].length,
-            (index) => json['discussion_languages'][index],),
+        discussionLanguages = List.generate(
+          json['discussion_languages'].length,
+          (index) => json['discussion_languages'][index],
+        ),
         version = json['version'],
         banner = json['site_view']['site']['banner'],
         description = json['site_view']['site']['description'],

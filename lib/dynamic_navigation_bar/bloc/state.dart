@@ -40,18 +40,21 @@ final class DynamicNavigationBarState extends Equatable {
 
   DynamicNavigationBarState copyWith({
     int? selectedItemIndex,
-    Map<int, List<PageInfo>>? actions,
+    Map<int, List<PageInfo>>? pageStackInfo,
   }) {
     return DynamicNavigationBarState(
       selectedItemIndex: selectedItemIndex ?? this.selectedItemIndex,
-      pageStackInfo: actions ?? pageStackInfo,
+      pageStackInfo: pageStackInfo ?? this.pageStackInfo,
     );
   }
 }
 
 final class PageInfo {
-  PageInfo({required this.context, this.actions = const []});
+  PageInfo({required this.context, this.actions = const [], this.id});
 
+  /// The id is used to identify a specific set of actions in order for them
+  /// to be changed
+  final String? id;
   final List<Widget> actions;
   final BuildContext context;
 }

@@ -8,9 +8,10 @@ final class GoneToNewMainPage extends DynamicNavigationBarEvent {
 }
 
 final class PageAdded extends DynamicNavigationBarEvent {
-  PageAdded(this.pageInfo, this.page);
+  PageAdded({required this.pageInfo, required this.page, this.id});
   final PageInfo pageInfo;
   final Pages page;
+  final String? id;
 }
 
 final class PageRemoved extends DynamicNavigationBarEvent {
@@ -23,9 +24,11 @@ final class EditPageActions extends DynamicNavigationBarEvent {
     required this.context,
     required this.page,
     required this.actions,
+    required this.id,
   });
 
   final Pages page;
+  final String id;
   final List<Widget> actions;
   final BuildContext context;
 }

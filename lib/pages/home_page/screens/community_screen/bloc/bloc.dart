@@ -10,7 +10,8 @@ class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
   ///
   CommunityScreenBloc({
-    required this.repo, this.community,
+    required this.repo,
+    this.community,
     this.communityName,
     this.communityId,
   }) : super(
@@ -21,7 +22,12 @@ class CommunityScreenBloc
     on<Initialize>((event, emit) async {
       // get community info if none were passed in
       if (state.community == null) {
-        emit(state.copyWith(communityInfoStatus: CommunityStatus.loading));
+        emit(
+          state.copyWith(
+            communityInfoStatus: CommunityStatus.loading,
+            fullCommunityInfoStatus: CommunityStatus.loading,
+          ),
+        );
 
         try {
           final community = await repo.lemmyRepo
@@ -31,13 +37,39 @@ class CommunityScreenBloc
             state.copyWith(
               community: community,
               communityInfoStatus: CommunityStatus.success,
+              fullCommunityInfoStatus: CommunityStatus.success,
             ),
           );
         } catch (err) {
           emit(
             state.copyWith(
               communityInfoStatus: CommunityStatus.failure,
-              errorMessage: err,
+              fullCommunityInfoStatus: CommunityStatus.failure,
+              error: err,
+            ),
+          );
+          rethrow;
+        }
+      } else if (!state.community!.isFullyLoaded()) {
+        emit(state.copyWith(fullCommunityInfoStatus: CommunityStatus.loading));
+
+        try {
+          final community = await repo.lemmyRepo.getCommunity(
+            id: state.community!.id,
+            name: state.community!.name,
+          );
+
+          emit(
+            state.copyWith(
+              community: community,
+              fullCommunityInfoStatus: CommunityStatus.success,
+            ),
+          );
+        } catch (err) {
+          emit(
+            state.copyWith(
+              fullCommunityInfoStatus: CommunityStatus.failure,
+              error: err,
             ),
           );
           rethrow;
@@ -62,7 +94,7 @@ class CommunityScreenBloc
         emit(
           state.copyWith(
             postsStatus: CommunityStatus.failure,
-            errorMessage: err,
+            error: err,
           ),
         );
       }
@@ -91,7 +123,7 @@ class CommunityScreenBloc
               );
             }
           } catch (err) {
-            emit(state.copyWith(isLoading: false, errorMessage: err));
+            emit(state.copyWith(isLoading: false, error: err));
           }
         }
       },
@@ -118,7 +150,7 @@ class CommunityScreenBloc
       } catch (err) {
         emit(
           state.copyWith(
-            errorMessage: err,
+            error: err,
             isLoading: false,
             sortType: state.loadedSortType,
           ),
@@ -148,7 +180,7 @@ class CommunityScreenBloc
           ),
         );
       } catch (err) {
-        emit(state.copyWith(errorMessage: err));
+        emit(state.copyWith(error: err));
       }
     });
     on<PullDownReload>((event, emit) async {
@@ -170,7 +202,7 @@ class CommunityScreenBloc
           ),
         );
       } catch (err) {
-        emit(state.copyWith(errorMessage: err, isReloading: false));
+        emit(state.copyWith(error: err, isReloading: false));
       }
     });
   }

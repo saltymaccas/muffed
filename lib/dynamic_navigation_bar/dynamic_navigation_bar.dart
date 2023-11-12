@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/profile_page/account_switcher.dart';
-
-import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
 
 export 'bloc/bloc.dart';
 
@@ -135,7 +134,6 @@ class DynamicNavigationBar extends StatelessWidget {
 }
 
 class _DynamicNavigationBarItem extends StatefulWidget {
-
   const _DynamicNavigationBarItem({
     required this.icon,
     required this.selected,
@@ -224,7 +222,8 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
                               // key needs to be set so the actions get animated in when page
                               // is pushed
                               key: Key(
-                                  'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}',),
+                                'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}',
+                              ),
                               children: bloc
                                   .state
                                   .pageStackInfo[widget.itemIndex]!
@@ -252,10 +251,13 @@ class SetPageInfo extends StatefulWidget {
     required this.page,
     required this.actions,
     required this.child,
+    this.id,
     super.key,
   });
 
   final Pages page;
+
+  final String? id;
 
   /// The actions that will appear next to the item when it is on the page
   final List<Widget> actions;
@@ -306,8 +308,10 @@ class _SetPageInfoState extends State<SetPageInfo> {
 
     _bloc.add(
       PageAdded(
-        PageInfo(context: context, actions: animatedActions),
-        widget.page,
+        pageInfo:
+            PageInfo(context: context, actions: animatedActions, id: widget.id),
+        page: widget.page,
+        id: widget.id,
       ),
     );
   }

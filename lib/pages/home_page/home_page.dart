@@ -42,61 +42,64 @@ class _HomePageState extends State<HomePage> {
           ),
         ];
 
-        return SetPageInfo(
-          actions: [],
-          page: Pages.home,
-          child: NestedScrollView(
-            clipBehavior: Clip.hardEdge,
-            floatHeaderSlivers: true,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  clipBehavior: Clip.hardEdge,
-                  expandedHeight: 43,
-                  toolbarHeight: 43,
-                  primary: true,
-                  floating: true,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  foregroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,
-                  snap: true,
-                  flexibleSpace: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).padding.top),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          _PageTab(
-                            name: 'Subscribed',
-                            selected: pageIndex == 0,
-                            onTap: () {
-                              setState(() {
-                                pageIndex = 0;
-                              });
-                            },
-                          ),
-                          _PageTab(
-                            name: 'Popular',
-                            selected: pageIndex == 1,
-                            onTap: () {
-                              setState(() {
-                                pageIndex = 1;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(
-                        height: 0.5,
-                      ),
-                    ],
+        return Scaffold(
+          body: SetPageInfo(
+            actions: [],
+            id: 'main_feed',
+            page: Pages.home,
+            child: NestedScrollView(
+              clipBehavior: Clip.hardEdge,
+              floatHeaderSlivers: true,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    clipBehavior: Clip.hardEdge,
+                    expandedHeight: 43,
+                    toolbarHeight: 43,
+                    primary: true,
+                    floating: true,
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    foregroundColor: Theme.of(context).colorScheme.background,
+                    surfaceTintColor: Theme.of(context).colorScheme.background,
+                    snap: true,
+                    flexibleSpace: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).padding.top),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _PageTab(
+                              name: 'Subscribed',
+                              selected: pageIndex == 0,
+                              onTap: () {
+                                setState(() {
+                                  pageIndex = 0;
+                                });
+                              },
+                            ),
+                            _PageTab(
+                              name: 'Popular',
+                              selected: pageIndex == 1,
+                              onTap: () {
+                                setState(() {
+                                  pageIndex = 1;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          height: 0.5,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: pages[pageIndex],
+                ];
+              },
+              body: pages[pageIndex],
+            ),
           ),
         );
       },

@@ -27,15 +27,13 @@ class MuffedMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
+    return IntrinsicHeight(
+      child: OverflowBox(
         maxHeight: maxHeight ?? double.infinity,
-      ),
-      child: SingleChildScrollView(
-        physics: physics,
         child: MarkdownBody(
-          extensionSet: md.ExtensionSet.gitHubWeb,
-          shrinkWrap: shrinkWrap,
+          listItemCrossAxisAlignment: MarkdownListItemCrossAxisAlignment.start,
+          shrinkWrap: true,
+          // extensionSet: md.ExtensionSet.gitHubWeb,
           data: data,
           imageBuilder: (uri, title, alt) {
             return MuffedImage(
@@ -50,8 +48,7 @@ class MuffedMarkdownBody extends StatelessWidget {
             destination,
           ) async {
             if (url != null) {
-              // CHECK IF EMAIL STYLE LINK TO COMMUNITY
-              // Format: !liftoff@lemmy.world
+              // check if link to community
               if (url.startsWith('!')) {
                 await context.push(
                   Uri(
@@ -62,8 +59,7 @@ class MuffedMarkdownBody extends StatelessWidget {
                 return;
               }
 
-              // CHECK IF EMAIL STYLE LINK TO USER
-              // Format: @user@lemmy.world
+              // check if link to user
               if (url.startsWith('@')) {
                 // remove the '@'
                 final username = url.substring(1);
@@ -90,7 +86,7 @@ class MuffedMarkdownBody extends StatelessWidget {
                 return;
               }
 
-              // CHECK IF LINK TO USER
+              // check if link to user
               if (path.startsWith('/u/')) {
                 await context.pushNamed(
                   'person',
@@ -101,7 +97,7 @@ class MuffedMarkdownBody extends StatelessWidget {
                 return;
               }
 
-              // CHECK IF LINK TO COMMUNITY
+              // check if link to community
               if (path.startsWith('/c/')) {
                 await context.pushNamed(
                   'community',
