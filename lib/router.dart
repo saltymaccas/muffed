@@ -185,6 +185,7 @@ final router = GoRouter(
                   },
                 ),
                 GoRoute(
+                  name: 'person',
                   path: 'person',
                   builder: (context, state) {
                     final qp = state.uri.queryParameters;
@@ -202,10 +203,11 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-                path: '/messages',
-                builder: (context, state) {
-                  return const Placeholder();
-                },),
+              path: '/messages',
+              builder: (context, state) {
+                return const Placeholder();
+              },
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -257,10 +259,11 @@ final router = GoRouter(
                       },
                     ),
                     GoRoute(
-                        path: 'about',
-                        builder: (context, state) {
-                          return const AboutScreen();
-                        },),
+                      path: 'about',
+                      builder: (context, state) {
+                        return const AboutScreen();
+                      },
+                    ),
                   ],
                 ),
                 GoRoute(
