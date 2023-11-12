@@ -9,7 +9,6 @@ class MuffedMarkdownBody extends StatelessWidget {
   const MuffedMarkdownBody({
     required this.data,
     super.key,
-    this.padding = const EdgeInsets.all(4),
     this.controller,
     this.physics = const NeverScrollableScrollPhysics(),
     this.shrinkWrap = true,
@@ -19,7 +18,6 @@ class MuffedMarkdownBody extends StatelessWidget {
   final String data;
 
   final double? maxHeight;
-  final EdgeInsets padding;
   final ScrollPhysics? physics;
   final bool shrinkWrap;
   final ScrollController? controller;

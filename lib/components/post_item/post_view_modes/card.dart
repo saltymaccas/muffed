@@ -143,17 +143,14 @@ class CardLemmyPostItem extends StatelessWidget {
                             color: Theme.of(context).colorScheme.surface,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4,
+                            padding: EdgeInsets.only(
+                              top: 4,
+                              left: 4,
+                              right: 4,
+                              bottom:
+                                  displayType == PostDisplayType.list ? 0 : 4,
                             ),
                             child: MuffedMarkdownBody(
-                              padding: EdgeInsets.only(
-                                top: 4,
-                                left: 4,
-                                right: 4,
-                                bottom:
-                                    displayType == PostDisplayType.list ? 0 : 4,
-                              ),
                               data: post.body!,
                               maxHeight: displayType == PostDisplayType.list
                                   ? 300
