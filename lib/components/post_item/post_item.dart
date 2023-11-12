@@ -1,36 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/components/error.dart';
+import 'package:muffed/components/post_item/bloc/bloc.dart';
+import 'package:muffed/components/post_item/post_view_modes/post_view_modes.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:muffed/components/post_item/bloc/bloc.dart';
-import 'package:muffed/components/post_item/post_view_modes/post_view_modes.dart';
-
 /// The forms posts can be displayed in
-enum PostViewMode { card }
+enum PostViewForm { card }
+
+/// The types of ways the posts can display in
+///
+/// [list] - Used for when the post is displayed in a list
+/// [comments] - Used for when the post is displayed at the top of a comment
+/// section
+enum PostDisplayType { list, comments }
 
 /// A widget that displays a post, The form the post is displayed in can be
-/// changed with [PostViewMode]
+/// changed with [PostViewForm]
 class PostItem extends StatefulWidget {
   ///
   const PostItem({
     this.post,
     this.postId,
-    this.type = PostViewMode.card,
-    this.openOnTap = true,
-    this.limitHeight = false,
+    this.form = PostViewForm.card,
     this.useBlocFromContext,
+    this.displayType = PostDisplayType.list,
     super.key,
   });
 
   final int? postId;
   final LemmyPost? post;
-  final PostViewMode type;
-  final bool openOnTap;
-  final bool limitHeight;
-
+  final PostViewForm form;
+  final PostDisplayType displayType;
   final BuildContext? useBlocFromContext;
 
   @override
@@ -57,17 +60,15 @@ class _PostItemState extends State<PostItem>
               ignorePointers: true,
               child: CardLemmyPostItem(
                 placeholderPost,
-                openOnTap: widget.openOnTap,
-                limitContentHeight: widget.limitHeight,
+                displayType: widget.displayType,
               ),
             );
           case PostItemStatus.success:
-            switch (widget.type) {
-              case PostViewMode.card:
+            switch (widget.form) {
+              case PostViewForm.card:
                 return CardLemmyPostItem(
                   state.post!,
-                  openOnTap: widget.openOnTap,
-                  limitContentHeight: widget.limitHeight,
+                  displayType: widget.displayType,
                 );
             }
           case PostItemStatus.failure:

@@ -3,32 +3,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
+import 'package:muffed/components/post_item/bloc/bloc.dart';
+import 'package:muffed/components/post_item/post_item.dart';
+import 'package:muffed/components/post_item/post_more_menu_button.dart';
 import 'package:muffed/components/url_view.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
-
-import 'package:muffed/components/post_item/bloc/bloc.dart';
-import 'package:muffed/components/post_item/post_more_menu_button.dart';
 
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatelessWidget {
   ///
   const CardLemmyPostItem(
     this.post, {
-    this.limitContentHeight = true,
-    this.openOnTap = true,
+    this.displayType = PostDisplayType.list,
     super.key,
   });
 
   /// The lemmy post
   final LemmyPost post;
 
-  /// Whether the post should open when tapped
-  final bool openOnTap;
-
-  /// Whether the height of the text should be capped
-  final bool limitContentHeight;
+  final PostDisplayType displayType;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +38,7 @@ class CardLemmyPostItem extends StatelessWidget {
 
     return Card(
       child: InkWell(
-        onTap: openOnTap ? openPost : null,
+        onTap: displayType == PostDisplayType.list ? openPost : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,7 +50,8 @@ class CardLemmyPostItem extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       context.push(
-                          '/home/community?community_id=${post.communityId}',);
+                        '/home/community?community_id=${post.communityId}',
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,6 +126,8 @@ class CardLemmyPostItem extends StatelessWidget {
                       UrlView(
                         url: post.url!,
                         nsfw: post.nsfw,
+                        tapImageAnywhereForFullScreen:
+                            displayType == PostDisplayType.comments,
                       ),
                     ],
                     if (post.body != '' && post.body != null) ...[
@@ -155,12 +153,16 @@ class CardLemmyPostItem extends StatelessWidget {
                                     top: 4,
                                     left: 4,
                                     right: 4,
-                                    bottom: limitContentHeight ? 0 : 4,
+                                    bottom: displayType == PostDisplayType.list
+                                        ? 0
+                                        : 4,
                                   ),
                                   data: post.body!,
-                                  maxHeight: limitContentHeight ? 300 : null,
+                                  maxHeight: displayType == PostDisplayType.list
+                                      ? 300
+                                      : null,
                                   onTapText: () {
-                                    if (openOnTap) {
+                                    if (displayType == PostDisplayType.list) {
                                       openPost();
                                     }
                                   },

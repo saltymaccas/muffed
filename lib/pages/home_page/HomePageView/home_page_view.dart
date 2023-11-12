@@ -313,7 +313,7 @@ class _HomePageSuccess extends StatelessWidget {
                 return PostItem(
                   key: ValueKey(posts[index]),
                   post: posts[index],
-                  limitHeight: true,
+                  displayType: PostDisplayType.list,
                 );
               },
             ),

@@ -4,9 +4,8 @@ import 'package:muffed/components/error.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/repo/server_repo.dart';
-
 import 'package:muffed/pages/profile_page/screens/saved_posts_screen/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 class SavedPostsScreen extends StatelessWidget {
   const SavedPostsScreen({super.key});
@@ -32,7 +31,7 @@ class SavedPostsScreen extends StatelessWidget {
                 return PostItem(
                   key: ValueKey(state.posts[index].id),
                   post: state.posts[index],
-                  limitHeight: true,
+                  displayType: PostDisplayType.list,
                 );
               },
             );

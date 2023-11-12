@@ -11,10 +11,9 @@ import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
-
-import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 
 /// The screen that displays the community including information and the
 /// post view
@@ -25,8 +24,10 @@ class CommunityScreen extends StatelessWidget {
     this.communityName,
     this.community,
     super.key,
-  }) : assert(communityId != null || communityName != null,
-            'No community given: commuiityId: $communityId, communityName: $communityName',);
+  }) : assert(
+          communityId != null || communityName != null,
+          'No community given: commuiityId: $communityId, communityName: $communityName',
+        );
 
   /// The community ID
   final int? communityId;
@@ -372,7 +373,7 @@ class CommunityScreen extends StatelessWidget {
                               return PostItem(
                                 key: ValueKey(state.posts[index]),
                                 post: state.posts[index],
-                                limitHeight: true,
+                                displayType: PostDisplayType.list,
                               );
                             },
                           ),
@@ -598,19 +599,20 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          // TODO: This is temporary for now
-                                          MaterialPageRoute<void>(
-                                            builder: (context) =>
-                                                CommunityInfoScreen(
-                                              community: community,
-                                            ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        // TODO: This is temporary for now
+                                        MaterialPageRoute<void>(
+                                          builder: (context) =>
+                                              CommunityInfoScreen(
+                                            community: community,
                                           ),
-                                        );
-                                      },
-                                      child: const Text('See community info'),),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('See community info'),
+                                  ),
                                   if (context.read<GlobalBloc>().isLoggedIn())
                                     TextButton(
                                       onPressed: () {

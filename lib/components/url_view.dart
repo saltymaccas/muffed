@@ -1,16 +1,21 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/components/image.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/components/image.dart';
-
 class UrlView extends StatelessWidget {
-  const UrlView({required this.url, this.nsfw = false, super.key});
+  const UrlView({
+    required this.url,
+    this.nsfw = false,
+    this.tapImageAnywhereForFullScreen = true,
+    super.key,
+  });
 
   final String url;
   final bool nsfw;
+  final bool tapImageAnywhereForFullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +32,7 @@ class UrlView extends StatelessWidget {
           child: MuffedImage(
             imageUrl: url,
             shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
+            tapAnywhereForFullScreen: tapImageAnywhereForFullScreen,
           ),
         ),
       );

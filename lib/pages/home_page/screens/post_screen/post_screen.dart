@@ -10,10 +10,9 @@ import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/post_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
-
-import 'package:muffed/pages/home_page/screens/post_screen/bloc/bloc.dart';
 
 /// Displays a screen that shows the post on top and the comments under
 class PostScreen extends StatelessWidget {
@@ -158,9 +157,8 @@ class PostScreen extends StatelessWidget {
                             postId: postId,
                             post: post,
                             useBlocFromContext: postItemBlocContext,
-                            openOnTap: false,
-                            limitHeight: false,
-                            type: PostViewMode.card,
+                            displayType: PostDisplayType.comments,
+                            form: PostViewForm.card,
                           ),
                         ),
                         if (state.status == PostScreenStatus.success)

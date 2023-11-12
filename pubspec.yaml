@@ -39,6 +39,8 @@ dependencies:
   google_fonts: ^6.1.0
   markdown: ^7.1.1
   skeletonizer: ^0.8.0
+  photo_view: ^0.14.0
+  matrix4_transform: ^2.0.1
 
 dev_dependencies:
   flutter_test:
