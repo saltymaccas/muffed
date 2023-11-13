@@ -25,22 +25,49 @@ class _HomePageState extends State<HomePage> {
         return false;
       },
       builder: (context, state) {
-        if (!state.isLoggedIn()) {
-          return HomePageView(
-            mode: HomePageViewMode(listingType: LemmyListingType.all),
+        // construct the pages
+        final pages = <(String, Widget)>[
+          if (state.isLoggedIn())
+            (
+              'Subscribed',
+              HomePageView(
+                key: const PageStorageKey('subscribed'),
+                mode:
+                    HomePageViewMode(listingType: LemmyListingType.subscribed),
+              )
+            ),
+          (
+            'Popular',
+            HomePageView(
+              key: const PageStorageKey('popular'),
+              mode: HomePageViewMode(listingType: LemmyListingType.all),
+            )
+          ),
+        ];
+
+        // generate tabs
+        final List<Widget> tabs = [];
+        for (int i = 0; i < pages.length; i++) {
+          tabs.add(
+            _PageTab(
+              name: pages[i].$1,
+              selected: pageIndex == i,
+              onTap: () {
+                setState(() {
+                  pageIndex = i;
+                });
+              },
+            ),
           );
         }
 
-        final pages = [
-          HomePageView(
-            key: const PageStorageKey('subscribed'),
-            mode: HomePageViewMode(listingType: LemmyListingType.subscribed),
-          ),
-          HomePageView(
-            key: const PageStorageKey('popular'),
-            mode: HomePageViewMode(listingType: LemmyListingType.all),
-          ),
-        ];
+        // generate pages
+        final List<Widget> pageViews = [];
+        for (int i = 0; i < pages.length; i++) {
+          pageViews.add(
+            pages[i].$2,
+          );
+        }
 
         return Scaffold(
           body: SetPageInfo(
@@ -55,8 +82,7 @@ class _HomePageState extends State<HomePage> {
                 return <Widget>[
                   SliverAppBar(
                     clipBehavior: Clip.hardEdge,
-                    expandedHeight: 43,
-                    toolbarHeight: 43,
+                    toolbarHeight: 50,
                     primary: true,
                     floating: true,
                     backgroundColor: Theme.of(context).colorScheme.background,
@@ -69,26 +95,7 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(height: MediaQuery.of(context).padding.top),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _PageTab(
-                              name: 'Subscribed',
-                              selected: pageIndex == 0,
-                              onTap: () {
-                                setState(() {
-                                  pageIndex = 0;
-                                });
-                              },
-                            ),
-                            _PageTab(
-                              name: 'Popular',
-                              selected: pageIndex == 1,
-                              onTap: () {
-                                setState(() {
-                                  pageIndex = 1;
-                                });
-                              },
-                            ),
-                          ],
+                          children: tabs,
                         ),
                         const Divider(
                           height: 0.5,
@@ -98,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ];
               },
-              body: pages[pageIndex],
+              body: pageViews[pageIndex],
             ),
           ),
         );
