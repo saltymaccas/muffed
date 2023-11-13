@@ -252,6 +252,9 @@ class SearchScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+                      Divider(
+                        height: 1,
+                      ),
                       Expanded(
                         child: Stack(
                           children: [
