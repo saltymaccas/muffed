@@ -1,10 +1,13 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
 part 'state.dart';
+
+final _log = Logger('CommunityScreenBloc');
 
 class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
@@ -37,38 +40,12 @@ class CommunityScreenBloc
             state.copyWith(
               community: community,
               communityInfoStatus: CommunityStatus.success,
-              fullCommunityInfoStatus: CommunityStatus.success,
             ),
           );
         } catch (err) {
           emit(
             state.copyWith(
               communityInfoStatus: CommunityStatus.failure,
-              fullCommunityInfoStatus: CommunityStatus.failure,
-              error: err,
-            ),
-          );
-          rethrow;
-        }
-      } else if (!state.community!.isFullyLoaded()) {
-        emit(state.copyWith(fullCommunityInfoStatus: CommunityStatus.loading));
-
-        try {
-          final community = await repo.lemmyRepo.getCommunity(
-            id: state.community!.id,
-            name: state.community!.name,
-          );
-
-          emit(
-            state.copyWith(
-              community: community,
-              fullCommunityInfoStatus: CommunityStatus.success,
-            ),
-          );
-        } catch (err) {
-          emit(
-            state.copyWith(
-              fullCommunityInfoStatus: CommunityStatus.failure,
               error: err,
             ),
           );
@@ -76,6 +53,44 @@ class CommunityScreenBloc
         }
       } else {
         emit(state.copyWith(communityInfoStatus: CommunityStatus.success));
+      }
+
+      // if community is loaded check if it is fully loaded, if not fully load
+      // it
+      if (state.communityInfoStatus == CommunityStatus.success) {
+        if (!state.community!.isFullyLoaded()) {
+          emit(
+            state.copyWith(fullCommunityInfoStatus: CommunityStatus.loading),
+          );
+
+          try {
+            print('test33');
+
+            final community = await repo.lemmyRepo.getCommunity(
+              id: state.community!.id,
+              name: state.community!.name,
+            );
+
+            emit(
+              state.copyWith(
+                community: community,
+                fullCommunityInfoStatus: CommunityStatus.success,
+              ),
+            );
+          } catch (err) {
+            emit(
+              state.copyWith(
+                fullCommunityInfoStatus: CommunityStatus.failure,
+                error: err,
+              ),
+            );
+            rethrow;
+          }
+        } else {
+          emit(
+            state.copyWith(fullCommunityInfoStatus: CommunityStatus.success),
+          );
+        }
       }
 
       // get posts
@@ -211,4 +226,18 @@ class CommunityScreenBloc
   final int? communityId;
   final LemmyCommunity? community;
   final ServerRepo repo;
+
+  @override
+  void onChange(Change<CommunityScreenState> change) {
+    super.onChange(change);
+    _log.fine(change);
+  }
+
+  @override
+  void onTransition(
+    Transition<CommunityScreenEvent, CommunityScreenState> transition,
+  ) {
+    super.onTransition(transition);
+    _log.fine(transition);
+  }
 }

@@ -65,7 +65,7 @@ final class CommunityScreenState extends Equatable {
         errorMessage,
         isReloading,
         reachedEnd,
-        communityInfoStatus,
+        fullCommunityInfoStatus,
       ];
 
   CommunityScreenState copyWith({

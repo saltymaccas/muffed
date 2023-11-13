@@ -602,11 +602,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     onPressed: () {
                                       Navigator.push(
                                         context,
-                                        // TODO: This is temporary for now
                                         MaterialPageRoute<void>(
                                           builder: (context) =>
                                               CommunityInfoScreen(
-                                            community: community,
+                                            bloc: bloc,
                                           ),
                                         ),
                                       );

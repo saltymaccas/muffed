@@ -481,42 +481,52 @@ class LemmyCommunity extends Equatable {
     this.moderators,
   });
 
-  LemmyCommunity.fromCommunityViewJson(Map<String, dynamic> json)
-      : id = json['community']['id'],
-        actorId = json['community']['actor_id'],
-        deleted = json['community']['deleted'],
-        hidden = json['community']['hidden'],
-        name = json['community']['name'],
-        local = json['community']['local'],
-        instanceId = json['community']['instance_id'],
-        nsfw = json['community']['nsfw'],
-        postingRestrictedToMods =
-            json['community']['posting_restricted_to_mods'],
-        published = DateTime.parse(json['community']['published'] + 'Z'),
-        removed = json['community']['removed'],
-        title = json['community']['title'],
-        comments = json['counts']['comments'],
-        hotRank = json['counts']['hot_rank'],
-        posts = json['counts']['posts'],
-        subscribers = json['counts']['subscribers'],
-        usersActiveDay = json['counts']['users_active_day'],
-        usersActiveHalfYear = json['counts']['users_active_half_year'],
-        usersActiveMonth = json['counts']['users_active_month'],
-        usersActiveWeek = json['counts']['users_active_week'],
-        blocked = json['blocked'],
-        subscribed = jsonToLemmySubscribedType[json['subscribed']]!,
-        icon = json['community']['icon'],
-        description = json['community']['description'],
-        banner = json['community']['banner'],
-        updated = json['community']['update'],
-        moderators = (json['moderators'] != null)
-            ? List.generate(
-                json['moderators'].length,
-                (index) => LemmyPerson.fromPersonViewJson(
-                  json['moderators']['moderator'][index],
-                ),
-              )
-            : null;
+  factory LemmyCommunity.fromJson(Map<String, dynamic> json) {
+    // works out what json type was parsed in
+    final isCommunityResponse = json['community_view'] != null;
+    final Map<String, dynamic> communityView =
+        isCommunityResponse ? json['community_view'] : json;
+    final Map<String, dynamic>? communityResponse =
+        isCommunityResponse ? json : null;
+
+    return LemmyCommunity(
+      id: communityView['community']['id'],
+      actorId: communityView['community']['actor_id'],
+      deleted: communityView['community']['deleted'],
+      hidden: communityView['community']['hidden'],
+      name: communityView['community']['name'],
+      local: communityView['community']['local'],
+      instanceId: communityView['community']['instance_id'],
+      nsfw: communityView['community']['nsfw'],
+      postingRestrictedToMods: communityView['community']
+          ['posting_restricted_to_mods'],
+      published: DateTime.parse(communityView['community']['published'] + 'Z'),
+      removed: communityView['community']['removed'],
+      title: communityView['community']['title'],
+      comments: communityView['counts']['comments'],
+      hotRank: communityView['counts']['hot_rank'],
+      posts: communityView['counts']['posts'],
+      subscribers: communityView['counts']['subscribers'],
+      usersActiveDay: communityView['counts']['users_active_day'],
+      usersActiveHalfYear: communityView['counts']['users_active_half_year'],
+      usersActiveMonth: communityView['counts']['users_active_month'],
+      usersActiveWeek: communityView['counts']['users_active_week'],
+      blocked: communityView['blocked'],
+      subscribed: jsonToLemmySubscribedType[communityView['subscribed']]!,
+      icon: communityView['community']['icon'],
+      description: communityView['community']['description'],
+      banner: communityView['community']['banner'],
+      updated: communityView['community']['update'],
+      moderators: (communityResponse != null)
+          ? List.generate(
+              communityResponse['moderators'].length,
+              (index) => LemmyPerson.fromPersonViewJson(
+                communityResponse['moderators'][index]['moderator'],
+              ),
+            )
+          : null,
+    );
+  }
 
   final int id;
   final String actorId;
@@ -588,6 +598,7 @@ class LemmyCommunity extends Equatable {
         usersActiveWeek,
         blocked,
         subscribed,
+        moderators,
       ];
 
   LemmyCommunity copyWith({
@@ -675,30 +686,41 @@ class LemmyPerson extends Equatable {
     this.updated,
   });
 
-  LemmyPerson.fromPersonViewJson(Map<String, dynamic> json)
-      : actorId = json['person']['actor_id'],
-        admin = json['person']['admin'],
-        banned = json['person']['banned'],
-        botAccount = json['person']['bot_account'],
-        deleted = json['person']['deleted'],
-        id = json['person']['id'],
-        instanceId = json['person']['instance_id'],
-        local = json['person']['local'],
-        name = json['person']['name'],
-        published = DateTime.parse(json['person']['published'] + 'Z'),
-        commentCount = json['counts']['comment_count'],
-        commentScore = json['counts']['comment_score'],
-        postCount = json['counts']['post_count'],
-        postScore = json['counts']['post_score'],
-        avatar = json['person']['avatar'],
-        banExpires = (json['person']['ban_expires'] != null)
-            ? DateTime.parse(json['person']['ban_expires'] + 'Z')
-            : null,
-        banner = json['person']['banner'],
-        bio = json['person']['bio'],
-        displayName = json['person']['display_name'],
-        matrixUserId = json['person']['matrix_user_id'],
-        updated = json['person']['updated'];
+  factory LemmyPerson.fromPersonViewJson(Map<String, dynamic> json) {
+    final isPersonView = json['person'] != null;
+    final person = isPersonView ? json['person'] : json;
+    final personView = isPersonView ? json : null;
+
+    return LemmyPerson(
+      actorId: person['actor_id'],
+      admin: person['admin'],
+      banned: person['banned'],
+      botAccount: person['bot_account'],
+      deleted: person['deleted'],
+      id: person['id'],
+      instanceId: person['instance_id'],
+      local: person['local'],
+      name: person['name'],
+      published: DateTime.parse(person['published'] + 'Z'),
+      avatar: person['avatar'],
+      banExpires: (person['ban_expires'] != null)
+          ? DateTime.parse(person['ban_expires'] + 'Z')
+          : null,
+      banner: person['banner'],
+      bio: person['bio'],
+      displayName: person['display_name'],
+      matrixUserId: person['matrix_user_id'],
+      updated: person['updated'],
+      commentCount:
+          (personView != null) ? personView['counts']['comment_count'] : null,
+      commentScore:
+          (personView != null) ? personView['counts']['comment_score'] : null,
+      postCount:
+          (personView != null) ? personView['counts']['post_count'] : null,
+      postScore:
+          (personView != null) ? personView['counts']['post_score'] : null,
+    );
+  }
 
   final String actorId;
   final bool admin;

@@ -101,7 +101,8 @@ interface class LemmyRepo {
     }
 
     _log.info(
-        'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters',);
+      'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters',
+    );
 
     final Response<Map<String, dynamic>> response = await dio.get(
       '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
@@ -148,16 +149,6 @@ interface class LemmyRepo {
   }
 
   /// Gets comments from lemmy api
-  ///
-  /// The lemmy api determines weather a comment is a child to another comment
-  /// by a path value e.g. 0.356135.23532.234523, where the 0 is the post and
-  /// the last number is the id the the comment itself
-  ///
-  /// the [LemmyComment] instead just has the child comments in a list in the
-  /// object.
-  ///
-  /// Sometimes a comment can be returned from the api that does not include the
-  /// parent comment in the list
   Future<List<LemmyComment>> getComments({
     int? postId,
     int? parentId,
@@ -225,8 +216,10 @@ interface class LemmyRepo {
           (response['comments'] as List)[index],
         ),
       ),
-      moderates: List.generate((response['moderates'] as List).length,
-          (index) => response['moderates'][index]['community']['title'],),
+      moderates: List.generate(
+        (response['moderates'] as List).length,
+        (index) => response['moderates'][index]['community']['title'],
+      ),
     );
   }
 
@@ -264,7 +257,7 @@ interface class LemmyRepo {
       ),
       lemmyCommunities: List.generate(
         rawCommunities.length,
-        (index) => LemmyCommunity.fromCommunityViewJson(rawCommunities[index]),
+        (index) => LemmyCommunity.fromJson(rawCommunities[index]),
       ),
       lemmyPersons: List.generate(
         rawPersons.length,
@@ -290,7 +283,9 @@ interface class LemmyRepo {
       },
     );
 
-    return LemmyCommunity.fromCommunityViewJson(response['community_view']);
+    return LemmyCommunity.fromJson(
+      response,
+    );
   }
 
   Future<LemmyLoginResponse> login(
@@ -321,30 +316,39 @@ interface class LemmyRepo {
     int postId,
     LemmyVoteType vote,
   ) =>
-      postRequest(path: '/post/like', data: {
-        'post_id': postId,
-        'score': lemmyVoteTypeJson[vote],
-      },);
+      postRequest(
+        path: '/post/like',
+        data: {
+          'post_id': postId,
+          'score': lemmyVoteTypeJson[vote],
+        },
+      );
 
   Future<void> voteComment(
     int commentId,
     LemmyVoteType vote,
   ) =>
-      postRequest(path: '/comment/like', data: {
-        'comment_id': commentId,
-        'score': lemmyVoteTypeJson[vote],
-      },);
+      postRequest(
+        path: '/comment/like',
+        data: {
+          'comment_id': commentId,
+          'score': lemmyVoteTypeJson[vote],
+        },
+      );
 
   Future<void> createComment(
     String content,
     int postId,
     int? parentId,
   ) =>
-      postRequest(path: '/comment', data: {
-        'post_id': postId,
-        'content': content,
-        if (parentId != null) 'parent_id': parentId,
-      },);
+      postRequest(
+        path: '/comment',
+        data: {
+          'post_id': postId,
+          'content': content,
+          if (parentId != null) 'parent_id': parentId,
+        },
+      );
 
   Future<LemmySubscribedType> followCommunity({
     required int communityId,
@@ -362,12 +366,13 @@ interface class LemmyRepo {
   /// blocked
   Future<bool> BlockPerson({required int personId, required bool block}) async {
     final response = await postRequest(
-        path: '/user/block',
-        data: {
-          'block': block,
-          'person_id': personId,
-        },
-        mustBeLoggedIn: true,);
+      path: '/user/block',
+      data: {
+        'block': block,
+        'person_id': personId,
+      },
+      mustBeLoggedIn: true,
+    );
     return response['blocked'];
   }
 
