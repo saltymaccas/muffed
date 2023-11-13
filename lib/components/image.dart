@@ -210,7 +210,7 @@ void showFullScreenImageView(BuildContext context, String url, String heroTag) {
 
 class FullScreenImageView extends StatefulWidget {
   const FullScreenImageView(
-      {required this.url, required this.heroTag, super.key});
+      {required this.url, required this.heroTag, super.key,});
 
   final String url;
   final String heroTag;
@@ -239,8 +239,9 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
       body: Listener(
         onPointerMove: scaleIsInitial
             ? (event) {
-                if (!isDragging && event.delta.dx.abs() > event.delta.dy.abs())
+                if (!isDragging && event.delta.dx.abs() > event.delta.dy.abs()) {
                   return;
+                }
                 setState(() {
                   isDragging = true;
                   offset += event.delta;

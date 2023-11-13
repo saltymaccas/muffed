@@ -5,22 +5,22 @@ import 'package:muffed/components/popup_menu/bloc/bloc.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 500);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
-const double _kMenuHorizontalPadding = 16.0;
+const double _kMenuHorizontalPadding = 16;
 const double _kMenuMaxWidth = 5.0 * _kMenuWidthStep;
 const double _kMenuMinWidth = 2.0 * _kMenuWidthStep;
-const double _kMenuVerticalPadding = 8.0;
-const double _kMenuWidthStep = 56.0;
-const double _kMenuScreenPadding = 8.0;
+const double _kMenuVerticalPadding = 8;
+const double _kMenuWidthStep = 56;
+const double _kMenuScreenPadding = 8;
 
 // TODO: Neaten up and add comments
 
 class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
   const MuffedPopupMenuExpandableItem({
-    super.key,
-    required this.items,
+    required this.items, super.key,
     this.title = 'Title',
   });
 
+  @override
   final String title;
 
   final List<MuffedPopupMenuItem> items;
@@ -64,9 +64,9 @@ class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
                                   onPressed: () => context
                                       .read<MuffedPopupMenuBloc>()
                                       .add(BackPressed()),
-                                  icon: Align(
+                                  icon: const Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Icon(Icons.arrow_back)),
+                                      child: Icon(Icons.arrow_back),),
                                 );
                               },
                             ),
@@ -99,9 +99,9 @@ class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
                           transitionBuilder:
                               (Widget child, Animation<double> animation) {
                             return ScaleTransition(
-                                scale: animation, child: child);
+                                scale: animation, child: child,);
                           },
-                          child: Icon(Icons.arrow_right)),
+                          child: const Icon(Icons.arrow_right),),
                     ],
                   ),
                 ),
@@ -267,7 +267,7 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
         transitionBuilder: (Widget child, Animation<double> animation) {
           return ScaleTransition(scale: animation, child: child);
         },
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         child: icon,
@@ -302,7 +302,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
     return CurvedAnimation(
       parent: super.createAnimation(),
       curve: Curves.linear,
-      reverseCurve: const Interval(0.0, _kMenuCloseIntervalEnd),
+      reverseCurve: const Interval(0, _kMenuCloseIntervalEnd),
     );
   }
 
@@ -361,8 +361,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
 
 /// The actual menu widget
 class _MuffedPopupMenu extends StatelessWidget {
-  _MuffedPopupMenu({
-    super.key,
+  const _MuffedPopupMenu({
     required this.route,
   });
 
@@ -374,12 +373,12 @@ class _MuffedPopupMenu extends StatelessWidget {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
 
     final CurveTween opacity = CurveTween(
-        curve: const Interval(0.0, 1.0 / 3.0, curve: Curves.easeInOutCubic));
+        curve: const Interval(0, 1.0 / 3.0, curve: Curves.easeInOutCubic),);
     final CurveTween width =
-        CurveTween(curve: Interval(0.0, unit, curve: Curves.easeInOutCubic));
+        CurveTween(curve: Interval(0, unit, curve: Curves.easeInOutCubic));
     final CurveTween height = CurveTween(
-        curve: Interval(0.0, unit * route.items.length,
-            curve: Curves.easeInOutCubic));
+        curve: Interval(0, unit * route.items.length,
+            curve: Curves.easeInOutCubic,),);
 
     return BlocProvider(
       create: (context) => MuffedPopupMenuBloc(
@@ -473,7 +472,7 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
 
     final double buttonHeight = size.height - position.top - position.bottom;
     // Find the ideal vertical position.
-    double y = position.top;
+    final double y = position.top;
 
     // Find the ideal horizontal position.
     double x;
@@ -492,7 +491,7 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
     final Offset originCenter = position.toRect(Offset.zero & size).center;
     final Iterable<Rect> subScreens =
         DisplayFeatureSubScreen.subScreensInBounds(
-            Offset.zero & size, avoidBounds);
+            Offset.zero & size, avoidBounds,);
     final Rect subScreen = _closestScreen(subScreens, originCenter);
     return _fitInsideScreen(subScreen, childSize, wantedPosition);
   }

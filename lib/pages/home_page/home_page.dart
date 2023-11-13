@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
         return Scaffold(
           body: SetPageInfo(
-            actions: [],
+            actions: const [],
             id: 'main_feed',
             page: Pages.home,
             child: NestedScrollView(
