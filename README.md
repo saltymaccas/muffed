@@ -12,7 +12,7 @@ A decentralised reddit alternative that works on the Lemmy/Activity-pub network.
 
 <div align="center">
 <a href='https://play.google.com/store/apps/details?id=com.freshfieldreds.muffed&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-    <img src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/>
+    <img src='docs/assets/badges/google-play-badge.png' height="80"/>
   </a>
   <a href="https://apt.izzysoft.de/fdroid/index/apk/com.freshfieldreds.muffed/">
     <img src="docs/assets/badges/IzzyOnDroid.png" height="80">
