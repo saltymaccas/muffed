@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const String version = '0.8.3+12';
+const String version = '0.8.4+13';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
