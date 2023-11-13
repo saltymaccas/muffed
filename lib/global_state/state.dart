@@ -37,8 +37,6 @@ final class GlobalState extends Equatable {
     );
   }
 
-  bool isLoggedIn() => lemmySelectedAccount != -1;
-
   /// All the lemmy accounts the user has added
   final List<LemmyAccountData> lemmyAccounts;
 
@@ -68,6 +66,8 @@ final class GlobalState extends Equatable {
   final double bodyTextScaleFactor;
   final double labelTextScaleFactor;
   final double titleTextScaleFactor;
+
+  bool isLoggedIn() => lemmySelectedAccount != -1;
 
   @override
   List<Object?> get props => [
@@ -139,11 +139,12 @@ final class GlobalState extends Equatable {
 }
 
 final class LemmyAccountData extends Equatable {
-  const LemmyAccountData(
-      {required this.jwt,
-      required this.homeServer,
-      required this.name,
-      required this.id,});
+  const LemmyAccountData({
+    required this.jwt,
+    required this.homeServer,
+    required this.name,
+    required this.id,
+  });
 
   factory LemmyAccountData.fromMap(Map<String, dynamic> map) {
     return LemmyAccountData(
