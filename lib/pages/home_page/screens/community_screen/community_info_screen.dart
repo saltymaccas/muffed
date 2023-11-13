@@ -79,6 +79,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                         children: [
                           RichText(
                             text: TextSpan(
+                              style: Theme.of(context).textTheme.labelLarge,
                               text: 'Posts: ',
                               children: [
                                 TextSpan(
@@ -91,6 +92,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           const SizedBox(height: 24),
                           RichText(
                             text: TextSpan(
+                              style: Theme.of(context).textTheme.labelLarge,
                               text: 'Comments: ',
                               children: [
                                 TextSpan(
@@ -103,6 +105,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           const SizedBox(height: 24),
                           RichText(
                             text: TextSpan(
+                              style: Theme.of(context).textTheme.labelLarge,
                               text: 'Subscribers: ',
                               children: [
                                 TextSpan(
@@ -124,6 +127,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           RichText(
                             text: TextSpan(
                               text: 'Daily active: ',
+                              style: Theme.of(context).textTheme.labelLarge,
                               children: [
                                 TextSpan(
                                   text: community.usersActiveDay.toString(),
@@ -136,6 +140,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           RichText(
                             text: TextSpan(
                               text: 'Weekly active: ',
+                              style: Theme.of(context).textTheme.labelLarge,
                               children: [
                                 TextSpan(
                                   text: community.usersActiveWeek.toString(),
@@ -148,6 +153,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           RichText(
                             text: TextSpan(
                               text: 'Monthly active: ',
+                              style: Theme.of(context).textTheme.labelLarge,
                               children: [
                                 TextSpan(
                                   text: community.usersActiveMonth.toString(),
