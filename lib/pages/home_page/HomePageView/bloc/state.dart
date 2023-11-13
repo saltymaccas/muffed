@@ -9,7 +9,7 @@ final class HomePageViewState extends Equatable {
     this.posts,
     this.isRefreshing = false,
     this.pagesLoaded = 0,
-    this.isLoading = false,
+    this.isLoadingMore = false,
     this.error,
     this.sortType = LemmySortType.hot,
     this.loadedSortType = LemmySortType.hot,
@@ -21,7 +21,7 @@ final class HomePageViewState extends Equatable {
   final List<LemmyPost>? posts;
   final bool isRefreshing;
   final int pagesLoaded;
-  final bool isLoading;
+  final bool isLoadingMore;
 
   /// If status set to failure error message should display instead of posts.
   /// If status is success the error message should appear as a snack bar so
@@ -47,7 +47,7 @@ final class HomePageViewState extends Equatable {
         status,
         isRefreshing,
         pagesLoaded,
-        isLoading,
+        isLoadingMore,
         error,
         sortType,
         loadedSortType,
@@ -72,7 +72,7 @@ final class HomePageViewState extends Equatable {
       posts: posts ?? this.posts,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
-      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoading ?? this.isLoadingMore,
       sortType: sortType ?? this.sortType,
       loadedSortType: loadedSortType ?? this.loadedSortType,
       reachedEnd: reachedEnd ?? this.reachedEnd,

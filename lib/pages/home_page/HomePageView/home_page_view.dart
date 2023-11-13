@@ -251,7 +251,7 @@ class HomePageView extends StatelessWidget {
                         key: ValueKey(
                           '${state.loadedSortType}',
                         ),
-                        isLoading: state.isLoading,
+                        isLoadingMore: state.isLoadingMore,
                         posts: state.posts!,
                       );
                     } else {
@@ -271,12 +271,12 @@ class HomePageView extends StatelessWidget {
 class _HomePageSuccess extends StatelessWidget {
   const _HomePageSuccess({
     required this.posts,
-    required this.isLoading,
+    required this.isLoadingMore,
     super.key,
   });
 
   final List<LemmyPost> posts;
-  final bool isLoading;
+  final bool isLoadingMore;
 
   @override
   Widget build(BuildContext context) {
@@ -312,6 +312,15 @@ class _HomePageSuccess extends StatelessWidget {
                 );
               },
             ),
+            if (isLoadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

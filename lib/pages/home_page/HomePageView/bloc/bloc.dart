@@ -57,7 +57,7 @@ class HomeViewPageBloc extends Bloc<HomePageViewEvent, HomePageViewState> {
     });
     on<ReachedNearEndOfScroll>(
       (event, emit) async {
-        if (!state.reachedEnd && !state.isLoading) {
+        if (!state.reachedEnd && !state.isLoadingMore) {
           _log.info('Loading page ${state.pagesLoaded + 1}');
           emit(state.copyWith(isLoading: true));
 
@@ -155,7 +155,8 @@ class HomeViewPageBloc extends Bloc<HomePageViewEvent, HomePageViewState> {
 
   @override
   void onTransition(
-      Transition<HomePageViewEvent, HomePageViewState> transition,) {
+    Transition<HomePageViewEvent, HomePageViewState> transition,
+  ) {
     super.onTransition(transition);
     _log.fine(transition);
   }
