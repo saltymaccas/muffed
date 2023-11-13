@@ -4,6 +4,7 @@ import 'package:muffed/components/error.dart';
 import 'package:muffed/components/loading.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
+import 'package:muffed/components/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/HomePageView/bloc/bloc.dart';
@@ -211,7 +212,12 @@ class HomePageView extends StatelessWidget {
                   ],
                 ),
               );
-          return BlocBuilder<HomeViewPageBloc, HomePageViewState>(
+          return BlocConsumer<HomeViewPageBloc, HomePageViewState>(
+            listener: (context, state) {
+              if (state.error != null) {
+                showErrorSnackBar(context, error: state.error);
+              }
+            },
             builder: (context, state) {
               final BuildContext blocContext = context;
               return BlocListener<GlobalBloc, GlobalState>(
