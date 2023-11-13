@@ -64,8 +64,6 @@ class CommunityScreenBloc
           );
 
           try {
-            print('test33');
-
             final community = await repo.lemmyRepo.getCommunity(
               id: state.community!.id,
               name: state.community!.name,
@@ -218,6 +216,33 @@ class CommunityScreenBloc
         );
       } catch (err) {
         emit(state.copyWith(error: err, isReloading: false));
+      }
+    });
+    on<BlockToggled>((event, emit) async {
+      emit(
+        state.copyWith(
+          community:
+              state.community!.copyWith(blocked: !state.community!.blocked),
+        ),
+      );
+      try {
+        final response = await repo.lemmyRepo.BlockCommunity(
+          id: state.community!.id,
+          block: state.community!.blocked,
+        );
+        emit(
+          state.copyWith(
+            community: state.community!.copyWith(blocked: response),
+          ),
+        );
+      } catch (err) {
+        emit(
+          state.copyWith(
+            community:
+                state.community!.copyWith(blocked: !state.community!.blocked),
+            error: err,
+          ),
+        );
       }
     });
   }

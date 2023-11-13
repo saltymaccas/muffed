@@ -196,6 +196,28 @@ class _CommunityInfoSuccess extends StatelessWidget {
                     ],
                   ),
                 ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<CommunityScreenBloc>().add(
+                          BlockToggled(),
+                        );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    (community.blocked)
+                        ? 'Unblock Community'
+                        : 'Block Community',
+                  ),
+                ),
+              ),
             ],
           ),
         ),

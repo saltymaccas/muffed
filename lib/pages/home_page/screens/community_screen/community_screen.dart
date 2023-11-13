@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/block_dialog/block_dialog.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
 import 'package:muffed/components/muffed_avatar.dart';
@@ -277,51 +276,6 @@ class CommunityScreen extends StatelessWidget {
                           ),
                         ],
                       );
-                    },
-                  ),
-                ),
-                BlocProvider.value(
-                  value: BlocProvider.of<CommunityScreenBloc>(blocContext),
-                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                    builder: (context, state) {
-                      late Widget item;
-
-                      if (state.communityInfoStatus ==
-                          CommunityStatus.loading) {
-                        item = const IconButtonLoading();
-                      } else if (state.communityInfoStatus ==
-                          CommunityStatus.failure) {
-                        item = const IconButtonFailure();
-                      } else if (state.communityInfoStatus ==
-                          CommunityStatus.success) {
-                        item = MuffedPopupMenuButton(
-                          changeIconToSelected: false,
-                          visualDensity: VisualDensity.compact,
-                          icon: const Icon(Icons.more_vert),
-                          items: [
-                            MuffedPopupMenuItem(
-                              icon: const Icon(Icons.block),
-                              title: 'Block/Unblock',
-                              onTap: () {
-                                showDialog<void>(
-                                  context: context,
-                                  builder: (context) {
-                                    return BlockDialog(
-                                      id: state.community!.id,
-                                      type: BlockDialogType.community,
-                                      name: state.community!.name,
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      } else {
-                        item = const IconButtonInitial();
-                      }
-
-                      return item;
                     },
                   ),
                 ),

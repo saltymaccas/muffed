@@ -628,6 +628,7 @@ class LemmyCommunity extends Equatable {
     int? usersActiveWeek,
     bool? blocked,
     LemmySubscribedType? subscribed,
+    List<LemmyPerson>? moderators,
   }) {
     return LemmyCommunity(
       id: id ?? this.id,
@@ -657,6 +658,7 @@ class LemmyCommunity extends Equatable {
       usersActiveWeek: usersActiveWeek ?? this.usersActiveWeek,
       blocked: blocked ?? this.blocked,
       subscribed: subscribed ?? this.subscribed,
+      moderators: moderators ?? this.moderators,
     );
   }
 }
