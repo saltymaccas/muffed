@@ -1,19 +1,3 @@
-```
-MIT License
-
-Copyright (c) 2023 Hamlet Jiang Su
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
-
 ### Privacy Policy for Muffed
 
 This Privacy Policy explains how Muffed ("the App") handles your personal information. Please read this policy carefully to understand our practices regarding your data.
