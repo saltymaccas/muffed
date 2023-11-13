@@ -28,8 +28,18 @@ class PostItem extends StatefulWidget {
     this.useBlocFromContext,
     this.displayType = PostDisplayType.list,
     super.key,
-  });
+  }) : skeletonize = false;
 
+  const PostItem.skeleton({
+    this.form = PostViewForm.card,
+    this.displayType = PostDisplayType.list,
+    super.key,
+  })  : skeletonize = true,
+        postId = null,
+        post = null,
+        useBlocFromContext = null;
+
+  final bool skeletonize;
   final int? postId;
   final LemmyPost? post;
   final PostViewForm form;
@@ -47,6 +57,17 @@ class _PostItemState extends State<PostItem>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.skeletonize) {
+      return Skeletonizer(
+        ignoreContainers: false,
+        justifyMultiLineText: false,
+        ignorePointers: true,
+        child: CardLemmyPostItem(
+          placeholderPost,
+          displayType: widget.displayType,
+        ),
+      );
+    }
     super.build(context);
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
