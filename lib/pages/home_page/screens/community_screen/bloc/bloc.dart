@@ -219,30 +219,39 @@ class CommunityScreenBloc
       }
     });
     on<BlockToggled>((event, emit) async {
-      emit(
-        state.copyWith(
-          community:
-              state.community!.copyWith(blocked: !state.community!.blocked),
-        ),
-      );
-      try {
-        final response = await repo.lemmyRepo.BlockCommunity(
-          id: state.community!.id,
-          block: state.community!.blocked,
-        );
-        emit(
-          state.copyWith(
-            community: state.community!.copyWith(blocked: response),
-          ),
-        );
-      } catch (err) {
+      if (state.community!.blocked != null) {
         emit(
           state.copyWith(
             community:
-                state.community!.copyWith(blocked: !state.community!.blocked),
-            error: err,
+                state.community!.copyWith(blocked: !state.community!.blocked!),
           ),
         );
+        try {
+          final response = await repo.lemmyRepo.BlockCommunity(
+            id: state.community!.id,
+            block: state.community!.blocked!,
+          );
+          emit(
+            state.copyWith(
+              community: state.community!.copyWith(blocked: response),
+            ),
+          );
+        } catch (err) {
+          emit(
+            state.copyWith(
+              community: state.community!
+                  .copyWith(blocked: !state.community!.blocked!),
+              error: err,
+            ),
+          );
+        }
+      } else {
+        emit(
+          state.copyWith(
+            error: Exception('Tried to toggle block when block = null'),
+          ),
+        );
+        _log.warning('Tried to toggle block when block = null');
       }
     });
   }

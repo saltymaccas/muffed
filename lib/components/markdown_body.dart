@@ -52,7 +52,7 @@ class MuffedMarkdownBody extends StatelessWidget {
               await context.push(
                 Uri(
                   path: '/home/community/',
-                  queryParameters: {'community_name': url.substring(1)},
+                  queryParameters: {'name': url.substring(1)},
                 ).toString(),
               );
               return;
@@ -101,7 +101,7 @@ class MuffedMarkdownBody extends StatelessWidget {
               await context.pushNamed(
                 'community',
                 queryParameters: {
-                  'community_name': '${spiltPath[2]}@$host',
+                  'name': '${spiltPath[2]}@$host',
                 },
               );
               return;

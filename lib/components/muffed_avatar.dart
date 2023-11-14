@@ -19,6 +19,7 @@ class MuffedAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         child: (url != null)
             ? CachedNetworkImage(
+                fit: BoxFit.cover,
                 imageUrl: url!,
               )
             : Image.asset('assets/logo.png'),

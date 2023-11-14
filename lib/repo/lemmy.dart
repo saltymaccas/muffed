@@ -203,7 +203,7 @@ interface class LemmyRepo {
     );
 
     return LemmyGetPersonDetailsResponse(
-      person: LemmyPerson.fromPersonViewJson(response['person_view']),
+      person: LemmyPerson.fromJson(response),
       posts: List.generate(
         (response['posts'] as List).length,
         (index) => LemmyPost.fromPostViewJson(
@@ -261,7 +261,7 @@ interface class LemmyRepo {
       ),
       lemmyPersons: List.generate(
         rawPersons.length,
-        (index) => LemmyPerson.fromPersonViewJson(rawPersons[index]),
+        (index) => LemmyPerson.fromJson(rawPersons[index]),
       ),
       lemmyPosts: List.generate(
         rawPosts.length,
@@ -438,7 +438,7 @@ interface class LemmyRepo {
     final response =
         await getRequest(path: '/site', jwt: jwt, serverAddress: serverAddress);
 
-    return LemmyPerson.fromPersonViewJson(
+    return LemmyPerson.fromJson(
       response['my_user']['local_user_view'],
     );
   }

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/components/snackbars.dart';
-import 'package:muffed/repo/server_repo.dart';
-
 import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
@@ -60,8 +59,7 @@ void openSearchDialog(BuildContext context) {
                                           Uri(
                                             path: '/home/community',
                                             queryParameters: {
-                                              'community_id': state
-                                                  .communities[index].id
+                                              'id': state.communities[index].id
                                                   .toString(),
                                             },
                                           ).toString(),
@@ -81,9 +79,9 @@ void openSearchDialog(BuildContext context) {
                                               child: (state.communities[index]
                                                           .icon !=
                                                       null)
-                                                  ? Image.network('${state
-                                                          .communities[index]
-                                                          .icon!}?thumbnail=50',)
+                                                  ? Image.network(
+                                                      '${state.communities[index].icon!}?thumbnail=50',
+                                                    )
                                                   : Image.asset(
                                                       'assets/logo.png',
                                                     ),
@@ -96,8 +94,9 @@ void openSearchDialog(BuildContext context) {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(state
-                                                  .communities[index].name,),
+                                              Text(
+                                                state.communities[index].name,
+                                              ),
                                               Text(
                                                 '${state.communities[index].subscribers} subscribers',
                                                 style: TextStyle(
@@ -146,11 +145,12 @@ void openSearchDialog(BuildContext context) {
                               icon: const Icon(Icons.open_in_new),
                             ),
                             prefixIcon: IconButton(
-                                visualDensity: VisualDensity.compact,
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(Icons.arrow_back),),
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                            ),
                             hintText: 'Search',
                             focusedBorder: InputBorder.none,
                             border: InputBorder.none,

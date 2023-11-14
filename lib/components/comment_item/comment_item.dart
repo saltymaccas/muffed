@@ -454,7 +454,7 @@ class _CommentItemState extends State<CommentItem>
                                                       '/home/community?id=${widget.comment.communityId}',
                                                     );
                                                   } else {
-                                                    context.go(
+                                                    context.push(
                                                       '/home/community?id=${widget.comment.communityId}',
                                                     );
                                                   }
@@ -480,8 +480,10 @@ class _CommentItemState extends State<CommentItem>
                                       IconButton(
                                         isSelected: widget.read,
                                         onPressed: widget.markedAsReadCallback,
-                                        selectedIcon: const Icon(Icons.check_circle),
-                                        icon: const Icon(Icons.check_circle_outline),
+                                        selectedIcon:
+                                            const Icon(Icons.check_circle),
+                                        icon: const Icon(
+                                            Icons.check_circle_outline),
                                       ),
                                   ],
                                 ),

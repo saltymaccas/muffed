@@ -22,7 +22,7 @@ class MoreMenuButton extends StatelessWidget {
           title: 'Go to community',
           onTap: () {
             context.push(
-              '/home/community?community_id=${post.communityId}',
+              '/home/community?id=${post.communityId}',
             );
           },
         ),

@@ -7,15 +7,18 @@ import 'package:muffed/components/comment_item/comment_item.dart';
 import 'package:muffed/components/error.dart';
 import 'package:muffed/components/icon_button.dart';
 import 'package:muffed/components/markdown_body.dart';
+import 'package:muffed/components/muffed_avatar.dart';
 import 'package:muffed/components/muffed_page.dart';
 import 'package:muffed/components/popup_menu/popup_menu.dart';
 import 'package:muffed/components/post_item/post_item.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/screens/user_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/shorthands.dart';
 
-const _headerMaxHeight = 500.0;
+const _headerMaxHeight = 300.0;
 const _headerMinHeight = 130.0;
+const _bannerEndFraction = 0.6;
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
@@ -169,12 +172,95 @@ class _UserScreenSuccess extends StatelessWidget {
         },
         body: TabBarView(
           children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: _headerMinHeight,
+            CustomScrollView(
+              slivers: [
+                SliverList.list(
+                  children: [
+                    const SizedBox(
+                      height: _headerMinHeight,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    user.postCount.toString(),
+                                    style: context.textTheme().displaySmall,
+                                  ),
+                                  Text(
+                                    'Posts',
+                                    style: context.textTheme().labelLarge,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    user.commentCount.toString(),
+                                    style: context.textTheme().displaySmall,
+                                  ),
+                                  Text(
+                                    'Comments',
+                                    style: context.textTheme().labelLarge,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    if (user.bio != null)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MuffedMarkdownBody(data: user.bio!),
+                      ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Container(
+                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        'Moderates (${user.moderates!.length})',
+                        style: context.textTheme().titleMedium,
+                      ),
+                    ),
+                  ],
                 ),
-                if (user.bio != null) MuffedMarkdownBody(data: user.bio!),
+                SliverList.builder(
+                  itemCount: user.moderates!.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: MuffedAvatar(
+                        url: user.moderates![index].icon,
+                        radius: 16,
+                      ),
+                      title: Text(
+                        user.moderates![index].name,
+                      ),
+                      onTap: () {
+                        context.pushNamed(
+                          'community',
+                          queryParameters: {
+                            'id': user.moderates![index].id.toString(),
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               ],
             ),
             ListView.builder(
@@ -219,8 +305,30 @@ class _UserScreenSuccess extends StatelessWidget {
   }
 }
 
+class CommunitiesModerates extends StatelessWidget {
+  const CommunitiesModerates({this.communities, super.key});
+
+  final List<LemmyCommunity>? communities;
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   _HeaderDelegate(this.user);
+
+  @override
+  double get maxExtent => _headerMaxHeight;
+
+  @override
+  double get minExtent => _headerMinHeight;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
 
   final LemmyPerson user;
 
@@ -232,7 +340,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final placeholderBanner = Image.asset(
       'assets/placeholder_banner.jpeg',
-      height: (_headerMaxHeight - shrinkOffset) / 2,
+      height: (_headerMaxHeight - shrinkOffset) * _bannerEndFraction,
       width: double.maxFinite,
       fit: BoxFit.cover,
     );
@@ -263,7 +371,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                         ? CachedNetworkImage(
                             fit: BoxFit.cover,
                             width: double.maxFinite,
-                            height: (_headerMaxHeight - shrinkOffset) / 2,
+                            height: (_headerMaxHeight - shrinkOffset) *
+                                _bannerEndFraction,
                             placeholder: (context, url) => placeholderBanner,
                             imageUrl: user.banner!,
                           )
@@ -281,22 +390,13 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                             vertical: 24,
                             horizontal: 16,
                           ),
-                          child: CircleAvatar(
-                            maxRadius: 50,
-                            child: ClipRRect(
-                              clipBehavior: Clip.hardEdge,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(45)),
-                              child: (user.avatar != null)
-                                  ? CachedNetworkImage(
-                                      imageUrl: user.avatar!,
-                                    )
-                                  : Image.asset('assets/logo.png'),
-                            ),
+                          child: MuffedAvatar(
+                            url: user.avatar,
                           ),
                         ),
                         SizedBox(
-                          height: (_headerMaxHeight - shrinkOffset) / 2,
+                          height: (_headerMaxHeight - shrinkOffset) *
+                              (1 - _bannerEndFraction),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16),
                             child: Column(
@@ -306,16 +406,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                                   user.name,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                                const Divider(
-                                  color: Colors.transparent,
-                                ),
-                                Text('${user.postCount} ᛫ posts'),
-                                Text('${user.postScore} ᛫ score'),
-                                const Divider(
-                                  color: Colors.transparent,
-                                ),
-                                Text('${user.commentCount} ᛫ comments'),
-                                Text('${user.commentScore} ᛫ score'),
+                                Text(user.getTag()),
                               ],
                             ),
                           ),
@@ -374,17 +465,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ),
       ),
     );
-  }
-
-  @override
-  double get maxExtent => _headerMaxHeight;
-
-  @override
-  double get minExtent => _headerMinHeight;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
   }
 }
 

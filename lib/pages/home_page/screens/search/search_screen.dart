@@ -291,7 +291,7 @@ class SearchScreen extends StatelessWidget {
                                             context.pushNamed(
                                               'community',
                                               queryParameters: {
-                                                'community_id': state
+                                                'id': state
                                                     .communities[index].id
                                                     .toString(),
                                               },

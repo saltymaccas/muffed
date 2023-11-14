@@ -21,12 +21,6 @@ import 'package:muffed/pages/profile_page/screens/settings_screen/look/look.dart
 import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
-extension NullNumberParsing on String? {
-  int? parseInt() {
-    return (this == null) ? null : int.parse(this!);
-  }
-}
-
 extension NumberParsing on String {
   int parseInt() {
     return int.parse(this);
@@ -114,7 +108,7 @@ final router = GoRouter(
                         : state.extra! as (LemmyPost, BuildContext?);
 
                     return PostScreen(
-                      postId: state.uri.queryParameters['id'].parseInt(),
+                      postId: state.uri.queryParameters['id']?.parseInt(),
                       post: (values != null) ? values.$1 : null,
                       postItemBlocContext: (values != null) ? values.$2 : null,
                     );
@@ -147,8 +141,8 @@ final router = GoRouter(
                     final qp = state.uri.queryParameters;
 
                     return CommunityScreen(
-                      communityId: qp['community_id'].parseInt(),
-                      communityName: qp['community_name'],
+                      communityId: qp['id']?.parseInt(),
+                      communityName: qp['name'],
                     );
                   },
                 ),
@@ -162,7 +156,7 @@ final router = GoRouter(
                         state.extra as CreatePostRouteData?;
 
                     return CreatePostScreen(
-                      communityId: qp['community_id'].parseInt(),
+                      communityId: qp['community_id']?.parseInt(),
                       postBeingEdited: data?.postToBeEdited,
                     );
                   },

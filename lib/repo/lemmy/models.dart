@@ -1,5 +1,19 @@
 import 'package:equatable/equatable.dart';
 
+enum JsonTypes {
+  postView,
+  commentView,
+  getPersonDetailsResponse,
+  personView,
+  person,
+  getCommunityResponse,
+  communityView,
+  community,
+  siteView,
+  personMentionView,
+  commentReplyView,
+}
+
 enum LemmySortType {
   active,
   hot,
@@ -452,6 +466,7 @@ class LemmyInboxMention extends Equatable {
 
 class LemmyCommunity extends Equatable {
   const LemmyCommunity({
+    // --- community
     required this.id,
     required this.actorId,
     required this.deleted,
@@ -464,69 +479,102 @@ class LemmyCommunity extends Equatable {
     required this.published,
     required this.removed,
     required this.title,
-    required this.comments,
-    required this.hotRank,
-    required this.posts,
-    required this.subscribers,
-    required this.usersActiveDay,
-    required this.usersActiveHalfYear,
-    required this.usersActiveMonth,
-    required this.usersActiveWeek,
+
+    // --- community view
     required this.blocked,
     required this.subscribed,
+    this.comments,
+    this.hotRank,
+    this.posts,
+    this.subscribers,
+    this.usersActiveDay,
+    this.usersActiveHalfYear,
+    this.usersActiveMonth,
+    this.usersActiveWeek,
     this.banner,
     this.description,
     this.icon,
     this.updated,
+    // --- get community response
     this.moderators,
   });
 
   factory LemmyCommunity.fromJson(Map<String, dynamic> json) {
-    // works out what json type was parsed in
-    final isCommunityResponse = json['community_view'] != null;
-    final Map<String, dynamic> communityView =
-        isCommunityResponse ? json['community_view'] : json;
-    final Map<String, dynamic>? communityResponse =
-        isCommunityResponse ? json : null;
+    late final JsonTypes jsonType;
+
+// gets what type of json was parsed in
+    if (json['community_view'] != null) {
+      jsonType = JsonTypes.getCommunityResponse;
+    } else if (json['community'] != null) {
+      jsonType = JsonTypes.communityView;
+    } else if (json['actor_id'] != null) {
+      jsonType = JsonTypes.community;
+    } else {
+      throw Exception(
+          'Json parsed into community does not appear to be a community');
+    }
+
+    late final Map<String, dynamic> community;
+    late final Map<String, dynamic>? communityView;
+    late final Map<String, dynamic>? getCommunityResponse;
+
+    switch (jsonType) {
+      case JsonTypes.getCommunityResponse:
+        community = json['community_view']['community'];
+        communityView = json['community_view'];
+        getCommunityResponse = json;
+      case JsonTypes.communityView:
+        community = json['community'];
+        communityView = json;
+        getCommunityResponse = null;
+      case JsonTypes.community:
+        community = json;
+        communityView = null;
+        getCommunityResponse = null;
+      case _:
+        throw Exception(
+            'Json parsed into community does not appear to be a community');
+    }
 
     return LemmyCommunity(
-      id: communityView['community']['id'],
-      actorId: communityView['community']['actor_id'],
-      deleted: communityView['community']['deleted'],
-      hidden: communityView['community']['hidden'],
-      name: communityView['community']['name'],
-      local: communityView['community']['local'],
-      instanceId: communityView['community']['instance_id'],
-      nsfw: communityView['community']['nsfw'],
-      postingRestrictedToMods: communityView['community']
-          ['posting_restricted_to_mods'],
-      published: DateTime.parse(communityView['community']['published'] + 'Z'),
-      removed: communityView['community']['removed'],
-      title: communityView['community']['title'],
-      comments: communityView['counts']['comments'],
-      hotRank: communityView['counts']['hot_rank'],
-      posts: communityView['counts']['posts'],
-      subscribers: communityView['counts']['subscribers'],
-      usersActiveDay: communityView['counts']['users_active_day'],
-      usersActiveHalfYear: communityView['counts']['users_active_half_year'],
-      usersActiveMonth: communityView['counts']['users_active_month'],
-      usersActiveWeek: communityView['counts']['users_active_week'],
-      blocked: communityView['blocked'],
-      subscribed: jsonToLemmySubscribedType[communityView['subscribed']]!,
-      icon: communityView['community']['icon'],
-      description: communityView['community']['description'],
-      banner: communityView['community']['banner'],
-      updated: communityView['community']['update'],
-      moderators: (communityResponse != null)
+      id: community['id'],
+      actorId: community['actor_id'],
+      deleted: community['deleted'],
+      hidden: community['hidden'],
+      name: community['name'],
+      local: community['local'],
+      instanceId: community['instance_id'],
+      nsfw: community['nsfw'],
+      postingRestrictedToMods: community['posting_restricted_to_mods'],
+      published: DateTime.parse(community['published'] + 'Z'),
+      removed: community['removed'],
+      title: community['title'],
+      comments: communityView?['counts']['comments'],
+      hotRank: communityView?['counts']['hot_rank'],
+      posts: communityView?['counts']['posts'],
+      subscribers: communityView?['counts']['subscribers'],
+      usersActiveDay: communityView?['counts']['users_active_day'],
+      usersActiveHalfYear: communityView?['counts']['users_active_half_year'],
+      usersActiveMonth: communityView?['counts']['users_active_month'],
+      usersActiveWeek: communityView?['counts']['users_active_week'],
+      blocked: communityView?['blocked'],
+      subscribed: jsonToLemmySubscribedType[communityView?['subscribed']],
+      icon: community['icon'],
+      description: community['description'],
+      banner: community['banner'],
+      updated: community['update'],
+      moderators: (getCommunityResponse != null)
           ? List.generate(
-              communityResponse['moderators'].length,
-              (index) => LemmyPerson.fromPersonViewJson(
-                communityResponse['moderators'][index]['moderator'],
+              getCommunityResponse['moderators'].length,
+              (index) => LemmyPerson.fromJson(
+                getCommunityResponse?['moderators'][index]['moderator'],
               ),
             )
           : null,
     );
   }
+
+  /// from [JsonTypes.community]
 
   final int id;
   final String actorId;
@@ -545,18 +593,20 @@ class LemmyCommunity extends Equatable {
   final String title;
   final String? updated;
 
-  final int comments;
-  final int hotRank;
-  final int posts;
-  final int subscribers;
-  final int usersActiveDay;
-  final int usersActiveHalfYear;
-  final int usersActiveMonth;
-  final int usersActiveWeek;
+  /// from [JsonTypes.communityView]
 
-  final bool blocked;
+  final bool? blocked;
+  final LemmySubscribedType? subscribed;
+  final int? comments;
+  final int? hotRank;
+  final int? posts;
+  final int? subscribers;
+  final int? usersActiveDay;
+  final int? usersActiveHalfYear;
+  final int? usersActiveMonth;
+  final int? usersActiveWeek;
 
-  final LemmySubscribedType subscribed;
+  /// from [JsonTypes.getCommunityResponse]
 
   final List<LemmyPerson>? moderators;
 
@@ -686,12 +736,58 @@ class LemmyPerson extends Equatable {
     this.displayName,
     this.matrixUserId,
     this.updated,
+    this.moderates,
   });
 
-  factory LemmyPerson.fromPersonViewJson(Map<String, dynamic> json) {
-    final isPersonView = json['person'] != null;
-    final person = isPersonView ? json['person'] : json;
-    final personView = isPersonView ? json : null;
+  factory LemmyPerson.fromJson(Map<String, dynamic> json) {
+    late final JsonTypes jsonType;
+
+    // gets what type of json was parsed in
+    if (json['person_view'] != null) {
+      jsonType = JsonTypes.getPersonDetailsResponse;
+    } else if (json['person'] != null) {
+      jsonType = JsonTypes.personView;
+    } else if (json['actor_id'] != null) {
+      jsonType = JsonTypes.person;
+    } else {
+      throw Exception('Json parsed into person does not appear to be a person');
+    }
+
+    // extracts the person json depending on what json was parsed in
+    late final Map<String, dynamic> person;
+
+    switch (jsonType) {
+      case JsonTypes.getPersonDetailsResponse:
+        person = json['person_view']['person'];
+      case JsonTypes.personView:
+        person = json['person'];
+
+      case JsonTypes.person:
+        person = json;
+      case _:
+        throw Exception(
+            'Json parsed into person does not appear to be a person');
+    }
+
+    late final Map<String, dynamic>? personView;
+
+    switch (jsonType) {
+      case JsonTypes.getPersonDetailsResponse:
+        personView = json['person_view'];
+      case JsonTypes.personView:
+        personView = json;
+      case _:
+        personView = null;
+    }
+
+    late final Map<String, dynamic>? personDetailsResponse;
+
+    switch (jsonType) {
+      case JsonTypes.getPersonDetailsResponse:
+        personDetailsResponse = json;
+      case _:
+        personDetailsResponse = null;
+    }
 
     return LemmyPerson(
       actorId: person['actor_id'],
@@ -713,14 +809,18 @@ class LemmyPerson extends Equatable {
       displayName: person['display_name'],
       matrixUserId: person['matrix_user_id'],
       updated: person['updated'],
-      commentCount:
-          (personView != null) ? personView['counts']['comment_count'] : null,
-      commentScore:
-          (personView != null) ? personView['counts']['comment_score'] : null,
-      postCount:
-          (personView != null) ? personView['counts']['post_count'] : null,
-      postScore:
-          (personView != null) ? personView['counts']['post_score'] : null,
+      commentCount: personView?['counts']['comment_count'],
+      commentScore: personView?['counts']['comment_score'],
+      postCount: personView?['counts']['post_count'],
+      postScore: personView?['counts']['post_score'],
+      moderates: (personDetailsResponse != null)
+          ? List.generate(
+              personDetailsResponse['moderates'].length,
+              (index) => LemmyCommunity.fromJson(
+                personDetailsResponse!['moderates'][index]['community'],
+              ),
+            )
+          : null,
     );
   }
 
@@ -747,11 +847,19 @@ class LemmyPerson extends Equatable {
   final int? postCount;
   final int? postScore;
 
+  final List<LemmyCommunity>? moderates;
+
   bool isFullyLoaded() =>
       commentCount != null &&
       postCount != null &&
       commentScore != null &&
       postScore != null;
+
+  String getTag() {
+    final regex = RegExp('https://([^/]+)/u/([^/]+)');
+    final match = regex.firstMatch(actorId);
+    return '@${match?.group(2)}@${match?.group(1)}';
+  }
 
   @override
   List<Object?> get props => [
@@ -790,7 +898,6 @@ class LemmyGetPersonDetailsResponse {
   final LemmyPerson person;
   final List<LemmyPost> posts;
   final List<LemmyComment> comments;
-
   final List<String> moderates;
 }
 
@@ -842,7 +949,7 @@ class LemmySite extends Equatable {
   LemmySite.fromGetSiteResponse(Map<String, dynamic> json)
       : admins = List.generate(
           json['admins'].length,
-          (index) => LemmyPerson.fromPersonViewJson(json['admins'][index]),
+          (index) => LemmyPerson.fromJson(json['admins'][index]),
         ),
         languages = List.generate(
           json['all_languages'].length,
