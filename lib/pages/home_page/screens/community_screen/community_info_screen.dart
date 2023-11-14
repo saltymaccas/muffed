@@ -9,6 +9,8 @@ import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../global_state/bloc.dart';
+
 class CommunityInfoScreen extends StatelessWidget {
   const CommunityInfoScreen({required this.bloc, super.key});
 
@@ -204,32 +206,33 @@ class _CommunityInfoSuccess extends StatelessWidget {
                   ),
                 ),
               const Divider(),
-              Skeletonizer(
-                enabled: community.blocked == null,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.read<CommunityScreenBloc>().add(
-                            BlockToggled(),
-                          );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+              if (context.read<GlobalBloc>().isLoggedIn())
+                Skeletonizer(
+                  enabled: community.blocked == null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<CommunityScreenBloc>().add(
+                              BlockToggled(),
+                            );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      (community.blocked == null)
-                          ? 'Placeholder'
-                          : (community.blocked!)
-                              ? 'Unblock Community'
-                              : 'Block Community',
+                      child: Text(
+                        (community.blocked == null)
+                            ? 'Placeholder'
+                            : (community.blocked!)
+                                ? 'Unblock Community'
+                                : 'Block Community',
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
