@@ -7,7 +7,7 @@ import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/snackbars.dart';
-import 'package:muffed/dynamic_navigation_bar/bloc/bloc.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';

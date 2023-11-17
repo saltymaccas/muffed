@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:skeletonizer/skeletonizer.dart';

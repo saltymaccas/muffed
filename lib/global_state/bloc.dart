@@ -37,19 +37,12 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
   }
 
-  LemmyAccountData? getSelectedLemmyAccount() {
-    return (state.lemmySelectedAccount == -1)
-        ? null
-        : state.lemmyAccounts[state.lemmySelectedAccount];
-  }
+  LemmyAccountData? getSelectedLemmyAccount() =>
+      state.getSelectedLemmyAccount();
 
-  String getLemmyBaseUrl() {
-    return (state.lemmySelectedAccount == -1)
-        ? state.lemmyDefaultHomeServer
-        : state.lemmyAccounts[state.lemmySelectedAccount].homeServer;
-  }
+  String getLemmyBaseUrl() => state.getLemmyBaseUrl();
 
-  bool isLoggedIn() => state.lemmySelectedAccount != -1;
+  bool isLoggedIn() => state.isLoggedIn();
 
   @override
   void onChange(Change<GlobalState> change) {

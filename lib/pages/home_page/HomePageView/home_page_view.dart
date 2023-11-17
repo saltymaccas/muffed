@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/HomePageView/bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/search/search_dialog.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/HomePageView/bloc/bloc.dart';
-import 'package:muffed/pages/home_page/screens/search/search_dialog.dart';
-import 'package:muffed/repo/server_repo.dart';
 
 /// Defines the posts that the view will show
 class HomePageViewMode {
@@ -312,7 +312,6 @@ class _HomePageSuccess extends StatelessWidget {
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 return PostItem(
-                  key: ValueKey(posts[index]),
                   post: posts[index],
                   displayType: PostDisplayType.list,
                 );

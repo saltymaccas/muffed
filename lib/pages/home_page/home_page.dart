@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/HomePageView/home_page_view.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/pages/home_page/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,100 +14,93 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int pageIndex = 0;
+  int currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       buildWhen: (previous, current) {
-        if (previous.isLoggedIn() != current.isLoggedIn()) {
+        if (previous.getSelectedLemmyAccount() !=
+            current.getSelectedLemmyAccount()) {
           return true;
         }
         return false;
       },
       builder: (context, state) {
-        // construct the pages
-        final pages = <(String, Widget)>[
-          if (state.isLoggedIn())
-            (
-              'Subscribed',
-              HomePageView(
-                key: const PageStorageKey('subscribed'),
-                mode:
-                    HomePageViewMode(listingType: LemmyListingType.subscribed),
-              )
-            ),
-          (
-            'Popular',
-            HomePageView(
-              key: const PageStorageKey('popular'),
-              mode: HomePageViewMode(listingType: LemmyListingType.all),
-            )
+        return BlocProvider(
+          create: (context) => HomePageBloc(
+            scrollViews: [
+              if (state.isLoggedIn())
+                ContentScrollConfig(
+                  title: 'Subscribed',
+                  retrieveContentFunction: ({required int page}) {
+                    return context.read<ServerRepo>().lemmyRepo.getPosts(
+                          listingType: LemmyListingType.subscribed,
+                          page: page,
+                        );
+                  },
+                ),
+              ContentScrollConfig(
+                title: 'Popular',
+                retrieveContentFunction: ({required int page}) {
+                  return context.read<ServerRepo>().lemmyRepo.getPosts(
+                        listingType: LemmyListingType.all,
+                        page: page,
+                      );
+                },
+              ),
+            ],
           ),
-        ];
-
-        // generate tabs
-        final List<Widget> tabs = [];
-        for (int i = 0; i < pages.length; i++) {
-          tabs.add(
-            _PageTab(
-              name: pages[i].$1,
-              selected: pageIndex == i,
-              onTap: () {
-                setState(() {
-                  pageIndex = i;
-                });
-              },
-            ),
-          );
-        }
-
-        // generate pages
-        final List<Widget> pageViews = [];
-        for (int i = 0; i < pages.length; i++) {
-          pageViews.add(
-            pages[i].$2,
-          );
-        }
-
-        return Scaffold(
-          body: SetPageInfo(
-            actions: const [],
-            id: 'main_feed',
-            page: Pages.home,
-            child: NestedScrollView(
-              clipBehavior: Clip.hardEdge,
-              floatHeaderSlivers: true,
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    clipBehavior: Clip.hardEdge,
-                    toolbarHeight: 50,
-                    primary: true,
-                    floating: true,
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    foregroundColor: Theme.of(context).colorScheme.background,
-                    surfaceTintColor: Theme.of(context).colorScheme.background,
-                    snap: true,
-                    flexibleSpace: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).padding.top),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: tabs,
+          child: BlocBuilder<HomePageBloc, HomePageState>(
+            builder: (context, state) {
+              return Scaffold(
+                body: SetPageInfo(
+                  actions: const [],
+                  id: 'main_feed',
+                  page: Pages.home,
+                  child: ContentScrollView(
+                    retrieveContent:
+                        state.scrollViews[currentPage].retrieveContentFunction,
+                    headerSlivers: [
+                      SliverAppBar(
+                        clipBehavior: Clip.hardEdge,
+                        toolbarHeight: 50,
+                        primary: true,
+                        floating: true,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.background,
+                        surfaceTintColor:
+                            Theme.of(context).colorScheme.background,
+                        snap: true,
+                        flexibleSpace: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.top,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: List.generate(
+                                state.scrollViews.length,
+                                (index) => _PageTab(
+                                  name: state.scrollViews[index].title,
+                                  selected: index == currentPage,
+                                ),
+                              ),
+                            ),
+                            const Divider(
+                              height: 0.5,
+                            ),
+                          ],
                         ),
-                        const Divider(
-                          height: 0.5,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ];
-              },
-              body: pageViews[pageIndex],
-            ),
+                ),
+              );
+            },
           ),
         );
       },

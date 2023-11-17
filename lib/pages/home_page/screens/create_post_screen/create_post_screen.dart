@@ -11,7 +11,7 @@ import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/snackbars.dart';
 import 'package:muffed/widgets/url_view.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'package:muffed/pages/home_page/screens/create_post_screen/bloc/bloc.dart';

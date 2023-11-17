@@ -21,7 +21,7 @@ final class GlobalState extends Equatable {
     return GlobalState(
       lemmyAccounts: List.generate(
         (map['lemmyAccounts'] as List).length,
-        (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index]),
+            (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index]),
       ),
       lemmySelectedAccount: map['lemmySelectedAccount'] as int,
       lemmyDefaultHomeServer: map['lemmyDefaultHomeServer'],
@@ -69,8 +69,33 @@ final class GlobalState extends Equatable {
 
   bool isLoggedIn() => lemmySelectedAccount != -1;
 
+  LemmyAccountData? getSelectedLemmyAccount() {
+    return (lemmySelectedAccount == -1)
+        ? null
+        : lemmyAccounts[lemmySelectedAccount];
+  }
+
+  String getLemmyBaseUrl() {
+    return (lemmySelectedAccount == -1)
+        ? lemmyDefaultHomeServer
+        : lemmyAccounts[lemmySelectedAccount].homeServer;
+  }
+
+  /// if the content the app gets may be different
+  ///
+  /// Used in content scroll view to see whether the posts should be reloaded
+  bool requestUrlDifferent(GlobalState state) {
+    if (state.getLemmyBaseUrl() != getLemmyBaseUrl() || state
+        .getSelectedLemmyAccount()
+        ?.jwt != getSelectedLemmyAccount()?.jwt) {
+      return true;
+    }
+    return false;
+  }
+
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         lemmyAccounts,
         lemmySelectedAccount,
         lemmyDefaultHomeServer,
@@ -89,7 +114,7 @@ final class GlobalState extends Equatable {
     return {
       'lemmyAccounts': List.generate(
         lemmyAccounts.length,
-        (index) => lemmyAccounts[index].toMap(),
+            (index) => lemmyAccounts[index].toMap(),
       ),
       'lemmySelectedAccount': lemmySelectedAccount,
       'lemmyDefaultHomeServer': lemmyDefaultHomeServer,
@@ -121,12 +146,12 @@ final class GlobalState extends Equatable {
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
-          lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
+      lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
       lemmyAccounts: lemmyAccounts ?? this.lemmyAccounts,
       lemmySelectedAccount: lemmySelectedAccount ?? this.lemmySelectedAccount,
       themeMode: themeMode ?? this.themeMode,
       useDynamicColorScheme:
-          useDynamicColorScheme ?? this.useDynamicColorScheme,
+      useDynamicColorScheme ?? this.useDynamicColorScheme,
       seedColor: seedColor ?? this.seedColor,
       showNsfw: showNsfw ?? this.showNsfw,
       blurNsfw: blurNsfw ?? this.blurNsfw,
@@ -173,7 +198,8 @@ final class LemmyAccountData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         jwt,
         homeServer,
         name,

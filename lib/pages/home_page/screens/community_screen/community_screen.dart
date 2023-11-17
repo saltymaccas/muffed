@@ -2,17 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/icon_button.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
-import 'package:muffed/repo/server_repo.dart';
 
 /// The screen that displays the community including information and the
 /// post view
@@ -325,7 +325,6 @@ class CommunityScreen extends StatelessWidget {
                             itemCount: state.posts.length,
                             itemBuilder: (context, index) {
                               return PostItem(
-                                key: ValueKey(state.posts[index]),
                                 post: state.posts[index],
                                 displayType: PostDisplayType.list,
                               );
@@ -355,7 +354,9 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   final CommunityScreenBloc bloc;
 
   double get headerMaxHeight => 400;
+
   double get headerMinHeight => 90;
+
   double get bannerEnd => 0.5;
 
   @override

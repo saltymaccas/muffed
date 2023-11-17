@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_view_modes/post_view_modes.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// The forms posts can be displayed in
@@ -20,14 +20,14 @@ enum PostDisplayType { list, comments }
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
 class PostItem extends StatefulWidget {
-  const PostItem({
+  PostItem({
     this.post,
     this.postId,
     this.form = PostViewForm.card,
     this.useBlocFromContext,
     this.displayType = PostDisplayType.list,
-    super.key,
-  }) : skeletonize = false;
+  })  : skeletonize = false,
+        super(key: ValueKey(post));
 
   /// Shows a skeleton post, used as placeholder when posts are loading
   const PostItem.skeleton({
@@ -52,8 +52,6 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem>
     with AutomaticKeepAliveClientMixin {
-
-
   @override
   Widget build(BuildContext context) {
     super.build(context);

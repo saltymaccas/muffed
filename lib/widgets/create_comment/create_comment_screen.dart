@@ -8,7 +8,7 @@ import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_page.dart';
-import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
