@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'package:muffed/components/block_dialog/block_dialog.dart';
+import 'package:muffed/widgets/block_dialog/block_dialog.dart';
 
 part 'event.dart';
 part 'state.dart';

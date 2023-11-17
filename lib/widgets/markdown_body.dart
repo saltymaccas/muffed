@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:markdown/markdown.dart' as md;
-import 'package:muffed/components/image.dart';
+import 'package:muffed/widgets/image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MuffedMarkdownBody extends StatelessWidget {

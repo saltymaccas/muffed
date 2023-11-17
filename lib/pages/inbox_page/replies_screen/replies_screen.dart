@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/comment_item/comment_item.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/muffed_page.dart';
+import 'package:muffed/widgets/comment_item/comment_item.dart';
+import 'package:muffed/widgets/error.dart';
+import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 
-import 'package:muffed/components/nothing_to_show.dart';
+import 'package:muffed/widgets/nothing_to_show.dart';
 import 'package:muffed/pages/inbox_page/replies_screen/bloc/bloc.dart';
 
 class RepliesScreen extends StatelessWidget {

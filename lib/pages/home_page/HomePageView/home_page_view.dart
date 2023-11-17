@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/popup_menu/popup_menu.dart';
-import 'package:muffed/components/post_item/post_item.dart';
-import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/widgets/error.dart';
+import 'package:muffed/widgets/loading.dart';
+import 'package:muffed/widgets/popup_menu/popup_menu.dart';
+import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/snackbars.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/HomePageView/bloc/bloc.dart';
@@ -18,7 +18,7 @@ class HomePageViewMode {
   final LemmyListingType listingType;
 }
 
-/// The main page the user uses the scroll through content
+/// A scroll view that is meant to be nested in [HomePage]
 class HomePageView extends StatelessWidget {
   const HomePageView({required this.mode, super.key});
 

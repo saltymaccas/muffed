@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/components/loading.dart';
-import 'package:muffed/components/snackbars.dart';
+import 'package:muffed/widgets/loading.dart';
+import 'package:muffed/widgets/snackbars.dart';
 
 class MuffedPage extends StatelessWidget {
   /// Shows when loading and when an error occurs, meant to be wrapped around

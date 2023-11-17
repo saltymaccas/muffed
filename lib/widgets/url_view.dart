@@ -1,10 +1,11 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/image.dart';
+import 'package:muffed/widgets/image.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// displays the content of any url
 class UrlView extends StatelessWidget {
   const UrlView({
     required this.url,

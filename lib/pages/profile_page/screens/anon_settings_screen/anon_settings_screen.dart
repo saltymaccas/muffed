@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/muffed_avatar.dart';
-import 'package:muffed/components/muffed_page.dart';
+import 'package:muffed/widgets/muffed_avatar.dart';
+import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 

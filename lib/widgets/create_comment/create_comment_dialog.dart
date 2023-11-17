@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'package:muffed/components/markdown_body.dart';
-import 'package:muffed/components/snackbars.dart';
-import 'package:muffed/components/create_comment/bloc/bloc.dart';
+import 'package:muffed/widgets/markdown_body.dart';
+import 'package:muffed/widgets/snackbars.dart';
+import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
 
 void showCreateCommentDialog({
   required BuildContext context,

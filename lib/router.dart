@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/create_comment/create_comment_screen.dart';
+import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
 import 'package:muffed/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
@@ -36,27 +36,6 @@ final router = GoRouter(
   initialLocation: '/home',
   routes: [
     StatefulShellRoute.indexedStack(
-      // navigatorContainerBuilder: (
-      //   BuildContext context,
-      //   StatefulNavigationShell navigationShell,
-      //   List<Widget> children,
-      // ) {
-      //   final List<Widget> stackItems = [];
-      //
-      //   for (int i = 0; i < children.length; i++) {
-      //     stackItems.add(
-      //       Offstage(
-      //         offstage: navigationShell.currentIndex != i,
-      //         child: children[i],
-      //       ),
-      //     );
-      //   }
-      //
-      //   return IndexedStack(
-      //     index: navigationShell.currentIndex,
-      //     children: stackItems,
-      //   );
-      // },
       builder: (
         BuildContext context,
         GoRouterState state,

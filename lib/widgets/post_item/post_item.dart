@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/components/error.dart';
-import 'package:muffed/components/post_item/bloc/bloc.dart';
-import 'package:muffed/components/post_item/post_view_modes/post_view_modes.dart';
+import 'package:muffed/widgets/error.dart';
+import 'package:muffed/widgets/post_item/bloc/bloc.dart';
+import 'package:muffed/widgets/post_item/post_view_modes/post_view_modes.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -20,7 +20,6 @@ enum PostDisplayType { list, comments }
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
 class PostItem extends StatefulWidget {
-  ///
   const PostItem({
     this.post,
     this.postId,
@@ -30,6 +29,7 @@ class PostItem extends StatefulWidget {
     super.key,
   }) : skeletonize = false;
 
+  /// Shows a skeleton post, used as placeholder when posts are loading
   const PostItem.skeleton({
     this.form = PostViewForm.card,
     this.displayType = PostDisplayType.list,
@@ -52,11 +52,13 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem>
     with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    /// returns skeleton version of post is [skeletonize] is true
     if (widget.skeletonize) {
       return Skeletonizer(
         ignoreContainers: false,
@@ -68,7 +70,8 @@ class _PostItemState extends State<PostItem>
         ),
       );
     }
-    super.build(context);
+
+    /// The actual post widget
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
         switch (state.status) {
@@ -103,6 +106,7 @@ class _PostItemState extends State<PostItem>
       },
     );
 
+    /// Wraps with bloc
     if (widget.useBlocFromContext != null) {
       return BlocProvider.value(
         value: BlocProvider.of<PostItemBloc>(widget.useBlocFromContext!),
@@ -120,6 +124,9 @@ class _PostItemState extends State<PostItem>
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 final placeholderPost = LemmyPost(

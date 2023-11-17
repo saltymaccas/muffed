@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/components/error.dart';
+import 'package:muffed/widgets/error.dart';
 import 'package:muffed/repo/server_repo.dart';
 
-import 'package:muffed/components/block_dialog/bloc/bloc.dart';
+import 'package:muffed/widgets/block_dialog/bloc/bloc.dart';
 
 enum BlockDialogType { person, community }
 
