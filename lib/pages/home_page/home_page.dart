@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
                   id: 'main_feed',
                   page: Pages.home,
                   child: ContentScrollView(
+                    key: ValueKey(state.scrollViews[currentPage]),
                     retrieveContent:
                         state.scrollViews[currentPage].retrieveContentFunction,
                     headerSlivers: [
@@ -85,6 +86,11 @@ class _HomePageState extends State<HomePage> {
                               children: List.generate(
                                 state.scrollViews.length,
                                 (index) => _PageTab(
+                                  onTap: () {
+                                    setState(() {
+                                      currentPage = index;
+                                    });
+                                  },
                                   name: state.scrollViews[index].title,
                                   selected: index == currentPage,
                                 ),
