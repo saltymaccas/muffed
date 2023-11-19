@@ -54,8 +54,6 @@ class _HomePageState extends State<HomePage> {
             builder: (context, state) {
               final bloc = BlocProvider.of<HomePageBloc>(context);
 
-              print('build');
-
               return Scaffold(
                 body: SetPageInfo(
                   actions: const [],
@@ -63,392 +61,6 @@ class _HomePageState extends State<HomePage> {
                   page: Pages.home,
                   child: Builder(
                     builder: (context) {
-                      /// The actions of each page in order
-                      final pageActions = [
-                        [
-                          BlocProvider.value(
-                            value: bloc,
-                            child: BlocBuilder<HomePageBloc, HomePageState>(
-                              builder: (context, state) {
-                                final bloc = context.read<HomePageBloc>();
-
-                                return MuffedPopupMenuButton(
-                                  key: const ValueKey(0),
-                                  visualDensity: VisualDensity.compact,
-                                  icon: const Icon(Icons.sort),
-                                  selectedValue: (state.scrollViewConfigs[0]
-                                          as LemmyPostGetter)
-                                      .sortType,
-                                  items: [
-                                    MuffedPopupMenuItem(
-                                      title: 'Hot',
-                                      icon: const Icon(
-                                        Icons.local_fire_department,
-                                      ),
-                                      value: LemmySortType.hot,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 0,
-                                          newSortType: LemmySortType.hot,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuItem(
-                                      title: 'Active',
-                                      icon: const Icon(
-                                        Icons.rocket_launch,
-                                      ),
-                                      value: LemmySortType.active,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 0,
-                                          newSortType: LemmySortType.active,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuItem(
-                                      title: 'New',
-                                      icon: const Icon(Icons.auto_awesome),
-                                      value: LemmySortType.latest,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 0,
-                                          newSortType: LemmySortType.latest,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuExpandableItem(
-                                      title: 'Top',
-                                      items: [
-                                        MuffedPopupMenuItem(
-                                          title: 'All Time',
-                                          icon: const Icon(Icons.military_tech),
-                                          value: LemmySortType.topAll,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType: LemmySortType.topAll,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Year',
-                                          icon:
-                                              const Icon(Icons.calendar_today),
-                                          value: LemmySortType.topYear,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topYear,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Month',
-                                          icon:
-                                              const Icon(Icons.calendar_month),
-                                          value: LemmySortType.topMonth,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topMonth,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Week',
-                                          icon: const Icon(Icons.view_week),
-                                          value: LemmySortType.topWeek,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topWeek,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Day',
-                                          icon: const Icon(Icons.view_day),
-                                          value: LemmySortType.topDay,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType: LemmySortType.topDay,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Twelve Hours',
-                                          icon: const Icon(Icons.schedule),
-                                          value: LemmySortType.topTwelveHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topTwelveHour,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Six Hours',
-                                          icon: const Icon(
-                                            Icons.view_module_outlined,
-                                          ),
-                                          value: LemmySortType.topSixHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topSixHour,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Hour',
-                                          icon: const Icon(
-                                            Icons.hourglass_bottom,
-                                          ),
-                                          value: LemmySortType.topHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.topHour,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    MuffedPopupMenuExpandableItem(
-                                      title: 'Comments',
-                                      items: [
-                                        MuffedPopupMenuItem(
-                                          title: 'Most Comments',
-                                          icon: const Icon(Icons.comment_bank),
-                                          value: LemmySortType.mostComments,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.mostComments,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'New Comments',
-                                          icon: const Icon(Icons.add_comment),
-                                          value: LemmySortType.newComments,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 0,
-                                              newSortType:
-                                                  LemmySortType.newComments,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                        [
-                          BlocProvider.value(
-                            value: bloc,
-                            child: BlocBuilder<HomePageBloc, HomePageState>(
-                              builder: (context, state) {
-                                final bloc = context.read<HomePageBloc>();
-
-                                return MuffedPopupMenuButton(
-                                  key: const ValueKey(1),
-                                  visualDensity: VisualDensity.compact,
-                                  icon: const Icon(Icons.sort),
-                                  selectedValue: (state.scrollViewConfigs[1]
-                                          as LemmyPostGetter)
-                                      .sortType,
-                                  items: [
-                                    MuffedPopupMenuItem(
-                                      title: 'Hot',
-                                      icon: const Icon(
-                                        Icons.local_fire_department,
-                                      ),
-                                      value: LemmySortType.hot,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 1,
-                                          newSortType: LemmySortType.hot,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuItem(
-                                      title: 'Active',
-                                      icon: const Icon(Icons.rocket_launch),
-                                      value: LemmySortType.active,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 1,
-                                          newSortType: LemmySortType.active,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuItem(
-                                      title: 'New',
-                                      icon: const Icon(Icons.auto_awesome),
-                                      value: LemmySortType.latest,
-                                      onTap: () => bloc.add(
-                                        SortTypeChanged(
-                                          pageIndex: 1,
-                                          newSortType: LemmySortType.latest,
-                                        ),
-                                      ),
-                                    ),
-                                    MuffedPopupMenuExpandableItem(
-                                      title: 'Top',
-                                      items: [
-                                        MuffedPopupMenuItem(
-                                          title: 'All Time',
-                                          icon: const Icon(Icons.military_tech),
-                                          value: LemmySortType.topAll,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType: LemmySortType.topAll,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Year',
-                                          icon:
-                                              const Icon(Icons.calendar_today),
-                                          value: LemmySortType.topYear,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topYear,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Month',
-                                          icon:
-                                              const Icon(Icons.calendar_month),
-                                          value: LemmySortType.topMonth,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topMonth,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Week',
-                                          icon: const Icon(Icons.view_week),
-                                          value: LemmySortType.topWeek,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topWeek,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Day',
-                                          icon: const Icon(Icons.view_day),
-                                          value: LemmySortType.topDay,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType: LemmySortType.topDay,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Twelve Hours',
-                                          icon: const Icon(Icons.schedule),
-                                          value: LemmySortType.topTwelveHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topTwelveHour,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Six Hours',
-                                          icon: const Icon(
-                                            Icons.view_module_outlined,
-                                          ),
-                                          value: LemmySortType.topSixHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topSixHour,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'Hour',
-                                          icon: const Icon(
-                                            Icons.hourglass_bottom,
-                                          ),
-                                          value: LemmySortType.topHour,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.topHour,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    MuffedPopupMenuExpandableItem(
-                                      title: 'Comments',
-                                      items: [
-                                        MuffedPopupMenuItem(
-                                          title: 'Most Comments',
-                                          icon: const Icon(Icons.comment_bank),
-                                          value: LemmySortType.mostComments,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.mostComments,
-                                            ),
-                                          ),
-                                        ),
-                                        MuffedPopupMenuItem(
-                                          title: 'New Comments',
-                                          icon: const Icon(Icons.add_comment),
-                                          value: LemmySortType.newComments,
-                                          onTap: () => bloc.add(
-                                            SortTypeChanged(
-                                              pageIndex: 1,
-                                              newSortType:
-                                                  LemmySortType.newComments,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ]
-                      ];
-
                       final allPageActions = [
                         IconButton(
                           onPressed: () {
@@ -465,7 +77,217 @@ class _HomePageState extends State<HomePage> {
                               page: Pages.home,
                               actions: [
                                 ...allPageActions,
-                                ...pageActions[currentPage],
+                                if (state.scrollViewConfigs[currentPage]
+                                    is LemmyPostGetter) ...[
+                                  BlocProvider.value(
+                                    value: bloc,
+                                    child: BlocBuilder<HomePageBloc,
+                                        HomePageState>(
+                                      builder: (context, state) {
+                                        final bloc =
+                                            context.read<HomePageBloc>();
+
+                                        return MuffedPopupMenuButton(
+                                          visualDensity: VisualDensity.compact,
+                                          icon: const Icon(Icons.sort),
+                                          selectedValue:
+                                              (state.scrollViewConfigs[
+                                                          currentPage]
+                                                      as LemmyPostGetter)
+                                                  .sortType,
+                                          items: [
+                                            MuffedPopupMenuItem(
+                                              title: 'Hot',
+                                              icon: const Icon(
+                                                Icons.local_fire_department,
+                                              ),
+                                              value: LemmySortType.hot,
+                                              onTap: () => bloc.add(
+                                                SortTypeChanged(
+                                                  pageIndex: currentPage,
+                                                  newSortType:
+                                                      LemmySortType.hot,
+                                                ),
+                                              ),
+                                            ),
+                                            MuffedPopupMenuItem(
+                                              title: 'Active',
+                                              icon: const Icon(
+                                                  Icons.rocket_launch),
+                                              value: LemmySortType.active,
+                                              onTap: () => bloc.add(
+                                                SortTypeChanged(
+                                                  pageIndex: currentPage,
+                                                  newSortType:
+                                                      LemmySortType.active,
+                                                ),
+                                              ),
+                                            ),
+                                            MuffedPopupMenuItem(
+                                              title: 'New',
+                                              icon: const Icon(
+                                                  Icons.auto_awesome),
+                                              value: LemmySortType.latest,
+                                              onTap: () => bloc.add(
+                                                SortTypeChanged(
+                                                  pageIndex: currentPage,
+                                                  newSortType:
+                                                      LemmySortType.latest,
+                                                ),
+                                              ),
+                                            ),
+                                            MuffedPopupMenuExpandableItem(
+                                              title: 'Top',
+                                              items: [
+                                                MuffedPopupMenuItem(
+                                                  title: 'All Time',
+                                                  icon: const Icon(
+                                                      Icons.military_tech),
+                                                  value: LemmySortType.topAll,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType:
+                                                          LemmySortType.topAll,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Year',
+                                                  icon: const Icon(
+                                                      Icons.calendar_today),
+                                                  value: LemmySortType.topYear,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType:
+                                                          LemmySortType.topYear,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Month',
+                                                  icon: const Icon(
+                                                      Icons.calendar_month),
+                                                  value: LemmySortType.topMonth,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType: LemmySortType
+                                                          .topMonth,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Week',
+                                                  icon: const Icon(
+                                                      Icons.view_week),
+                                                  value: LemmySortType.topWeek,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType:
+                                                          LemmySortType.topWeek,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Day',
+                                                  icon: const Icon(
+                                                      Icons.view_day),
+                                                  value: LemmySortType.topDay,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType:
+                                                          LemmySortType.topDay,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Twelve Hours',
+                                                  icon: const Icon(
+                                                      Icons.schedule),
+                                                  value: LemmySortType
+                                                      .topTwelveHour,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType: LemmySortType
+                                                          .topTwelveHour,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Six Hours',
+                                                  icon: const Icon(
+                                                    Icons.view_module_outlined,
+                                                  ),
+                                                  value:
+                                                      LemmySortType.topSixHour,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType: LemmySortType
+                                                          .topSixHour,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'Hour',
+                                                  icon: const Icon(
+                                                    Icons.hourglass_bottom,
+                                                  ),
+                                                  value: LemmySortType.topHour,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType:
+                                                          LemmySortType.topHour,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            MuffedPopupMenuExpandableItem(
+                                              title: 'Comments',
+                                              items: [
+                                                MuffedPopupMenuItem(
+                                                  title: 'Most Comments',
+                                                  icon: const Icon(
+                                                      Icons.comment_bank),
+                                                  value: LemmySortType
+                                                      .mostComments,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType: LemmySortType
+                                                          .mostComments,
+                                                    ),
+                                                  ),
+                                                ),
+                                                MuffedPopupMenuItem(
+                                                  title: 'New Comments',
+                                                  icon: const Icon(
+                                                      Icons.add_comment),
+                                                  value:
+                                                      LemmySortType.newComments,
+                                                  onTap: () => bloc.add(
+                                                    SortTypeChanged(
+                                                      pageIndex: currentPage,
+                                                      newSortType: LemmySortType
+                                                          .newComments,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ],
                               id: 'main_feed',
                             ),
