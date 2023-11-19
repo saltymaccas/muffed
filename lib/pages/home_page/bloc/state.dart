@@ -1,31 +1,68 @@
 part of 'bloc.dart';
 
-class ContentScrollConfig extends Equatable {
-  const ContentScrollConfig({
-    required this.title,
-    required this.retrieveContentFunction,
-  });
+abstract class ContentGetter extends Equatable {
+  const ContentGetter({required this.title});
 
   final String title;
-  final RetrieveContent retrieveContentFunction;
+
+  Future<List<Object>> call({required int page});
+}
+
+class LemmyPostGetter extends ContentGetter {
+  const LemmyPostGetter({
+    required super.title,
+    required this.listingType,
+    required this.sortType,
+    required this.repo,
+  });
+
+  final LemmySortType sortType;
+  final LemmyListingType listingType;
+  final ServerRepo repo;
 
   @override
-  List<Object?> get props => [title, retrieveContentFunction];
+  Future<List<Object>> call({required int page}) {
+    return repo.lemmyRepo
+        .getPosts(page: page, listingType: listingType, sortType: sortType);
+  }
+
+  @override
+  List<Object?> get props =>
+      [
+        super.title,
+        sortType,
+        listingType,
+        repo,
+      ];
+
+  LemmyPostGetter copyWith({
+    String? title,
+    LemmySortType? sortType,
+    LemmyListingType? listingType,
+    ServerRepo? repo,
+  }) {
+    return LemmyPostGetter(
+      title: title ?? this.title,
+      sortType: sortType ?? this.sortType,
+      listingType: listingType ?? this.listingType,
+      repo: repo ?? this.repo,
+    );
+  }
 }
 
 class HomePageState extends Equatable {
-  const HomePageState({this.scrollViews = const []});
+  const HomePageState({this.scrollViewConfigs = const []});
 
-  final List<ContentScrollConfig> scrollViews;
+  final List<ContentGetter> scrollViewConfigs;
 
   @override
-  List<Object?> get props => [scrollViews];
+  List<Object?> get props => [scrollViewConfigs];
 
   HomePageState copyWith({
-    List<ContentScrollConfig>? scrollViews,
+    List<ContentGetter>? scrollViewConfigs,
   }) {
     return HomePageState(
-      scrollViews: scrollViews ?? this.scrollViews,
+      scrollViewConfigs: scrollViewConfigs ?? this.scrollViewConfigs,
     );
   }
 }

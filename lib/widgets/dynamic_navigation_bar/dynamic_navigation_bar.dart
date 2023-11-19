@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/profile_page/account_switcher.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 
 export 'bloc/bloc.dart';
 
@@ -139,6 +139,7 @@ class _DynamicNavigationBarItem extends StatefulWidget {
     required this.selected,
     required this.itemIndex,
   });
+
   final Widget icon;
   final bool selected;
   final int itemIndex;
@@ -151,94 +152,98 @@ class _DynamicNavigationBarItem extends StatefulWidget {
 class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<DynamicNavigationBarBloc>();
+    return BlocBuilder<DynamicNavigationBarBloc, DynamicNavigationBarState>(
+      builder: (context, state) {
+        print('build12');
 
-    /// Whether the page has actions.
-    ///
-    /// This is used to make sure the spacer in between the item and the actions
-    /// is only shown when it should be
-    late final bool hasActions;
+        /// Whether the page has actions.
+        ///
+        /// This is used to make sure the spacer in between the item and the actions
+        /// is only shown when it should be
+        late final bool hasActions;
 
-    const LemmyAccountData? loadedAccount = null;
+        const LemmyAccountData? loadedAccount = null;
 
-    if (widget.selected) {
-      if (loadedAccount !=
-          context.watch<GlobalBloc>().getSelectedLemmyAccount()) {}
-    }
+        if (widget.selected) {
+          if (loadedAccount !=
+              context.watch<GlobalBloc>().getSelectedLemmyAccount()) {}
+        }
 
-    if (bloc.state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
-      if (bloc.state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {
-        hasActions = true;
-      } else {
-        hasActions = false;
-      }
-    } else {
-      hasActions = false;
-    }
+        if (state.pageStackInfo[widget.itemIndex]!.isNotEmpty) {
+          if (state.pageStackInfo[widget.itemIndex]!.last.actions.isNotEmpty) {
+            hasActions = true;
+          } else {
+            hasActions = false;
+          }
+        } else {
+          hasActions = false;
+        }
 
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: AnimatedSize(
-        reverseDuration: _animDur,
-        curve: _animCurve,
-        duration: _animDur,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            widget.icon,
-            AnimatedSize(
-              curve: _animCurve,
-              duration: _animDur,
-              child: (widget.selected && hasActions)
-                  ? Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Container(
-                            width: 2,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                          ),
-                        ).animate().fade(
+        return Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: AnimatedSize(
+            reverseDuration: _animDur,
+            curve: _animCurve,
+            duration: _animDur,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                widget.icon,
+                AnimatedSize(
+                  curve: _animCurve,
+                  duration: _animDur,
+                  child: (widget.selected && hasActions)
+                      ? Row(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              child: Container(
+                                width: 2,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            ).animate().fade(
+                                  duration: _animDur,
+                                  curve: _animCurve,
+                                  begin: 0,
+                                ),
+                            AnimatedSize(
                               duration: _animDur,
                               curve: _animCurve,
-                              begin: 0,
-                            ),
-                        AnimatedSize(
-                          duration: _animDur,
-                          curve: _animCurve,
-                          child: AnimatedSwitcher(
-                            duration: _animDur,
-                            reverseDuration: _animDur,
-                            switchInCurve: _animCurve,
-                            switchOutCurve: _animCurve,
-                            child: Row(
-                              // key needs to be set so the actions get animated in when page
-                              // is pushed
-                              key: Key(
-                                'actionRow ${bloc.state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}',
+                              child: AnimatedSwitcher(
+                                duration: _animDur,
+                                reverseDuration: _animDur,
+                                switchInCurve: _animCurve,
+                                switchOutCurve: _animCurve,
+                                child: Row(
+                                  // key needs to be set so the actions get animated in when page
+                                  // is pushed
+                                  key: Key(
+                                    'actionRow ${state.pageStackInfo[widget.itemIndex]!.length} ${widget.itemIndex}',
+                                  ),
+                                  children: state
+                                      .pageStackInfo[widget.itemIndex]!
+                                      .last
+                                      .actions,
+                                ),
                               ),
-                              children: bloc
-                                  .state
-                                  .pageStackInfo[widget.itemIndex]!
-                                  .last
-                                  .actions,
                             ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox(),
+                          ],
+                        )
+                      : const SizedBox(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
