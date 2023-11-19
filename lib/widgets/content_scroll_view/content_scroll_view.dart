@@ -60,7 +60,13 @@ class ContentScrollView extends StatelessWidget {
                     slivers: [
                       ...headerSlivers,
                       const SliverFillRemaining(
-                        child: CircularProgressIndicator(),
+                        child: Center(
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
                       ),
                     ],
                   );
