@@ -154,8 +154,6 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
   Widget build(BuildContext context) {
     return BlocBuilder<DynamicNavigationBarBloc, DynamicNavigationBarState>(
       builder: (context, state) {
-        print('build12');
-
         /// Whether the page has actions.
         ///
         /// This is used to make sure the spacer in between the item and the actions
