@@ -6,8 +6,33 @@ part 'event.dart';
 part 'state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
-  HomePageBloc({required this.scrollViews})
-      : super(HomePageState(scrollViewConfigs: scrollViews)) {
+  HomePageBloc() : super(const HomePageState()) {
+    on<Initialise>((event, emit) {
+      // defines the scroll views
+      final scrollViews = [
+        if (event.isLoggedIn)
+          LemmyPostGetter(
+            title: 'Subscribed',
+            sortType: LemmySortType.hot,
+            listingType: LemmyListingType.subscribed,
+            repo: event.repo,
+          ),
+        LemmyPostGetter(
+          title: 'Popular',
+          sortType: LemmySortType.hot,
+          listingType: LemmyListingType.all,
+          repo: event.repo,
+        ),
+      ];
+
+      emit(
+        state.copyWith(
+          status: HomePageStatus.success,
+          scrollViewConfigs: scrollViews,
+        ),
+      );
+    });
+
     on<SortTypeChanged>((event, emit) {
       final newScrollViewConfigs = [...state.scrollViewConfigs];
 
@@ -24,6 +49,4 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       emit(state.copyWith(scrollViewConfigs: newScrollViewConfigs));
     });
   }
-
-  final List<ContentGetter> scrollViews;
 }

@@ -15,6 +15,7 @@ class MuffedMarkdownBody extends StatelessWidget {
     this.onTapText,
     this.maxHeight,
   });
+
   final String data;
 
   final double? maxHeight;
@@ -76,8 +77,6 @@ class MuffedMarkdownBody extends StatelessWidget {
             final spiltPath = path.split('/');
             final host = Uri.parse(url).host;
 
-            print(host);
-
             final chonks = url.split('/');
 
             if (chonks.length == 1) {
@@ -132,6 +131,7 @@ class MuffedMarkdownBody extends StatelessWidget {
 // taken from: https://github.com/liftoff-app/liftoff/blob/3055896657ef05772dc5fa18c5b3ab285b93f54a/lib/widgets/markdown_text.dart#L18
 class LemmyLinkSyntax extends md.InlineSyntax {
   LemmyLinkSyntax() : super(_pattern);
+
   // https://github.com/LemmyNet/lemmy-ui/blob/61255bf01a8d2acdbb77229838002bf8067ada70/src/shared/config.ts#L38
   static const String _pattern =
       r'(\/[cmu]\/|@|!)([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})';

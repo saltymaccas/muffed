@@ -27,8 +27,7 @@ class LemmyPostGetter extends ContentGetter {
   }
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         super.title,
         sortType,
         listingType,
@@ -50,19 +49,27 @@ class LemmyPostGetter extends ContentGetter {
   }
 }
 
+enum HomePageStatus { initial, success }
+
 class HomePageState extends Equatable {
-  const HomePageState({this.scrollViewConfigs = const []});
+  const HomePageState({
+    this.scrollViewConfigs = const [],
+    this.status = HomePageStatus.initial,
+  });
 
   final List<ContentGetter> scrollViewConfigs;
+  final HomePageStatus status;
 
   @override
-  List<Object?> get props => [scrollViewConfigs];
+  List<Object?> get props => [scrollViewConfigs, status];
 
   HomePageState copyWith({
     List<ContentGetter>? scrollViewConfigs,
+    HomePageStatus? status,
   }) {
     return HomePageState(
       scrollViewConfigs: scrollViewConfigs ?? this.scrollViewConfigs,
+      status: status ?? this.status,
     );
   }
 }

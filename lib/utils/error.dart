@@ -5,8 +5,6 @@ String? errorObjectToString(Object? error) {
 
   if (error == null) return null;
 
-  print(error.runtimeType);
-
   if (error is DioException) {
     errorString = error.response?.data.toString() ?? error.message.toString();
   } else if (error is Exception) {
@@ -20,5 +18,7 @@ String? errorObjectToString(Object? error) {
   }
 
   return errorString.replaceAll(
-      RegExp(r'auth=(.*?)(?=&|$)'), '[auth redacted]',);
+    RegExp(r'auth=(.*?)(?=&|$)'),
+    '[auth redacted]',
+  );
 }

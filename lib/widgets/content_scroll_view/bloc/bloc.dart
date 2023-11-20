@@ -8,7 +8,7 @@ import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 part 'event.dart';
 part 'state.dart';
 
-final _log = Logger('HomePageBloc');
+final _log = Logger('ContentScrollView');
 
 /// The bloc that controls the home page
 class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
@@ -41,6 +41,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             error: err,
           ),
         );
+        rethrow;
       }
     });
     on<PullDownRefresh>((event, emit) async {
