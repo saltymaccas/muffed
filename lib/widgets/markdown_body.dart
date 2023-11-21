@@ -30,7 +30,9 @@ class MuffedMarkdownBody extends StatelessWidget {
       constraints: BoxConstraints(
         maxHeight: maxHeight ?? double.infinity,
       ),
-      child: MarkdownBody(
+      child: Markdown(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(0),
         listItemCrossAxisAlignment: MarkdownListItemCrossAxisAlignment.start,
         shrinkWrap: true,
         // extensionSet: md.ExtensionSet.gitHubWeb,

@@ -87,7 +87,7 @@ class ContentScrollView extends StatelessWidget {
                 return NotificationListener(
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 500 &&
+                            scrollInfo.metrics.maxScrollExtent - 2000 &&
                         scrollInfo.depth == 0) {
                       context
                           .read<ContentScrollBloc>()
@@ -109,6 +109,7 @@ class ContentScrollView extends StatelessWidget {
                       });
                     },
                     child: CustomScrollView(
+                      cacheExtent: 2000,
                       slivers: [
                         ...headerSlivers,
                         SliverList.builder(
