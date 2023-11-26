@@ -410,7 +410,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                       ? MuffedImage(
                           height: (headerMaxHeight - shrinkOffset) * bannerEnd,
                           width: double.maxFinite,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imageUrl: community.banner!,
                         )
                       : placeholderBanner,

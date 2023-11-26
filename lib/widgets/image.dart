@@ -89,6 +89,7 @@ class _MuffedImageState extends State<MuffedImage> {
 
         return ExtendedImage.network(
           widget.imageUrl,
+          width: widget.width,
           fit: widget.fit,
           cache: true,
           loadStateChanged: (state) {
