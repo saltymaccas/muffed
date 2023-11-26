@@ -20,7 +20,7 @@ class MuffedAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         child: (url != null)
             ? MuffedImage(
-                tapAnywhereForFullScreen: false,
+                fullScreenable: false,
                 getImageSize: false,
                 fit: BoxFit.cover,
                 imageUrl: url!,

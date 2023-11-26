@@ -114,7 +114,7 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                       width: widget.imageWidth,
                       height: widget.height,
                       child: MuffedImage(
-                        tapAnywhereForFullScreen: false,
+                        fullScreenable: false,
                         imageUrl: metadata!.image!,
                         fit: BoxFit.cover,
                         getImageSize: false,

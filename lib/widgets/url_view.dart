@@ -21,7 +21,9 @@ class UrlView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final urlPath = Uri.parse(url).path;
+    final urlPath = Uri
+        .parse(url)
+        .path;
 
     if (urlPath.endsWith('.jpg') ||
         urlPath.endsWith('.png') ||
@@ -33,8 +35,11 @@ class UrlView extends StatelessWidget {
         child: Center(
           child: MuffedImage(
             imageUrl: url,
-            shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
-            tapAnywhereForFullScreen: tapImageAnywhereForFullScreen,
+            shouldBlur: nsfw && context
+                .read<GlobalBloc>()
+                .state
+                .blurNsfw,
+            fullScreenable: tapImageAnywhereForFullScreen,
           ),
         ),
       );
@@ -46,39 +51,51 @@ class UrlView extends StatelessWidget {
           child: (true)
               ? LinkPreviewer(link: url)
               : AnyLinkPreview(
-                  cache: const Duration(days: 1),
-                  placeholderWidget: Container(
-                    height: double.maxFinite,
-                    width: double.maxFinite,
-                    color: Theme.of(context).colorScheme.surface,
-                    child: const Center(
-                      child: Text('Loading url data'),
-                    ),
+            cache: const Duration(days: 1),
+            placeholderWidget: Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .surface,
+              child: const Center(
+                child: Text('Loading url data'),
+              ),
+            ),
+            errorImage: 'null',
+            errorBody: 'Could not load body',
+            errorWidget: GestureDetector(
+              onTap: () => launchUrl(Uri.parse(url)),
+              child: Container(
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .background,
+                padding: const EdgeInsets.all(4),
+                child: Text(
+                  url,
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
                   ),
-                  errorImage: 'null',
-                  errorBody: 'Could not load body',
-                  errorWidget: GestureDetector(
-                    onTap: () => launchUrl(Uri.parse(url)),
-                    child: Container(
-                      color: Theme.of(context).colorScheme.background,
-                      padding: const EdgeInsets.all(4),
-                      child: Text(
-                        url,
-                        style: const TextStyle(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  bodyTextOverflow: TextOverflow.fade,
-                  removeElevation: true,
-                  borderRadius: 10,
-                  boxShadow: const [],
-                  link: url,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  displayDirection: UIDirection.uiDirectionHorizontal,
-                  titleStyle: Theme.of(context).textTheme.titleSmall,
                 ),
+              ),
+            ),
+            bodyTextOverflow: TextOverflow.fade,
+            removeElevation: true,
+            borderRadius: 10,
+            boxShadow: const [],
+            link: url,
+            backgroundColor: Theme
+                .of(context)
+                .colorScheme
+                .background,
+            displayDirection: UIDirection.uiDirectionHorizontal,
+            titleStyle: Theme
+                .of(context)
+                .textTheme
+                .titleSmall,
+          ),
         ),
       );
     }
