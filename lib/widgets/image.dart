@@ -62,11 +62,7 @@ class _MuffedImageState extends State<MuffedImage> {
   void initState() {
     height = widget.height;
     shouldBlur = widget.shouldBlur;
-    heroTag = DateTime
-        .now()
-        .microsecondsSinceEpoch
-        .toString()
-        .substring(10);
+    heroTag = DateTime.now().microsecondsSinceEpoch.toString().substring(10);
 
     if (widget.adjustableHeight) {
       cachedImageExists(widget.imageUrl).then((cachedImageExists) {
@@ -111,12 +107,14 @@ class _MuffedImageState extends State<MuffedImage> {
                   );
               }
 
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                setState(() {
-                  imageSize = imageSize ??
-                      Size(image.width.toDouble(), image.height.toDouble());
+              if (imageSize == null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    imageSize = imageSize ??
+                        Size(image.width.toDouble(), image.height.toDouble());
+                  });
                 });
-              });
+              }
             },
             retries: widget.numOfRetries,
             handleLoadingProgress: true,
@@ -131,26 +129,26 @@ class _MuffedImageState extends State<MuffedImage> {
     return GestureDetector(
       onTap: (!shouldBlur && widget.fullScreenable)
           ? () {
-        if (shouldBlur) {
-          setState(() {
-            shouldBlur = false;
-          });
-        } else if (widget.fullScreenable) {
-          showFullScreenImageView(
-            context,
-            widget.imageUrl,
-            heroTag,
-          );
-        }
-      }
+              if (shouldBlur) {
+                setState(() {
+                  shouldBlur = false;
+                });
+              } else if (widget.fullScreenable) {
+                showFullScreenImageView(
+                  context,
+                  widget.imageUrl,
+                  heroTag,
+                );
+              }
+            }
           : null,
       child: (widget.animateSizeChange)
           ? AnimatedSize(
-        alignment: Alignment.topCenter,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOutCubic,
-        child: image,
-      )
+              alignment: Alignment.topCenter,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOutCubic,
+              child: image,
+            )
           : image,
     );
   }
@@ -197,26 +195,22 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .background,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Listener(
         onPointerMove: scaleIsInitial
             ? (event) {
-          if (!isDragging &&
-              event.delta.dx.abs() > event.delta.dy.abs()) {
-            return;
-          }
-          setState(() {
-            isDragging = true;
-            offset += event.delta;
-          });
-        }
-            : (_) =>
-            setState(() {
-              isDragging = false;
-            }),
+                if (!isDragging &&
+                    event.delta.dx.abs() > event.delta.dy.abs()) {
+                  return;
+                }
+                setState(() {
+                  isDragging = true;
+                  offset += event.delta;
+                });
+              }
+            : (_) => setState(() {
+                  isDragging = false;
+                }),
         onPointerCancel: (_) {
           setState(() {
             prevOffset = offset;
@@ -225,34 +219,34 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
         },
         onPointerUp: isZoomedOut
             ? (_) {
-          if (!isDragging) {
-            setState(() {
-              showButtons = !showButtons;
-            });
-            return;
-          }
+                if (!isDragging) {
+                  setState(() {
+                    showButtons = !showButtons;
+                  });
+                  return;
+                }
 
-          setState(() {
-            isDragging = false;
-          });
+                setState(() {
+                  isDragging = false;
+                });
 
-          final speed = (offset - prevOffset).distance;
-          if (speed > speedThreshold || offset.dy.abs() > yThreshold) {
-            Navigator.of(context).pop();
-          } else {
-            setState(() {
-              prevOffset = offset;
-              offset = Offset.zero;
-            });
-          }
-        }
+                final speed = (offset - prevOffset).distance;
+                if (speed > speedThreshold || offset.dy.abs() > yThreshold) {
+                  Navigator.of(context).pop();
+                } else {
+                  setState(() {
+                    prevOffset = offset;
+                    offset = Offset.zero;
+                  });
+                }
+              }
             : (_) {
-          setState(() {
-            prevOffset = offset;
-            offset = Offset.zero;
-            isDragging = false;
-          });
-        },
+                setState(() {
+                  prevOffset = offset;
+                  offset = Offset.zero;
+                  isDragging = false;
+                });
+              },
         child: AnimatedContainer(
           transform: Matrix4Transform()
               .scale(max(0.9, 1 - offset.dy.abs() / 1000))
@@ -260,10 +254,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
               .rotate(min(-offset.dx / 2000, 0.1))
               .matrix4,
           duration:
-          isDragging ? Duration.zero : const Duration(milliseconds: 200),
+              isDragging ? Duration.zero : const Duration(milliseconds: 200),
           child: PhotoView(
             backgroundDecoration:
-            const BoxDecoration(color: Colors.transparent),
+                const BoxDecoration(color: Colors.transparent),
             scaleStateChangedCallback: (value) {
               setState(() {
                 isZoomedOut = value == PhotoViewScaleState.zoomedOut ||
@@ -285,7 +279,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             imageProvider: ExtendedNetworkImageProvider(widget.url),
             heroAttributes: PhotoViewHeroAttributes(tag: widget.heroTag),
             loadingBuilder: (context, event) =>
-            const Center(child: CircularProgressIndicator.adaptive()),
+                const Center(child: CircularProgressIndicator.adaptive()),
           ),
         ),
       ),
