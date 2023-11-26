@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:muffed/utils/image.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 final _log = Logger('MuffedImageViewer');
 
@@ -17,10 +18,11 @@ class MuffedImage extends StatefulWidget {
     this.shouldBlur = false,
     this.animateSizeChange = true,
     this.numOfRetries = 3,
-    this.initialHeight = 300,
     this.fullScreenable = true,
-    this.fit = BoxFit.fitWidth,
-    this.getImageSize = true,
+    this.fit = BoxFit.contain,
+    this.adjustableHeight = false,
+    this.height,
+    this.width,
     super.key,
   });
 
@@ -33,19 +35,19 @@ class MuffedImage extends StatefulWidget {
   /// The number of tries the widget will take to load the image
   final int numOfRetries;
 
-  /// The size the widget will take up before the image loads
-  final double initialHeight;
-
   /// whether to animate the height of the widget changing when the image laods
   final bool animateSizeChange;
 
-  /// whether to show an icon button to open the image in full screen or
-  /// image tap to open full screen
+  /// Whether a tap on the image makes opens the image in full screen view
   final bool fullScreenable;
 
-  final BoxFit fit;
+  /// Whether the height of the widget should be adjusted to the image
+  final bool adjustableHeight;
 
-  final bool getImageSize;
+  final double? height;
+  final double? width;
+
+  final BoxFit fit;
 
   @override
   State<MuffedImage> createState() => _MuffedImageState();
@@ -59,89 +61,90 @@ class _MuffedImageState extends State<MuffedImage> {
 
   @override
   void initState() {
+    height = widget.height;
     shouldBlur = widget.shouldBlur;
-    heroTag = DateTime.now().microsecondsSinceEpoch.toString().substring(10);
+    heroTag = DateTime
+        .now()
+        .microsecondsSinceEpoch
+        .toString()
+        .substring(10);
+
+    if (widget.adjustableHeight) {
+      retrieveImageDimensions(widget.imageUrl).then((size) {
+        if (mounted) {
+          setState(() {
+            imageSize = size;
+          });
+        }
+      });
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (widget.getImageSize) {
-          // Gets the size of the image
-          if (imageSize == null) {
-            retrieveImageDimensions(widget.imageUrl).then((size) {
-              setState(() {
-                imageSize = size;
-              });
-            });
-          }
-
+    final image = SizedBox(
+      width: widget.width,
+      height: height,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
           if (imageSize != null) {
             height =
                 imageSize!.height / imageSize!.width * constraints.maxWidth;
           }
-        }
 
-        final image = ExtendedImage.network(
-          widget.imageUrl,
-          fit: widget.fit,
-          cache: true,
-          loadStateChanged: (state) {
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                return const SizedBox(
-                  height: 300,
-                  width: double.maxFinite,
-                );
-              case LoadState.completed:
-                return null;
-              case LoadState.failed:
-                return const Center(
-                  child: Icon(Icons.error),
-                );
-            }
-          },
-          retries: widget.numOfRetries,
-          handleLoadingProgress: true,
-          alignment: Alignment.topCenter,
-          clearMemoryCacheWhenDispose: false,
-          enableMemoryCache: true,
-        );
-
-        return GestureDetector(
-          onTap: (!shouldBlur && widget.fullScreenable)
-              ? () {
-                  if (shouldBlur) {
-                    setState(() {
-                      shouldBlur = false;
-                    });
-                  } else if (widget.fullScreenable) {
-                    showFullScreenImageView(
-                      context,
-                      widget.imageUrl,
-                      heroTag,
-                    );
-                  }
-                }
-              : null,
-          child: (widget.animateSizeChange)
-              ? AnimatedSize(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOutCubic,
-                  child: SizedBox(
+          return ExtendedImage.network(
+            widget.imageUrl,
+            fit: widget.fit,
+            cache: true,
+            loadStateChanged: (state) {
+              if (state.extendedImageLoadState == LoadState.loading) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
                     height: height,
-                    width: double.maxFinite,
-                    child: image,
+                    width: widget.width,
                   ),
-                )
-              : SizedBox(
-                  height: height,
-                  child: image,
-                ),
-        );
-      },
+                );
+              }
+
+              return null;
+            },
+            retries: widget.numOfRetries,
+            handleLoadingProgress: true,
+            alignment: Alignment.topCenter,
+            clearMemoryCacheWhenDispose: false,
+            enableMemoryCache: true,
+          );
+        },
+      ),
+    );
+
+    return GestureDetector(
+      onTap: (!shouldBlur && widget.fullScreenable)
+          ? () {
+        if (shouldBlur) {
+          setState(() {
+            shouldBlur = false;
+          });
+        } else if (widget.fullScreenable) {
+          showFullScreenImageView(
+            context,
+            widget.imageUrl,
+            heroTag,
+          );
+        }
+      }
+          : null,
+      child: (widget.animateSizeChange)
+          ? AnimatedSize(
+        alignment: Alignment.topCenter,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+        child: image,
+      )
+          : image,
     );
   }
 }
@@ -187,22 +190,26 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .background,
       body: Listener(
         onPointerMove: scaleIsInitial
             ? (event) {
-                if (!isDragging &&
-                    event.delta.dx.abs() > event.delta.dy.abs()) {
-                  return;
-                }
-                setState(() {
-                  isDragging = true;
-                  offset += event.delta;
-                });
-              }
-            : (_) => setState(() {
-                  isDragging = false;
-                }),
+          if (!isDragging &&
+              event.delta.dx.abs() > event.delta.dy.abs()) {
+            return;
+          }
+          setState(() {
+            isDragging = true;
+            offset += event.delta;
+          });
+        }
+            : (_) =>
+            setState(() {
+              isDragging = false;
+            }),
         onPointerCancel: (_) {
           setState(() {
             prevOffset = offset;
@@ -211,34 +218,34 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
         },
         onPointerUp: isZoomedOut
             ? (_) {
-                if (!isDragging) {
-                  setState(() {
-                    showButtons = !showButtons;
-                  });
-                  return;
-                }
+          if (!isDragging) {
+            setState(() {
+              showButtons = !showButtons;
+            });
+            return;
+          }
 
-                setState(() {
-                  isDragging = false;
-                });
+          setState(() {
+            isDragging = false;
+          });
 
-                final speed = (offset - prevOffset).distance;
-                if (speed > speedThreshold || offset.dy.abs() > yThreshold) {
-                  Navigator.of(context).pop();
-                } else {
-                  setState(() {
-                    prevOffset = offset;
-                    offset = Offset.zero;
-                  });
-                }
-              }
+          final speed = (offset - prevOffset).distance;
+          if (speed > speedThreshold || offset.dy.abs() > yThreshold) {
+            Navigator.of(context).pop();
+          } else {
+            setState(() {
+              prevOffset = offset;
+              offset = Offset.zero;
+            });
+          }
+        }
             : (_) {
-                setState(() {
-                  prevOffset = offset;
-                  offset = Offset.zero;
-                  isDragging = false;
-                });
-              },
+          setState(() {
+            prevOffset = offset;
+            offset = Offset.zero;
+            isDragging = false;
+          });
+        },
         child: AnimatedContainer(
           transform: Matrix4Transform()
               .scale(max(0.9, 1 - offset.dy.abs() / 1000))
@@ -246,10 +253,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
               .rotate(min(-offset.dx / 2000, 0.1))
               .matrix4,
           duration:
-              isDragging ? Duration.zero : const Duration(milliseconds: 200),
+          isDragging ? Duration.zero : const Duration(milliseconds: 200),
           child: PhotoView(
             backgroundDecoration:
-                const BoxDecoration(color: Colors.transparent),
+            const BoxDecoration(color: Colors.transparent),
             scaleStateChangedCallback: (value) {
               setState(() {
                 isZoomedOut = value == PhotoViewScaleState.zoomedOut ||
@@ -271,7 +278,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
             imageProvider: ExtendedNetworkImageProvider(widget.url),
             heroAttributes: PhotoViewHeroAttributes(tag: widget.heroTag),
             loadingBuilder: (context, event) =>
-                const Center(child: CircularProgressIndicator.adaptive()),
+            const Center(child: CircularProgressIndicator.adaptive()),
           ),
         ),
       ),

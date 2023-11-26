@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +8,7 @@ import 'package:muffed/pages/home_page/screens/community_screen/community_info_s
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/icon_button.dart';
+import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/muffed_page.dart';
@@ -377,7 +378,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final fractionScrolled = shrinkOffset / headerMaxHeight;
 
-    final placeholderBanner = Image.asset(
+    final placeholderBanner = ExtendedImage.asset(
       'assets/placeholder_banner.jpeg',
       height: (headerMaxHeight - shrinkOffset) * bannerEnd,
       width: double.maxFinite,
@@ -406,11 +407,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                   },
                   blendMode: BlendMode.dstIn,
                   child: (community.banner != null)
-                      ? CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          width: double.maxFinite,
+                      ? MuffedImage(
                           height: (headerMaxHeight - shrinkOffset) * bannerEnd,
-                          placeholder: (context, url) => placeholderBanner,
+                          width: double.maxFinite,
+                          fit: BoxFit.cover,
                           imageUrl: community.banner!,
                         )
                       : placeholderBanner,

@@ -40,8 +40,8 @@ class MuffedMarkdownBody extends StatelessWidget {
         imageBuilder: (uri, title, alt) {
           return MuffedImage(
             imageUrl: uri.toString(),
-            initialHeight: 0,
             animateSizeChange: false,
+            adjustableHeight: true,
           );
         },
         onTapLink: (

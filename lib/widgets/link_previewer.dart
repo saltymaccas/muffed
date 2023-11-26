@@ -117,7 +117,6 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                         fullScreenable: false,
                         imageUrl: metadata!.image!,
                         fit: BoxFit.cover,
-                        getImageSize: false,
                       ),
                     ),
                     const SizedBox(

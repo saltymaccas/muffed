@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/post_item/post_more_menu_button.dart';
 import 'package:muffed/widgets/url_view.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/time.dart';
 
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatelessWidget {
@@ -126,7 +126,7 @@ class CardLemmyPostItem extends StatelessWidget {
                       UrlView(
                         url: post.url!,
                         nsfw: post.nsfw,
-                        tapImageAnywhereForFullScreen:
+                        imageFullScreenable:
                             displayType == PostDisplayType.comments,
                       ),
                     ],

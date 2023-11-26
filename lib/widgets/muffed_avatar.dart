@@ -21,7 +21,6 @@ class MuffedAvatar extends StatelessWidget {
         child: (url != null)
             ? MuffedImage(
                 fullScreenable: false,
-                getImageSize: false,
                 fit: BoxFit.cover,
                 imageUrl: url!,
               )
