@@ -5,16 +5,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/pages/home_page/screens/create_post_screen/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/snackbars.dart';
 import 'package:muffed/widgets/url_view.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/repo/server_repo.dart';
-
-import 'package:muffed/pages/home_page/screens/create_post_screen/bloc/bloc.dart';
 
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({
@@ -134,7 +133,8 @@ class CreatePostScreen extends StatelessWidget {
                                           runUrlAddedEvent();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                            fixedSize: const Size(500, 50),),
+                                          fixedSize: const Size(500, 50),
+                                        ),
                                         child: const Text('Add Url'),
                                       ),
                                     ),
@@ -144,8 +144,8 @@ class CreatePostScreen extends StatelessWidget {
                             },
                           );
                         },
-                        style:
-                            ElevatedButton.styleFrom(fixedSize: const Size(500, 50)),
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(500, 50)),
                         child: const Text('Add Url'),
                       ),
                     ),
@@ -156,8 +156,8 @@ class CreatePostScreen extends StatelessWidget {
                           context.pop();
                           await openImagePickerForImageUpload();
                         },
-                        style:
-                            ElevatedButton.styleFrom(fixedSize: const Size(500, 50)),
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(500, 50)),
                         child: const Text('Add Image'),
                       ),
                     ),
@@ -242,18 +242,19 @@ class CreatePostScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(4),
                                         child: IconButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<CreatePostBloc>()
-                                                  .add(UrlRemoved());
-                                            },
-                                            style: IconButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryContainer
-                                                  .withOpacity(0.5),
-                                            ),
-                                            icon: const Icon(Icons.close),),
+                                          onPressed: () {
+                                            context
+                                                .read<CreatePostBloc>()
+                                                .add(UrlRemoved());
+                                          },
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer
+                                                .withOpacity(0.5),
+                                          ),
+                                          icon: const Icon(Icons.close),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -271,29 +272,32 @@ class CreatePostScreen extends StatelessWidget {
                                       child: IconButton(
                                         onPressed: () {
                                           showDialog<void>(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text('Delete image?'),
-                                                  content: const Text(
-                                                      'Are you sure you want to delete this image from the server?',),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text('Cancel'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        runImageRemovedEvent();
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text('Delete'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },);
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title:
+                                                    const Text('Delete image?'),
+                                                content: const Text(
+                                                  'Are you sure you want to delete this image from the server?',
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      runImageRemovedEvent();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('Delete'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
                                         },
                                         icon: const Icon(Icons.delete),
                                         style: IconButton.styleFrom(

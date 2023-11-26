@@ -25,9 +25,9 @@ class CommunityScreen extends StatelessWidget {
     this.community,
     super.key,
   }) : assert(
-          communityId != null || communityName != null,
-          'No community given: communityId: $communityId, communityName: $communityName',
-        );
+  communityId != null || communityName != null,
+  'No community given: communityId: $communityId, communityName: $communityName',
+  );
 
   /// The community ID
   final int? communityId;
@@ -45,12 +45,14 @@ class CommunityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CommunityScreenBloc(
+      create: (context) =>
+      CommunityScreenBloc(
         communityId: communityId,
         community: community,
         communityName: communityName,
         repo: context.read<ServerRepo>(),
-      )..add(Initialize()),
+      )
+        ..add(Initialize()),
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
           final blocContext = context;
@@ -74,7 +76,7 @@ class CommunityScreen extends StatelessWidget {
                                   path: '/home/search',
                                   queryParameters: {
                                     'community_id':
-                                        state.community!.id.toString(),
+                                    state.community!.id.toString(),
                                     'community_name': state.community!.name,
                                   },
                                 ).toString(),
@@ -97,23 +99,23 @@ class CommunityScreen extends StatelessWidget {
                   BlocProvider.value(
                     value: bloc,
                     child:
-                        BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                    BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                       builder: (context, state) {
                         return IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: (state.community == null)
                               ? null
                               : () {
-                                  context.push(
-                                    Uri(
-                                      path: '/home/create_post',
-                                      queryParameters: {
-                                        'community_id':
-                                            state.community!.id.toString(),
-                                      },
-                                    ).toString(),
-                                  );
+                            context.push(
+                              Uri(
+                                path: '/home/create_post',
+                                queryParameters: {
+                                  'community_id':
+                                  state.community!.id.toString(),
                                 },
+                              ).toString(),
+                            );
+                          },
                           icon: const Icon(Icons.add),
                         );
                       },
@@ -134,8 +136,8 @@ class CommunityScreen extends StatelessWidget {
                             value: LemmySortType.hot,
                             onTap: () =>
                                 context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.hot),
-                                    ),
+                                  SortTypeChanged(LemmySortType.hot),
+                                ),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Active',
@@ -143,8 +145,8 @@ class CommunityScreen extends StatelessWidget {
                             value: LemmySortType.active,
                             onTap: () =>
                                 context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.active),
-                                    ),
+                                  SortTypeChanged(LemmySortType.active),
+                                ),
                           ),
                           MuffedPopupMenuItem(
                             title: 'New',
@@ -152,8 +154,8 @@ class CommunityScreen extends StatelessWidget {
                             value: LemmySortType.latest,
                             onTap: () =>
                                 context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.latest),
-                                    ),
+                                  SortTypeChanged(LemmySortType.latest),
+                                ),
                           ),
                           MuffedPopupMenuExpandableItem(
                             title: 'Top',
@@ -164,10 +166,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topAll,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topAll,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topAll,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Year',
@@ -175,10 +177,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topYear,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topYear,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topYear,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Month',
@@ -186,10 +188,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topMonth,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topMonth,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topMonth,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Week',
@@ -197,10 +199,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topWeek,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topWeek,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topWeek,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Day',
@@ -208,10 +210,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topDay,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topDay,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topDay,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Twelve Hours',
@@ -219,10 +221,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topTwelveHour,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topTwelveHour,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topTwelveHour,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Six Hours',
@@ -230,10 +232,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topSixHour,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topSixHour,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topSixHour,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Hour',
@@ -241,10 +243,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.topHour,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topHour,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.topHour,
+                                      ),
+                                    ),
                               ),
                             ],
                           ),
@@ -257,10 +259,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.mostComments,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.mostComments,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.mostComments,
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'New Comments',
@@ -268,10 +270,10 @@ class CommunityScreen extends StatelessWidget {
                                 value: LemmySortType.newComments,
                                 onTap: () =>
                                     context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.newComments,
-                                          ),
-                                        ),
+                                      SortTypeChanged(
+                                        LemmySortType.newComments,
+                                      ),
+                                    ),
                               ),
                             ],
                           ),
@@ -371,11 +373,9 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
       true;
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent,) {
     final fractionScrolled = shrinkOffset / headerMaxHeight;
 
     final placeholderBanner = ExtendedImage.asset(
@@ -386,7 +386,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     );
     return Material(
       clipBehavior: Clip.hardEdge,
-      color: Theme.of(context).colorScheme.surface,
+      color: Theme
+          .of(context)
+          .colorScheme
+          .surface,
       elevation: 5,
       child: Stack(
         children: [
@@ -408,11 +411,11 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                   blendMode: BlendMode.dstIn,
                   child: (community.banner != null)
                       ? MuffedImage(
-                          height: (headerMaxHeight - shrinkOffset) * bannerEnd,
-                          width: double.maxFinite,
-                          fit: BoxFit.cover,
-                          imageUrl: community.banner!,
-                        )
+                    height: (headerMaxHeight - shrinkOffset) * bannerEnd,
+                    width: double.maxFinite,
+                    fit: BoxFit.cover,
+                    imageUrl: community.banner!,
+                  )
                       : placeholderBanner,
                 ),
                 // sizes to the height the the header
@@ -441,26 +444,29 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   const SizedBox(width: 8),
                                   Column(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         community.title,
-                                        style: Theme.of(context)
+                                        style: Theme
+                                            .of(context)
                                             .textTheme
                                             .titleLarge,
                                       ),
                                       Text(
                                         community.getTag(),
-                                        style: Theme.of(context)
+                                        style: Theme
+                                            .of(context)
                                             .textTheme
                                             .bodySmall!
                                             .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                            ),
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .outline,
+                                        ),
                                       ),
                                       RichText(
                                         text: TextSpan(
@@ -468,61 +474,71 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                             TextSpan(
                                               text: community.subscribers
                                                   .toString(),
-                                              style: Theme.of(context)
+                                              style: Theme
+                                                  .of(context)
                                                   .textTheme
                                                   .bodySmall!
                                                   .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: ' members',
-                                              style: Theme.of(context)
+                                              style: Theme
+                                                  .of(context)
                                                   .textTheme
                                                   .bodySmall!
                                                   .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: ' ⋅ ',
-                                              style: Theme.of(context)
+                                              style: Theme
+                                                  .of(context)
                                                   .textTheme
                                                   .bodySmall!
                                                   .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: community.usersActiveDay
                                                   .toString(),
-                                              style: Theme.of(context)
+                                              style: Theme
+                                                  .of(context)
                                                   .textTheme
                                                   .bodySmall!
                                                   .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: ' active',
-                                              style: Theme.of(context)
+                                              style: Theme
+                                                  .of(context)
                                                   .textTheme
                                                   .bodySmall!
                                                   .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -536,8 +552,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   builder: (context) {
                                     // gets only the first paragraph
                                     final matches =
-                                        RegExp(r'^.*?\n', dotAll: true)
-                                            .firstMatch(community.description!);
+                                    RegExp(r'^.*?\n', dotAll: true)
+                                        .firstMatch(community.description!);
 
                                     final text = matches?.group(0) ??
                                         community.description!;
@@ -551,7 +567,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
 
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton(
                                     onPressed: () {
@@ -560,8 +576,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         MaterialPageRoute<void>(
                                           builder: (context) =>
                                               CommunityInfoScreen(
-                                            bloc: bloc,
-                                          ),
+                                                bloc: bloc,
+                                              ),
                                         ),
                                       );
                                     },
@@ -575,31 +591,35 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                             .add(ToggledSubscribe());
                                       },
                                       style: (community.subscribed ==
-                                              LemmySubscribedType.notSubscribed)
+                                          LemmySubscribedType.notSubscribed)
                                           ? TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryContainer,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryContainer,
-                                            )
+                                        backgroundColor: Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                        foregroundColor: Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,
+                                      )
                                           : TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .outlineVariant,
-                                            ),
+                                        backgroundColor: Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .outline,
+                                        foregroundColor: Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .outlineVariant,
+                                      ),
                                       child: (community.subscribed ==
-                                              LemmySubscribedType.subscribed)
+                                          LemmySubscribedType.subscribed)
                                           ? const Text('Unsubscribe')
                                           : (community.subscribed ==
-                                                  LemmySubscribedType
-                                                      .notSubscribed)
-                                              ? const Text('Subscribe')
-                                              : const Text('Pending'),
+                                          LemmySubscribedType
+                                              .notSubscribed)
+                                          ? const Text('Subscribe')
+                                          : const Text('Pending'),
                                     ),
                                 ],
                               ),
@@ -641,7 +661,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                         ),
                         Opacity(
                           opacity:
-                              Curves.easeInCirc.transform(fractionScrolled),
+                          Curves.easeInCirc.transform(fractionScrolled),
                           child: Row(
                             children: [
                               MuffedAvatar(url: community.icon, radius: 16),
@@ -650,7 +670,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                               ),
                               Text(
                                 community.title,
-                                style: Theme.of(context).textTheme.titleLarge,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .titleLarge,
                               ),
                             ],
                           ),

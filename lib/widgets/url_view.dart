@@ -27,27 +27,20 @@ class UrlView extends StatelessWidget {
         urlPath.endsWith('.gif') ||
         urlPath.endsWith('.webp') ||
         urlPath.endsWith('.bmp')) {
-      return SizedBox(
-        child: Center(
-          child: MuffedImage(
-            imageUrl: url,
-            shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
-            fullScreenable: imageFullScreenable,
-            adjustableHeight: true,
-            height: 300,
-            width: double.maxFinite,
-            animateSizeChange: true,
-            fit: BoxFit.fitWidth,
-          ),
-        ),
+      return MuffedImage(
+        imageUrl: url,
+        shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
+        fullScreenable: imageFullScreenable,
+        adjustableHeight: true,
+        height: 300,
+        width: double.maxFinite,
+        animateSizeChange: true,
+        fit: BoxFit.fitWidth,
       );
     } else {
       return Padding(
         padding: const EdgeInsets.all(4),
-        child: SizedBox(
-          height: 100,
-          child: LinkPreviewer(link: url),
-        ),
+        child: LinkPreviewer(link: url),
       );
     }
   }
