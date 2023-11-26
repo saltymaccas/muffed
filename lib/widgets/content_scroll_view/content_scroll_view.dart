@@ -128,15 +128,18 @@ class ContentScrollView extends StatelessWidget {
                             }
                           },
                         ),
-                        if (state.isLoadingMore)
-                          const SliverToBoxAdapter(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 50,
+                            child: Center(
+                              child: (state.isLoadingMore)
+                                  ? const CircularProgressIndicator()
+                                  : (state.reachedEnd)
+                                      ? Text('Reached End')
+                                      : null,
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),
