@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:muffed/widgets/comment_item/bloc/bloc.dart';
-import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
-import 'package:muffed/widgets/markdown_body.dart';
-import 'package:muffed/widgets/popup_menu/popup_menu.dart';
-import 'package:muffed/widgets/snackbars.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
+import 'package:muffed/widgets/comment_item/bloc/bloc.dart';
+import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
+import 'package:muffed/widgets/markdown_body.dart';
+import 'package:muffed/widgets/popup_menu/popup_menu.dart';
+import 'package:muffed/widgets/snackbars.dart';
 
 enum CommentItemDisplayMode { single, tree }
 
@@ -113,9 +113,9 @@ class _CommentItemState extends State<CommentItem>
                         .state
                         .selectedItemIndex ==
                     0) {
-                  context.push('/home/content?id=${widget.comment.postId}');
+                  context.push('/home/post?id=${widget.comment.postId}');
                 } else {
-                  context.go('/home/content?id=${widget.comment.postId}');
+                  context.go('/home/post?id=${widget.comment.postId}');
                 }
               }
             },

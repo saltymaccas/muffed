@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/pages/home_page/home_page.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/pages/home_page/screens/create_post_screen/create_post_screen.dart';
@@ -20,6 +18,8 @@ import 'package:muffed/pages/profile_page/screens/settings_screen/defaults/defau
 import 'package:muffed/pages/profile_page/screens/settings_screen/look/look.dart';
 import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
 import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 extension NumberParsing on String {
   int parseInt() {
@@ -29,6 +29,7 @@ extension NumberParsing on String {
 
 class CreatePostRouteData {
   CreatePostRouteData({this.postToBeEdited});
+
   final LemmyPost? postToBeEdited;
 }
 
@@ -80,7 +81,7 @@ final router = GoRouter(
               },
               routes: [
                 GoRoute(
-                  path: 'content',
+                  path: 'post',
                   builder: (context, state) {
                     final values = (state.extra == null)
                         ? null

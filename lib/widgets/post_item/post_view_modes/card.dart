@@ -33,7 +33,7 @@ class CardLemmyPostItem extends StatelessWidget {
     }
 
     void openPost() {
-      context.push('/home/content', extra: (post, context));
+      context.push('/home/post', extra: (post, context));
     }
 
     return Card(

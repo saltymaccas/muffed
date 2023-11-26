@@ -60,7 +60,7 @@ class CreatePostScreen extends StatelessWidget {
               ..pop()
               ..push(
                 Uri(
-                  path: '/home/content',
+                  path: '/home/post',
                 ).toString(),
                 extra: (state.successfullyPostedPost, null),
               );
