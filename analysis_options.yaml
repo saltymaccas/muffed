@@ -9,3 +9,4 @@ linter:
     omit_local_variable_types: false
     avoid_redundant_argument_values: false
     public_member_api_docs: false
+    parameter_assignments: false

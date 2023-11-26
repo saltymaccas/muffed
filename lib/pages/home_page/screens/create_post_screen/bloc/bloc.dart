@@ -2,10 +2,9 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:muffed/repo/pictrs/models.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/url.dart';
-
-import 'package:muffed/repo/pictrs/models.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -67,7 +66,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             body: event.body,
             url: (event.url == null || event.url == '')
                 ? null
-                : ensureProtocolSpecified(event.url!),
+                : cleanseUrl(event.url!),
             communityId: communityId!,
           );
           emit(state.copyWith(successfullyPosted: response, isLoading: false));
@@ -78,7 +77,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             body: event.body,
             url: (event.url == null || event.url == '')
                 ? null
-                : ensureProtocolSpecified(event.url!),
+                : cleanseUrl(event.url!),
           );
           emit(state.copyWith(successfullyPosted: response, isLoading: false));
         }
@@ -96,7 +95,10 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         state.copyWith(
           images: SplayTreeMap()
             ..addAll(
-              {...state.bodyImages, id: const ImageUploadState(uploadProgress: 0)},
+              {
+                ...state.bodyImages,
+                id: const ImageUploadState(uploadProgress: 0)
+              },
             ),
         ),
       );
@@ -200,7 +202,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       }
     });
     on<UrlAdded>((event, emit) {
-      emit(state.copyWith(url: ensureProtocolSpecified(event.url)));
+      emit(state.copyWith(url: cleanseUrl(event.url)));
     });
     on<UrlRemoved>((event, emit) {
       emit(state.copyWith(setUrlToNull: true));

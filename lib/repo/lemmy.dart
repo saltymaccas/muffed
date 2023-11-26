@@ -446,7 +446,7 @@ interface class LemmyRepo {
   /// Gets any lemmy site
   Future<LemmySite> getSpecificSite(String url) async {
     final Response<Map<String, dynamic>> response = await dio.get(
-      '${ensureProtocolSpecified(url)}/api/v3/site',
+      '${cleanseUrl(url)}/api/v3/site',
     );
 
     if (response.data == null) {

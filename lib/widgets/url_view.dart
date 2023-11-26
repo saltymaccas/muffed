@@ -44,7 +44,7 @@ class UrlView extends StatelessWidget {
         child: SizedBox(
           height: 100,
           child: (true)
-              ? LinkPreviewer(url: url)
+              ? LinkPreviewer(link: url)
               : AnyLinkPreview(
                   cache: const Duration(days: 1),
                   placeholderWidget: Container(

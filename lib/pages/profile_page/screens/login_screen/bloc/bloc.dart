@@ -33,7 +33,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<Submitted>((event, emit) async {
       final totp = (state.totp == '') ? null : state.totp;
 
-      final homeServer = ensureProtocolSpecified(state.serverAddr);
+      final homeServer = cleanseUrl(state.serverAddr);
 
       emit(state.copyWith(loading: true));
 
