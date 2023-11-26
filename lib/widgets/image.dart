@@ -6,7 +6,6 @@ import 'package:logging/logging.dart';
 import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:muffed/utils/image.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 final _log = Logger('MuffedImageViewer');
 
@@ -70,10 +69,14 @@ class _MuffedImageState extends State<MuffedImage> {
         .substring(10);
 
     if (widget.adjustableHeight) {
-      retrieveImageDimensions(widget.imageUrl).then((size) {
-        if (mounted) {
-          setState(() {
-            imageSize = size;
+      cachedImageExists(widget.imageUrl).then((cachedImageExists) {
+        if (!cachedImageExists) {
+          retrieveImageDimensions(widget.imageUrl).then((size) {
+            if (mounted) {
+              setState(() {
+                imageSize = size;
+              });
+            }
           });
         }
       });
@@ -98,18 +101,22 @@ class _MuffedImageState extends State<MuffedImage> {
             widget.imageUrl,
             fit: widget.fit,
             cache: true,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return Skeletonizer(
-                  enabled: true,
-                  child: Container(
-                    height: height,
-                    width: widget.width,
-                  ),
-                );
+            afterPaintImage: (canvas, rect, image, paint) {
+              if (shouldBlur) {
+                canvas
+                  ..saveLayer(rect, Paint())
+                  ..drawColor(
+                    Colors.grey.withOpacity(0.5),
+                    BlendMode.dstATop,
+                  );
               }
 
-              return null;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  imageSize = imageSize ??
+                      Size(image.width.toDouble(), image.height.toDouble());
+                });
+              });
             },
             retries: widget.numOfRetries,
             handleLoadingProgress: true,
