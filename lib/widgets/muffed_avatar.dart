@@ -1,5 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:muffed/widgets/image.dart';
 
 class MuffedAvatar extends StatelessWidget {
   const MuffedAvatar({this.url, super.key, this.radius = 24});
@@ -16,13 +17,18 @@ class MuffedAvatar extends StatelessWidget {
       radius: radius,
       child: ClipRRect(
         clipBehavior: Clip.hardEdge,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(radius),
         child: (url != null)
-            ? CachedNetworkImage(
+            ? MuffedImage(
+                tapAnywhereForFullScreen: false,
+                getImageSize: false,
                 fit: BoxFit.cover,
                 imageUrl: url!,
               )
-            : Image.asset('assets/logo.png'),
+            : ExtendedImage.asset(
+                'assets/logo.png',
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
