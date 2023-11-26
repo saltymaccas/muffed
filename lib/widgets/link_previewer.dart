@@ -110,15 +110,16 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                 }
                 return Row(
                   children: [
-                    SizedBox(
-                      width: widget.imageWidth,
-                      height: widget.height,
-                      child: MuffedImage(
-                        fullScreenable: false,
-                        imageUrl: metadata!.image!,
-                        fit: BoxFit.cover,
+                    if (metadata!.image != null)
+                      SizedBox(
+                        width: widget.imageWidth,
+                        height: widget.height,
+                        child: MuffedImage(
+                          fullScreenable: false,
+                          imageUrl: metadata!.image!,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
                     const SizedBox(
                       width: 4,
                     ),
