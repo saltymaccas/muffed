@@ -166,7 +166,7 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                                 (heightForTitle / titleLineHeight).floor();
 
                             titleHeight =
-                                (titleLineHeight * maxTitleLines).toDouble();
+                                titleLineHeight * maxTitleLines.toDouble();
                           }
 
                           // get max lines of body
@@ -185,7 +185,7 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                                 bodyTextPainter.computeLineMetrics()[0].height;
 
                             final bodyTextAvailableHeight =
-                                widget.height - titleHeight!;
+                                widget.height - (titleHeight ?? 0);
 
                             maxBodyLines =
                                 (bodyTextAvailableHeight / bodyTextLineHeight)
@@ -193,6 +193,7 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                           }
 
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (titleAvailable)
                                 Text(
