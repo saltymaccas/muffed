@@ -213,7 +213,6 @@ class PostScreen extends StatelessWidget {
                             post: post,
                             bloc: postBloc,
                             displayType: PostDisplayType.comments,
-                            form: PostViewForm.card,
                           ),
                         ),
                         if (state.status == PostScreenStatus.success)
@@ -258,7 +257,6 @@ class _CommentScreenSuccess extends StatelessWidget {
 
     return SliverList.builder(
       itemCount: organisedComments.length,
-      addAutomaticKeepAlives: true,
       itemBuilder: (context, index) {
         final key = organisedComments.keys.toList()[index];
         return CommentItem(
