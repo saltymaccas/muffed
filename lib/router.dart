@@ -111,35 +111,7 @@ final router = GoRouter(
                     ),
                   ],
                 ),
-                // GoRoute(
-                //   path: 'post',
-                //   builder: (context, state) {
-                //     final values = (state.extra == null)
-                //         ? null
-                //         : state.extra! as (LemmyPost, BuildContext?);
-                //
-                //     return PostScreen(
-                //       postId: state.uri.queryParameters['id']?.parseInt(),
-                //       post: (values != null) ? values.$1 : null,
-                //       postItemBlocContext: (values != null) ? values.$2 : null,
-                //     );
-                //   },
-                //   routes: [
-                //
-                //   ],
-                // ),
-                GoRoute(
-                  name: 'community',
-                  path: 'community',
-                  builder: (context, state) {
-                    final qp = state.uri.queryParameters;
-
-                    return CommunityScreen(
-                      communityId: qp['id']?.parseInt(),
-                      communityName: qp['name'],
-                    );
-                  },
-                ),
+                CommunityScreenRouterDefinition(),
                 GoRoute(
                   name: 'create_post',
                   path: 'create_post',

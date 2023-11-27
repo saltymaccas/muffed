@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
@@ -450,13 +451,15 @@ class _CommentItemState extends State<CommentItem>
                                                           .state
                                                           .selectedItemIndex ==
                                                       0) {
-                                                    context.push(
-                                                      '/home/community?id=${widget.comment.communityId}',
-                                                    );
+                                                    CommunityScreenRouter(
+                                                      communityId: widget
+                                                          .comment.communityId,
+                                                    ).push(context);
                                                   } else {
-                                                    context.push(
-                                                      '/home/community?id=${widget.comment.communityId}',
-                                                    );
+                                                    CommunityScreenRouter(
+                                                      communityId: widget
+                                                          .comment.communityId,
+                                                    ).go(context);
                                                   }
                                                 },
                                                 child: Text(
@@ -483,7 +486,8 @@ class _CommentItemState extends State<CommentItem>
                                         selectedIcon:
                                             const Icon(Icons.check_circle),
                                         icon: const Icon(
-                                            Icons.check_circle_outline),
+                                          Icons.check_circle_outline,
+                                        ),
                                       ),
                                   ],
                                 ),

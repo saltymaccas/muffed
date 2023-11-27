@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/widgets/snackbars.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/snackbars.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
@@ -16,9 +17,10 @@ void openSearchDialog(BuildContext context) {
       return Builder(
         builder: (context) {
           return BlocProvider(
-            create: (context) => SearchBloc(
-              repo: context.read<ServerRepo>(),
-            ),
+            create: (context) =>
+                SearchBloc(
+                  repo: context.read<ServerRepo>(),
+                ),
             child: Dialog(
               clipBehavior: Clip.hardEdge,
               alignment: Alignment.bottomCenter,
@@ -53,17 +55,10 @@ void openSearchDialog(BuildContext context) {
                                     ),
                                   InkWell(
                                     onTap: () {
-                                      context
-                                        ..pop()
-                                        ..push(
-                                          Uri(
-                                            path: '/home/community',
-                                            queryParameters: {
-                                              'id': state.communities[index].id
-                                                  .toString(),
-                                            },
-                                          ).toString(),
-                                        );
+                                      CommunityScreenRouter(
+                                        communityId:
+                                        state.communities[index].id,
+                                      ).push(context);
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -75,16 +70,17 @@ void openSearchDialog(BuildContext context) {
                                             radius: 12,
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.circular(45),
+                                              BorderRadius.circular(45),
                                               child: (state.communities[index]
-                                                          .icon !=
-                                                      null)
+                                                  .icon !=
+                                                  null)
                                                   ? Image.network(
-                                                      '${state.communities[index].icon!}?thumbnail=50',
-                                                    )
+                                                '${state.communities[index]
+                                                    .icon!}?thumbnail=50',
+                                              )
                                                   : Image.asset(
-                                                      'assets/logo.png',
-                                                    ),
+                                                'assets/logo.png',
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(
@@ -92,16 +88,18 @@ void openSearchDialog(BuildContext context) {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 state.communities[index].name,
                                               ),
                                               Text(
-                                                '${state.communities[index].subscribers} subscribers',
+                                                '${state.communities[index]
+                                                    .subscribers} subscribers',
                                                 style: TextStyle(
                                                   fontSize: 10,
-                                                  color: Theme.of(context)
+                                                  color: Theme
+                                                      .of(context)
                                                       .colorScheme
                                                       .outline,
                                                 ),
@@ -126,10 +124,10 @@ void openSearchDialog(BuildContext context) {
                           controller: textController,
                           onChanged: (query) {
                             context.read<SearchBloc>().add(
-                                  SearchQueryChanged(
-                                    searchQuery: query,
-                                  ),
-                                );
+                              SearchQueryChanged(
+                                searchQuery: query,
+                              ),
+                            );
                           },
                           autofocus: true,
                           decoration: InputDecoration(

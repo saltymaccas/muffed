@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router.dart';
@@ -21,9 +22,10 @@ class MoreMenuButton extends StatelessWidget {
         MuffedPopupMenuItem(
           title: 'Go to community',
           onTap: () {
-            context.push(
-              '/home/community?id=${post.communityId}',
-            );
+            CommunityScreenRouter(
+              communityId: post.communityId,
+              communityName: post.communityName,
+            ).push(context);
           },
         ),
         MuffedPopupMenuItem(
