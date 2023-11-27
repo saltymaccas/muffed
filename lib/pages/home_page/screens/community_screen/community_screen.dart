@@ -425,7 +425,6 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     );
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
-      switchInCurve: Curves.easeInOutCubic,
       child: Skeletonizer(
         key: ValueKey(usingPlaceholder),
         enabled: usingPlaceholder,
@@ -484,102 +483,112 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       MuffedAvatar(
                                           url: community.icon, radius: 34),
                                       const SizedBox(width: 8),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            community.title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          ),
-                                          Text(
-                                            community.getTag(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .outline,
-                                                ),
-                                          ),
-                                          RichText(
-                                            text: TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: community.subscribers
-                                                      .toString(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                TextSpan(
-                                                  text: ' members',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
-                                                      ),
-                                                ),
-                                                TextSpan(
-                                                  text: ' ⋅ ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
-                                                      ),
-                                                ),
-                                                TextSpan(
-                                                  text: community.usersActiveDay
-                                                      .toString(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                TextSpan(
-                                                  text: ' active',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
-                                                      ),
-                                                ),
-                                              ],
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              community.title,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
                                             ),
-                                          ),
-                                        ],
+                                            Text(
+                                              community.getTag(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline,
+                                                  ),
+                                            ),
+                                            RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: community.subscribers
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .outline,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ' members',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .outline,
+                                                        ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ' ⋅ ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .outline,
+                                                        ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: community
+                                                        .usersActiveDay
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .outline,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ' active',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .outline,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

@@ -42,11 +42,12 @@ final class CommunityScreenState extends Equatable {
         fullCommunityInfoStatus,
         isLoading,
         loadedSortType,
+        communityStatus,
       ];
 
   CommunityScreenState copyWith({
     CommunityStatus? postsStatus,
-    CommunityStatus? communityInfoStatus,
+    CommunityStatus? communityStatus,
     LemmyCommunity? community,
     int? communityId,
     LemmySortType? sortType,
@@ -61,6 +62,7 @@ final class CommunityScreenState extends Equatable {
       errorMessage: error,
       fullCommunityInfoStatus:
           fullCommunityInfoStatus ?? this.fullCommunityInfoStatus,
+      communityStatus: communityStatus ?? this.communityStatus,
       isLoading: isLoading ?? this.isLoading,
       loadedSortType: loadedSortType ?? this.loadedSortType,
     );

@@ -29,7 +29,7 @@ class CommunityScreenBloc
       if (state.community == null) {
         emit(
           state.copyWith(
-            communityInfoStatus: CommunityStatus.loading,
+            communityStatus: CommunityStatus.loading,
             fullCommunityInfoStatus: CommunityStatus.loading,
           ),
         );
@@ -41,20 +41,20 @@ class CommunityScreenBloc
           emit(
             state.copyWith(
               community: community,
-              communityInfoStatus: CommunityStatus.success,
+              communityStatus: CommunityStatus.success,
             ),
           );
         } catch (err) {
           emit(
             state.copyWith(
-              communityInfoStatus: CommunityStatus.failure,
+              communityStatus: CommunityStatus.failure,
               error: err,
             ),
           );
           rethrow;
         }
       } else {
-        emit(state.copyWith(communityInfoStatus: CommunityStatus.success));
+        emit(state.copyWith(communityStatus: CommunityStatus.success));
       }
 
       // if community is loaded check if it is fully loaded, if not fully load
