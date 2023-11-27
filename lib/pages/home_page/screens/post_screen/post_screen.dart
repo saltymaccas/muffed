@@ -1,18 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home_page/screens/post_screen/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/shorthands.dart';
+import 'package:muffed/utils/comments.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/screens/post_screen/bloc/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/comments.dart';
+
+class PostScreenRouteDefinition extends GoRoute {
+  PostScreenRouteDefinition({super.routes})
+      : super(
+          path: 'post',
+          name: 'post',
+          builder: (context, state) {
+            final qp = state.uri.queryParameters;
+            final data = state.extra! as PostScreenRoute;
+
+            return PostScreen(
+              post: data.post,
+              postId: qp['postId'].parseInt(),
+              postItemBlocContext: data.postItemBlocContext,
+            );
+          },
+        );
+}
+
+class PostScreenRoute extends PostScreenRouteDefinition {
+  PostScreenRoute({
+    this.post,
+    this.postId,
+    this.postItemBlocContext,
+  });
+
+  void push(BuildContext context) {
+    context.pushNamed(
+      super.name!,
+      queryParameters: {
+        'postId': postId?.toString(),
+      },
+      extra: this,
+    );
+  }
+
+  void go(BuildContext context) {
+    context.goNamed(
+      super.name!,
+      queryParameters: {
+        'postId': postId?.toString(),
+      },
+      extra: this,
+    );
+  }
+
+  final LemmyPost? post;
+  final int? postId;
+  final BuildContext? postItemBlocContext;
+}
 
 /// Displays a screen that shows the post on top and the comments under
 class PostScreen extends StatelessWidget {
