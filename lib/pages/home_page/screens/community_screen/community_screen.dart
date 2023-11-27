@@ -79,8 +79,8 @@ class CommunityScreen extends StatelessWidget {
     this.community,
     super.key,
   }) : assert(
-          communityId != null || communityName != null,
-          'No community given: communityId: $communityId, communityName: $communityName',
+          communityId != null || communityName != null || community != null,
+          'No community given: communityId: $communityId, communityName: $communityName, community: $community',
         );
 
   /// The community ID

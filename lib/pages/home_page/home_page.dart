@@ -6,8 +6,7 @@ import 'package:muffed/pages/home_page/screens/search/search_dialog.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-
-import '../../widgets/popup_menu/popup_menu.dart';
+import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -299,7 +298,6 @@ class _HomePageState extends State<HomePage> {
                         SliverAppBar(
                           clipBehavior: Clip.hardEdge,
                           toolbarHeight: 50,
-                          primary: true,
                           floating: true,
                           backgroundColor:
                               Theme.of(context).colorScheme.background,
