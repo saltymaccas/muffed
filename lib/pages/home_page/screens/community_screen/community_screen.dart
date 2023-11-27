@@ -7,14 +7,14 @@ import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/shorthands.dart';
+import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/widgets/icon_button.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class CommunityScreenRouterDefinition extends GoRoute {
   CommunityScreenRouterDefinition({super.routes})
@@ -57,7 +57,7 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
     context.pushNamed(
       super.name!,
       queryParameters: {
-        super.name!: communityId.toString(),
+        'communityId': communityId.toString(),
         'communityName': communityName,
       },
       extra: this,
@@ -118,32 +118,25 @@ class CommunityScreen extends StatelessWidget {
                   value: BlocProvider.of<CommunityScreenBloc>(blocContext),
                   child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                     builder: (context, state) {
-                      switch (state.communityInfoStatus) {
-                        case CommunityStatus.success:
-                          return IconButton(
-                            visualDensity: VisualDensity.compact,
-                            onPressed: () {
-                              context.push(
-                                Uri(
-                                  path: '/home/search',
-                                  queryParameters: {
-                                    'community_id':
-                                        state.community!.id.toString(),
-                                    'community_name': state.community!.name,
-                                  },
-                                ).toString(),
-                                extra: state.community,
-                              );
-                            },
-                            icon: const Icon(Icons.search),
-                          );
-                        case CommunityStatus.loading:
-                          return const IconButtonLoading();
-                        case CommunityStatus.failure:
-                          return const IconButtonFailure();
-                        case CommunityStatus.initial:
-                          return const IconButtonInitial();
-                      }
+                      return IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: (state.community != null)
+                            ? () {
+                                context.push(
+                                  Uri(
+                                    path: '/home/search',
+                                    queryParameters: {
+                                      'community_id':
+                                          state.community!.id.toString(),
+                                      'community_name': state.community!.name,
+                                    },
+                                  ).toString(),
+                                  extra: state.community,
+                                );
+                              }
+                            : null,
+                        icon: const Icon(Icons.search),
+                      );
                     },
                   ),
                 ),
@@ -339,55 +332,24 @@ class CommunityScreen extends StatelessWidget {
               child: MuffedPage(
                 isLoading: state.isLoading,
                 error: state.errorMessage,
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent - 500) {
-                      context
-                          .read<CommunityScreenBloc>()
-                          .add(ReachedEndOfScroll());
-                    }
-                    return true;
+                child: ContentScrollView(
+                  key: ValueKey('${state.loadedSortType}'),
+                  retrieveContent: ({required page}) {
+                    return context.read<ServerRepo>().lemmyRepo.getPosts(
+                          page: page,
+                          communityId: community?.id ?? communityId,
+                          sortType: state.loadedSortType,
+                        );
                   },
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<CommunityScreenBloc>().add(PullDownReload());
-                      await context
-                          .read<CommunityScreenBloc>()
-                          .stream
-                          .firstWhere((element) {
-                        if (element.isReloading == false) {
-                          return true;
-                        }
-                        return false;
-                      });
-                    },
-                    child: CustomScrollView(
-                      key: ValueKey('${state.loadedSortType}'),
-                      slivers: [
-                        if (state.communityInfoStatus ==
-                            CommunityStatus.success)
-                          SliverPersistentHeader(
-                            delegate: _TopBarDelegate(
-                              community: state.community!,
-                              bloc: bloc,
-                            ),
-                            floating: false,
-                            pinned: true,
-                          ),
-                        if (state.postsStatus == CommunityStatus.success)
-                          SliverList.builder(
-                            itemCount: state.posts.length,
-                            itemBuilder: (context, index) {
-                              return PostItem(
-                                post: state.posts[index],
-                                displayType: PostDisplayType.list,
-                              );
-                            },
-                          ),
-                      ],
+                  headerSlivers: [
+                    SliverPersistentHeader(
+                      delegate: _TopBarDelegate(
+                        community: state.community,
+                        bloc: bloc,
+                      ),
+                      pinned: true,
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -398,13 +360,36 @@ class CommunityScreen extends StatelessWidget {
   }
 }
 
+final placeHolderCommunity = LemmyCommunity(
+  deleted: false,
+  actorId: 'dflsfdjslkfdjskfjsdksfsdfksdf',
+  hidden: false,
+  id: 32345,
+  instanceId: 343535,
+  local: false,
+  name: 'placeholder',
+  nsfw: false,
+  removed: false,
+  subscribers: 0,
+  title: 'placeholder',
+  description: 'placeholder placeholder',
+  moderators: [],
+  postingRestrictedToMods: false,
+  published: DateTime.now(),
+  blocked: false,
+  subscribed: LemmySubscribedType.notSubscribed,
+);
+
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
-  const _TopBarDelegate({
-    required this.community,
+  _TopBarDelegate({
+    LemmyCommunity? community,
     required this.bloc,
-  });
+  })  : usingPlaceholder = community == null,
+        community = community ?? placeHolderCommunity;
 
   final LemmyCommunity community;
+
+  final bool usingPlaceholder;
 
   final CommunityScreenBloc bloc;
 
@@ -438,285 +423,311 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
       width: double.maxFinite,
       fit: BoxFit.cover,
     );
-    return Material(
-      clipBehavior: Clip.hardEdge,
-      color: Theme.of(context).colorScheme.surface,
-      elevation: 5,
-      child: Stack(
-        children: [
-          Opacity(
-            opacity: 1 - fractionScrolled,
-            child: Stack(
-              children: [
-                // banner
-                ShaderMask(
-                  shaderCallback: (rect) {
-                    return const LinearGradient(
-                      begin: Alignment.center,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.black, Colors.transparent],
-                    ).createShader(
-                      Rect.fromLTRB(0, 0, rect.width, rect.height),
-                    );
-                  },
-                  blendMode: BlendMode.dstIn,
-                  child: (community.banner != null)
-                      ? MuffedImage(
-                          height: (headerMaxHeight - shrinkOffset) * bannerEnd,
-                          width: double.maxFinite,
-                          fit: BoxFit.cover,
-                          imageUrl: community.banner!,
-                        )
-                      : placeholderBanner,
-                ),
-                // sizes to the height the the header
-                SizedBox(
-                  height: headerMaxHeight - shrinkOffset,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // sizes from bottom up to the fraction chosen
-                      // of the header
-                      SizedBox(
-                        height: (headerMaxHeight - shrinkOffset) *
-                            (1 - (bannerEnd - 0.05)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // title
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeInOutCubic,
+      child: Skeletonizer(
+        key: ValueKey(usingPlaceholder),
+        enabled: usingPlaceholder,
+        ignoreContainers: true,
+        child: Material(
+          clipBehavior: Clip.hardEdge,
+          color: Theme.of(context).colorScheme.surface,
+          elevation: 5,
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: 1 - fractionScrolled,
+                child: Stack(
+                  children: [
+                    // banner
+                    if (!usingPlaceholder)
+                      ShaderMask(
+                        shaderCallback: (rect) {
+                          return const LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.black, Colors.transparent],
+                          ).createShader(
+                            Rect.fromLTRB(0, 0, rect.width, rect.height),
+                          );
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: (community.banner != null)
+                            ? MuffedImage(
+                                height: (headerMaxHeight - shrinkOffset) *
+                                    bannerEnd,
+                                width: double.maxFinite,
+                                fit: BoxFit.cover,
+                                imageUrl: community.banner!,
+                              )
+                            : placeholderBanner,
+                      ),
+                    // sizes to the height the the header
+                    SizedBox(
+                      height: headerMaxHeight - shrinkOffset,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // sizes from bottom up to the fraction chosen
+                          // of the header
+                          SizedBox(
+                            height: (headerMaxHeight - shrinkOffset) *
+                                (1 - (bannerEnd - 0.05)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  MuffedAvatar(url: community.icon, radius: 34),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  // title
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        community.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
+                                      MuffedAvatar(
+                                          url: community.icon, radius: 34),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            community.title,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                          Text(
+                                            community.getTag(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .outline,
+                                                ),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: community.subscribers
+                                                      .toString(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' members',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' ⋅ ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: community.usersActiveDay
+                                                      .toString(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' active',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .outline,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        community.getTag(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
+                                    ],
+                                  ),
+                                  if (community.description != null)
+                                    Builder(
+                                      builder: (context) {
+                                        // gets only the first paragraph
+                                        final matches = RegExp(r'^.*?\n',
+                                                dotAll: true)
+                                            .firstMatch(community.description!);
+
+                                        final text = matches?.group(0) ??
+                                            community.description!;
+
+                                        return MuffedMarkdownBody(
+                                          maxHeight: 104,
+                                          data: text,
+                                        );
+                                      },
+                                    ),
+
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<void>(
+                                              builder: (context) =>
+                                                  CommunityInfoScreen(
+                                                bloc: bloc,
+                                              ),
                                             ),
+                                          );
+                                        },
+                                        child: const Text('See community info'),
                                       ),
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: community.subscribers
-                                                  .toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: ' members',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: ' ⋅ ',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: community.usersActiveDay
-                                                  .toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: ' active',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
-                                                  ),
-                                            ),
-                                          ],
+                                      if (context
+                                          .read<GlobalBloc>()
+                                          .isLoggedIn())
+                                        TextButton(
+                                          onPressed: () {
+                                            context
+                                                .read<CommunityScreenBloc>()
+                                                .add(ToggledSubscribe());
+                                          },
+                                          style: (community.subscribed ==
+                                                  LemmySubscribedType
+                                                      .notSubscribed)
+                                              ? TextButton.styleFrom(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .primaryContainer,
+                                                  foregroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                )
+                                              : TextButton.styleFrom(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .outline,
+                                                  foregroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .outlineVariant,
+                                                ),
+                                          child: (community.subscribed ==
+                                                  LemmySubscribedType
+                                                      .subscribed)
+                                              ? const Text('Unsubscribe')
+                                              : (community.subscribed ==
+                                                      LemmySubscribedType
+                                                          .notSubscribed)
+                                                  ? const Text('Subscribe')
+                                                  : const Text('Pending'),
                                         ),
-                                      ),
                                     ],
                                   ),
                                 ],
                               ),
-                              if (community.description != null)
-                                Builder(
-                                  builder: (context) {
-                                    // gets only the first paragraph
-                                    final matches =
-                                        RegExp(r'^.*?\n', dotAll: true)
-                                            .firstMatch(community.description!);
-
-                                    final text = matches?.group(0) ??
-                                        community.description!;
-
-                                    return MuffedMarkdownBody(
-                                      maxHeight: 104,
-                                      data: text,
-                                    );
-                                  },
-                                ),
-
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute<void>(
-                                          builder: (context) =>
-                                              CommunityInfoScreen(
-                                            bloc: bloc,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text('See community info'),
-                                  ),
-                                  if (context.read<GlobalBloc>().isLoggedIn())
-                                    TextButton(
-                                      onPressed: () {
-                                        context
-                                            .read<CommunityScreenBloc>()
-                                            .add(ToggledSubscribe());
-                                      },
-                                      style: (community.subscribed ==
-                                              LemmySubscribedType.notSubscribed)
-                                          ? TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryContainer,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryContainer,
-                                            )
-                                          : TextButton.styleFrom(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .outlineVariant,
-                                            ),
-                                      child: (community.subscribed ==
-                                              LemmySubscribedType.subscribed)
-                                          ? const Text('Unsubscribe')
-                                          : (community.subscribed ==
-                                                  LemmySubscribedType
-                                                      .notSubscribed)
-                                              ? const Text('Subscribe')
-                                              : const Text('Pending'),
-                                    ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: headerMaxHeight - shrinkOffset,
-            width: double.maxFinite,
-          ),
-          SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              ),
+              SizedBox(
+                height: headerMaxHeight - shrinkOffset,
+                width: double.maxFinite,
+              ),
+              SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            context.pop();
-                          },
-                          icon: const Icon(Icons.arrow_back),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Opacity(
-                          opacity:
-                              Curves.easeInCirc.transform(fractionScrolled),
-                          child: Row(
-                            children: [
-                              MuffedAvatar(url: community.icon, radius: 16),
-                              const SizedBox(
-                                width: 8,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Skeleton.keep(
+                              child: IconButton(
+                                onPressed: () {
+                                  context.pop();
+                                },
+                                icon: const Icon(Icons.arrow_back),
                               ),
-                              Text(
-                                community.title,
-                                style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Opacity(
+                              opacity:
+                                  Curves.easeInCirc.transform(fractionScrolled),
+                              child: Row(
+                                children: [
+                                  MuffedAvatar(url: community.icon, radius: 16),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                    community.title,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
