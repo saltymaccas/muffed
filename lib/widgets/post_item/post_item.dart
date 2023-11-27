@@ -24,7 +24,7 @@ class PostItem extends StatefulWidget {
     this.post,
     this.postId,
     this.form = PostViewForm.card,
-    this.useBlocFromContext,
+    this.bloc,
     this.displayType = PostDisplayType.list,
   })  : skeletonize = false,
         super(key: ValueKey(post));
@@ -37,14 +37,14 @@ class PostItem extends StatefulWidget {
   })  : skeletonize = true,
         postId = null,
         post = null,
-        useBlocFromContext = null;
+        bloc = null;
 
   final bool skeletonize;
   final int? postId;
   final LemmyPost? post;
   final PostViewForm form;
   final PostDisplayType displayType;
-  final BuildContext? useBlocFromContext;
+  final PostItemBloc? bloc;
 
   @override
   State<PostItem> createState() => _PostItemState();
@@ -79,7 +79,6 @@ class _PostItemState extends State<PostItem>
             return Skeletonizer(
               ignoreContainers: false,
               justifyMultiLineText: false,
-              ignorePointers: true,
               child: CardLemmyPostItem(
                 placeholderPost,
                 displayType: widget.displayType,
@@ -105,9 +104,9 @@ class _PostItemState extends State<PostItem>
     );
 
     /// Wraps with bloc
-    if (widget.useBlocFromContext != null) {
+    if (widget.bloc != null) {
       return BlocProvider.value(
-        value: BlocProvider.of<PostItemBloc>(widget.useBlocFromContext!),
+        value: widget.bloc!,
         child: postWidget,
       );
     } else {

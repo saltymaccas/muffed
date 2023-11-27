@@ -34,7 +34,10 @@ class CardLemmyPostItem extends StatelessWidget {
     }
 
     void openPost() {
-      PostScreenRoute(postItemBlocContext: context, post: post).push(context);
+      PostScreenRoute(
+        postBloc: BlocProvider.of<PostItemBloc>(context),
+        post: post,
+      ).push(context);
     }
 
     return Card(

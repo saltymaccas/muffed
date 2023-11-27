@@ -13,9 +13,11 @@ import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
 import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
+import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
+/// Defines the route in go router
 class PostScreenRouteDefinition extends GoRoute {
   PostScreenRouteDefinition({super.routes})
       : super(
@@ -28,17 +30,18 @@ class PostScreenRouteDefinition extends GoRoute {
             return PostScreen(
               post: data.post,
               postId: qp['postId'].parseInt(),
-              postItemBlocContext: data.postItemBlocContext,
+              postBloc: data.postBloc,
             );
           },
         );
 }
 
+/// Used to push the post screen
 class PostScreenRoute extends PostScreenRouteDefinition {
   PostScreenRoute({
     this.post,
     this.postId,
-    this.postItemBlocContext,
+    this.postBloc,
   });
 
   void push(BuildContext context) {
@@ -63,7 +66,7 @@ class PostScreenRoute extends PostScreenRouteDefinition {
 
   final LemmyPost? post;
   final int? postId;
-  final BuildContext? postItemBlocContext;
+  final PostItemBloc? postBloc;
 }
 
 /// Displays a screen that shows the post on top and the comments under
@@ -72,7 +75,7 @@ class PostScreen extends StatelessWidget {
   const PostScreen({
     this.post,
     this.postId,
-    this.postItemBlocContext,
+    this.postBloc,
     super.key,
   });
 
@@ -82,7 +85,7 @@ class PostScreen extends StatelessWidget {
   final int? postId;
 
   /// If a post bloc already exits for the post it should be passed in here
-  final BuildContext? postItemBlocContext;
+  final PostItemBloc? postBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +211,7 @@ class PostScreen extends StatelessWidget {
                           child: PostItem(
                             postId: postId,
                             post: post,
-                            useBlocFromContext: postItemBlocContext,
+                            bloc: postBloc,
                             displayType: PostDisplayType.comments,
                             form: PostViewForm.card,
                           ),
