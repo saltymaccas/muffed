@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
+import 'package:muffed/pages/home_page/screens/post_screen/post_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
@@ -114,9 +115,9 @@ class _CommentItemState extends State<CommentItem>
                         .state
                         .selectedItemIndex ==
                     0) {
-                  context.push('/home/post?id=${widget.comment.postId}');
+                  PostScreenRoute(postId: widget.comment.postId).push(context);
                 } else {
-                  context.go('/home/post?id=${widget.comment.postId}');
+                  PostScreenRoute(postId: widget.comment.postId).go(context);
                 }
               }
             },
