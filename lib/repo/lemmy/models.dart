@@ -575,6 +575,38 @@ class LemmyCommunity extends Equatable {
     );
   }
 
+  LemmyCommunity.placeHolder()
+      : id = 250203,
+        name = 'muffed',
+        title = 'muffed for lemmy',
+        removed = false,
+        published = DateTime.parse('2023-09-23T10:20:28.671041'),
+        description = """
+An open source Lemmy client written in flutter with a focus on usability and privacy.'
+
+          https://github.com/freshfieldreds/muffed""",
+        updated = '2023-10-22T22:44:32.603287',
+        deleted = false,
+        nsfw = false,
+        actorId = 'https://sh.itjust.works/c/muffed',
+        local = true,
+        hidden = false,
+        postingRestrictedToMods = false,
+        instanceId = 1,
+        moderators = null,
+        banner = null,
+        icon = null,
+        blocked = null,
+        subscribed = null,
+        comments = null,
+        hotRank = null,
+        posts = null,
+        subscribers = null,
+        usersActiveDay = null,
+        usersActiveHalfYear = null,
+        usersActiveMonth = null,
+        usersActiveWeek = null;
+
   /// from [JsonTypes.community]
 
   final int id;

@@ -461,32 +461,12 @@ class CommunityScreen extends StatelessWidget {
   }
 }
 
-final placeHolderCommunity = LemmyCommunity(
-  deleted: false,
-  actorId: 'dflsfdjslkfdjskfjsdksfsdfksdf',
-  hidden: false,
-  id: 32345,
-  instanceId: 343535,
-  local: false,
-  name: 'placeholder',
-  nsfw: false,
-  removed: false,
-  subscribers: 0,
-  title: 'placeholder',
-  description: 'placeholder placeholder',
-  moderators: [],
-  postingRestrictedToMods: false,
-  published: DateTime.now(),
-  blocked: false,
-  subscribed: LemmySubscribedType.notSubscribed,
-);
-
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   _TopBarDelegate({
-    LemmyCommunity? community,
     required this.bloc,
+    LemmyCommunity? community,
   })  : usingPlaceholder = community == null,
-        community = community ?? placeHolderCommunity;
+        community = community ?? LemmyCommunity.placeHolder();
 
   final LemmyCommunity community;
 
@@ -584,12 +564,11 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                 children: [
                                   // title
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
                                     children: [
                                       MuffedAvatar(
-                                          url: community.icon, radius: 34),
+                                        url: community.icon,
+                                        radius: 34,
+                                      ),
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Column(
@@ -699,9 +678,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     Builder(
                                       builder: (context) {
                                         // gets only the first paragraph
-                                        final matches = RegExp(r'^.*?\n',
-                                                dotAll: true)
-                                            .firstMatch(community.description!);
+                                        final matches = RegExp(
+                                          r'^.*?\n',
+                                          dotAll: true,
+                                        ).firstMatch(community.description!);
 
                                         final text = matches?.group(0) ??
                                             community.description!;
@@ -791,16 +771,12 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
               ),
               SafeArea(
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Skeleton.keep(
                               child: IconButton(
