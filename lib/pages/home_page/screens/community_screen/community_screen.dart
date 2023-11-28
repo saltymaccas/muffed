@@ -46,7 +46,11 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
     this.communityId,
     this.communityName,
     this.community,
-  }) : super();
+  })  : assert(
+          communityId != null || communityName != null || community != null,
+          'No community defined.',
+        ),
+        super();
 
   void go(BuildContext context) {
     context.goNamed(
@@ -130,7 +134,7 @@ class CommunityScreen extends StatelessWidget {
   })  : communityId = communityId ?? community?.id,
         communityName = communityName ?? community?.name,
         assert(
-          communityId != null || communityName != null,
+          communityId != null || communityName != null || community != null,
           'No community defined',
         );
 

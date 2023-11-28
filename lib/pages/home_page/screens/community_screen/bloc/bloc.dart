@@ -21,7 +21,7 @@ class CommunityScreenBloc
   })  : communityName = communityName ?? community?.name,
         communityId = communityId ?? community?.id,
         assert(
-          communityName != null || communityId != null,
+          communityName != null || communityId != null || community != null,
           'No community defined',
         ),
         super(
