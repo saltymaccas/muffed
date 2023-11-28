@@ -289,6 +289,7 @@ class SearchScreen extends StatelessWidget {
 
                                         return InkWell(
                                           onTap: () {
+                                            context.pop();
                                             CommunityScreenRouter(
                                               community: community,
                                             ).push(context);

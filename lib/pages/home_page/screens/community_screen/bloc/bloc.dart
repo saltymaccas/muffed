@@ -8,6 +8,7 @@ part 'state.dart';
 
 final _log = Logger('CommunityScreenBloc');
 
+/// Provides logic for displaying a community
 class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
   ///
@@ -15,16 +16,19 @@ class CommunityScreenBloc
     required this.repo,
     this.community,
     String? communityName,
-    this.communityId,
-  })  : communityName = (communityName != null && communityName.isNotEmpty)
-            ? communityName
-            : null,
+    int? communityId,
+  })  : communityName = communityName ?? community?.name,
+        communityId = communityId ?? community?.id,
+        assert(
+          communityName != null || communityId != null,
+          'No community defined',
+        ),
         super(
           CommunityScreenState(
             community: community,
           ),
         ) {
-    on<Initialize>((event, emit) async {
+    on<InitialiseCommunityScreen>((event, emit) async {
       // get community info if none were passed in
       if (state.community == null) {
         emit(
@@ -36,7 +40,7 @@ class CommunityScreenBloc
 
         try {
           final community = await repo.lemmyRepo
-              .getCommunity(id: communityId, name: this.communityName);
+              .getCommunity(id: communityId, name: communityName);
 
           emit(
             state.copyWith(
@@ -84,7 +88,6 @@ class CommunityScreenBloc
                 error: err,
               ),
             );
-            rethrow;
           }
         } else {
           emit(

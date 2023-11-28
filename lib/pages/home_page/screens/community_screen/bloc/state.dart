@@ -2,12 +2,12 @@ part of 'bloc.dart';
 
 enum CommunityStatus { initial, loading, success, failure }
 
+/// Holds the state for displaying a community
 final class CommunityScreenState extends Equatable {
   ///
   const CommunityScreenState({
     this.communityStatus = CommunityStatus.initial,
     this.community,
-    this.sortType = LemmySortType.hot,
     this.errorMessage,
     this.fullCommunityInfoStatus = CommunityStatus.initial,
     this.isLoading = false,
@@ -26,8 +26,6 @@ final class CommunityScreenState extends Equatable {
   /// so they will need to be loaded if they are not provided
   final CommunityStatus fullCommunityInfoStatus;
 
-  final LemmySortType sortType;
-
   final Object? errorMessage;
 
   final bool isLoading;
@@ -37,7 +35,6 @@ final class CommunityScreenState extends Equatable {
   @override
   List<Object?> get props => [
         community,
-        sortType,
         errorMessage,
         fullCommunityInfoStatus,
         isLoading,
@@ -46,11 +43,8 @@ final class CommunityScreenState extends Equatable {
       ];
 
   CommunityScreenState copyWith({
-    CommunityStatus? postsStatus,
     CommunityStatus? communityStatus,
     LemmyCommunity? community,
-    int? communityId,
-    LemmySortType? sortType,
     Object? error,
     CommunityStatus? fullCommunityInfoStatus,
     bool? isLoading,
@@ -58,7 +52,6 @@ final class CommunityScreenState extends Equatable {
   }) {
     return CommunityScreenState(
       community: community ?? this.community,
-      sortType: sortType ?? this.sortType,
       errorMessage: error,
       fullCommunityInfoStatus:
           fullCommunityInfoStatus ?? this.fullCommunityInfoStatus,

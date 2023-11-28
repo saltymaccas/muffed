@@ -17,10 +17,9 @@ void openSearchDialog(BuildContext context) {
       return Builder(
         builder: (context) {
           return BlocProvider(
-            create: (context) =>
-                SearchBloc(
-                  repo: context.read<ServerRepo>(),
-                ),
+            create: (context) => SearchBloc(
+              repo: context.read<ServerRepo>(),
+            ),
             child: Dialog(
               clipBehavior: Clip.hardEdge,
               alignment: Alignment.bottomCenter,
@@ -55,9 +54,9 @@ void openSearchDialog(BuildContext context) {
                                     ),
                                   InkWell(
                                     onTap: () {
+                                      context.pop();
                                       CommunityScreenRouter(
-                                        communityId:
-                                        state.communities[index].id,
+                                        community: state.communities[index],
                                       ).push(context);
                                     },
                                     child: Padding(
@@ -70,17 +69,16 @@ void openSearchDialog(BuildContext context) {
                                             radius: 12,
                                             child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(45),
+                                                  BorderRadius.circular(45),
                                               child: (state.communities[index]
-                                                  .icon !=
-                                                  null)
+                                                          .icon !=
+                                                      null)
                                                   ? Image.network(
-                                                '${state.communities[index]
-                                                    .icon!}?thumbnail=50',
-                                              )
+                                                      '${state.communities[index].icon!}?thumbnail=50',
+                                                    )
                                                   : Image.asset(
-                                                'assets/logo.png',
-                                              ),
+                                                      'assets/logo.png',
+                                                    ),
                                             ),
                                           ),
                                           const SizedBox(
@@ -88,18 +86,16 @@ void openSearchDialog(BuildContext context) {
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 state.communities[index].name,
                                               ),
                                               Text(
-                                                '${state.communities[index]
-                                                    .subscribers} subscribers',
+                                                '${state.communities[index].subscribers} subscribers',
                                                 style: TextStyle(
                                                   fontSize: 10,
-                                                  color: Theme
-                                                      .of(context)
+                                                  color: Theme.of(context)
                                                       .colorScheme
                                                       .outline,
                                                 ),
@@ -124,10 +120,10 @@ void openSearchDialog(BuildContext context) {
                           controller: textController,
                           onChanged: (query) {
                             context.read<SearchBloc>().add(
-                              SearchQueryChanged(
-                                searchQuery: query,
-                              ),
-                            );
+                                  SearchQueryChanged(
+                                    searchQuery: query,
+                                  ),
+                                );
                           },
                           autofocus: true,
                           decoration: InputDecoration(

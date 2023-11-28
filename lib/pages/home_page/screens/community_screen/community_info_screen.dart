@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
+import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
-import 'package:muffed/repo/lemmy/models.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../global_state/bloc.dart';
@@ -269,7 +269,7 @@ class _CommunityInfoError extends StatelessWidget {
     return ErrorComponentTransparent(
       error: error,
       retryFunction: () {
-        context.read<CommunityScreenBloc>().add(Initialize());
+        context.read<CommunityScreenBloc>().add(InitialiseCommunityScreen());
       },
     );
   }

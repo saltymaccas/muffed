@@ -18,15 +18,18 @@ import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+/// Defines the community screen and parameters in go router
 class CommunityScreenRouterDefinition extends GoRoute {
   CommunityScreenRouterDefinition({super.routes})
       : super(
           name: 'communityScreen',
           path: 'communityScreen',
           builder: (context, state) {
-            final communityId =
-                state.uri.queryParameters['communityId']?.parseInt();
+            final qp = state.uri.queryParameters;
+
+            final communityId = qp['communityId']?.parseInt();
             final communityName = state.uri.queryParameters['communityName'];
+
             final data = state.extra! as CommunityScreenRouter;
             return CommunityScreen(
               communityId: communityId,
@@ -37,6 +40,7 @@ class CommunityScreenRouterDefinition extends GoRoute {
         );
 }
 
+/// Provides a clean and typed interface for navigating to the community screen
 class CommunityScreenRouter extends CommunityScreenRouterDefinition {
   CommunityScreenRouter({
     this.communityId,
@@ -48,8 +52,8 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
     context.goNamed(
       super.name!,
       queryParameters: {
-        'communityId': communityId.toString(),
-        'communityName': communityName,
+        if (communityId != null) 'communityId': communityId.toString(),
+        if (communityName != null) 'communityName': communityName,
       },
       extra: this,
     );
@@ -59,8 +63,8 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
     context.pushNamed(
       super.name!,
       queryParameters: {
-        'communityId': communityId.toString(),
-        'communityName': communityName,
+        if (communityId != null) 'communityId': communityId.toString(),
+        if (communityName != null) 'communityName': communityName,
       },
       extra: this,
     );
@@ -71,17 +75,24 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
   final LemmyCommunity? community;
 }
 
+/// Defines the method for retrieving the community posts and retrieves them
+/// when called.
 class CommunityScreenContentRetriever extends ContentRetriever
     with EquatableMixin {
   const CommunityScreenContentRetriever({
     required this.sortType,
     required this.context,
-    required this.communityId,
-  });
+    this.communityId,
+    this.communityName,
+  }) : assert(
+          communityId != null || communityName != null,
+          'No community defined',
+        );
 
   final LemmySortType sortType;
   final BuildContext context;
-  final int communityId;
+  final int? communityId;
+  final String? communityName;
 
   @override
   Future<List<Object>> call({required int page}) {
@@ -108,19 +119,23 @@ class CommunityScreenContentRetriever extends ContentRetriever
   }
 }
 
-/// The screen that displays the community including information and the
-/// post view
+/// Displays a specified community and its posts
 class CommunityScreen extends StatelessWidget {
   /// initialize
   CommunityScreen({
     int? communityId,
-    this.communityName,
+    String? communityName,
     this.community,
     super.key,
-  }) : communityId = communityId ?? community!.id;
+  })  : communityId = communityId ?? community?.id,
+        communityName = communityName ?? community?.name,
+        assert(
+          communityId != null || communityName != null,
+          'No community defined',
+        );
 
   /// The community ID
-  final int communityId;
+  final int? communityId;
 
   /// The community name
   final String? communityName;
@@ -142,7 +157,7 @@ class CommunityScreen extends StatelessWidget {
             community: community,
             communityName: communityName,
             repo: context.read<ServerRepo>(),
-          )..add(Initialize()),
+          )..add(InitialiseCommunityScreen()),
         ),
         BlocProvider<ContentScrollBloc>(
           create: (context) => ContentScrollBloc(
