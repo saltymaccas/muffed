@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// The types of json that the api can return.
 enum JsonTypes {
   postView,
   commentView,
@@ -502,7 +503,7 @@ class LemmyCommunity extends Equatable {
   factory LemmyCommunity.fromJson(Map<String, dynamic> json) {
     late final JsonTypes jsonType;
 
-// gets what type of json was parsed in
+    // gets what type of json was parsed in
     if (json['community_view'] != null) {
       jsonType = JsonTypes.getCommunityResponse;
     } else if (json['community'] != null) {
@@ -610,7 +611,7 @@ class LemmyCommunity extends Equatable {
 
   final List<LemmyPerson>? moderators;
 
-  String getTag() {
+  String get tag {
     final regex = RegExp('https://([^/]+)/c/([^/]+)');
     final match = regex.firstMatch(actorId);
     return '!${match?.group(2)}@${match?.group(1)}';
@@ -618,7 +619,7 @@ class LemmyCommunity extends Equatable {
 
   /// Some api calls in lemmy do not return some parameters
   /// so this is here to say whether all the information has been received
-  bool isFullyLoaded() => moderators != null;
+  bool get isFullyLoaded => moderators != null;
 
   @override
   List<Object?> get props => [

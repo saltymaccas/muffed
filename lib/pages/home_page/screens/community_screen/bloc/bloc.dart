@@ -64,7 +64,7 @@ class CommunityScreenBloc
       // if community is loaded check if it is fully loaded, if not fully load
       // it
       if (state.communityStatus == CommunityStatus.success) {
-        if (!state.community!.isFullyLoaded()) {
+        if (!state.community!.isFullyLoaded) {
           emit(
             state.copyWith(fullCommunityInfoStatus: CommunityStatus.loading),
           );
@@ -152,7 +152,8 @@ class CommunityScreenBloc
       } else {
         emit(
           state.copyWith(
-            error: Exception('Tried to toggle block when block = null'),
+            error: Exception(
+                'Tried to toggle block when block = null, please report this error to the developers'),
           ),
         );
         _log.warning('Tried to toggle block when block = null');

@@ -603,7 +603,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                                   .titleLarge,
                                             ),
                                             Text(
-                                              community.getTag(),
+                                              community.tag,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!

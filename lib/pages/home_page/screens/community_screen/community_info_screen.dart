@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -8,8 +9,6 @@ import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../../../../global_state/bloc.dart';
 
 class CommunityInfoScreen extends StatelessWidget {
   const CommunityInfoScreen({required this.bloc, super.key});
@@ -40,7 +39,7 @@ class CommunityInfoScreen extends StatelessWidget {
 
 class _CommunityInfoSuccess extends StatelessWidget {
   _CommunityInfoSuccess({required this.community})
-      : assert(community.isFullyLoaded(), 'Community is not fully loaded');
+      : assert(community.isFullyLoaded, 'Community is not fully loaded');
 
   final LemmyCommunity community;
 
