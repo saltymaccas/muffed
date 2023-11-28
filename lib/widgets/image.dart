@@ -80,32 +80,36 @@ class _MuffedImageState extends State<MuffedImage> {
 
   @override
   Widget build(BuildContext context) {
-    final image = LayoutBuilder(
-      builder: (context, constraints) {
-        if (imageSize != null) {
-          height = imageSize!.height / imageSize!.width * constraints.maxWidth;
-        }
-        return Hero(
-          tag: heroTag,
-          child: ExtendedImage.network(
-            widget.imageUrl,
-            width: widget.width,
-            fit: widget.fit,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return SizedBox(
-                  width: double.maxFinite,
-                  height: height,
-                );
-              }
-              return null;
-            },
-            retries: widget.numOfRetries,
-            handleLoadingProgress: true,
-            alignment: Alignment.topCenter,
-          ),
-        );
-      },
+    final image = Align(
+      alignment: Alignment.topCenter,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (imageSize != null) {
+            height =
+                imageSize!.height / imageSize!.width * constraints.maxWidth;
+          }
+          return Hero(
+            tag: heroTag,
+            child: ExtendedImage.network(
+              widget.imageUrl,
+              width: widget.width,
+              fit: widget.fit,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  return SizedBox(
+                    width: double.maxFinite,
+                    height: height,
+                  );
+                }
+                return null;
+              },
+              retries: widget.numOfRetries,
+              handleLoadingProgress: true,
+              alignment: Alignment.center,
+            ),
+          );
+        },
+      ),
     );
 
     return GestureDetector(

@@ -289,11 +289,7 @@ class _HomePageState extends State<HomePage> {
 
                     return ContentScrollView(
                       key: ValueKey(state.scrollViewConfigs[currentPage]),
-                      retrieveContent: ({required int page}) {
-                        return state.scrollViewConfigs[currentPage](
-                          page: page,
-                        );
-                      },
+                      contentRetriever: state.scrollViewConfigs[currentPage],
                       headerSlivers: [
                         SliverAppBar(
                           clipBehavior: Clip.hardEdge,

@@ -93,27 +93,6 @@ class CommunityScreenBloc
         }
       }
     });
-
-    on<SortTypeChanged>((event, emit) async {
-      emit(state.copyWith(sortType: event.sortType, isLoading: true));
-
-      try {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            loadedSortType: event.sortType,
-          ),
-        );
-      } catch (err) {
-        emit(
-          state.copyWith(
-            error: err,
-            isLoading: false,
-            sortType: state.loadedSortType,
-          ),
-        );
-      }
-    });
     on<ToggledSubscribe>((event, emit) async {
       emit(
         state.copyWith(

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:muffed/pages/home_page/screens/community_screen/bloc/bloc.dart';
 import 'package:muffed/pages/home_page/screens/community_screen/community_info_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/shorthands.dart';
+import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/image.dart';
@@ -69,22 +71,56 @@ class CommunityScreenRouter extends CommunityScreenRouterDefinition {
   final LemmyCommunity? community;
 }
 
+class CommunityScreenContentRetriever extends ContentRetriever
+    with EquatableMixin {
+  const CommunityScreenContentRetriever({
+    required this.sortType,
+    required this.context,
+    required this.communityId,
+  });
+
+  final LemmySortType sortType;
+  final BuildContext context;
+  final int communityId;
+
+  @override
+  Future<List<Object>> call({required int page}) {
+    return context.read<ServerRepo>().lemmyRepo.getPosts(
+          page: page,
+          communityId: communityId,
+          sortType: sortType,
+        );
+  }
+
+  @override
+  List<Object?> get props => [sortType, context, communityId];
+
+  CommunityScreenContentRetriever copyWith({
+    LemmySortType? sortType,
+    BuildContext? context,
+    int? communityId,
+  }) {
+    return CommunityScreenContentRetriever(
+      sortType: sortType ?? this.sortType,
+      context: context ?? this.context,
+      communityId: communityId ?? this.communityId,
+    );
+  }
+}
+
 /// The screen that displays the community including information and the
 /// post view
 class CommunityScreen extends StatelessWidget {
   /// initialize
-  const CommunityScreen({
-    this.communityId,
+  CommunityScreen({
+    int? communityId,
     this.communityName,
     this.community,
     super.key,
-  }) : assert(
-          communityId != null || communityName != null || community != null,
-          'No community given: communityId: $communityId, communityName: $communityName, community: $community',
-        );
+  }) : communityId = communityId ?? community!.id;
 
   /// The community ID
-  final int? communityId;
+  final int communityId;
 
   /// The community name
   final String? communityName;
@@ -98,18 +134,34 @@ class CommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CommunityScreenBloc(
-        communityId: communityId,
-        community: community,
-        communityName: communityName,
-        repo: context.read<ServerRepo>(),
-      )..add(Initialize()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CommunityScreenBloc>(
+          create: (context) => CommunityScreenBloc(
+            communityId: communityId,
+            community: community,
+            communityName: communityName,
+            repo: context.read<ServerRepo>(),
+          )..add(Initialize()),
+        ),
+        BlocProvider<ContentScrollBloc>(
+          create: (context) => ContentScrollBloc(
+            retrieveContent: CommunityScreenContentRetriever(
+              sortType: LemmySortType.hot,
+              context: context,
+              communityId: communityId,
+            ),
+          )..add(Initialise()),
+        ),
+      ],
       child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
         builder: (context, state) {
           final blocContext = context;
 
-          final bloc = BlocProvider.of<CommunityScreenBloc>(blocContext);
+          final communityBloc =
+              BlocProvider.of<CommunityScreenBloc>(blocContext);
+          final contentScrollBloc =
+              BlocProvider.of<ContentScrollBloc>(blocContext);
 
           return Scaffold(
             body: SetPageInfo(
@@ -142,7 +194,7 @@ class CommunityScreen extends StatelessWidget {
                 ),
                 if (context.read<GlobalBloc>().isLoggedIn())
                   BlocProvider.value(
-                    value: bloc,
+                    value: communityBloc,
                     child:
                         BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
                       builder: (context, state) {
@@ -167,40 +219,51 @@ class CommunityScreen extends StatelessWidget {
                     ),
                   ),
                 BlocProvider.value(
-                  value: bloc,
-                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+                  value: contentScrollBloc,
+                  child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
                     builder: (context, state) {
+                      final retrieveContent = state.retrieveContent
+                          as CommunityScreenContentRetriever;
                       return MuffedPopupMenuButton(
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.sort),
-                        selectedValue: state.sortType,
+                        selectedValue: retrieveContent.sortType,
                         items: [
                           MuffedPopupMenuItem(
                             title: 'Hot',
                             icon: const Icon(Icons.local_fire_department),
                             value: LemmySortType.hot,
-                            onTap: () =>
-                                context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.hot),
+                            onTap: () => context.read<ContentScrollBloc>().add(
+                                  RetrieveContentFunctionChanged(
+                                    retrieveContent.copyWith(
+                                      sortType: LemmySortType.hot,
                                     ),
+                                  ),
+                                ),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Active',
                             icon: const Icon(Icons.rocket_launch),
                             value: LemmySortType.active,
-                            onTap: () =>
-                                context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.active),
+                            onTap: () => context.read<ContentScrollBloc>().add(
+                                  RetrieveContentFunctionChanged(
+                                    retrieveContent.copyWith(
+                                      sortType: LemmySortType.active,
                                     ),
+                                  ),
+                                ),
                           ),
                           MuffedPopupMenuItem(
                             title: 'New',
                             icon: const Icon(Icons.auto_awesome),
                             value: LemmySortType.latest,
-                            onTap: () =>
-                                context.read<CommunityScreenBloc>().add(
-                                      SortTypeChanged(LemmySortType.latest),
+                            onTap: () => context.read<ContentScrollBloc>().add(
+                                  RetrieveContentFunctionChanged(
+                                    retrieveContent.copyWith(
+                                      sortType: LemmySortType.latest,
                                     ),
+                                  ),
+                                ),
                           ),
                           MuffedPopupMenuExpandableItem(
                             title: 'Top',
@@ -210,9 +273,11 @@ class CommunityScreen extends StatelessWidget {
                                 icon: const Icon(Icons.military_tech),
                                 value: LemmySortType.topAll,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topAll,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topAll,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -221,9 +286,11 @@ class CommunityScreen extends StatelessWidget {
                                 icon: const Icon(Icons.calendar_today),
                                 value: LemmySortType.topYear,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topYear,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topYear,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -232,9 +299,11 @@ class CommunityScreen extends StatelessWidget {
                                 icon: const Icon(Icons.calendar_month),
                                 value: LemmySortType.topMonth,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topMonth,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topMonth,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -243,9 +312,11 @@ class CommunityScreen extends StatelessWidget {
                                 icon: const Icon(Icons.view_week),
                                 value: LemmySortType.topWeek,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topWeek,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topWeek,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -254,9 +325,11 @@ class CommunityScreen extends StatelessWidget {
                                 icon: const Icon(Icons.view_day),
                                 value: LemmySortType.topDay,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topDay,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topDay,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -264,32 +337,40 @@ class CommunityScreen extends StatelessWidget {
                                 title: 'Twelve Hours',
                                 icon: const Icon(Icons.schedule),
                                 value: LemmySortType.topTwelveHour,
-                                onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topTwelveHour,
-                                          ),
+                                onTap: () => context
+                                    .read<ContentScrollBloc>()
+                                    .add(
+                                      RetrieveContentFunctionChanged(
+                                        retrieveContent.copyWith(
+                                          sortType: LemmySortType.topTwelveHour,
                                         ),
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Six Hours',
                                 icon: const Icon(Icons.view_module_outlined),
                                 value: LemmySortType.topSixHour,
-                                onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topSixHour,
-                                          ),
+                                onTap: () => context
+                                    .read<ContentScrollBloc>()
+                                    .add(
+                                      RetrieveContentFunctionChanged(
+                                        retrieveContent.copyWith(
+                                          sortType: LemmySortType.topSixHour,
                                         ),
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'Hour',
                                 icon: const Icon(Icons.hourglass_bottom),
                                 value: LemmySortType.topHour,
                                 onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.topHour,
+                                    context.read<ContentScrollBloc>().add(
+                                          RetrieveContentFunctionChanged(
+                                            retrieveContent.copyWith(
+                                              sortType: LemmySortType.topHour,
+                                            ),
                                           ),
                                         ),
                               ),
@@ -302,23 +383,29 @@ class CommunityScreen extends StatelessWidget {
                                 title: 'Most Comments',
                                 icon: const Icon(Icons.comment_bank),
                                 value: LemmySortType.mostComments,
-                                onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.mostComments,
-                                          ),
+                                onTap: () => context
+                                    .read<ContentScrollBloc>()
+                                    .add(
+                                      RetrieveContentFunctionChanged(
+                                        retrieveContent.copyWith(
+                                          sortType: LemmySortType.mostComments,
                                         ),
+                                      ),
+                                    ),
                               ),
                               MuffedPopupMenuItem(
                                 title: 'New Comments',
                                 icon: const Icon(Icons.add_comment),
                                 value: LemmySortType.newComments,
-                                onTap: () =>
-                                    context.read<CommunityScreenBloc>().add(
-                                          SortTypeChanged(
-                                            LemmySortType.newComments,
-                                          ),
+                                onTap: () => context
+                                    .read<ContentScrollBloc>()
+                                    .add(
+                                      RetrieveContentFunctionChanged(
+                                        retrieveContent.copyWith(
+                                          sortType: LemmySortType.newComments,
                                         ),
+                                      ),
+                                    ),
                               ),
                             ],
                           ),
@@ -333,19 +420,14 @@ class CommunityScreen extends StatelessWidget {
                 isLoading: state.isLoading,
                 error: state.errorMessage,
                 child: ContentScrollView(
-                  key: ValueKey('${state.loadedSortType}'),
-                  retrieveContent: ({required page}) {
-                    return context.read<ServerRepo>().lemmyRepo.getPosts(
-                          page: page,
-                          communityId: community?.id ?? communityId,
-                          sortType: state.loadedSortType,
-                        );
-                  },
+                  contentScrollBloc: BlocProvider.of<ContentScrollBloc>(
+                    context,
+                  ),
                   headerSlivers: [
                     SliverPersistentHeader(
                       delegate: _TopBarDelegate(
                         community: state.community,
-                        bloc: bloc,
+                        bloc: communityBloc,
                       ),
                       pinned: true,
                     ),
@@ -453,12 +535,14 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                         },
                         blendMode: BlendMode.dstIn,
                         child: (community.banner != null)
-                            ? MuffedImage(
+                            ? SizedBox(
                                 height: (headerMaxHeight - shrinkOffset) *
                                     bannerEnd,
-                                width: double.maxFinite,
-                                fit: BoxFit.cover,
-                                imageUrl: community.banner!,
+                                child: MuffedImage(
+                                  width: double.maxFinite,
+                                  fit: BoxFit.cover,
+                                  imageUrl: community.banner!,
+                                ),
                               )
                             : placeholderBanner,
                       ),

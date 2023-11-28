@@ -6,15 +6,17 @@ final class ContentScrollState extends Equatable {
   ///
   const ContentScrollState({
     required this.status,
+    required this.retrieveContent,
     this.content,
     this.isRefreshing = false,
     this.pagesLoaded = 0,
     this.isLoadingMore = false,
     this.error,
     this.reachedEnd = false,
-  });
+    this.isLoading = false,
+    ContentRetriever? loadedRetrieveContent,
+  }) : loadedRetrieveContent = loadedRetrieveContent ?? retrieveContent;
 
-  /// Status should only be changed after posts have been loaded
   final ContentScrollStatus status;
   final List<Object>? content;
   final bool isRefreshing;
@@ -28,6 +30,11 @@ final class ContentScrollState extends Equatable {
 
   final bool reachedEnd;
 
+  final ContentRetriever retrieveContent;
+  final ContentRetriever loadedRetrieveContent;
+
+  final bool isLoading;
+
   @override
   List<Object?> get props => [
         content,
@@ -37,26 +44,35 @@ final class ContentScrollState extends Equatable {
         isLoadingMore,
         error,
         reachedEnd,
+        retrieveContent,
+        isLoading,
+        loadedRetrieveContent,
       ];
 
   ContentScrollState copyWith({
-    Object? errorMessage,
+    Object? error,
     ContentScrollStatus? status,
     List<Object>? content,
     bool? isRefreshing,
     int? pagesLoaded,
-    bool? isLoading,
-    LemmyListingType? listingType,
     bool? reachedEnd,
+    ContentRetriever? retrieveContent,
+    ContentRetriever? loadedRetrieveContent,
+    bool? isLoading,
+    bool? isLoadingMore,
   }) {
     return ContentScrollState(
-      error: errorMessage,
+      error: error,
       status: status ?? this.status,
       content: content ?? this.content,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       pagesLoaded: pagesLoaded ?? this.pagesLoaded,
-      isLoadingMore: isLoading ?? this.isLoadingMore,
       reachedEnd: reachedEnd ?? this.reachedEnd,
+      retrieveContent: retrieveContent ?? this.retrieveContent,
+      loadedRetrieveContent:
+          loadedRetrieveContent ?? this.loadedRetrieveContent,
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 }

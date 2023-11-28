@@ -2,22 +2,31 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 part 'event.dart';
 part 'state.dart';
 
 final _log = Logger('ContentScrollView');
 
+abstract class ContentRetriever {
+  const ContentRetriever();
+
+  Future<List<Object>> call({required int page});
+}
+
 /// The bloc that controls the home page
 class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
   ///
   ContentScrollBloc({required this.retrieveContent})
-      : super(const ContentScrollState(status: ContentScrollStatus.initial)) {
+      : super(
+          ContentScrollState(
+            status: ContentScrollStatus.initial,
+            retrieveContent: retrieveContent,
+          ),
+        ) {
     on<Initialise>((event, emit) async {
       emit(
-        const ContentScrollState(
+        state.copyWith(
           status: ContentScrollStatus.loading,
         ),
       );
@@ -25,30 +34,29 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
       _log.info('Loading initial posts');
 
       try {
-        final response = await retrieveContent(page: 1);
+        final response = await state.retrieveContent(page: 1);
         emit(
-          ContentScrollState(
-            status: ContentScrollStatus.success,
+          state.copyWith(
             content: response,
+            status: ContentScrollStatus.success,
             pagesLoaded: 1,
           ),
         );
       } catch (err) {
         _log.shout('Loading initial posts failed', err);
         emit(
-          ContentScrollState(
+          state.copyWith(
             status: ContentScrollStatus.failure,
             error: err,
           ),
         );
-        rethrow;
       }
     });
     on<PullDownRefresh>((event, emit) async {
       try {
         emit(state.copyWith(isRefreshing: true));
 
-        final response = await retrieveContent(page: 1);
+        final response = await state.retrieveContent(page: 1);
 
         emit(
           state.copyWith(
@@ -58,7 +66,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
           ),
         );
       } catch (err) {
-        emit(state.copyWith(isRefreshing: false, errorMessage: err));
+        emit(state.copyWith(isRefreshing: false, error: err));
       }
     });
     on<ReachedNearEndOfScroll>(
@@ -66,18 +74,19 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
         try {
           if (!state.reachedEnd && !state.isLoadingMore) {
             _log.info('Loading page ${state.pagesLoaded + 1}');
-            emit(state.copyWith(isLoading: true));
+            emit(state.copyWith(isLoadingMore: true));
 
-            final response = await retrieveContent(page: state.pagesLoaded + 1);
+            final response =
+                await state.retrieveContent(page: state.pagesLoaded + 1);
 
             if (response.isEmpty) {
-              emit(state.copyWith(isLoading: false, reachedEnd: true));
+              emit(state.copyWith(isLoadingMore: false, reachedEnd: true));
             } else {
               emit(
                 state.copyWith(
                   content: {...state.content!, ...response}.toList(),
                   pagesLoaded: state.pagesLoaded + 1,
-                  isLoading: false,
+                  isLoadingMore: false,
                 ),
               );
             }
@@ -85,14 +94,46 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             _log.info('Loaded page ${state.pagesLoaded}');
           }
         } catch (err) {
-          emit(state.copyWith(errorMessage: err, isLoading: false));
+          emit(state.copyWith(error: err, isLoadingMore: false));
+        }
+      },
+      transformer: droppable(),
+    );
+    on<RetrieveContentFunctionChanged>(
+      (event, emit) async {
+        try {
+          emit(
+            state.copyWith(
+              retrieveContent: event.retrieveContent,
+              isLoading: true,
+            ),
+          );
+
+          final response = await event.retrieveContent(page: 1);
+
+          emit(
+            state.copyWith(
+              loadedRetrieveContent: event.retrieveContent,
+              content: response,
+              pagesLoaded: 1,
+              isLoading: false,
+            ),
+          );
+        } catch (err) {
+          emit(
+            state.copyWith(
+              retrieveContent: state.loadedRetrieveContent,
+              error: err,
+              isLoading: false,
+            ),
+          );
         }
       },
       transformer: droppable(),
     );
   }
 
-  final RetrieveContent retrieveContent;
+  final ContentRetriever retrieveContent;
 
   @override
   void onChange(Change<ContentScrollState> change) {
