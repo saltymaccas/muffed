@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
+import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
+import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/pages/home_page/screens/search/bloc/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
 
 /// A Screen for search communities comments posts and users
 class SearchScreen extends StatelessWidget {
@@ -288,14 +289,9 @@ class SearchScreen extends StatelessWidget {
 
                                         return InkWell(
                                           onTap: () {
-                                            context.pushNamed(
-                                              'community',
-                                              queryParameters: {
-                                                'id': state
-                                                    .communities[index].id
-                                                    .toString(),
-                                              },
-                                            );
+                                            CommunityScreenRouter(
+                                              community: community,
+                                            ).push(context);
                                           },
                                           child: Column(
                                             children: [
