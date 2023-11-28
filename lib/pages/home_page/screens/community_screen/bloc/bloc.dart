@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -48,14 +49,13 @@ class CommunityScreenBloc
               communityStatus: CommunityStatus.success,
             ),
           );
-        } catch (err) {
+        } on DioException catch (err) {
           emit(
             state.copyWith(
               communityStatus: CommunityStatus.failure,
               error: err,
             ),
           );
-          rethrow;
         }
       } else {
         emit(state.copyWith(communityStatus: CommunityStatus.success));
@@ -81,7 +81,7 @@ class CommunityScreenBloc
                 fullCommunityInfoStatus: CommunityStatus.success,
               ),
             );
-          } catch (err) {
+          } on DioException catch (err) {
             emit(
               state.copyWith(
                 fullCommunityInfoStatus: CommunityStatus.failure,
@@ -140,7 +140,7 @@ class CommunityScreenBloc
               community: state.community!.copyWith(blocked: response),
             ),
           );
-        } catch (err) {
+        } on DioException catch (err) {
           emit(
             state.copyWith(
               community: state.community!
