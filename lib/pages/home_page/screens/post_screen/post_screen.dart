@@ -11,7 +11,6 @@ import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
-import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
@@ -36,19 +35,19 @@ class PostScreenRouteDefinition extends GoRoute {
         );
 }
 
-/// Used to push the post screen
+/// Provides a clean interface for navigating to the post screen.
 class PostScreenRoute extends PostScreenRouteDefinition {
   PostScreenRoute({
     this.post,
     this.postId,
     this.postBloc,
-  });
+  }) : assert(post != null || postId != null, 'No post provided');
 
   void push(BuildContext context) {
     context.pushNamed(
       super.name!,
       queryParameters: {
-        'postId': postId?.toString(),
+        if (postId != null) 'postId': postId!.toString(),
       },
       extra: this,
     );
@@ -58,7 +57,7 @@ class PostScreenRoute extends PostScreenRouteDefinition {
     context.goNamed(
       super.name!,
       queryParameters: {
-        'postId': postId?.toString(),
+        if (postId != null) 'postId': postId!.toString(),
       },
       extra: this,
     );
@@ -77,7 +76,7 @@ class PostScreen extends StatelessWidget {
     this.postId,
     this.postBloc,
     super.key,
-  });
+  }) : assert(post != null || postId != null, 'No post provided');
 
   /// The post that should be shown
   final LemmyPost? post;
@@ -97,7 +96,12 @@ class PostScreen extends StatelessWidget {
           repo: context.read<ServerRepo>(),
           postId: postId,
         )..add(InitializeEvent()),
-        child: BlocBuilder<PostScreenBloc, PostScreenState>(
+        child: BlocConsumer<PostScreenBloc, PostScreenState>(
+          listener: (context, state) {
+            if (state.error != null) {
+              showErrorSnackBar(context, error: state.error);
+            }
+          },
           builder: (context, state) {
             final BuildContext blocContext = context;
 
@@ -174,60 +178,68 @@ class PostScreen extends StatelessWidget {
                   ),
                 ),
               ],
-              child: MuffedPage(
-                isLoading: state.isLoading,
-                error: state.error,
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent &&
-                        state.isLoading == false) {
-                      context
-                          .read<PostScreenBloc>()
-                          .add(ReachedNearEndOfScroll());
-                    }
-                    return true;
+              child: NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent &&
+                      state.isLoading == false) {
+                    context
+                        .read<PostScreenBloc>()
+                        .add(ReachedNearEndOfScroll());
+                  }
+                  return true;
+                },
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<PostScreenBloc>().add(PullDownRefresh());
+                    await context
+                        .read<PostScreenBloc>()
+                        .stream
+                        .firstWhere((element) {
+                      if (element.isRefreshing == false) {
+                        return true;
+                      }
+                      return false;
+                    });
                   },
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<PostScreenBloc>().add(PullDownRefresh());
-                      await context
-                          .read<PostScreenBloc>()
-                          .stream
-                          .firstWhere((element) {
-                        if (element.isRefreshing == false) {
-                          return true;
-                        }
-                        return false;
-                      });
-                    },
-                    child: CustomScrollView(
-                      slivers: [
-                        const SliverAppBar(
-                          title: Text('Comments'),
-                          floating: true,
+                  child: CustomScrollView(
+                    slivers: [
+                      const SliverAppBar(
+                        title: Text('Comments'),
+                        floating: true,
+                      ),
+                      SliverToBoxAdapter(
+                        child: PostItem(
+                          postId: postId,
+                          post: post,
+                          bloc: postBloc,
+                          displayType: PostDisplayType.comments,
                         ),
-                        SliverToBoxAdapter(
-                          child: PostItem(
-                            postId: postId,
-                            post: post,
-                            bloc: postBloc,
-                            displayType: PostDisplayType.comments,
+                      ),
+                      if (state.status == PostScreenStatus.success)
+                        _CommentScreenSuccess(
+                          comments: state.comments!,
+                          sortType: state.sortType,
+                        )
+                      else if (state.status == PostScreenStatus.loading)
+                        const _CommentScreenLoading()
+                      else if (state.status == PostScreenStatus.failure)
+                        _CommentScreenFailure(
+                          error: state.error,
+                        ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 50,
+                          child: Center(
+                            child: (state.isLoading)
+                                ? const CircularProgressIndicator()
+                                : (state.reachedEnd)
+                                    ? Text('Reached End')
+                                    : null,
                           ),
                         ),
-                        if (state.status == PostScreenStatus.success)
-                          _CommentScreenSuccess(
-                            comments: state.comments!,
-                            sortType: state.sortType,
-                          )
-                        else if (state.status == PostScreenStatus.loading)
-                          const _CommentScreenLoading()
-                        else if (state.status == PostScreenStatus.failure)
-                          _CommentScreenFailure(
-                            error: state.error,
-                          ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

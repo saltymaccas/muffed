@@ -2,20 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
+abstract class ContentRetriever {
+  const ContentRetriever();
+
+  Future<List<Object>> call({required int page});
+}
+
 /// A function for retrieving content
 typedef RetrieveContent = Future<List<Object>> Function({required int page});
 
-/// displays any sort of content in a scroll view
+/// Display items retrieved from an API in a paginated scroll view
 class ContentScrollView extends StatelessWidget {
   const ContentScrollView({
     this.contentRetriever,
     this.headerSlivers = const [],
     this.contentScrollBloc,
+    this.commentItemDisplayMode = CommentItemDisplayMode.single,
     super.key,
   });
 
@@ -27,6 +35,9 @@ class ContentScrollView extends StatelessWidget {
 
   /// If the bloc is already made it can be provided here
   final ContentScrollBloc? contentScrollBloc;
+
+  /// How any comments will be displayed
+  final CommentItemDisplayMode commentItemDisplayMode;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +133,11 @@ class ContentScrollView extends StatelessWidget {
                             return PostItem(
                               post: item,
                               displayType: PostDisplayType.list,
+                            );
+                          } else if (item is LemmyComment) {
+                            return CommentItem(
+                              comment: item,
+                              displayMode: commentItemDisplayMode,
                             );
                           } else {
                             return const Text('could not display item');

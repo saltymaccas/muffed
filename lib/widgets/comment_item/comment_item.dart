@@ -23,7 +23,7 @@ class CommentItem extends StatefulWidget {
   /// Used to display a single comment in a listview
   const CommentItem({
     required this.comment,
-    required this.sortType,
+    this.sortType,
     this.ableToLoadChildren = true,
     this.children = const [],
     this.isOrphan = true,
@@ -39,8 +39,9 @@ class CommentItem extends StatefulWidget {
   /// Any children of the comment
   final List<LemmyComment> children;
 
-  /// The sort type of the listview the comment is in
-  final LemmyCommentSortType sortType;
+  /// The sort type of the listview the comment is in used for the comment to
+  /// get children comments in the same sort type.
+  final LemmyCommentSortType? sortType;
 
   /// If true the comment will display a button to load the comments children
   final bool ableToLoadChildren;
@@ -357,7 +358,10 @@ class _CommentItemState extends State<CommentItem>
                             InkWell(
                               onTap: () {
                                 context.read<CommentItemBloc>().add(
-                                      LoadChildrenRequested(widget.sortType),
+                                      LoadChildrenRequested(
+                                        widget.sortType ??
+                                            LemmyCommentSortType.hot,
+                                      ),
                                     );
                               },
                               child: Container(

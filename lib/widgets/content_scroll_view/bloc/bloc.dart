@@ -3,18 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
+import '../content_scroll_view.dart';
+
 part 'event.dart';
 part 'state.dart';
 
 final _log = Logger('ContentScrollView');
 
-abstract class ContentRetriever {
-  const ContentRetriever();
-
-  Future<List<Object>> call({required int page});
-}
-
-/// The bloc that controls the home page
+/// Controls the state of a content scroll view
 class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
   ///
   ContentScrollBloc({required this.retrieveContent})
