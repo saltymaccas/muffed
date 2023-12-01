@@ -149,7 +149,7 @@ class LemmyPost extends Equatable {
         apId = json['post']['ap_id'],
         name = json['post']['name'],
         // Z added to mark as UTC time
-        timePublished = DateTime.parse(json['post']['published'] + 'Z'),
+        timePublished = DateTime.parse(json['post']['published']),
         myVote = jsonToLemmyVoteType[json['my_vote']] ?? LemmyVoteType.none,
         thumbnailUrl = json['post']['thumbnail_url'],
         nsfw = json['post']['nsfw'],
@@ -300,7 +300,7 @@ class LemmyComment extends Equatable {
         content = json['comment']['content'],
         id = json['comment']['id'],
         // Z added to mark as UTC time
-        timePublished = DateTime.parse(json['comment']['published'] + 'Z'),
+        timePublished = DateTime.parse(json['comment']['published']),
         postId = json['comment']['post_id'],
         childCount = json['counts']['child_count'],
         upVotes = json['counts']['upvotes'],
@@ -547,7 +547,7 @@ class LemmyCommunity extends Equatable {
       instanceId: community['instance_id'],
       nsfw: community['nsfw'],
       postingRestrictedToMods: community['posting_restricted_to_mods'],
-      published: DateTime.parse(community['published'] + 'Z'),
+      published: DateTime.parse(community['published']),
       removed: community['removed'],
       title: community['title'],
       comments: communityView?['counts']['comments'],
@@ -832,10 +832,10 @@ class LemmyPerson extends Equatable {
       instanceId: person['instance_id'],
       local: person['local'],
       name: person['name'],
-      published: DateTime.parse(person['published'] + 'Z'),
+      published: DateTime.parse(person['published']),
       avatar: person['avatar'],
       banExpires: (person['ban_expires'] != null)
-          ? DateTime.parse(person['ban_expires'] + 'Z')
+          ? DateTime.parse(person['ban_expires'])
           : null,
       banner: person['banner'],
       bio: person['bio'],
