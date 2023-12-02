@@ -6,12 +6,10 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/muffed_page.dart';
-import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'bloc/bloc.dart';
@@ -121,257 +119,22 @@ class CommunityScreen extends StatelessWidget {
               BlocProvider.of<ContentScrollBloc>(blocContext);
 
           return Scaffold(
-            body: SetPageInfo(
-              actions: [
-                BlocProvider.value(
-                  value: BlocProvider.of<CommunityScreenBloc>(blocContext),
-                  child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                    builder: (context, state) {
-                      return IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: (state.community != null)
-                            ? () {
-                                // TODO: add navigation
-                              }
-                            : null,
-                        icon: const Icon(Icons.search),
-                      );
-                    },
-                  ),
+            body: MuffedPage(
+              isLoading: state.isLoading,
+              error: state.errorMessage,
+              child: ContentScrollView(
+                contentScrollBloc: BlocProvider.of<ContentScrollBloc>(
+                  context,
                 ),
-                if (context.read<GlobalBloc>().isLoggedIn())
-                  BlocProvider.value(
-                    value: communityBloc,
-                    child:
-                        BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-                      builder: (context, state) {
-                        return IconButton(
-                          visualDensity: VisualDensity.compact,
-                          onPressed: (state.community == null)
-                              ? null
-                              : () {
-                                  // TODO: add navigation
-                                },
-                          icon: const Icon(Icons.add),
-                        );
-                      },
+                headerSlivers: [
+                  SliverPersistentHeader(
+                    delegate: _TopBarDelegate(
+                      community: state.community,
+                      bloc: communityBloc,
                     ),
+                    pinned: true,
                   ),
-                BlocProvider.value(
-                  value: contentScrollBloc,
-                  child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
-                    builder: (context, state) {
-                      final retrieveContent = state.retrieveContent
-                          as CommunityScreenContentRetriever;
-                      return MuffedPopupMenuButton(
-                        visualDensity: VisualDensity.compact,
-                        icon: const Icon(Icons.sort),
-                        selectedValue: retrieveContent.sortType,
-                        items: [
-                          MuffedPopupMenuItem(
-                            title: 'Hot',
-                            icon: const Icon(Icons.local_fire_department),
-                            value: LemmySortType.hot,
-                            onTap: () => context.read<ContentScrollBloc>().add(
-                                  RetrieveContentFunctionChanged(
-                                    retrieveContent.copyWith(
-                                      sortType: LemmySortType.hot,
-                                    ),
-                                  ),
-                                ),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Active',
-                            icon: const Icon(Icons.rocket_launch),
-                            value: LemmySortType.active,
-                            onTap: () => context.read<ContentScrollBloc>().add(
-                                  RetrieveContentFunctionChanged(
-                                    retrieveContent.copyWith(
-                                      sortType: LemmySortType.active,
-                                    ),
-                                  ),
-                                ),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'New',
-                            icon: const Icon(Icons.auto_awesome),
-                            value: LemmySortType.latest,
-                            onTap: () => context.read<ContentScrollBloc>().add(
-                                  RetrieveContentFunctionChanged(
-                                    retrieveContent.copyWith(
-                                      sortType: LemmySortType.latest,
-                                    ),
-                                  ),
-                                ),
-                          ),
-                          MuffedPopupMenuExpandableItem(
-                            title: 'Top',
-                            items: [
-                              MuffedPopupMenuItem(
-                                title: 'All Time',
-                                icon: const Icon(Icons.military_tech),
-                                value: LemmySortType.topAll,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topAll,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Year',
-                                icon: const Icon(Icons.calendar_today),
-                                value: LemmySortType.topYear,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topYear,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Month',
-                                icon: const Icon(Icons.calendar_month),
-                                value: LemmySortType.topMonth,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topMonth,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Week',
-                                icon: const Icon(Icons.view_week),
-                                value: LemmySortType.topWeek,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topWeek,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Day',
-                                icon: const Icon(Icons.view_day),
-                                value: LemmySortType.topDay,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topDay,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Twelve Hours',
-                                icon: const Icon(Icons.schedule),
-                                value: LemmySortType.topTwelveHour,
-                                onTap: () => context
-                                    .read<ContentScrollBloc>()
-                                    .add(
-                                      RetrieveContentFunctionChanged(
-                                        retrieveContent.copyWith(
-                                          sortType: LemmySortType.topTwelveHour,
-                                        ),
-                                      ),
-                                    ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Six Hours',
-                                icon: const Icon(Icons.view_module_outlined),
-                                value: LemmySortType.topSixHour,
-                                onTap: () => context
-                                    .read<ContentScrollBloc>()
-                                    .add(
-                                      RetrieveContentFunctionChanged(
-                                        retrieveContent.copyWith(
-                                          sortType: LemmySortType.topSixHour,
-                                        ),
-                                      ),
-                                    ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'Hour',
-                                icon: const Icon(Icons.hourglass_bottom),
-                                value: LemmySortType.topHour,
-                                onTap: () =>
-                                    context.read<ContentScrollBloc>().add(
-                                          RetrieveContentFunctionChanged(
-                                            retrieveContent.copyWith(
-                                              sortType: LemmySortType.topHour,
-                                            ),
-                                          ),
-                                        ),
-                              ),
-                            ],
-                          ),
-                          MuffedPopupMenuExpandableItem(
-                            title: 'Comments',
-                            items: [
-                              MuffedPopupMenuItem(
-                                title: 'Most Comments',
-                                icon: const Icon(Icons.comment_bank),
-                                value: LemmySortType.mostComments,
-                                onTap: () => context
-                                    .read<ContentScrollBloc>()
-                                    .add(
-                                      RetrieveContentFunctionChanged(
-                                        retrieveContent.copyWith(
-                                          sortType: LemmySortType.mostComments,
-                                        ),
-                                      ),
-                                    ),
-                              ),
-                              MuffedPopupMenuItem(
-                                title: 'New Comments',
-                                icon: const Icon(Icons.add_comment),
-                                value: LemmySortType.newComments,
-                                onTap: () => context
-                                    .read<ContentScrollBloc>()
-                                    .add(
-                                      RetrieveContentFunctionChanged(
-                                        retrieveContent.copyWith(
-                                          sortType: LemmySortType.newComments,
-                                        ),
-                                      ),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-              page: Pages.home,
-              child: MuffedPage(
-                isLoading: state.isLoading,
-                error: state.errorMessage,
-                child: ContentScrollView(
-                  contentScrollBloc: BlocProvider.of<ContentScrollBloc>(
-                    context,
-                  ),
-                  headerSlivers: [
-                    SliverPersistentHeader(
-                      delegate: _TopBarDelegate(
-                        community: state.community,
-                        bloc: communityBloc,
-                      ),
-                      pinned: true,
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           );

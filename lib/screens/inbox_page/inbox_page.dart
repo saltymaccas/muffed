@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/screens/inbox_page/replies_screen/replies_screen.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-
 import 'mentions_screen/bloc/bloc.dart' as m;
 import 'mentions_screen/mentions_screen.dart';
 import 'replies_screen/bloc/bloc.dart' as r;
@@ -76,44 +74,23 @@ class InboxPage extends StatelessWidget {
                         context.read<r.RepliesBloc>().add(r.ShowAllToggled());
                       }
 
-                      return SetPageInfo(
-                        page: Pages.inbox,
-                        actions: [
-                          BlocProvider.value(
-                            value: BlocProvider.of<m.MentionsBloc>(blocContext),
-                            child: BlocBuilder<m.MentionsBloc, m.MentionsState>(
-                              builder: (context, state) {
-                                return IconButton(
-                                  visualDensity: VisualDensity.compact,
-                                  isSelected: state.showAll,
-                                  onPressed: toggleRead,
-                                  selectedIcon:
-                                      const Icon(Icons.remove_red_eye),
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                        child: NestedScrollView(
-                          headerSliverBuilder: (context, _) {
-                            return [
-                              const SliverToBoxAdapter(
-                                child: SafeArea(
-                                  child: TabBar(
-                                    tabs: [
-                                      Tab(text: 'Replies'),
-                                      Tab(text: 'Mentions'),
-                                    ],
-                                  ),
+                      return NestedScrollView(
+                        headerSliverBuilder: (context, _) {
+                          return [
+                            const SliverToBoxAdapter(
+                              child: SafeArea(
+                                child: TabBar(
+                                  tabs: [
+                                    Tab(text: 'Replies'),
+                                    Tab(text: 'Mentions'),
+                                  ],
                                 ),
                               ),
-                            ];
-                          },
-                          body: const TabBarView(
-                            children: [RepliesScreen(), MentionsScreen()],
-                          ),
+                            ),
+                          ];
+                        },
+                        body: const TabBarView(
+                          children: [RepliesScreen(), MentionsScreen()],
                         ),
                       );
                     },

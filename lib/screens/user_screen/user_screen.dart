@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/shorthands.dart';
-import 'package:muffed/widgets/block_dialog/block_dialog.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
-import 'package:muffed/widgets/icon_button.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/muffed_page.dart';
-import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 
 import 'bloc/bloc.dart';
@@ -46,82 +42,29 @@ class UserScreen extends StatelessWidget {
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {
           final blocContext = context;
-          return SetPageInfo(
-            page: Pages.home,
-            actions: [
-              BlocProvider.value(
-                value: BlocProvider.of<UserScreenBloc>(blocContext),
-                child: BlocBuilder<UserScreenBloc, UserScreenState>(
-                  builder: (context, state) {
-                    late Widget item;
-
-                    switch (state.status) {
-                      case UserStatus.loading:
-                        item = const IconButtonLoading();
-                      case UserStatus.failure:
-                        item = const IconButtonFailure();
-                      case UserStatus.initial:
-                        item = const IconButtonInitial();
-                      case UserStatus.success:
-                        item = MuffedPopupMenuButton(
-                          changeIconToSelected: false,
-                          icon: const Icon(Icons.more_vert),
-                          visualDensity: VisualDensity.compact,
-                          items: [
-                            MuffedPopupMenuItem(
-                              icon: const Icon(Icons.block),
-                              title: 'Block/Unblock',
-                              onTap: () {
-                                showDialog<void>(
-                                  context: context,
-                                  builder: (context) {
-                                    return BlockDialog(
-                                      id: state.user!.id,
-                                      type: BlockDialogType.person,
-                                      name: state.user!.name,
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                    }
-
-                    return AnimatedSwitcher(
-                      duration: const Duration(
-                        milliseconds: 200,
-                      ),
-                      child: item,
+          return MuffedPage(
+            isLoading: state.loading,
+            error: state.error,
+            child: DefaultTabController(
+              length: 3,
+              child: Builder(
+                builder: (context) {
+                  if (state.status == UserStatus.loading) {
+                    return const _UserScreenLoading();
+                  }
+                  if (state.status == UserStatus.failure) {
+                    return const _UserScreenFailure();
+                  }
+                  if (state.status == UserStatus.success) {
+                    return _UserScreenSuccess(
+                      user: state.user!,
+                      posts: state.posts,
+                      comments: state.comments,
+                      isLoading: state.loading,
                     );
-                  },
-                ),
-              ),
-            ],
-            child: MuffedPage(
-              isLoading: state.loading,
-              error: state.error,
-              child: DefaultTabController(
-                length: 3,
-                child: Builder(
-                  builder: (context) {
-                    if (state.status == UserStatus.loading) {
-                      return const _UserScreenLoading();
-                    }
-                    if (state.status == UserStatus.failure) {
-                      return const _UserScreenFailure();
-                    }
-                    if (state.status == UserStatus.success) {
-                      return _UserScreenSuccess(
-                        user: state.user!,
-                        posts: state.posts,
-                        comments: state.comments,
-                        isLoading: state.loading,
-                      );
-                    }
-                    return const _UserScreenInitial();
-                  },
-                ),
+                  }
+                  return const _UserScreenInitial();
+                },
               ),
             ),
           );

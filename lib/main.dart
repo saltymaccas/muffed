@@ -11,7 +11,6 @@ import 'package:muffed/router/models.dart';
 import 'package:muffed/router/navigator.dart';
 import 'package:muffed/router/router_delegate.dart';
 import 'package:muffed/screens/home_page/home_page.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
@@ -52,7 +51,6 @@ class MyApp extends StatelessWidget {
 
         return MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => DynamicNavigationBarBloc()),
             BlocProvider(create: (context) => GlobalBloc()),
             BlocProvider(
               create: (context) => MNavigator(initialNavigatorState),

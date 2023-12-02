@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
@@ -54,39 +53,35 @@ class SavedPostsScreen extends StatelessWidget {
             );
           }
 
-          return SetPageInfo(
-            page: Pages.profile,
-            actions: const [],
-            child: Stack(
-              children: [
-                NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 500 &&
-                        state.status == SavedPostsStatus.success) {
-                      context
-                          .read<SavedPostsBloc>()
-                          .add(ReachedNearEndOfScroll());
-                    }
-                    return true;
-                  },
-                  child: CustomScrollView(
-                    slivers: [
-                      const SliverAppBar(
-                        floating: true,
-                        title: Text('Saved posts'),
-                      ),
-                      contentSliver,
-                    ],
-                  ),
+          return Stack(
+            children: [
+              NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 500 &&
+                      state.status == SavedPostsStatus.success) {
+                    context
+                        .read<SavedPostsBloc>()
+                        .add(ReachedNearEndOfScroll());
+                  }
+                  return true;
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverAppBar(
+                      floating: true,
+                      title: Text('Saved posts'),
+                    ),
+                    contentSliver,
+                  ],
                 ),
-                if (state.isLoading)
-                  const Align(
-                    alignment: Alignment.topCenter,
-                    child: LinearProgressIndicator(),
-                  ),
-              ],
-            ),
+              ),
+              if (state.isLoading)
+                const Align(
+                  alignment: Alignment.topCenter,
+                  child: LinearProgressIndicator(),
+                ),
+            ],
           );
         },
       ),

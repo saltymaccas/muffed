@@ -7,7 +7,6 @@ import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/comment_item/bloc/bloc.dart';
 import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/snackbars.dart';
@@ -107,17 +106,7 @@ class _CommentItemState extends State<CommentItem>
             onTap: () {
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
-              } else if (widget.displayMode == CommentItemDisplayMode.single) {
-                if (context
-                        .read<DynamicNavigationBarBloc>()
-                        .state
-                        .selectedItemIndex ==
-                    0) {
-                  // TODO: add navigation
-                } else {
-                  // TODO: add navigation
-                }
-              }
+              } else if (widget.displayMode == CommentItemDisplayMode.single) {}
             },
             child: Container(
               decoration: BoxDecoration(

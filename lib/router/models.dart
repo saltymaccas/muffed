@@ -20,7 +20,7 @@ class MNavigatorState extends Equatable {
 
   GlobalKey<NavigatorState> get currentKey => currentBranch.key;
 
-  MPage get currentPage => branches[currentBranchIndex].top;
+  MPage<Object?> get currentPage => branches[currentBranchIndex].top;
 
   bool get canPop => branches[currentBranchIndex].canPop;
 

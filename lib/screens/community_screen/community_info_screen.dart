@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
@@ -51,184 +50,180 @@ class _CommunityInfoSuccess extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             );
 
-    return SetPageInfo(
-      actions: const [],
-      page: Pages.home,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(community.title),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (community.description != null)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: MuffedMarkdownBody(
-                    data: community.description!,
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(community.title),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (community.description != null)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: MuffedMarkdownBody(
+                  data: community.description!,
                 ),
-              const Divider(),
-              SizedBox(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+              ),
+            const Divider(),
+            SizedBox(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.labelLarge,
+                            text: 'Posts: ',
+                            children: [
+                              TextSpan(
+                                text: community.posts.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.labelLarge,
+                            text: 'Comments: ',
+                            children: [
+                              TextSpan(
+                                text: community.comments.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.labelLarge,
+                            text: 'Subscribers: ',
+                            children: [
+                              TextSpan(
+                                text: community.subscribers.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Daily active: ',
+                            style: Theme.of(context).textTheme.labelLarge,
+                            children: [
+                              TextSpan(
+                                text: community.usersActiveDay.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Weekly active: ',
+                            style: Theme.of(context).textTheme.labelLarge,
+                            children: [
+                              TextSpan(
+                                text: community.usersActiveWeek.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Monthly active: ',
+                            style: Theme.of(context).textTheme.labelLarge,
+                            children: [
+                              TextSpan(
+                                text: community.usersActiveMonth.toString(),
+                                style: countValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Moderators:',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            if (community.moderators!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: Theme.of(context).textTheme.labelLarge,
-                              text: 'Posts: ',
-                              children: [
-                                TextSpan(
-                                  text: community.posts.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          RichText(
-                            text: TextSpan(
-                              style: Theme.of(context).textTheme.labelLarge,
-                              text: 'Comments: ',
-                              children: [
-                                TextSpan(
-                                  text: community.comments.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          RichText(
-                            text: TextSpan(
-                              style: Theme.of(context).textTheme.labelLarge,
-                              text: 'Subscribers: ',
-                              children: [
-                                TextSpan(
-                                  text: community.subscribers.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                    for (final moderator in community.moderators!)
+                      ActionChip(
+                        label: Text(moderator.name),
+                        avatar: MuffedAvatar(
+                          url: moderator.avatar,
+                        ),
+                        onPressed: () {
+                          // TODO: add navigation
+                        },
                       ),
-                    ),
-                    Flexible(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 12),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Daily active: ',
-                              style: Theme.of(context).textTheme.labelLarge,
-                              children: [
-                                TextSpan(
-                                  text: community.usersActiveDay.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Weekly active: ',
-                              style: Theme.of(context).textTheme.labelLarge,
-                              children: [
-                                TextSpan(
-                                  text: community.usersActiveWeek.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Monthly active: ',
-                              style: Theme.of(context).textTheme.labelLarge,
-                              children: [
-                                TextSpan(
-                                  text: community.usersActiveMonth.toString(),
-                                  style: countValueTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'Moderators:',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              if (community.moderators!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final moderator in community.moderators!)
-                        ActionChip(
-                          label: Text(moderator.name),
-                          avatar: MuffedAvatar(
-                            url: moderator.avatar,
-                          ),
-                          onPressed: () {
-                            // TODO: add navigation
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-              const Divider(),
-              if (context.read<GlobalBloc>().isLoggedIn())
-                Skeletonizer(
-                  enabled: community.blocked == null,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.read<CommunityScreenBloc>().add(
-                              BlockToggled(),
-                            );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Theme.of(context).colorScheme.error,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+            const Divider(),
+            if (context.read<GlobalBloc>().isLoggedIn())
+              Skeletonizer(
+                enabled: community.blocked == null,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<CommunityScreenBloc>().add(
+                            BlockToggled(),
+                          );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
-                        (community.blocked == null)
-                            ? 'Placeholder'
-                            : (community.blocked!)
-                                ? 'Unblock Community'
-                                : 'Block Community',
-                      ),
+                    ),
+                    child: Text(
+                      (community.blocked == null)
+                          ? 'Placeholder'
+                          : (community.blocked!)
+                              ? 'Unblock Community'
+                              : 'Block Community',
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

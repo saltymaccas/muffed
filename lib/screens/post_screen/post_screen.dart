@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
-import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
-import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
@@ -52,142 +48,66 @@ class PostScreen extends StatelessWidget {
           builder: (context, state) {
             final BuildContext blocContext = context;
 
-            return SetPageInfo(
-              page: Pages.home,
-              actions: [
-                if (context.read<GlobalBloc>().isLoggedIn())
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      showDialog<void>(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return CreateCommentDialog(
-                            postBlocContext: blocContext,
-                            postId: postId,
-                            onSuccessfullySubmitted: () {
-                              showInfoSnackBar(
-                                context,
-                                text: 'Comment successfully posted',
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                  ),
-                BlocProvider.value(
-                  value: BlocProvider.of<PostScreenBloc>(blocContext),
-                  child: BlocBuilder<PostScreenBloc, PostScreenState>(
-                    builder: (context, state) {
-                      return MuffedPopupMenuButton(
-                        icon: const Icon(Icons.sort),
-                        visualDensity: VisualDensity.compact,
-                        selectedValue: state.sortType,
-                        items: [
-                          MuffedPopupMenuItem(
-                            title: 'Hot',
-                            icon: const Icon(Icons.local_fire_department),
-                            value: LemmyCommentSortType.hot,
-                            onTap: () => context
-                                .read<PostScreenBloc>()
-                                .add(SortTypeChanged(LemmyCommentSortType.hot)),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Top',
-                            icon: const Icon(Icons.military_tech),
-                            value: LemmyCommentSortType.top,
-                            onTap: () => context
-                                .read<PostScreenBloc>()
-                                .add(SortTypeChanged(LemmyCommentSortType.top)),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'New',
-                            icon: const Icon(Icons.auto_awesome),
-                            value: LemmyCommentSortType.latest,
-                            onTap: () => context.read<PostScreenBloc>().add(
-                                  SortTypeChanged(LemmyCommentSortType.latest),
-                                ),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Old',
-                            icon: const Icon(Icons.elderly),
-                            value: LemmyCommentSortType.old,
-                            onTap: () => context
-                                .read<PostScreenBloc>()
-                                .add(SortTypeChanged(LemmyCommentSortType.old)),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-              child: NotificationListener(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels >=
-                          scrollInfo.metrics.maxScrollExtent &&
-                      state.isLoading == false) {
-                    context
-                        .read<PostScreenBloc>()
-                        .add(ReachedNearEndOfScroll());
-                  }
-                  return true;
+            return NotificationListener(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent &&
+                    state.isLoading == false) {
+                  context.read<PostScreenBloc>().add(ReachedNearEndOfScroll());
+                }
+                return true;
+              },
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<PostScreenBloc>().add(PullDownRefresh());
+                  await context
+                      .read<PostScreenBloc>()
+                      .stream
+                      .firstWhere((element) {
+                    if (element.isRefreshing == false) {
+                      return true;
+                    }
+                    return false;
+                  });
                 },
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<PostScreenBloc>().add(PullDownRefresh());
-                    await context
-                        .read<PostScreenBloc>()
-                        .stream
-                        .firstWhere((element) {
-                      if (element.isRefreshing == false) {
-                        return true;
-                      }
-                      return false;
-                    });
-                  },
-                  child: CustomScrollView(
-                    slivers: [
-                      const SliverAppBar(
-                        title: Text('Comments'),
-                        floating: true,
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverAppBar(
+                      title: Text('Comments'),
+                      floating: true,
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostItem(
+                        postId: postId,
+                        post: post,
+                        bloc: postBloc,
+                        displayType: PostDisplayType.comments,
                       ),
-                      SliverToBoxAdapter(
-                        child: PostItem(
-                          postId: postId,
-                          post: post,
-                          bloc: postBloc,
-                          displayType: PostDisplayType.comments,
+                    ),
+                    if (state.status == PostScreenStatus.success)
+                      _CommentScreenSuccess(
+                        comments: state.comments!,
+                        sortType: state.sortType,
+                      )
+                    else if (state.status == PostScreenStatus.loading)
+                      const _CommentScreenLoading()
+                    else if (state.status == PostScreenStatus.failure)
+                      _CommentScreenFailure(
+                        error: state.error,
+                      ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: (state.isLoading)
+                              ? const CircularProgressIndicator()
+                              : (state.reachedEnd)
+                                  ? Text('Reached End')
+                                  : null,
                         ),
                       ),
-                      if (state.status == PostScreenStatus.success)
-                        _CommentScreenSuccess(
-                          comments: state.comments!,
-                          sortType: state.sortType,
-                        )
-                      else if (state.status == PostScreenStatus.loading)
-                        const _CommentScreenLoading()
-                      else if (state.status == PostScreenStatus.failure)
-                        _CommentScreenFailure(
-                          error: state.error,
-                        ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 50,
-                          child: Center(
-                            child: (state.isLoading)
-                                ? const CircularProgressIndicator()
-                                : (state.reachedEnd)
-                                    ? Text('Reached End')
-                                    : null,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
