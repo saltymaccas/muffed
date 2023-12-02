@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:muffed/router/navigator.dart';
 import 'package:muffed/widgets/page.dart';
 
-extension on BuildContext {
+extension RouterExtentions on BuildContext {
   MNavigator get navigator => MNavigator.of(this);
 
   /// Removes the top page from the current branch

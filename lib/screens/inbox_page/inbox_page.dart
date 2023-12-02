@@ -3,12 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/screens/inbox_page/replies_screen/replies_screen.dart';
+import 'package:muffed/widgets/page.dart';
+
 import 'mentions_screen/bloc/bloc.dart' as m;
 import 'mentions_screen/mentions_screen.dart';
 import 'replies_screen/bloc/bloc.dart' as r;
 
-class InboxPage extends StatelessWidget {
-  const InboxPage({super.key});
+class InboxPage extends MPage<void> {
+  const InboxPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return InboxView();
+  }
+}
+
+class InboxView extends StatelessWidget {
+  const InboxView({super.key});
 
   @override
   Widget build(BuildContext context) {

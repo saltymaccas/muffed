@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/router/navigator.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/page.dart';
 
 import 'models.dart';
@@ -23,6 +24,7 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
       bloc: navigator,
       builder: (context, state) {
         return Scaffold(
+          bottomNavigationBar: DynamicNavigationBar(),
           body: IndexedStack(
             index: state.currentBranchIndex,
             children: [

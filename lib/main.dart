@@ -11,6 +11,7 @@ import 'package:muffed/router/models.dart';
 import 'package:muffed/router/navigator.dart';
 import 'package:muffed/router/router_delegate.dart';
 import 'package:muffed/screens/home_page/home_page.dart';
+import 'package:muffed/screens/inbox_page/inbox_page.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           currentBranchIndex: 0,
           branches: [
             Branch([HomePage()], key: GlobalKey<NavigatorState>()),
+            Branch([InboxPage()], key: GlobalKey<NavigatorState>()),
           ],
         );
 

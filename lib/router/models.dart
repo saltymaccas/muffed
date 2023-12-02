@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../widgets/page.dart';
 
-/// Stores the list of app branches and provides methods for manipulation.
+/// Stores the list of app branches and provides methods for manipulating them.
 ///
 /// Used by MNavigator to store its state.
 class MNavigatorState extends Equatable {
@@ -54,7 +54,7 @@ class MNavigatorState extends Equatable {
   List<Object?> get props => [branches, currentBranchIndex];
 }
 
-/// Holds a stack of pages and provides methods for manipulation.
+/// Holds a stack of pages and provides methods for manipulating them.
 class Branch extends Equatable {
   Branch(this.pages, {GlobalKey<NavigatorState>? key})
       : key = key ?? GlobalKey();

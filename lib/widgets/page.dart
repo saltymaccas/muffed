@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 ///
 /// The type T is the return type
 abstract class MPage<T> extends Page<T> {
+  const MPage();
+
   /// build page content by overridng this function
   Widget build(BuildContext context);
 
