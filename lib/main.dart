@@ -7,7 +7,10 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/router.dart';
+import 'package:muffed/router/models.dart';
+import 'package:muffed/router/navigator.dart';
+import 'package:muffed/router/router_delegate.dart';
+import 'package:muffed/screens/home_page/home_page.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -40,55 +43,67 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        final initialNavigatorState = MNavigatorState(
+          currentBranchIndex: 0,
+          branches: [
+            Branch([HomePage()], key: GlobalKey<NavigatorState>()),
+          ],
+        );
+
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => DynamicNavigationBarBloc()),
             BlocProvider(create: (context) => GlobalBloc()),
+            BlocProvider(
+              create: (context) => MNavigator(initialNavigatorState),
+            ),
           ],
           child: BlocBuilder<GlobalBloc, GlobalState>(
             builder: (context, state) {
               return RepositoryProvider(
                 create: (context) => ServerRepo(context.read<GlobalBloc>()),
                 child: MaterialApp.router(
-                  routerConfig: router,
+                  routerDelegate: MRouterDelegate(
+                    BlocProvider.of<MNavigator>(context),
+                  ),
                   title: 'Muffed',
-                  builder: (context, child) {
-                    final textTheme = Theme.of(context).textTheme;
-                    return Theme(
-                      data: Theme.of(context).copyWith(
-                        textTheme: textTheme.apply().copyWith(
-                              titleLarge: textTheme.titleLarge!.apply(
-                                fontSizeFactor: state.titleTextScaleFactor,
-                              ),
-                              titleMedium: textTheme.titleMedium!.apply(
-                                fontSizeFactor: state.titleTextScaleFactor,
-                              ),
-                              titleSmall: textTheme.titleSmall!.apply(
-                                fontSizeFactor: state.titleTextScaleFactor,
-                              ),
-                              labelLarge: textTheme.labelLarge!.apply(
-                                fontSizeFactor: state.labelTextScaleFactor,
-                              ),
-                              labelMedium: textTheme.labelMedium!.apply(
-                                fontSizeFactor: state.labelTextScaleFactor,
-                              ),
-                              labelSmall: textTheme.labelSmall!.apply(
-                                fontSizeFactor: state.labelTextScaleFactor,
-                              ),
-                              bodyLarge: textTheme.bodyLarge!.apply(
-                                fontSizeFactor: state.bodyTextScaleFactor,
-                              ),
-                              bodyMedium: textTheme.bodyMedium!.apply(
-                                fontSizeFactor: state.bodyTextScaleFactor,
-                              ),
-                              bodySmall: textTheme.bodySmall!.apply(
-                                fontSizeFactor: state.bodyTextScaleFactor,
-                              ),
-                            ),
-                      ),
-                      child: child!,
-                    );
-                  },
+                  // builder: (context, child) {
+                  //   final textTheme = Theme.of(context).textTheme;
+                  //   return Theme(
+                  //     data: Theme.of(context).copyWith(
+                  //       textTheme: textTheme.apply().copyWith(
+                  //             titleLarge: textTheme.titleLarge!.apply(
+                  //               fontSizeFactor: state.titleTextScaleFactor,
+                  //             ),
+                  //             titleMedium: textTheme.titleMedium!.apply(
+                  //               fontSizeFactor: state.titleTextScaleFactor,
+                  //             ),
+                  //             titleSmall: textTheme.titleSmall!.apply(
+                  //               fontSizeFactor: state.titleTextScaleFactor,
+                  //             ),
+                  //             labelLarge: textTheme.labelLarge!.apply(
+                  //               fontSizeFactor: state.labelTextScaleFactor,
+                  //             ),
+                  //             labelMedium: textTheme.labelMedium!.apply(
+                  //               fontSizeFactor: state.labelTextScaleFactor,
+                  //             ),
+                  //             labelSmall: textTheme.labelSmall!.apply(
+                  //               fontSizeFactor: state.labelTextScaleFactor,
+                  //             ),
+                  //             bodyLarge: textTheme.bodyLarge!.apply(
+                  //               fontSizeFactor: state.bodyTextScaleFactor,
+                  //             ),
+                  //             bodyMedium: textTheme.bodyMedium!.apply(
+                  //               fontSizeFactor: state.bodyTextScaleFactor,
+                  //             ),
+                  //             bodySmall: textTheme.bodySmall!.apply(
+                  //               fontSizeFactor: state.bodyTextScaleFactor,
+                  //             ),
+                  //           ),
+                  //     ),
+                  //     child: child!,
+                  //   );
+                  // },
                   theme: ThemeData(
                     colorScheme:
                         (state.useDynamicColorScheme && lightDynamic != null)

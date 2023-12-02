@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/profile_page/account_switcher.dart';
 import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
+
+import '../../screens/profile_page/account_switcher.dart';
 
 export 'bloc/bloc.dart';
 

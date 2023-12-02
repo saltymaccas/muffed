@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
-import 'package:muffed/pages/home_page/screens/post_screen/post_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
@@ -116,9 +113,9 @@ class _CommentItemState extends State<CommentItem>
                         .state
                         .selectedItemIndex ==
                     0) {
-                  PostScreenRoute(postId: widget.comment.postId).push(context);
+                  // TODO: add navigation
                 } else {
-                  PostScreenRoute(postId: widget.comment.postId).go(context);
+                  // TODO: add navigation
                 }
               }
             },
@@ -171,9 +168,7 @@ class _CommentItemState extends State<CommentItem>
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  context.push(
-                                    '/home/person?id=${widget.comment.creatorId}',
-                                  );
+                                  // TODO: add navigation
                                 },
                                 child: Text(
                                   widget.comment.creatorName,
@@ -296,9 +291,7 @@ class _CommentItemState extends State<CommentItem>
                                   MuffedPopupMenuItem(
                                     title: 'Go to user',
                                     onTap: () {
-                                      context.push(
-                                        '/home/person?id=${widget.comment.creatorId}',
-                                      );
+                                      // TODO: add navigation
                                     },
                                   ),
                                   MuffedPopupMenuItem(
@@ -450,22 +443,7 @@ class _CommentItemState extends State<CommentItem>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (context
-                                                          .read<
-                                                              DynamicNavigationBarBloc>()
-                                                          .state
-                                                          .selectedItemIndex ==
-                                                      0) {
-                                                    CommunityScreenRouter(
-                                                      communityId: widget
-                                                          .comment.communityId,
-                                                    ).push(context);
-                                                  } else {
-                                                    CommunityScreenRouter(
-                                                      communityId: widget
-                                                          .comment.communityId,
-                                                    ).go(context);
-                                                  }
+                                                  // TODO: add navigation
                                                 },
                                                 child: Text(
                                                   widget.comment.communityName,

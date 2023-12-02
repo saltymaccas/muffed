@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
+import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_page.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/repo/server_repo.dart';
-
-import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
 
 class CreateCommentScreen extends StatelessWidget {
   const CreateCommentScreen({
@@ -48,7 +46,7 @@ class CreateCommentScreen extends StatelessWidget {
         child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
           listener: (context, state) {
             if (state.successfullyPosted) {
-              context.pop();
+              // TODO: add navigation
             }
           },
           builder: (context, state) {
@@ -65,20 +63,23 @@ class CreateCommentScreen extends StatelessWidget {
                       content: const Text('Exit while discarding changes?'),
                       actions: [
                         TextButton(
-                            onPressed: () {
-                              Navigator.pop(context, true);
-                            },
-                            child: const Text('Yes'),),
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          child: const Text('Yes'),
+                        ),
                         TextButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
-                                foregroundColor:
-                                    Theme.of(context).colorScheme.onPrimary,),
-                            onPressed: () {
-                              Navigator.pop(context, false);
-                            },
-                            child: const Text('No'),),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text('No'),
+                        ),
                       ],
                     );
                   },
@@ -94,16 +95,17 @@ class CreateCommentScreen extends StatelessWidget {
                     title: const Text('Create Comment'),
                     actions: [
                       IconButton(
-                          onPressed: () {
-                            context.read<CreateCommentBloc>().add(
-                                  Submitted(
-                                    postId: postId,
-                                    commentContents: textController.text,
-                                    commentId: parentId,
-                                  ),
-                                );
-                          },
-                          icon: const Icon(Icons.send),),
+                        onPressed: () {
+                          context.read<CreateCommentBloc>().add(
+                                Submitted(
+                                  postId: postId,
+                                  commentContents: textController.text,
+                                  commentId: parentId,
+                                ),
+                              );
+                        },
+                        icon: const Icon(Icons.send),
+                      ),
                     ],
                   ),
                   body: Column(

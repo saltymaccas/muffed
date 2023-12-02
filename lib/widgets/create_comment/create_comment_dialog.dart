@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
 import 'package:muffed/widgets/markdown_body.dart';
@@ -91,7 +90,7 @@ class CreateCommentDialog extends StatelessWidget {
         listener: (context, state) {
           // closes the dialog if the comment has been successfully posted
           if (state.successfullyPosted) {
-            context.pop();
+            // TODO: add navigation
             if (onSuccessfullySubmitted != null) {
               onSuccessfullySubmitted!.call();
             }
@@ -173,7 +172,7 @@ class CreateCommentDialog extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          context.pop();
+                          // TODO: add navigation
                         },
                         icon: const Icon(Icons.close),
                       ),
@@ -190,19 +189,7 @@ class CreateCommentDialog extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          context
-                            ..push(
-                              Uri(
-                                path: '/home/post/create_comment',
-                                queryParameters: {
-                                  'postId': postId.toString(),
-                                  if (parentId != null)
-                                    'parentCommentId': parentId.toString(),
-                                  'initialValue': textFieldController.text,
-                                },
-                              ).toString(),
-                            )
-                            ..pop();
+                          // TODO: add navigation
                         },
                         icon: const Icon(Icons.open_in_new),
                       ),

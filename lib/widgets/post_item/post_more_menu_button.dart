@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/router.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class MoreMenuButton extends StatelessWidget {
@@ -22,19 +19,12 @@ class MoreMenuButton extends StatelessWidget {
         MuffedPopupMenuItem(
           title: 'Go to community',
           onTap: () {
-            CommunityScreenRouter(
-              communityId: post.communityId,
-              communityName: post.communityName,
-            ).push(context);
+            // TODO: add navigation
           },
         ),
         MuffedPopupMenuItem(
           title: 'Go to user',
-          onTap: () {
-            context.push(
-              '/home/person?id=${post.creatorId}',
-            );
-          },
+          onTap: () {},
         ),
         if (post.body != null)
           MuffedPopupMenuItem(
@@ -67,15 +57,7 @@ class MoreMenuButton extends StatelessWidget {
             context.read<GlobalBloc>().getSelectedLemmyAccount()?.id)
           MuffedPopupMenuItem(
             title: 'Edit Post',
-            onTap: () {
-              context.pushNamed(
-                'create_post',
-                queryParameters: {},
-                extra: CreatePostRouteData(
-                  postToBeEdited: post,
-                ),
-              );
-            },
+            onTap: () {},
           ),
       ],
     );

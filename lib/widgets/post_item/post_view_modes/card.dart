@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
-import 'package:muffed/pages/home_page/screens/post_screen/post_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/markdown_body.dart';
@@ -16,7 +13,8 @@ import 'package:muffed/widgets/url_view.dart';
 /// Displays a Lemmy post in card format
 class CardLemmyPostItem extends StatelessWidget {
   ///
-  const CardLemmyPostItem(this.post, {
+  const CardLemmyPostItem(
+    this.post, {
     this.displayType = PostDisplayType.list,
     super.key,
   });
@@ -29,18 +27,12 @@ class CardLemmyPostItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // shows nothing if nsfw and show nsfw off
-    if (post.nsfw && !context
-        .read<GlobalBloc>()
-        .state
-        .showNsfw) {
+    if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
       return const SizedBox();
     }
 
     void openPost() {
-      PostScreenRoute(
-        postBloc: BlocProvider.of<PostItemBloc>(context),
-        post: post,
-      ).push(context);
+      // TODO: add navigation
     }
 
     return Card(
@@ -56,10 +48,7 @@ class CardLemmyPostItem extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      CommunityScreenRouter(
-                        communityId:
-                        post.communityId,
-                      ).push(context);
+                      // TODO: add navigation
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,55 +64,40 @@ class CardLemmyPostItem extends StatelessWidget {
                             ),
                             Text(
                               post.communityName,
-                              style: Theme
-                                  .of(context)
+                              style: Theme.of(context)
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                color:
-                                Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary,
-                              ),
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
                             ),
                             const SizedBox(
                               width: 8,
                             ),
                             GestureDetector(
-                              onTap: () {
-                                context
-                                    .push('/home/person?id=${post.creatorId}');
-                              },
+                              onTap: () {},
                               child: Text(
                                 post.creatorName,
-                                style: Theme
-                                    .of(context)
+                                style: Theme.of(context)
                                     .textTheme
                                     .labelLarge!
                                     .copyWith(
-                                  color:
-                                  Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .outline,
-                                ),
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
                               ),
                             ),
                           ],
                         ),
                         Text(
                           '${formattedPostedAgo(post.timePublished)} ago',
-                          style: Theme
-                              .of(context)
+                          style: Theme.of(context)
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .outline,
-                          ),
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
                         ),
                       ],
                     ),
@@ -133,10 +107,7 @@ class CardLemmyPostItem extends StatelessWidget {
                   ),
                   Text(
                     post.name,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
               ),
@@ -150,7 +121,7 @@ class CardLemmyPostItem extends StatelessWidget {
                         url: post.url!,
                         nsfw: post.nsfw,
                         imageFullScreenable:
-                        displayType == PostDisplayType.comments,
+                            displayType == PostDisplayType.comments,
                       ),
                     ],
                     if (post.body != '' && post.body != null) ...[
@@ -163,10 +134,7 @@ class CardLemmyPostItem extends StatelessWidget {
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .surface,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                           child: Padding(
                             padding: EdgeInsets.only(
@@ -174,7 +142,7 @@ class CardLemmyPostItem extends StatelessWidget {
                               left: 4,
                               right: 4,
                               bottom:
-                              displayType == PostDisplayType.list ? 0 : 4,
+                                  displayType == PostDisplayType.list ? 0 : 4,
                             ),
                             child: MuffedMarkdownBody(
                               data: post.body!,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/widgets/popup_menu/bloc/bloc.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 500);
@@ -16,7 +15,8 @@ const double _kMenuScreenPadding = 8;
 
 class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
   const MuffedPopupMenuExpandableItem({
-    required this.items, super.key,
+    required this.items,
+    super.key,
     this.title = 'Title',
   });
 
@@ -65,8 +65,9 @@ class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
                                       .read<MuffedPopupMenuBloc>()
                                       .add(BackPressed()),
                                   icon: const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Icon(Icons.arrow_back),),
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(Icons.arrow_back),
+                                  ),
                                 );
                               },
                             ),
@@ -92,16 +93,19 @@ class MuffedPopupMenuExpandableItem extends MuffedPopupMenuItem {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       AnimatedSwitcher(
-                          duration: _kMenuDuration,
-                          reverseDuration: _kMenuDuration,
-                          switchOutCurve: Curves.easeInOutCubic,
-                          switchInCurve: Curves.easeInOutCubic,
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                                scale: animation, child: child,);
-                          },
-                          child: const Icon(Icons.arrow_right),),
+                        duration: _kMenuDuration,
+                        reverseDuration: _kMenuDuration,
+                        switchOutCurve: Curves.easeInOutCubic,
+                        switchInCurve: Curves.easeInOutCubic,
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: child,
+                          );
+                        },
+                        child: const Icon(Icons.arrow_right),
+                      ),
                     ],
                   ),
                 ),
@@ -138,9 +142,7 @@ class MuffedPopupMenuItem extends StatelessWidget {
       builder: (context, state) {
         return ListTile(
           onTap: () {
-            if (shouldPopOnPressed) {
-              context.pop();
-            }
+            // TODO: add navigation
             if (onTap != null) {
               onTap!.call();
             }
@@ -373,12 +375,17 @@ class _MuffedPopupMenu extends StatelessWidget {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
 
     final CurveTween opacity = CurveTween(
-        curve: const Interval(0, 1.0 / 3.0, curve: Curves.easeInOutCubic),);
+      curve: const Interval(0, 1.0 / 3.0, curve: Curves.easeInOutCubic),
+    );
     final CurveTween width =
         CurveTween(curve: Interval(0, unit, curve: Curves.easeInOutCubic));
     final CurveTween height = CurveTween(
-        curve: Interval(0, unit * route.items.length,
-            curve: Curves.easeInOutCubic,),);
+      curve: Interval(
+        0,
+        unit * route.items.length,
+        curve: Curves.easeInOutCubic,
+      ),
+    );
 
     return BlocProvider(
       create: (context) => MuffedPopupMenuBloc(
@@ -491,7 +498,9 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
     final Offset originCenter = position.toRect(Offset.zero & size).center;
     final Iterable<Rect> subScreens =
         DisplayFeatureSubScreen.subScreensInBounds(
-            Offset.zero & size, avoidBounds,);
+      Offset.zero & size,
+      avoidBounds,
+    );
     final Rect subScreen = _closestScreen(subScreens, originCenter);
     return _fitInsideScreen(subScreen, childSize, wantedPosition);
   }

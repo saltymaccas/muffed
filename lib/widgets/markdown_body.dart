@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:go_router/go_router.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:muffed/widgets/image.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -52,12 +51,6 @@ class MuffedMarkdownBody extends StatelessWidget {
           if (url != null) {
             // check if link to community
             if (url.startsWith('!')) {
-              await context.push(
-                Uri(
-                  path: '/home/community/',
-                  queryParameters: {'name': url.substring(1)},
-                ).toString(),
-              );
               return;
             }
 
@@ -65,13 +58,6 @@ class MuffedMarkdownBody extends StatelessWidget {
             if (url.startsWith('@')) {
               // remove the '@'
               final username = url.substring(1);
-
-              await context.push(
-                Uri(
-                  path: '/home/person/',
-                  queryParameters: {'username': username},
-                ).toString(),
-              );
               return;
             }
 
@@ -88,23 +74,11 @@ class MuffedMarkdownBody extends StatelessWidget {
 
             // check if link to user
             if (path.startsWith('/u/')) {
-              await context.pushNamed(
-                'person',
-                queryParameters: {
-                  'username': '${spiltPath[2]}@$host',
-                },
-              );
               return;
             }
 
             // check if link to community
             if (path.startsWith('/c/')) {
-              await context.pushNamed(
-                'community',
-                queryParameters: {
-                  'name': '${spiltPath[2]}@$host',
-                },
-              );
               return;
             }
 
