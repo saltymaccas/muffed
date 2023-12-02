@@ -6,43 +6,32 @@ import 'package:muffed/widgets/page.dart';
 import 'models.dart';
 
 /// Builds the pages based on the state of the navigator
-class MRouterDelegate extends RouterDelegate<MPage>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<MPage> {
+class MRouterDelegate extends RouterDelegate<MPage<Object?>>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<MPage<Object?>> {
   MRouterDelegate(this.navigator);
 
   final MNavigator navigator;
 
   @override
-  GlobalKey<NavigatorState>? get navigatorKey => GlobalKey();
+  GlobalKey<NavigatorState>? get navigatorKey =>
+      navigator.state.currentBranch.key;
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: navigatorKey,
-      pages: navigator.state.currentBranch.pages,
-      onPopPage: _onPopPage,
-    );
-
-    BlocBuilder<MNavigator, MNavigatorState>(
+    return BlocBuilder<MNavigator, MNavigatorState>(
       bloc: navigator,
       builder: (context, state) {
-        return Navigator(
-          key: state.currentKey,
-          pages: state.currentBranch.pages,
-          onPopPage: _onPopPage,
+        return IndexedStack(
+          index: state.currentBranchIndex,
+          children: [
+            for (final branch in state.branches)
+              Navigator(
+                key: branch.key,
+                pages: List.of(branch.pages),
+                onPopPage: _onPopPage,
+              ),
+          ],
         );
-
-        //   IndexedStack(
-        //   index: state.currentBranch,
-        //   children: [
-        //     for (final branch in state.branches)
-        //       Navigator(
-        //         key: branch.key,
-        //         pages: List.of(branch.pages),
-        //         onPopPage: _onPopPage,
-        //       ),
-        //   ],
-        // );
       },
     );
   }
@@ -63,11 +52,11 @@ class MRouterDelegate extends RouterDelegate<MPage>
   /// called by router when it detects it may have changed because of a rebuild
   /// necessary for backward and forward buttons to work properly
   @override
-  MPage? get currentConfiguration => navigator.state.currentPage;
+  MPage<Object?>? get currentConfiguration => navigator.state.currentPage;
 
   /// What to do when new route gets pushed by operating system
   @override
-  Future<void> setNewRoutePath(MPage page) async {
+  Future<void> setNewRoutePath(MPage<Object?> page) async {
     navigator.push(page);
   }
 }

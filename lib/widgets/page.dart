@@ -8,13 +8,11 @@ abstract class MPage<T> extends Page<T> {
   /// build page content by overridng this function
   Widget build(BuildContext context);
 
-  Duration get transitionDuration => const Duration(milliseconds: 300);
-
   @override
   Route<T> createRoute(BuildContext context) {
     return MaterialPageRoute<T>(
       settings: this,
-      builder: (context) => build(context),
+      builder: build,
     );
   }
 }
