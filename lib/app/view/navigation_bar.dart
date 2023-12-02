@@ -6,8 +6,8 @@ import 'package:muffed/shorthands.dart';
 import '../router/models.dart';
 import '../router/navigator.dart';
 
-class DynamicNavigationItemConfig {
-  const DynamicNavigationItemConfig({
+class NavigationItemConfig {
+  const NavigationItemConfig({
     required this.icon,
     required this.selectedIcon,
   });
@@ -16,16 +16,16 @@ class DynamicNavigationItemConfig {
   final IconData selectedIcon;
 }
 
-class DynamicNavigationBar extends StatelessWidget {
-  const DynamicNavigationBar(this.itemConfigs, {super.key});
+class MNavigationBar extends StatelessWidget {
+  const MNavigationBar(this.itemConfigs, {super.key});
 
-  final List<DynamicNavigationItemConfig> itemConfigs;
+  final List<NavigationItemConfig> itemConfigs;
 
   List<Widget> generateItems(BuildContext context, int currentBranchIndex) {
     final items = <Widget>[];
     for (int i = 0; i < itemConfigs.length; i++) {
       items.add(
-        _DynamicNavigationBarItem(
+        _NavigationBarItem(
           isSelected: i == currentBranchIndex,
           icon: this.itemConfigs[i].icon,
           onPressed: () => context.switchBranch(i),
@@ -56,8 +56,8 @@ class DynamicNavigationBar extends StatelessWidget {
   }
 }
 
-class _DynamicNavigationBarItem extends StatelessWidget {
-  const _DynamicNavigationBarItem({
+class _NavigationBarItem extends StatelessWidget {
+  const _NavigationBarItem({
     required this.isSelected,
     required this.icon,
     required this.onPressed,

@@ -8,7 +8,7 @@ import '../../global_state/bloc.dart';
 import '../../repo/server_repo.dart';
 import '../../screens/inbox_page/inbox_page.dart';
 import '../router/router_delegate.dart';
-import 'dynamic_navigation_bar.dart';
+import 'navigation_bar.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -54,12 +54,12 @@ class _AppView extends StatelessWidget {
       );
 
   /// The navigation items, each relates to a branch
-  List<DynamicNavigationItemConfig> get navigationItems => [
-        const DynamicNavigationItemConfig(
+  List<NavigationItemConfig> get navigationItems => [
+        const NavigationItemConfig(
           icon: Icons.home_outlined,
           selectedIcon: Icons.home,
         ),
-        const DynamicNavigationItemConfig(
+        const NavigationItemConfig(
           icon: Icons.inbox_outlined,
           selectedIcon: Icons.inbox,
         ),
@@ -78,7 +78,7 @@ class _AppView extends StatelessWidget {
             builder: (context, child) {
               return Scaffold(
                 body: child,
-                bottomNavigationBar: DynamicNavigationBar(navigationItems),
+                bottomNavigationBar: MNavigationBar(navigationItems),
               );
             },
             title: 'Muffed',
