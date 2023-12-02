@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:muffed/router/navigator.dart';
+import 'package:flutter/material.dart';
 import 'package:muffed/widgets/page.dart';
+
+import 'navigator.dart';
 
 extension RouterExtentions on BuildContext {
   MNavigator get navigator => MNavigator.of(this);

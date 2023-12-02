@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../widgets/page.dart';
+import '../../widgets/page.dart';
 
 /// Stores the list of app branches and provides methods for manipulating them.
 ///

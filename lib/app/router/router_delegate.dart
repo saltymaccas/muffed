@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/router/navigator.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/widgets/page.dart';
 
 import 'models.dart';
+import 'navigator.dart';
 
-/// Builds the screen based on the state of the navigator
+/// Builds the nested screen based on the state of the navigator
 class MRouterDelegate extends RouterDelegate<MPage<Object?>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<MPage<Object?>> {
   MRouterDelegate(this.navigator);
@@ -23,19 +22,16 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
     return BlocBuilder<MNavigator, MNavigatorState>(
       bloc: navigator,
       builder: (context, state) {
-        return Scaffold(
-          bottomNavigationBar: DynamicNavigationBar(),
-          body: IndexedStack(
-            index: state.currentBranchIndex,
-            children: [
-              for (final branch in state.branches)
-                Navigator(
-                  key: branch.key,
-                  pages: List.of(branch.pages),
-                  onPopPage: _onPopPage,
-                ),
-            ],
-          ),
+        return IndexedStack(
+          index: state.currentBranchIndex,
+          children: [
+            for (final branch in state.branches)
+              Navigator(
+                key: branch.key,
+                pages: List.of(branch.pages),
+                onPopPage: _onPopPage,
+              ),
+          ],
         );
       },
     );
