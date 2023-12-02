@@ -24,14 +24,14 @@ class MNavigatorState extends Equatable {
 
   bool get canPop => branches[currentBranchIndex].canPop;
 
-  MNavigatorState changeCurrentBranch(int newBranch) {
+  MNavigatorState copyWithDifferentBranch(int newBranch) {
     return MNavigatorState(
       branches: branches,
       currentBranchIndex: newBranch,
     );
   }
 
-  MNavigatorState pop() {
+  MNavigatorState copyWithPop() {
     final newBranches = branches;
     newBranches[currentBranchIndex] = newBranches[currentBranchIndex].pop();
     return MNavigatorState(
@@ -40,7 +40,7 @@ class MNavigatorState extends Equatable {
     );
   }
 
-  MNavigatorState push(MPage page) {
+  MNavigatorState copyWithPush(MPage page) {
     final newBranches = branches;
     newBranches[currentBranchIndex] =
         newBranches[currentBranchIndex].push(page);

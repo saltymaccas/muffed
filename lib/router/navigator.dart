@@ -8,14 +8,14 @@ class MNavigator extends Cubit<MNavigatorState> {
   MNavigator(super.initialState);
 
   void switchBranch(int newBranch) {
-    emit(state.changeCurrentBranch(newBranch));
+    emit(state.copyWithDifferentBranch(newBranch));
   }
 
   void pop() {
-    emit(state.pop());
+    emit(state.copyWithPop());
   }
 
   void push(MPage page) {
-    emit(state.push(page));
+    emit(state.copyWithPush(page));
   }
 }
