@@ -52,12 +52,14 @@ class _AppView extends StatelessWidget {
       );
 
   /// The navigation items, each relates to a branch
-  List<NavigationItemConfig> get navigationItems => [
-        const NavigationItemConfig(
+  List<NavigationBarItem> get navigationItems => [
+        NavigationBarItem(
+          relatedBranchIndex: 0,
           icon: Icons.home_outlined,
           selectedIcon: Icons.home,
         ),
-        const NavigationItemConfig(
+        NavigationBarItem(
+          relatedBranchIndex: 1,
           icon: Icons.inbox_outlined,
           selectedIcon: Icons.inbox,
         ),

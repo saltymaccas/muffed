@@ -8,11 +8,11 @@ class Branch extends Equatable {
       : key = key ?? GlobalKey();
 
   /// The stack of pages
-  final List<MPage> pages;
+  final List<MPage<Object?>> pages;
 
   final GlobalKey<NavigatorState> key;
 
-  MPage get top => pages.last;
+  MPage<Object?> get top => pages.last;
 
   int get length => pages.length;
 
@@ -20,12 +20,22 @@ class Branch extends Equatable {
 
   Branch pop() {
     if (canPop) pages.removeLast();
-    return Branch(pages, key: key);
+    return copyWith(pages: pages);
   }
 
-  Branch push(MPage page) {
+  Branch push(MPage<Object?> page) {
     pages.add(page);
-    return Branch(pages, key: key);
+    return copyWith(pages: pages);
+  }
+
+  Branch copyWith({
+    List<MPage<Object?>>? pages,
+    GlobalKey<NavigatorState>? key,
+  }) {
+    return Branch(
+      pages ?? this.pages,
+      key: key ?? this.key,
+    );
   }
 
   @override

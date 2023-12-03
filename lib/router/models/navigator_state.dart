@@ -31,7 +31,7 @@ class MNavigatorState extends Equatable {
   }
 
   MNavigatorState copyWithPop() {
-    final newBranches = branches;
+    final newBranches = copyBranches();
     newBranches[currentBranchIndex] = newBranches[currentBranchIndex].pop();
     return MNavigatorState(
       branches: newBranches,
@@ -39,13 +39,31 @@ class MNavigatorState extends Equatable {
     );
   }
 
-  MNavigatorState copyWithPush(MPage page) {
-    final newBranches = branches;
+  MNavigatorState copyWithPush(MPage<Object?> page) {
+    final newBranches = copyBranches();
     newBranches[currentBranchIndex] =
         newBranches[currentBranchIndex].push(page);
+    return copyWith(branches: newBranches);
+  }
+
+  /// Deep copies the branches
+  List<Branch> copyBranches() {
+    return List.generate(
+      branches.length,
+      (index) => Branch(
+        List.of(branches[index].pages),
+        key: branches[index].key,
+      ),
+    );
+  }
+
+  MNavigatorState copyWith({
+    List<Branch>? branches,
+    int? currentBranchIndex,
+  }) {
     return MNavigatorState(
-      branches: newBranches,
-      currentBranchIndex: currentBranchIndex,
+      branches: branches ?? this.branches,
+      currentBranchIndex: currentBranchIndex ?? this.currentBranchIndex,
     );
   }
 

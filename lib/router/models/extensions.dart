@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/router/models/page.dart';
-
-import '../navigator/navigator.dart';
+import 'package:muffed/router/router.dart';
 
 extension RouterExtentions on BuildContext {
   MNavigator get navigator => MNavigator.of(this);

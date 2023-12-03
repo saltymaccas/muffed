@@ -1,6 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:muffed/shorthands.dart';
+import 'package:muffed/theme/theme.dart';
 import 'package:muffed/utils/url.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/image.dart';

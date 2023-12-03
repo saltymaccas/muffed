@@ -27,7 +27,7 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
                 controller: MaterialApp.createMaterialHeroController(),
                 child: Navigator(
                   key: branch.key,
-                  pages: List.of(branch.pages),
+                  pages: branch.pages,
                   onPopPage: _onPopPage,
                 ),
               ),
