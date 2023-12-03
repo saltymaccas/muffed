@@ -2,8 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-
-import '../content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 part 'event.dart';
 part 'state.dart';

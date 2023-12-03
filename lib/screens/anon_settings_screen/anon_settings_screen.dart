@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/muffed_page.dart';
 
 import 'bloc/bloc.dart';
 
@@ -41,40 +40,36 @@ class AnonSettingsScreen extends StatelessWidget {
             }
           }
 
-          return MuffedPage(
-            error: state.error,
-            isLoading: state.isLoading,
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Anon Settings')),
-              body: Column(
-                children: [
-                  SizedBox(
-                    height: 200,
-                    child: siteAvatar,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      controller: textFieldController,
-                      onChanged: (text) {
-                        context
-                            .read<AnonSettingsBloc>()
-                            .add(UrlTextFieldChanged(text));
-                      },
-                      decoration: const InputDecoration(
-                        filled: true,
-                        label: Text('Home Lemmy server'),
-                      ),
+          return Scaffold(
+            appBar: AppBar(title: const Text('Anon Settings')),
+            body: Column(
+              children: [
+                SizedBox(
+                  height: 200,
+                  child: siteAvatar,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: TextField(
+                    controller: textFieldController,
+                    onChanged: (text) {
+                      context
+                          .read<AnonSettingsBloc>()
+                          .add(UrlTextFieldChanged(text));
+                    },
+                    decoration: const InputDecoration(
+                      filled: true,
+                      label: Text('Home Lemmy server'),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AnonSettingsBloc>().add(SaveRequested());
-                    },
-                    child: const Text('Save'),
-                  ),
-                ],
-              ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<AnonSettingsBloc>().add(SaveRequested());
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
             ),
           );
         },

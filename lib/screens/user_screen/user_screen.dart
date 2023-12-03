@@ -7,8 +7,7 @@ import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/muffed_page.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post_item/view/post_view.dart';
 
 import 'bloc/bloc.dart';
 
@@ -42,30 +41,26 @@ class UserScreen extends StatelessWidget {
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {
           final blocContext = context;
-          return MuffedPage(
-            isLoading: state.loading,
-            error: state.error,
-            child: DefaultTabController(
-              length: 3,
-              child: Builder(
-                builder: (context) {
-                  if (state.status == UserStatus.loading) {
-                    return const _UserScreenLoading();
-                  }
-                  if (state.status == UserStatus.failure) {
-                    return const _UserScreenFailure();
-                  }
-                  if (state.status == UserStatus.success) {
-                    return _UserScreenSuccess(
-                      user: state.user!,
-                      posts: state.posts,
-                      comments: state.comments,
-                      isLoading: state.loading,
-                    );
-                  }
-                  return const _UserScreenInitial();
-                },
-              ),
+          return DefaultTabController(
+            length: 3,
+            child: Builder(
+              builder: (context) {
+                if (state.status == UserStatus.loading) {
+                  return const _UserScreenLoading();
+                }
+                if (state.status == UserStatus.failure) {
+                  return const _UserScreenFailure();
+                }
+                if (state.status == UserStatus.success) {
+                  return _UserScreenSuccess(
+                    user: state.user!,
+                    posts: state.posts,
+                    comments: state.comments,
+                    isLoading: state.loading,
+                  );
+                }
+                return const _UserScreenInitial();
+              },
             ),
           );
         },
@@ -212,7 +207,7 @@ class _UserScreenSuccess extends StatelessWidget {
                     height: _headerMinHeight,
                   );
                 }
-                return PostItem(
+                return PostView(
                   post: posts[index - 1],
                 );
               },

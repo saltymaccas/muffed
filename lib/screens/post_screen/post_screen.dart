@@ -5,7 +5,6 @@ import 'package:muffed/utils/comments.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/loading.dart';
-import 'package:muffed/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
@@ -77,7 +76,7 @@ class PostScreen extends StatelessWidget {
                       floating: true,
                     ),
                     SliverToBoxAdapter(
-                      child: PostItem(
+                      child: PostWidget(
                         postId: postId,
                         post: post,
                         bloc: postBloc,

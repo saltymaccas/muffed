@@ -1,14 +1,12 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/app/app.dart';
-import 'package:muffed/screens/home_page/home_page.dart';
-
-import '../../global_state/bloc.dart';
-import '../../repo/server_repo.dart';
-import '../../screens/inbox_page/inbox_page.dart';
-import '../router/router_delegate.dart';
-import 'navigation_bar.dart';
+import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/navigation_bar/navigation_bar.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/router.dart';
+import 'package:muffed/screens/home/home.dart';
+import 'package:muffed/screens/inbox_page/inbox_page.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -44,11 +42,11 @@ class _AppView extends StatelessWidget {
         branches: [
           Branch(
             [HomePage()],
-            key: GlobalKey<NavigatorState>(),
+            key: GlobalKey<NavigatorState>(debugLabel: 'Home'),
           ),
           Branch(
             [InboxPage()],
-            key: GlobalKey<NavigatorState>(),
+            key: GlobalKey<NavigatorState>(debugLabel: 'Inbox'),
           ),
         ],
       );

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/error.dart';
-import 'package:muffed/widgets/muffed_page.dart';
 import 'package:muffed/widgets/nothing_to_show.dart';
 
 import 'bloc/bloc.dart';
@@ -34,73 +33,68 @@ class RepliesScreen extends StatelessWidget {
                   !state.showAll &&
                       state.replies.every((element) => element.read);
 
-              return MuffedPage(
-                isLoading: state.isLoading,
-                error: state.error,
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 500 &&
-                        scrollInfo.metrics.axis == Axis.vertical &&
-                        !nothingToShow) {
-                      context.read<RepliesBloc>().add(ReachedEndOfScroll());
-                    }
-                    return true;
+              return NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 500 &&
+                      scrollInfo.metrics.axis == Axis.vertical &&
+                      !nothingToShow) {
+                    context.read<RepliesBloc>().add(ReachedEndOfScroll());
+                  }
+                  return true;
+                },
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<RepliesBloc>().add(Refresh());
+                    await context
+                        .read<RepliesBloc>()
+                        .stream
+                        .firstWhere((element) {
+                      if (element.isRefreshing == false) {
+                        return true;
+                      }
+                      return false;
+                    });
                   },
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<RepliesBloc>().add(Refresh());
-                      await context
-                          .read<RepliesBloc>()
-                          .stream
-                          .firstWhere((element) {
-                        if (element.isRefreshing == false) {
-                          return true;
-                        }
-                        return false;
-                      });
-                    },
-                    child: nothingToShow
-                        ? const Center(
-                            child:
-                                SingleChildScrollView(child: NothingToShow()),
-                          )
-                        : ListView.builder(
-                            key: ValueKey(state.showAll),
-                            itemCount: state.replies.length,
-                            itemBuilder: (context, index) {
-                              return AnimatedSize(
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOutCubic,
-                                child: Container(
-                                  decoration: const BoxDecoration(),
-                                  clipBehavior: Clip.hardEdge,
-                                  height: (state.replies[index].read &&
-                                          !state.showAll)
-                                      ? 0
-                                      : null,
-                                  child: CommentItem(
-                                    key: ValueKey(state.replies[index].id),
-                                    markedAsReadCallback: () {
-                                      context.read<RepliesBloc>().add(
-                                            MarkAsReadToggled(
-                                              id: state.replies[index].id,
-                                              index: index,
-                                            ),
-                                          );
-                                    },
-                                    read: state.replies[index].read,
-                                    comment: state.replies[index].comment,
-                                    isOrphan: true,
-                                    displayMode: CommentItemDisplayMode.single,
-                                    sortType: state.sortType,
-                                    ableToLoadChildren: false,
-                                  ),
+                  child: nothingToShow
+                      ? const Center(
+                          child: SingleChildScrollView(child: NothingToShow()),
+                        )
+                      : ListView.builder(
+                          key: ValueKey(state.showAll),
+                          itemCount: state.replies.length,
+                          itemBuilder: (context, index) {
+                            return AnimatedSize(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutCubic,
+                              child: Container(
+                                decoration: const BoxDecoration(),
+                                clipBehavior: Clip.hardEdge,
+                                height: (state.replies[index].read &&
+                                        !state.showAll)
+                                    ? 0
+                                    : null,
+                                child: CommentItem(
+                                  key: ValueKey(state.replies[index].id),
+                                  markedAsReadCallback: () {
+                                    context.read<RepliesBloc>().add(
+                                          MarkAsReadToggled(
+                                            id: state.replies[index].id,
+                                            index: index,
+                                          ),
+                                        );
+                                  },
+                                  read: state.replies[index].read,
+                                  comment: state.replies[index].comment,
+                                  isOrphan: true,
+                                  displayMode: CommentItemDisplayMode.single,
+                                  sortType: state.sortType,
+                                  ableToLoadChildren: false,
                                 ),
-                              );
-                            },
-                          ),
-                  ),
+                              ),
+                            );
+                          },
+                        ),
                 ),
               );
             } else {
