@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/home/home.dart';
+import 'package:muffed/pages/search/search_dialog.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/page.dart';
-import 'package:muffed/screens/home/home.dart';
-import 'package:muffed/screens/search/search_dialog.dart';
 import 'package:muffed/widgets/content_scroll_view/view/content_scroll_view.dart';
 
 class HomePage extends MPage<void> {

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/navigation_bar/navigation_bar.dart';
+import 'package:muffed/pages/home/home.dart';
+import 'package:muffed/pages/inbox_page/inbox_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/screens/home/home.dart';
-import 'package:muffed/screens/inbox_page/inbox_page.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -53,12 +53,12 @@ class _AppView extends StatelessWidget {
 
   /// The navigation items, each relates to a branch
   List<NavigationBarItem> get navigationItems => [
-        NavigationBarItem(
+        const NavigationBarItem(
           relatedBranchIndex: 0,
           icon: Icons.home_outlined,
           selectedIcon: Icons.home,
         ),
-        NavigationBarItem(
+        const NavigationBarItem(
           relatedBranchIndex: 1,
           icon: Icons.inbox_outlined,
           selectedIcon: Icons.inbox,

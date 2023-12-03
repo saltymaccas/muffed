@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
@@ -6,7 +7,7 @@ import 'package:muffed/theme/theme.dart';
 final _log = Logger('NavigationBarItem');
 
 class NavigationBarItem extends StatelessWidget {
-  NavigationBarItem({
+  const NavigationBarItem({
     required this.relatedBranchIndex,
     required this.icon,
     IconData? selectedIcon,
@@ -19,7 +20,7 @@ class NavigationBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MPage<Object?> currentPage = MNavigator.of(context).state.currentPage;
+    final MNavigator navigator = MNavigator.of(context);
 
     return Material(
       clipBehavior: Clip.hardEdge,
@@ -48,8 +49,12 @@ class NavigationBarItem extends StatelessWidget {
             },
             visualDensity: VisualDensity.compact,
           ),
-          if (currentPage.pageActions != null)
-            _NavigationBarItemActions(pageActions: currentPage.pageActions!),
+          _NavigationBarItemActions(
+            pageActions:
+                navigator.state.branches[relatedBranchIndex].top.pageActions,
+            showActions: MNavigator.of(context).state.currentBranchIndex ==
+                relatedBranchIndex,
+          ),
         ],
       ),
     );
@@ -57,20 +62,74 @@ class NavigationBarItem extends StatelessWidget {
 }
 
 class _NavigationBarItemActions extends StatelessWidget {
-  const _NavigationBarItemActions({required this.pageActions});
+  const _NavigationBarItemActions({this.pageActions, this.showActions = false});
 
-  final PageActions pageActions;
+  final PageActions? pageActions;
+  final bool showActions;
+
+  static const _animDur = Duration(milliseconds: 500);
+  static const _animCurve = Curves.easeOutCubic;
+  static const _animInterval = 200;
+
+  List<Widget> attachAnimations(List<Widget> widgets) => List.generate(
+        widgets.length,
+        (index) => widgets[index]
+            .animate(autoPlay: true)
+            .slideY(
+              duration: _animDur,
+              curve: _animCurve,
+              begin: 3,
+              delay: Duration(milliseconds: _animInterval * index),
+              end: 0,
+            )
+            .fadeIn(
+              duration: _animDur,
+              begin: 0,
+              curve: _animCurve,
+              delay: Duration(milliseconds: _animInterval * index),
+            ),
+      );
 
   @override
   Widget build(BuildContext context) {
-    _log.info('Building page actions: ${pageActions.actions}');
-    return ListenableBuilder(
-      listenable: pageActions,
-      builder: (context, child) {
-        return Row(
-          children: pageActions.actions,
-        );
-      },
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 500),
+      alignment: Alignment.centerLeft,
+      curve: Curves.easeInOutCubic,
+      child: IntrinsicHeight(
+        child: Builder(
+          builder: (context) {
+            if (showActions && pageActions != null) {
+              return ListenableBuilder(
+                listenable: pageActions!,
+                builder: (context, child) {
+                  return Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Container(
+                          width: 2,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                      ).animate().fade(
+                            duration: _animDur,
+                            curve: _animCurve,
+                            begin: 0,
+                          ),
+                      ...attachAnimations(pageActions!.actions),
+                    ],
+                  );
+                },
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
+        ),
+      ),
     );
   }
 }

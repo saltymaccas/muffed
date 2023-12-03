@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/inbox_page/replies_screen/replies_screen.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/page.dart';
-import 'package:muffed/screens/inbox_page/replies_screen/replies_screen.dart';
 
 import 'mentions_screen/bloc/bloc.dart' as m;
 import 'mentions_screen/mentions_screen.dart';
