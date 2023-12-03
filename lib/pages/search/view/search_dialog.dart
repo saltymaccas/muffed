@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/models/extensions.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
 void openSearchDialog(BuildContext context) {
@@ -61,7 +63,11 @@ class _SearchDialog extends StatelessWidget {
                               ),
                             InkWell(
                               onTap: () {
-                                // TODO: add navigation
+                                context.push(
+                                  CommunityPage(
+                                    community: state.communities[index],
+                                  ),
+                                );
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -132,7 +138,8 @@ class _SearchDialog extends StatelessWidget {
                       suffixIcon: IconButton(
                         onPressed: () {
                           textFocusNode.unfocus();
-                          // TODO: add navigation
+                          context.pop();
+                          context.push(SearchPage(initialState: state));
                         },
                         icon: const Icon(Icons.open_in_new),
                       ),

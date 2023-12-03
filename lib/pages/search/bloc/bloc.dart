@@ -1,10 +1,13 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
 part 'state.dart';
+
+final _log = Logger('SearchBloc');
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ///
@@ -28,7 +31,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final search = await repo.lemmyRepo.search(
             query: event.searchQuery,
             sortType: state.sortType,
-            searchType: LemmySearchType.all,
             communityId: state.communityId,
           );
 
@@ -43,9 +45,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               pagesLoaded: 1,
             ),
           );
-        } catch (err) {
+        } catch (err, stackTrace) {
           emit(state.copyWith(isLoading: false, error: err));
-          rethrow;
+          _log
+            ..severe('Error: $err')
+            ..severe('StackTrace: $stackTrace');
         }
       },
       transformer: restartable(),
@@ -73,7 +77,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               persons: search.lemmyPersons,
             ),
           );
-        } catch (err) {
+        } catch (err, stackTrace) {
           emit(
             state.copyWith(
               isLoading: false,
@@ -81,6 +85,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               error: err,
             ),
           );
+          _log
+            ..severe('Error: $err')
+            ..severe('StackTrace: $stackTrace');
         }
       },
       transformer: restartable(),
@@ -113,13 +120,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               ],
             ),
           );
-        } catch (err) {
+        } catch (err, stackTrace) {
           emit(
             state.copyWith(
               isLoading: false,
               error: err,
             ),
           );
+          _log
+            ..severe('Error: $err')
+            ..severe('StackTrace: $stackTrace');
         }
       },
       transformer: droppable(),
@@ -132,27 +142,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       try {
         add(SearchQueryChanged(searchQuery: state.searchQuery));
-      } catch (err) {
+      } catch (err, stackTrace) {
         emit(
           state.copyWith(
             communityName: communityName,
             communityId: communityId,
           ),
         );
+        _log
+          ..severe('Error: $err')
+          ..severe('StackTrace: $stackTrace');
       }
     });
   }
 
   final ServerRepo repo;
-
-  @override
-  void onChange(Change<SearchState> change) {
-    super.onChange(change);
-  }
-
-  @override
-  void onTransition(Transition<SearchEvent, SearchState> transition) {
-    super.onTransition(transition);
-    print(transition);
-  }
 }

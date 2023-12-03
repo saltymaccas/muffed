@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
@@ -8,17 +9,22 @@ import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
+/// A full screen page for searching for communities, posts, comments and users.
 class SearchPage extends MPage<void> {
-  SearchPage(
+  SearchPage({
     this.searchQuery,
     this.initialState,
     this.communityId,
     this.communityName,
-  ) : super(pageActions: PageActions([]));
+  }) : super(pageActions: PageActions([]));
 
+  /// The initial search query
   final String? searchQuery;
 
+  /// The name of the community to search in
   final String? communityName;
+
+  /// The ID of the community to search in
   final int? communityId;
 
   final SearchState? initialState;
@@ -50,9 +56,7 @@ class SearchPage extends MPage<void> {
 
 class _SearchView extends StatelessWidget {
   /// Creates a [SearchPage]
-  const _SearchView({
-    super.key,
-  });
+  const _SearchView();
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +83,6 @@ class _SearchView extends StatelessWidget {
         showErrorSnackBar(context, error: state.error);
       },
       builder: (context, state) {
-        final blocContext = context;
-
         return Scaffold(
           body: SafeArea(
             child: DefaultTabController(
@@ -142,7 +144,11 @@ class _SearchView extends StatelessWidget {
 
                                     return InkWell(
                                       onTap: () {
-                                        // TODO: add navigation
+                                        context.push(
+                                          CommunityPage(
+                                            community: community,
+                                          ),
+                                        );
                                       },
                                       child: Column(
                                         children: [
