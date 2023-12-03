@@ -37,10 +37,13 @@ class PostWidget extends StatelessWidget {
     } else {
       return BlocProvider(
         create: (context) => PostItemBloc(
-            repo: context.read<ServerRepo>(),
-            globalBloc: context.read<GlobalBloc>(),
-            post: post,
-            postId: postId),
+          repo: context.read<ServerRepo>(),
+          globalBloc: context.read<GlobalBloc>(),
+          post: post,
+          postId: postId,
+        )..add(
+            Initialize(),
+          ),
         child: PostView(form: form, displayType: displayType),
       );
     }

@@ -858,7 +858,7 @@ class LemmyPerson extends Equatable {
   }
 
   final String actorId;
-  final bool admin;
+  final bool? admin;
   final String? avatar;
   final DateTime? banExpires;
   final bool banned;

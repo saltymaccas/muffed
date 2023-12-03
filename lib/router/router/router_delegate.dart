@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../models/models.dart';
-import '../navigator/navigator.dart';
+import 'package:muffed/router/router.dart';
 
 /// Builds the nested screen based on the state of the navigator
 class MRouterDelegate extends RouterDelegate<MPage<Object?>>

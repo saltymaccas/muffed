@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post_item/view/post_view.dart';
+import 'package:muffed/widgets/post_item/post_item.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
 import 'bloc/bloc.dart';
@@ -268,7 +268,7 @@ class SearchScreen extends StatelessWidget {
                                   controller: postsScrollController,
                                   itemCount: state.posts.length,
                                   itemBuilder: (context, index) {
-                                    return PostView(post: state.posts[index]);
+                                    return PostWidget(post: state.posts[index]);
                                   },
                                 ),
 

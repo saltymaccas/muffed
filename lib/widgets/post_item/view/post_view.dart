@@ -8,33 +8,24 @@ import 'package:skeletonizer/skeletonizer.dart';
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
 class PostView extends StatefulWidget {
-  PostView({
-    this.post,
-    this.postId,
-    this.bloc,
+  const PostView({
     PostViewForm? form,
     PostDisplayType? displayType,
+    super.key,
   })  : skeletonize = false,
         form = form ?? PostViewForm.card,
-        displayType = displayType ?? PostDisplayType.list,
-        super(key: ValueKey(post));
+        displayType = displayType ?? PostDisplayType.list;
 
   /// Shows a skeleton post, used as placeholder when posts are loading
   const PostView.skeleton({
     this.form = PostViewForm.card,
     this.displayType = PostDisplayType.list,
     super.key,
-  })  : skeletonize = true,
-        postId = null,
-        post = null,
-        bloc = null;
+  }) : skeletonize = true;
 
   final bool skeletonize;
-  final int? postId;
-  final LemmyPost? post;
   final PostViewForm form;
   final PostDisplayType displayType;
-  final PostItemBloc? bloc;
 
   @override
   State<PostView> createState() => _PostViewState();
