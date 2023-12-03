@@ -280,11 +280,11 @@ class LemmyComment extends Equatable {
     required this.upVotes,
     required this.downVotes,
     required this.score,
-    required this.hotRank,
     required this.postTitle,
     required this.communityName,
     required this.communityId,
     required this.postCreatorId,
+    this.hotRank,
     this.myVote = LemmyVoteType.none,
   });
 
@@ -335,7 +335,8 @@ class LemmyComment extends Equatable {
   final int score;
   final LemmyVoteType myVote;
 
-  final int hotRank;
+  // TODO: see if still in api, bc the api seems to not return it
+  final int? hotRank;
 
   int getLevel() => path.length;
 
