@@ -7,17 +7,17 @@ import 'package:muffed/repo/server_repo.dart';
 part 'event.dart';
 part 'state.dart';
 
-final _log = Logger('CommentScreenBloc');
+final _log = Logger('PostPageBloc');
 
 /// The bloc for the content screen
-class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
+class PostPageBloc extends Bloc<PostPageEvent, PostPageState> {
   /// Initialize
-  PostScreenBloc({required this.repo, int? id, LemmyPost? post})
+  PostPageBloc({required this.repo, int? id, LemmyPost? post})
       : assert(id != null || post != null, 'No post provided'),
         postId = id ?? post!.id,
-        super(const PostScreenState(status: PostScreenStatus.initial)) {
+        super(const PostPageState(status: PostScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
-      emit(const PostScreenState(status: PostScreenStatus.loading));
+      emit(const PostPageState(status: PostScreenStatus.loading));
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
@@ -26,7 +26,7 @@ class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
         final comments = newComments;
 
         emit(
-          PostScreenState(
+          PostPageState(
             status: PostScreenStatus.success,
             comments: comments,
             isLoading: false,

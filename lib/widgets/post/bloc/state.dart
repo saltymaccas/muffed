@@ -3,7 +3,11 @@ part of 'bloc.dart';
 enum PostStatus { initial, loading, success, failure }
 
 class PostState extends Equatable {
-  const PostState({this.post, this.status = PostStatus.initial, this.error});
+  const PostState({this.post, this.status = PostStatus.initial, this.error})
+      : assert(
+          status != PostStatus.success || post != null,
+          'Post cannot be null when status is success',
+        );
 
   final PostStatus status;
   final LemmyPost? post;

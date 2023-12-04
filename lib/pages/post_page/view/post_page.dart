@@ -24,7 +24,7 @@ class PostPage extends MPage<void> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => PostScreenBloc(
+          create: (context) => PostPageBloc(
             repo: context.read<ServerRepo>(),
             id: postId,
             post: post,
@@ -52,7 +52,7 @@ class _PostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<PostScreenBloc, PostScreenState>(
+      body: BlocConsumer<PostPageBloc, PostPageState>(
         listener: (context, state) {
           if (state.error != null) {
             showErrorSnackBar(context, error: state.error);
@@ -64,17 +64,14 @@ class _PostView extends StatelessWidget {
               if (scrollInfo.metrics.pixels >=
                       scrollInfo.metrics.maxScrollExtent &&
                   state.isLoading == false) {
-                context.read<PostScreenBloc>().add(ReachedNearEndOfScroll());
+                context.read<PostPageBloc>().add(ReachedNearEndOfScroll());
               }
               return true;
             },
             child: RefreshIndicator(
               onRefresh: () async {
-                context.read<PostScreenBloc>().add(PullDownRefresh());
-                await context
-                    .read<PostScreenBloc>()
-                    .stream
-                    .firstWhere((element) {
+                context.read<PostPageBloc>().add(PullDownRefresh());
+                await context.read<PostPageBloc>().stream.firstWhere((element) {
                   if (element.isRefreshing == false) {
                     return true;
                   }
@@ -179,7 +176,7 @@ class _CommentScreenFailure extends StatelessWidget {
       child: ErrorComponentTransparent(
         error: error,
         retryFunction: () {
-          context.read<PostScreenBloc>().add(InitializeEvent());
+          context.read<PostPageBloc>().add(InitializeEvent());
         },
       ),
     );

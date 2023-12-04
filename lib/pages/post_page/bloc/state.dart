@@ -2,9 +2,9 @@ part of 'bloc.dart';
 
 enum PostScreenStatus { initial, loading, success, failure }
 
-class PostScreenState extends Equatable {
+class PostPageState extends Equatable {
   ///
-  const PostScreenState({
+  const PostPageState({
     required this.status,
     this.comments,
     this.pagesLoaded = 0,
@@ -46,7 +46,7 @@ class PostScreenState extends Equatable {
         sortType,
       ];
 
-  PostScreenState copyWith({
+  PostPageState copyWith({
     bool? isRefreshing,
     Object? error,
     bool? reachedEnd,
@@ -56,7 +56,7 @@ class PostScreenState extends Equatable {
     int? pagesLoaded,
     LemmyCommentSortType? sortType,
   }) {
-    return PostScreenState(
+    return PostPageState(
       isRefreshing: isRefreshing ?? this.isRefreshing,
       error: error,
       reachedEnd: reachedEnd ?? this.reachedEnd,

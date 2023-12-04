@@ -11,29 +11,15 @@ import 'package:muffed/widgets/post/post_widget.dart';
 import 'package:muffed/widgets/url_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-abstract class PostViewForm extends StatelessWidget {
-  const PostViewForm(this.post, {this.openPost, this.displayType, super.key});
-
-  factory PostViewForm.loading() =>
-
-
-  final LemmyPost? post;
-  final void Function()? openPost;
-  final PostDisplayType? displayType;
-
-  @override
-  Widget build(BuildContext context);
-}
-
 /// Displays a Lemmy post in card format
-class PostViewCard extends PostViewForm {
+class PostViewCard extends StatelessWidget {
   ///
   const PostViewCard(
     this.post, {
     this.openPost,
     PostDisplayType? displayType,
     super.key,
-  }) : displayType = displayType ?? PostDisplayType.list, super(post, displayType: displayType);
+  }) : displayType = displayType ?? PostDisplayType.list;
 
   factory PostViewCard.loading({PostDisplayType? displayType}) =>
       _PostCardViewLoading(
