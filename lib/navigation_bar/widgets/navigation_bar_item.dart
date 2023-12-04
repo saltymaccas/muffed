@@ -93,7 +93,7 @@ class _NavigationBarItemActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSize(
-      duration: const Duration(milliseconds: 500),
+      duration: _animDur,
       alignment: Alignment.centerLeft,
       curve: Curves.easeInOutCubic,
       child: IntrinsicHeight(
@@ -105,20 +105,21 @@ class _NavigationBarItemActions extends StatelessWidget {
                 builder: (context, child) {
                   return Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Container(
-                          width: 2,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outline,
+                      if (pageActions!.actions.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Container(
+                            width: 2,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
                           ),
-                        ),
-                      ).animate().fade(
-                            duration: _animDur,
-                            curve: _animCurve,
-                            begin: 0,
-                          ),
+                        ).animate().fade(
+                              duration: _animDur,
+                              curve: _animCurve,
+                              begin: 0,
+                            ),
                       ...attachAnimations(pageActions!.actions),
                     ],
                   );

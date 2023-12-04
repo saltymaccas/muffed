@@ -2,35 +2,81 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/models/models.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CommunityInfoScreen extends StatelessWidget {
-  const CommunityInfoScreen({required this.bloc, super.key});
+class CommunityInfoPage extends MPage<void> {
+  CommunityInfoPage({
+    int? communityId,
+    String? communityName,
+    this.bloc,
+    this.community,
+  })  : communityId = communityId ?? community?.id,
+        communityName = communityName ?? community?.name,
+        assert(
+          communityId != null ||
+              communityName != null ||
+              community != null ||
+              bloc != null,
+          'No community defined',
+        ),
+        super(pageActions: PageActions([]));
 
-  final CommunityScreenBloc bloc;
+  /// The community ID
+  final int? communityId;
+
+  /// The community name
+  final String? communityName;
+
+  /// The community object which contains the community information.
+  ///
+  /// If this is set to null the information will be loaded from the API.
+  /// Setting the value will mean the community information can be shown
+  /// instantly
+  final LemmyCommunity? community;
+
+  final CommunityScreenBloc? bloc;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: bloc,
-      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-        builder: (context, state) {
-          switch (state.fullCommunityInfoStatus) {
-            case CommunityStatus.initial:
-              return const _CommunityInfoInitial();
-            case CommunityStatus.loading:
-              return const _CommunityInfoLoading();
-            case CommunityStatus.failure:
-              return _CommunityInfoError(error: state.errorMessage);
-            case CommunityStatus.success:
-              return _CommunityInfoSuccess(community: state.community!);
-          }
-        },
-      ),
+    if (bloc != null) {
+      return BlocProvider.value(value: bloc!, child: const CommunityInfoView());
+    } else {
+      return BlocProvider(
+        create: (context) => CommunityScreenBloc(
+          community: community,
+          repo: context.read<ServerRepo>(),
+        )..add(InitialiseCommunityScreen()),
+        child: const CommunityInfoView(),
+      );
+    }
+  }
+}
+
+/// TODO: add better handling of community status
+
+class CommunityInfoView extends StatelessWidget {
+  const CommunityInfoView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+      builder: (context, state) {
+        switch (state.fullCommunityInfoStatus) {
+          case CommunityStatus.initial:
+            return const _CommunityInfoInitial();
+          case CommunityStatus.loading:
+            return const _CommunityInfoLoading();
+          case CommunityStatus.failure:
+            return _CommunityInfoError(error: state.exception);
+          case CommunityStatus.success:
+            return _CommunityInfoSuccess(community: state.community!);
+        }
+      },
     );
   }
 }

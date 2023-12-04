@@ -63,6 +63,7 @@ class _SearchDialog extends StatelessWidget {
                               ),
                             InkWell(
                               onTap: () {
+                                Navigator.pop(context);
                                 context.push(
                                   CommunityPage(
                                     community: state.communities[index],
@@ -138,7 +139,7 @@ class _SearchDialog extends StatelessWidget {
                       suffixIcon: IconButton(
                         onPressed: () {
                           textFocusNode.unfocus();
-                          context.pop();
+                          Navigator.pop(context);
                           context.push(SearchPage(initialState: state));
                         },
                         icon: const Icon(Icons.open_in_new),

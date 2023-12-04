@@ -1,7 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
@@ -15,7 +15,7 @@ class CommunityScreenBloc
   ///
   CommunityScreenBloc({
     required this.repo,
-    this.community,
+    LemmyCommunity? community,
     String? communityName,
     int? communityId,
   })  : communityName = communityName ?? community?.name,
@@ -49,11 +49,12 @@ class CommunityScreenBloc
               communityStatus: CommunityStatus.success,
             ),
           );
-        } on DioException catch (err) {
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
           emit(
             state.copyWith(
               communityStatus: CommunityStatus.failure,
-              error: err,
+              exception: exception,
             ),
           );
         }
@@ -81,11 +82,12 @@ class CommunityScreenBloc
                 fullCommunityInfoStatus: CommunityStatus.success,
               ),
             );
-          } on DioException catch (err) {
+          } catch (err, stackTrace) {
+            final exception = MException(err, stackTrace)..log(_log);
             emit(
               state.copyWith(
                 fullCommunityInfoStatus: CommunityStatus.failure,
-                error: err,
+                exception: exception,
               ),
             );
           }
@@ -97,6 +99,7 @@ class CommunityScreenBloc
       }
     });
     on<ToggledSubscribe>((event, emit) async {
+      final lastSubscribedType = state.community!.subscribed;
       emit(
         state.copyWith(
           community: state.community!.copyWith(
@@ -118,8 +121,15 @@ class CommunityScreenBloc
             community: state.community!.copyWith(subscribed: result),
           ),
         );
-      } catch (err) {
-        emit(state.copyWith(error: err));
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
+        emit(
+          state.copyWith(
+            exception: exception,
+            community:
+                state.community!.copyWith(subscribed: lastSubscribedType),
+          ),
+        );
       }
     });
     on<BlockToggled>((event, emit) async {
@@ -140,43 +150,37 @@ class CommunityScreenBloc
               community: state.community!.copyWith(blocked: response),
             ),
           );
-        } on DioException catch (err) {
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
           emit(
             state.copyWith(
               community: state.community!
                   .copyWith(blocked: !state.community!.blocked!),
-              error: err,
+              exception: exception,
             ),
           );
         }
       } else {
+        final exception = MException(
+          Exception(
+            'Tried to toggle block when block = null',
+          ),
+          StackTrace.current,
+        )..log(_log);
         emit(
           state.copyWith(
-            error: Exception(
-                'Tried to toggle block when block = null, please report this error to the developers'),
+            exception: exception,
           ),
         );
-        _log.warning('Tried to toggle block when block = null');
       }
     });
   }
 
+  /// Used get the community if it is not provided
   final String? communityName;
+
+  /// Used get the community if it is not provided
   final int? communityId;
-  final LemmyCommunity? community;
+
   final ServerRepo repo;
-
-  @override
-  void onChange(Change<CommunityScreenState> change) {
-    super.onChange(change);
-    _log.fine(change);
-  }
-
-  @override
-  void onTransition(
-    Transition<CommunityScreenEvent, CommunityScreenState> transition,
-  ) {
-    super.onTransition(transition);
-    _log.fine(transition);
-  }
 }

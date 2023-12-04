@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/widgets/content_scroll_view/view/content_scroll_view.dart';
 import 'package:muffed/widgets/image.dart';
@@ -27,9 +28,7 @@ class CommunityView extends StatelessWidget {
 
         return Scaffold(
           body: ContentScrollView(
-            contentScrollBloc: BlocProvider.of<ContentScrollBloc>(
-              context,
-            ),
+            contentScrollBloc: contentScrollBloc,
             headerSlivers: [
               SliverPersistentHeader(
                 delegate: _TopBarDelegate(
@@ -46,6 +45,7 @@ class CommunityView extends StatelessWidget {
   }
 }
 
+// TODO: add error handling
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   _TopBarDelegate({
     required this.bloc,
@@ -284,15 +284,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute<void>(
-                                              builder: (context) =>
-                                                  CommunityInfoScreen(
-                                                bloc: bloc,
-                                              ),
-                                            ),
-                                          );
+                                          context.push(CommunityInfoPage(
+                                              community: community));
                                         },
                                         child: const Text('See community info'),
                                       ),
@@ -366,7 +359,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                             Skeleton.keep(
                               child: IconButton(
                                 onPressed: () {
-                                  // TODO: add navigation
+                                  context.pop();
                                 },
                                 icon: const Icon(Icons.arrow_back),
                               ),

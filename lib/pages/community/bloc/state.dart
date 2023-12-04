@@ -8,7 +8,7 @@ final class CommunityScreenState extends Equatable {
   const CommunityScreenState({
     this.communityStatus = CommunityStatus.initial,
     this.community,
-    this.errorMessage,
+    this.exception,
     this.fullCommunityInfoStatus = CommunityStatus.initial,
     this.isLoading = false,
     this.loadedSortType = LemmySortType.hot,
@@ -26,7 +26,7 @@ final class CommunityScreenState extends Equatable {
   /// so they will need to be loaded if they are not provided
   final CommunityStatus fullCommunityInfoStatus;
 
-  final Object? errorMessage;
+  final MException? exception;
 
   final bool isLoading;
 
@@ -35,7 +35,7 @@ final class CommunityScreenState extends Equatable {
   @override
   List<Object?> get props => [
         community,
-        errorMessage,
+        exception,
         fullCommunityInfoStatus,
         isLoading,
         loadedSortType,
@@ -45,14 +45,14 @@ final class CommunityScreenState extends Equatable {
   CommunityScreenState copyWith({
     CommunityStatus? communityStatus,
     LemmyCommunity? community,
-    Object? error,
+    MException? exception,
     CommunityStatus? fullCommunityInfoStatus,
     bool? isLoading,
     LemmySortType? loadedSortType,
   }) {
     return CommunityScreenState(
       community: community ?? this.community,
-      errorMessage: error,
+      exception: exception,
       fullCommunityInfoStatus:
           fullCommunityInfoStatus ?? this.fullCommunityInfoStatus,
       communityStatus: communityStatus ?? this.communityStatus,
