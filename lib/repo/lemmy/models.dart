@@ -165,6 +165,32 @@ class LemmyPost extends Equatable {
         read = json['read'],
         saved = json['saved'];
 
+  LemmyPost.placeHolder()
+      : id = 213,
+        name = 'placeholder',
+        body = '''
+      Lorem ipsum dolor sit amet. 
+      Sed autem consectetur et assumenda 
+      voluptas ut expedita recusandae ad excepturi incidunt ut repellendus 
+      itaque. Et sunt totam qui consequatur quisquam eum aliquam placeat.''',
+        creatorId = 123,
+        communityId = 123,
+        nsfw = false,
+        thumbnailUrl = null,
+        url = null,
+        score = 123,
+        communityName = 'placeholder',
+        creatorName = 'placeholder',
+        read = false,
+        saved = false,
+        apId = 'placeholder',
+        timePublished = DateTime.parse('2023-09-23T10:20:28.671041'),
+        commentCount = 21,
+        downVotes = 11,
+        upVotes = 11,
+        myVote = LemmyVoteType.none,
+        communityIcon = null;
+
   final int id;
   final String name;
 
@@ -857,6 +883,30 @@ class LemmyPerson extends Equatable {
           : null,
     );
   }
+
+  LemmyPerson.placeHolder()
+      : actorId = 'https://sh.itjust.works/u/muffed',
+        admin = false,
+        banned = false,
+        botAccount = false,
+        deleted = false,
+        id = 250203,
+        instanceId = 1,
+        local = true,
+        name = 'muffed',
+        published = DateTime.parse('2023-09-23T10:20:28.671041'),
+        avatar = null,
+        banExpires = null,
+        banner = null,
+        bio = null,
+        displayName = null,
+        matrixUserId = null,
+        updated = null,
+        commentCount = null,
+        commentScore = null,
+        postCount = null,
+        postScore = null,
+        moderates = null;
 
   final String actorId;
   final bool? admin;

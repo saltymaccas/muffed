@@ -12,8 +12,10 @@ final _log = Logger('CommentScreenBloc');
 /// The bloc for the content screen
 class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
   /// Initialize
-  PostScreenBloc({required this.repo, required this.postId})
-      : super(const PostScreenState(status: PostScreenStatus.initial)) {
+  PostScreenBloc({required this.repo, int? id, LemmyPost? post})
+      : assert(id != null || post != null, 'No post provided'),
+        postId = id ?? post!.id,
+        super(const PostScreenState(status: PostScreenStatus.initial)) {
     on<InitializeEvent>((event, emit) async {
       emit(const PostScreenState(status: PostScreenStatus.loading));
 

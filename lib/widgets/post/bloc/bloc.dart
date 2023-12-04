@@ -10,26 +10,32 @@ part 'state.dart';
 
 final _log = Logger('PostItemBloc');
 
-class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
+class PostBloc extends Bloc<PostEvent, PostState> {
   ///
-  PostItemBloc({
-    required this.repo, required this.globalBloc, this.post,
+  PostBloc({
+    required this.repo,
+    required this.globalBloc,
+    this.post,
     this.postId,
-  }) : super(PostItemState(post: post)) {
+  }) : super(PostState(post: post)) {
     on<Initialize>((event, emit) async {
       if (post != null) {
-        emit(state.copyWith(status: PostItemStatus.success, post: post));
+        emit(state.copyWith(status: PostStatus.success, post: post));
       } else if (postId != null) {
-        emit(state.copyWith(status: PostItemStatus.loading));
+        emit(state.copyWith(status: PostStatus.loading));
         try {
           final post = await repo.lemmyRepo.getPost(id: postId!);
-          emit(state.copyWith(status: PostItemStatus.success, post: post));
+          emit(state.copyWith(status: PostStatus.success, post: post));
         } catch (err) {
-          emit(state.copyWith(status: PostItemStatus.failure, error: err));
+          emit(state.copyWith(status: PostStatus.failure, error: err));
         }
       } else
-        emit(state.copyWith(
-            status: PostItemStatus.failure, error: 'No post or postId given',),);
+        emit(
+          state.copyWith(
+            status: PostStatus.failure,
+            error: 'No post or postId given',
+          ),
+        );
     });
     on<UpvotePressed>(
       (event, emit) {
@@ -186,8 +192,11 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       transformer: droppable(),
     );
     on<SavePostToggled>((event, emit) async {
-      emit(state.copyWith(
-          post: state.post!.copyWith(saved: !state.post!.saved),),);
+      emit(
+        state.copyWith(
+          post: state.post!.copyWith(saved: !state.post!.saved),
+        ),
+      );
       try {
         final result = await repo.lemmyRepo
             .savePost(postId: state.post!.id, save: state.post!.saved);
@@ -209,13 +218,13 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
   final GlobalBloc globalBloc;
 
   @override
-  void onChange(Change<PostItemState> change) {
+  void onChange(Change<PostState> change) {
     super.onChange(change);
     _log.fine(change);
   }
 
   @override
-  void onTransition(Transition<PostItemEvent, PostItemState> transition) {
+  void onTransition(Transition<PostEvent, PostState> transition) {
     super.onTransition(transition);
     _log.fine(transition);
   }

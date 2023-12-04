@@ -7,32 +7,51 @@ import 'package:muffed/router/router.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post/post_widget.dart';
 import 'package:muffed/widgets/url_view.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+abstract class PostViewForm extends StatelessWidget {
+  const PostViewForm(this.post, {this.openPost, this.displayType, super.key});
+
+  factory PostViewForm.loading() =>
+
+
+  final LemmyPost? post;
+  final void Function()? openPost;
+  final PostDisplayType? displayType;
+
+  @override
+  Widget build(BuildContext context);
+}
 
 /// Displays a Lemmy post in card format
-class CardLemmyPostItem extends StatelessWidget {
+class PostViewCard extends PostViewForm {
   ///
-  const CardLemmyPostItem(
+  const PostViewCard(
     this.post, {
-    this.displayType = PostDisplayType.list,
+    this.openPost,
+    PostDisplayType? displayType,
     super.key,
-  });
+  }) : displayType = displayType ?? PostDisplayType.list, super(post, displayType: displayType);
+
+  factory PostViewCard.loading({PostDisplayType? displayType}) =>
+      _PostCardViewLoading(
+        displayType: displayType,
+      );
 
   /// The lemmy post
   final LemmyPost post;
 
   final PostDisplayType displayType;
 
+  final void Function()? openPost;
+
   @override
   Widget build(BuildContext context) {
     // shows nothing if nsfw and show nsfw off
     if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
       return const SizedBox();
-    }
-
-    void openPost() {
-      // TODO: add navigation
     }
 
     return Card(
@@ -154,8 +173,9 @@ class CardLemmyPostItem extends StatelessWidget {
                                   ? 300
                                   : null,
                               onTapText: () {
-                                if (displayType == PostDisplayType.list) {
-                                  openPost();
+                                if (displayType == PostDisplayType.list &&
+                                    openPost != null) {
+                                  openPost!.call();
                                 }
                               },
                             ),
@@ -186,7 +206,7 @@ class CardLemmyPostItem extends StatelessWidget {
                       if (context.read<GlobalBloc>().isLoggedIn())
                         IconButton(
                           onPressed: () {
-                            context.read<PostItemBloc>().add(SavePostToggled());
+                            context.read<PostBloc>().add(SavePostToggled());
                           },
                           icon: Icon(
                             (post.saved)
@@ -201,7 +221,7 @@ class CardLemmyPostItem extends StatelessWidget {
                             ? Colors.deepOrange
                             : null,
                         onPressed: () {
-                          context.read<PostItemBloc>().add(UpvotePressed());
+                          context.read<PostBloc>().add(UpvotePressed());
                         },
                         visualDensity: VisualDensity.compact,
                       ),
@@ -212,7 +232,7 @@ class CardLemmyPostItem extends StatelessWidget {
                             ? Colors.purple
                             : null,
                         onPressed: () {
-                          context.read<PostItemBloc>().add(DownvotePressed());
+                          context.read<PostBloc>().add(DownvotePressed());
                         },
                         visualDensity: VisualDensity.compact,
                       ),
@@ -228,6 +248,19 @@ class CardLemmyPostItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PostCardViewLoading extends PostViewCard {
+  _PostCardViewLoading({super.displayType}) : super(LemmyPost.placeHolder());
+
+  @override
+  Widget build(BuildContext context) {
+    return Skeletonizer(
+      ignoreContainers: false,
+      justifyMultiLineText: false,
+      child: super.build(context),
     );
   }
 }

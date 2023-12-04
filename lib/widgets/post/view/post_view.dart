@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/error.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post/post_widget.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// A widget that displays a post, The form the post is displayed in can be
@@ -42,7 +42,7 @@ class _PostViewState extends State<PostView>
       return Skeletonizer(
         ignoreContainers: false,
         justifyMultiLineText: false,
-        child: CardLemmyPostItem(
+        child: PostViewCard(
           placeholderPost,
           displayType: widget.displayType,
         ),
@@ -50,33 +50,26 @@ class _PostViewState extends State<PostView>
     }
 
     /// The actual post widget
-    return BlocBuilder<PostItemBloc, PostItemState>(
+    return BlocBuilder<PostBloc, PostState>(
       builder: (context, state) {
         switch (state.status) {
-          case PostItemStatus.initial:
+          case PostStatus.initial:
             return const SizedBox();
-          case PostItemStatus.loading:
-            return Skeletonizer(
-              ignoreContainers: false,
-              justifyMultiLineText: false,
-              child: CardLemmyPostItem(
-                placeholderPost,
-                displayType: widget.displayType,
-              ),
-            );
-          case PostItemStatus.success:
+          case PostStatus.loading:
+            return;
+          case PostStatus.success:
             switch (widget.form) {
               case PostViewForm.card:
-                return CardLemmyPostItem(
+                return PostViewCard(
                   state.post!,
                   displayType: widget.displayType,
                 );
             }
-          case PostItemStatus.failure:
+          case PostStatus.failure:
             return ErrorComponentTransparent(
               error: state.error,
               retryFunction: () {
-                context.read<PostItemBloc>().add(Initialize());
+                context.read<PostBloc>().add(Initialize());
               },
             );
         }
@@ -87,30 +80,3 @@ class _PostViewState extends State<PostView>
   @override
   bool get wantKeepAlive => true;
 }
-
-final placeholderPost = LemmyPost(
-  id: 213,
-  name: 'placeholder',
-  body: '''
-Lorem ipsum dolor sit amet. 
-      Sed autem consectetur et assumenda 
-      voluptas ut expedita recusandae ad excepturi incidunt ut repellendus 
-      itaque. Et sunt totam qui consequatur quisquam eum aliquam placeat.''',
-  creatorId: 123,
-  communityId: 123,
-  nsfw: false,
-  thumbnailUrl: null,
-  url: null,
-  score: 123,
-  communityName: 'placeholder',
-  creatorName: 'placeholder',
-  read: false,
-  saved: false,
-  apId: 'placeholder',
-  timePublished: DateTime.now(),
-  commentCount: 21,
-  downVotes: 11,
-  upVotes: 11,
-  myVote: LemmyVoteType.none,
-  communityIcon: null,
-);

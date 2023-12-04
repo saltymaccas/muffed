@@ -7,7 +7,7 @@ import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post/post_widget.dart';
 
 import 'bloc/bloc.dart';
 

@@ -5,7 +5,7 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/error.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post/post_widget.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
 /// A function for retrieving content

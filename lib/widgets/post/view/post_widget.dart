@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/post_item/post_item.dart';
+import 'package:muffed/widgets/post/post_widget.dart';
 
 /// Displays a post
 class PostWidget extends StatelessWidget {
@@ -18,7 +18,7 @@ class PostWidget extends StatelessWidget {
           'No post defined',
         );
 
-  final PostItemBloc? bloc;
+  final PostBloc? bloc;
   final PostViewForm? form;
   final PostDisplayType? displayType;
   final LemmyPost? post;
@@ -36,7 +36,7 @@ class PostWidget extends StatelessWidget {
       );
     } else {
       return BlocProvider(
-        create: (context) => PostItemBloc(
+        create: (context) => PostBloc(
           repo: context.read<ServerRepo>(),
           globalBloc: context.read<GlobalBloc>(),
           post: post,
