@@ -70,7 +70,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ];
 
-              return ContentScrollWidget(
+              return ContentScrollView(
                 key: ValueKey(state.scrollViewConfigs[currentPage]),
                 contentRetriever: state.scrollViewConfigs[currentPage],
                 headerSlivers: [

@@ -48,64 +48,58 @@ class PostPage extends MPage<void> {
       ],
       child: Builder(
         builder: (context) {
+          final contentScrollBloc = context.read<ContentScrollBloc>();
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             pageActions!.setActions(
               [
-                BlocProvider.value(
-                  value: BlocProvider.of<ContentScrollBloc>(context),
-                  child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
-                    builder: (context, state) {
-                      final retrieveContent =
-                          state.retrieveContent as CommentRetriever;
+                BlocBuilder<ContentScrollBloc, ContentScrollState>(
+                  bloc: contentScrollBloc,
+                  builder: (context, state) {
+                    final retrieveContent =
+                        state.retrieveContent as CommentRetriever;
 
-                      final contentScrollBloc =
-                          context.read<ContentScrollBloc>();
-
-                      void changeSortType(LemmyCommentSortType sortType) {
-                        contentScrollBloc.add(
-                          RetrieveContentMethodChanged(
-                            retrieveContent.copyWith(sortType: sortType),
-                          ),
-                        );
-                      }
-
-                      return MuffedPopupMenuButton(
-                        icon: const Icon(Icons.sort),
-                        visualDensity: VisualDensity.compact,
-                        selectedValue: retrieveContent.sortType,
-                        items: [
-                          MuffedPopupMenuItem(
-                            title: 'Hot',
-                            icon: const Icon(Icons.local_fire_department),
-                            value: LemmyCommentSortType.hot,
-                            onTap: () =>
-                                changeSortType(LemmyCommentSortType.hot),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Top',
-                            icon: const Icon(Icons.military_tech),
-                            value: LemmyCommentSortType.top,
-                            onTap: () =>
-                                changeSortType(LemmyCommentSortType.top),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'New',
-                            icon: const Icon(Icons.auto_awesome),
-                            value: LemmyCommentSortType.latest,
-                            onTap: () =>
-                                changeSortType(LemmyCommentSortType.latest),
-                          ),
-                          MuffedPopupMenuItem(
-                            title: 'Old',
-                            icon: const Icon(Icons.elderly),
-                            value: LemmyCommentSortType.old,
-                            onTap: () =>
-                                changeSortType(LemmyCommentSortType.old),
-                          ),
-                        ],
+                    void changeSortType(LemmyCommentSortType sortType) {
+                      contentScrollBloc.add(
+                        RetrieveContentMethodChanged(
+                          retrieveContent.copyWith(sortType: sortType),
+                        ),
                       );
-                    },
-                  ),
+                    }
+
+                    return MuffedPopupMenuButton(
+                      icon: const Icon(Icons.sort),
+                      visualDensity: VisualDensity.compact,
+                      selectedValue: retrieveContent.sortType,
+                      items: [
+                        MuffedPopupMenuItem(
+                          title: 'Hot',
+                          icon: const Icon(Icons.local_fire_department),
+                          value: LemmyCommentSortType.hot,
+                          onTap: () => changeSortType(LemmyCommentSortType.hot),
+                        ),
+                        MuffedPopupMenuItem(
+                          title: 'Top',
+                          icon: const Icon(Icons.military_tech),
+                          value: LemmyCommentSortType.top,
+                          onTap: () => changeSortType(LemmyCommentSortType.top),
+                        ),
+                        MuffedPopupMenuItem(
+                          title: 'New',
+                          icon: const Icon(Icons.auto_awesome),
+                          value: LemmyCommentSortType.latest,
+                          onTap: () =>
+                              changeSortType(LemmyCommentSortType.latest),
+                        ),
+                        MuffedPopupMenuItem(
+                          title: 'Old',
+                          icon: const Icon(Icons.elderly),
+                          value: LemmyCommentSortType.old,
+                          onTap: () => changeSortType(LemmyCommentSortType.old),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             );

@@ -3,7 +3,6 @@ part of 'bloc.dart';
 enum ContentScrollStatus { initial, loading, success, failure }
 
 final class ContentScrollState extends Equatable {
-  ///
   const ContentScrollState({
     required this.status,
     required this.retrieveContent,
@@ -30,7 +29,11 @@ final class ContentScrollState extends Equatable {
 
   final bool reachedEnd;
 
+  /// The method that should be used to retrieve content
   final ContentRetriever retrieveContent;
+
+  /// The content retriever that was used to load the currently displayed
+  /// content
   final ContentRetriever loadedRetrieveContent;
 
   final bool isLoading;
