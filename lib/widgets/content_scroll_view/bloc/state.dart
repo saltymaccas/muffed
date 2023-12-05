@@ -10,7 +10,7 @@ final class ContentScrollState extends Equatable {
     this.isRefreshing = false,
     this.pagesLoaded = 0,
     this.isLoadingMore = false,
-    this.error,
+    this.exception,
     this.reachedEnd = false,
     this.isLoading = false,
     ContentRetriever? loadedRetrieveContent,
@@ -25,7 +25,7 @@ final class ContentScrollState extends Equatable {
   /// If status set to failure error message should display instead of posts.
   /// If status is success the error message should appear as a snack bar so
   /// the posts are still visible.
-  final Object? error;
+  final MException? exception;
 
   final bool reachedEnd;
 
@@ -45,7 +45,7 @@ final class ContentScrollState extends Equatable {
         isRefreshing,
         pagesLoaded,
         isLoadingMore,
-        error,
+        exception,
         reachedEnd,
         retrieveContent,
         isLoading,
@@ -53,7 +53,7 @@ final class ContentScrollState extends Equatable {
       ];
 
   ContentScrollState copyWith({
-    Object? error,
+    MException? exception,
     ContentScrollStatus? status,
     List<Object>? content,
     bool? isRefreshing,
@@ -65,7 +65,7 @@ final class ContentScrollState extends Equatable {
     bool? isLoadingMore,
   }) {
     return ContentScrollState(
-      error: error,
+      exception: exception,
       status: status ?? this.status,
       content: content ?? this.content,
       isRefreshing: isRefreshing ?? this.isRefreshing,

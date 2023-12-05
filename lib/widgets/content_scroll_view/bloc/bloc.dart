@@ -2,6 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 part 'event.dart';
@@ -37,12 +38,12 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             pagesLoaded: 1,
           ),
         );
-      } catch (err) {
-        _log.shout('Loading initial posts failed', err);
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
             status: ContentScrollStatus.failure,
-            error: err,
+            exception: exception,
           ),
         );
       }
@@ -60,8 +61,9 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             pagesLoaded: 1,
           ),
         );
-      } catch (err) {
-        emit(state.copyWith(isRefreshing: false, error: err));
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
+        emit(state.copyWith(isRefreshing: false, exception: exception));
       }
     });
     on<ReachedNearEndOfScroll>(
@@ -90,8 +92,10 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
 
             _log.info('Loaded page ${state.pagesLoaded}');
           }
-        } catch (err) {
-          emit(state.copyWith(error: err, isLoadingMore: false));
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
+
+          emit(state.copyWith(exception: exception, isLoadingMore: false));
         }
       },
       transformer: droppable(),
@@ -116,11 +120,12 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
               isLoading: false,
             ),
           );
-        } catch (err) {
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
           emit(
             state.copyWith(
               retrieveContent: state.loadedRetrieveContent,
-              error: err,
+              exception: exception,
               isLoading: false,
             ),
           );
@@ -133,7 +138,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
   @override
   void onChange(Change<ContentScrollState> change) {
     super.onChange(change);
-    _log.fine(change);
+    _log.finest(change);
   }
 
   @override
@@ -141,6 +146,6 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
     Transition<ContentScrollEvent, ContentScrollState> transition,
   ) {
     super.onTransition(transition);
-    _log.fine(transition);
+    _log.finest(transition);
   }
 }

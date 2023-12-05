@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post/post.dart';
@@ -16,18 +17,43 @@ typedef ItemBuilder = Widget? Function(BuildContext, int, List<Object> content);
 class ContentScrollView extends StatelessWidget {
   const ContentScrollView({
     this.contentRetriever,
-    this.itemBuilder,
     List<Widget>? headerSlivers,
     super.key,
   }) : headerSlivers = headerSlivers ?? const [];
 
+  factory ContentScrollView.commentTree(
+      {LemmyCommentSortType? sortType,
+      List<Widget>? headerSlivers,
+      ContentRetriever? contentRetriever}) {
+    return _CommentTreeContentScrollView(
+      sortType: sortType,
+      headerSlivers: headerSlivers,
+      contentRetriever: contentRetriever,
+    );
+  }
+
   /// Slivers that will go above the scroll
   final List<Widget> headerSlivers;
 
-  /// The function used to build the items
-  final ItemBuilder? itemBuilder;
-
   final ContentRetriever? contentRetriever;
+
+  SliverList buildContentList(List<Object> content) {
+    return SliverList.builder(
+      itemCount: content.length,
+      itemBuilder: (context, index) {
+        final item = content[index];
+
+        if (item is LemmyPost) {
+          return PostWidget(
+            post: item,
+            displayType: PostDisplayType.list,
+          );
+        } else {
+          return const Text('Item type did not match any');
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +63,9 @@ class ContentScrollView extends StatelessWidget {
       contentScrollBloc = BlocProvider.of<ContentScrollBloc>(context);
       _log.info('Found bloc in context, using it');
     } catch (err) {
+      _log.info('No bloc found in context, creating new one');
       contentScrollBloc = ContentScrollBloc(contentRetriever: contentRetriever!)
         ..add(Initialise());
-      _log.info('No bloc found in context, creating new one');
     }
 
     return BlocProvider.value(
@@ -54,8 +80,8 @@ class ContentScrollView extends StatelessWidget {
         },
         child: BlocConsumer<ContentScrollBloc, ContentScrollState>(
           listener: (context, state) {
-            if (state.error != null) {
-              showErrorSnackBar(context, error: state.error);
+            if (state.exception != null) {
+              showErrorSnackBar(context, error: state.exception);
             }
           },
           builder: (context, state) {
@@ -89,7 +115,7 @@ class ContentScrollView extends StatelessWidget {
                 slivers: [
                   ...headerSlivers,
                   SliverFillRemaining(
-                    child: ErrorComponentTransparent(error: state.error),
+                    child: ErrorComponentTransparent(error: state.exception),
                   ),
                 ],
               );
@@ -127,26 +153,7 @@ class ContentScrollView extends StatelessWidget {
                       cacheExtent: 500,
                       slivers: [
                         ...headerSlivers,
-                        SliverList.builder(
-                          itemCount: state.content!.length,
-                          itemBuilder: (context, index) {
-                            if (itemBuilder != null) {
-                              return itemBuilder!(
-                                  context, index, state.content!);
-                            }
-
-                            final item = state.content![index];
-
-                            if (item is LemmyPost) {
-                              return PostWidget(
-                                post: item,
-                                displayType: PostDisplayType.list,
-                              );
-                            } else {
-                              return const Text('Item type did not match any');
-                            }
-                          },
-                        ),
+                        buildContentList(state.content!),
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height: 50,
@@ -175,6 +182,41 @@ class ContentScrollView extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class _CommentTreeContentScrollView extends ContentScrollView {
+  const _CommentTreeContentScrollView({
+    this.sortType,
+    super.contentRetriever,
+    super.headerSlivers,
+  });
+
+  /// The sort type used to get the comment used when children comments are
+  /// retrieved so they can be gotten with the same sort type
+  final LemmyCommentSortType? sortType;
+
+  @override
+  SliverList buildContentList(List<Object> content) {
+    if (content is! List<LemmyComment>) {
+      throw Exception('Content is not a list of comments');
+    }
+
+    final organisedComments = organiseCommentsWithChildren(0, content);
+
+    return SliverList.builder(
+      itemCount: organisedComments.length,
+      itemBuilder: (context, index) {
+        final baseComment = organisedComments.keys.elementAt(index);
+        final childComments = organisedComments[baseComment]!;
+
+        return CommentWidget(
+          sortType: sortType,
+          comment: baseComment,
+          children: childComments,
+        );
+      },
     );
   }
 }

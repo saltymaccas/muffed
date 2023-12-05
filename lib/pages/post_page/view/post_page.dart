@@ -4,7 +4,6 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post/post.dart';
@@ -118,7 +117,7 @@ class _PostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ContentScrollView(
+      body: ContentScrollView.commentTree(
         headerSlivers: [
           const SliverAppBar(
             title: Text('Comments'),
@@ -133,34 +132,6 @@ class _PostView extends StatelessWidget {
             ),
           ),
         ],
-        itemBuilder: (context, index, content) {
-          // Iterates through the comments until it finds a base comment,
-          // Iterates through the children again gathering all the descendants
-          // of the comment and returns the comment widget
-
-          int level0Index = 0;
-          for (final item in content) {
-            if (item is! LemmyComment) continue;
-            if (item.level == 0) {
-              // makes sure it does not process a comment multiple times
-              if (level0Index == index) {
-                final List<LemmyComment> children = [];
-                for (final item2 in content) {
-                  if (item2 is! LemmyComment) continue;
-                  if (item2.path.isNotEmpty && item2.path.first == item.id) {
-                    children.add(item2);
-                  }
-                }
-                return CommentWidget(
-                  comment: item,
-                  children: children,
-                );
-              }
-              level0Index++;
-            }
-          }
-          return null;
-        },
       ),
     );
   }
