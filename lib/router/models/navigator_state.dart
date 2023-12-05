@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:muffed/router/router.dart';
@@ -6,8 +7,14 @@ import 'package:muffed/router/router.dart';
 ///
 /// Used by MNavigator to store its state.
 class MNavigatorState extends Equatable {
-  const MNavigatorState(
-      {required this.branches, required this.currentBranchIndex});
+  const MNavigatorState({
+    required this.rootBranch,
+    required this.branches,
+    required this.currentBranchIndex,
+  });
+
+  /// A single branch that goes above every other branch
+  final Branch rootBranch;
 
   /// The branches in the app
   final List<Branch> branches;
@@ -23,20 +30,18 @@ class MNavigatorState extends Equatable {
 
   bool get canPop => branches[currentBranchIndex].canPop;
 
+  MNavigatorState copyWithRootBranchPush(MPage<Object?> page) => copyWith(
+        rootBranch: rootBranch.copy()..push(page),
+      );
+
   MNavigatorState copyWithDifferentBranch(int newBranch) {
-    return MNavigatorState(
-      branches: branches,
-      currentBranchIndex: newBranch,
-    );
+    return copyWith(currentBranchIndex: newBranch);
   }
 
   MNavigatorState copyWithPop() {
     final newBranches = copyBranches();
     newBranches[currentBranchIndex] = newBranches[currentBranchIndex].pop();
-    return MNavigatorState(
-      branches: newBranches,
-      currentBranchIndex: currentBranchIndex,
-    );
+    return copyWith(branches: newBranches);
   }
 
   MNavigatorState copyWithPush(MPage<Object?> page) {
@@ -47,21 +52,16 @@ class MNavigatorState extends Equatable {
   }
 
   /// Deep copies the branches
-  List<Branch> copyBranches() {
-    return List.generate(
-      branches.length,
-      (index) => Branch(
-        List.of(branches[index].pages),
-        key: branches[index].key,
-      ),
-    );
-  }
+  List<Branch> copyBranches() =>
+      branches.mapIndexed((index, branch) => branch.copy()).toList();
 
   MNavigatorState copyWith({
+    Branch? rootBranch,
     List<Branch>? branches,
     int? currentBranchIndex,
   }) {
     return MNavigatorState(
+      rootBranch: rootBranch ?? this.rootBranch,
       branches: branches ?? this.branches,
       currentBranchIndex: currentBranchIndex ?? this.currentBranchIndex,
     );

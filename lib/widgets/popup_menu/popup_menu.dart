@@ -142,7 +142,7 @@ class MuffedPopupMenuItem extends StatelessWidget {
       builder: (context, state) {
         return ListTile(
           onTap: () {
-            // TODO: add navigation
+            Navigator.pop(context);
             if (onTap != null) {
               onTap!.call();
             }

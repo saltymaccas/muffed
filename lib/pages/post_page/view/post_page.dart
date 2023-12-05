@@ -6,6 +6,7 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post/post.dart';
 
 class PostPage extends MPage<void> {
@@ -29,7 +30,7 @@ class PostPage extends MPage<void> {
       providers: [
         BlocProvider(
           create: (context) => ContentScrollBloc(
-            retrieveContent: PostCommentRetriever(
+            contentRetriever: CommentRetriever(
               repo: context.read<ServerRepo>(),
               postId: postId,
             ),
@@ -45,7 +46,73 @@ class PostPage extends MPage<void> {
             )..add(Initialize()),
           ),
       ],
-      child: const _PostView(),
+      child: Builder(
+        builder: (context) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            pageActions!.setActions(
+              [
+                BlocProvider.value(
+                  value: BlocProvider.of<ContentScrollBloc>(context),
+                  child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
+                    builder: (context, state) {
+                      final retrieveContent =
+                          state.retrieveContent as CommentRetriever;
+
+                      final contentScrollBloc =
+                          context.read<ContentScrollBloc>();
+
+                      void changeSortType(LemmyCommentSortType sortType) {
+                        contentScrollBloc.add(
+                          RetrieveContentMethodChanged(
+                            retrieveContent.copyWith(sortType: sortType),
+                          ),
+                        );
+                      }
+
+                      return MuffedPopupMenuButton(
+                        icon: const Icon(Icons.sort),
+                        visualDensity: VisualDensity.compact,
+                        selectedValue: retrieveContent.sortType,
+                        items: [
+                          MuffedPopupMenuItem(
+                            title: 'Hot',
+                            icon: const Icon(Icons.local_fire_department),
+                            value: LemmyCommentSortType.hot,
+                            onTap: () =>
+                                changeSortType(LemmyCommentSortType.hot),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Top',
+                            icon: const Icon(Icons.military_tech),
+                            value: LemmyCommentSortType.top,
+                            onTap: () =>
+                                changeSortType(LemmyCommentSortType.top),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'New',
+                            icon: const Icon(Icons.auto_awesome),
+                            value: LemmyCommentSortType.latest,
+                            onTap: () =>
+                                changeSortType(LemmyCommentSortType.latest),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Old',
+                            icon: const Icon(Icons.elderly),
+                            value: LemmyCommentSortType.old,
+                            onTap: () =>
+                                changeSortType(LemmyCommentSortType.old),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          });
+          return const _PostView();
+        },
+      ),
     );
   }
 }
@@ -72,7 +139,6 @@ class _PostView extends StatelessWidget {
             ),
           ),
         ],
-        contentScrollBloc: BlocProvider.of<ContentScrollBloc>(context),
         itemBuilder: (context, index, content) {
           // Iterates through the comments until it finds a base comment,
           // Iterates through the children again gathering all the descendants

@@ -7,33 +7,58 @@ import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post/post.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
-/// A function for retrieving content
-typedef RetrieveContent = Future<List<Object>> Function({required int page});
+typedef ItemBuilder = Widget? Function(BuildContext, int, List<Object> content);
 
-/// Display items retrieved from an API in a paginated scroll view
-class ContentScrollView extends StatelessWidget {
-  const ContentScrollView({
-    this.contentRetriever,
-    this.headerSlivers = const [],
-    this.contentScrollBloc,
+/// creates a [ContentScrollView] with a bloc. Do not use if a bloc is already
+/// made for it
+class ContentScrollWidget extends StatelessWidget {
+  const ContentScrollWidget({
+    required this.contentRetriever,
+    this.headerSlivers,
     this.itemBuilder,
     super.key,
   });
 
-  /// The function used to retrieve the content
-  final ContentRetriever? contentRetriever;
+  final ContentRetriever contentRetriever;
+  final ItemBuilder? itemBuilder;
+  final List<Widget>? headerSlivers;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ContentScrollBloc(
+        contentRetriever: contentRetriever,
+      )..add(Initialise()),
+      child: ContentScrollView(
+        headerSlivers: headerSlivers,
+        itemBuilder: itemBuilder,
+      ),
+    );
+  }
+}
+
+/// Display items retrieved from an API in a paginated scroll view
+///
+/// The [ContentScrollBloc] must be available in the context. Use
+/// [ContentScrollWidget] instead if you want to use the default bloc.
+///
+/// The type is is the type of the content retriever
+class ContentScrollView<T extends ContentRetriever> extends StatelessWidget {
+  const ContentScrollView({
+    this.itemBuilder,
+    List<Widget>? headerSlivers,
+    super.key,
+  }) : headerSlivers = headerSlivers ?? const [];
 
   /// Slivers that will go above the scroll
   final List<Widget> headerSlivers;
 
-  /// If the bloc is already made it can be provided here
-  final ContentScrollBloc? contentScrollBloc;
-
-  final Widget? Function(BuildContext, int, List<Object> content)? itemBuilder;
+  /// The function used to build the items
+  final ItemBuilder? itemBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final widget = BlocListener<GlobalBloc, GlobalState>(
+    return BlocListener<GlobalBloc, GlobalState>(
       // resets scroll view if account changes
       listenWhen: (previous, current) {
         return previous.requestUrlDifferent(current);
@@ -161,19 +186,5 @@ class ContentScrollView extends StatelessWidget {
         },
       ),
     );
-
-    if (contentScrollBloc == null) {
-      return BlocProvider(
-        create: (context) => ContentScrollBloc(
-          retrieveContent: contentRetriever!,
-        )..add(Initialise()),
-        child: widget,
-      );
-    } else {
-      return BlocProvider.value(
-        value: contentScrollBloc!,
-        child: widget,
-      );
-    }
   }
 }

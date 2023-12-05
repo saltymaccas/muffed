@@ -45,7 +45,7 @@ class CommunityPage extends MPage<void> {
         ),
         BlocProvider<ContentScrollBloc>(
           create: (context) => ContentScrollBloc(
-            retrieveContent: CommunityScreenContentRetriever(
+            contentRetriever: CommunityScreenContentRetriever(
               sortType: LemmySortType.hot,
               repo: context.read<ServerRepo>(),
               communityId: communityId,

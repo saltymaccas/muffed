@@ -24,4 +24,8 @@ class MNavigator extends Cubit<MNavigatorState> {
   void push(MPage<Object?> page) {
     emit(state.copyWithPush(page));
   }
+
+  void pushToRootBranch(MPage<Object?> page) {
+    emit(state.copyWithRootBranchPush(page));
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
@@ -22,41 +23,45 @@ class NavigationBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final MNavigator navigator = MNavigator.of(context);
 
-    return Material(
-      clipBehavior: Clip.hardEdge,
-      borderRadius: BorderRadius.circular(10),
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      child: Row(
-        children: [
-          IconButton(
-            isSelected: MNavigator.of(context).state.currentBranchIndex ==
-                relatedBranchIndex,
-            selectedIcon: Icon(
-              selectedIcon,
-              color: context.colorScheme().primary,
-            ),
-            icon: Icon(icon),
-            onPressed: () {
-              _log.info('Branch $relatedBranchIndex pressed');
-              if (MNavigator.of(context).state.currentBranchIndex !=
-                  relatedBranchIndex) {
-                _log.info('Switching to branch $relatedBranchIndex');
-                context.switchBranch(relatedBranchIndex);
-              } else if (MNavigator.of(context).state.canPop) {
-                _log.info('Popping branch $relatedBranchIndex');
-                context.pop();
-              }
-            },
-            visualDensity: VisualDensity.compact,
+    return BlocBuilder<MNavigator, MNavigatorState>(
+      builder: (context, state) {
+        return Material(
+          clipBehavior: Clip.hardEdge,
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          child: Row(
+            children: [
+              IconButton(
+                isSelected: MNavigator.of(context).state.currentBranchIndex ==
+                    relatedBranchIndex,
+                selectedIcon: Icon(
+                  selectedIcon,
+                  color: context.colorScheme().primary,
+                ),
+                icon: Icon(icon),
+                onPressed: () {
+                  _log.info('Branch $relatedBranchIndex pressed');
+                  if (MNavigator.of(context).state.currentBranchIndex !=
+                      relatedBranchIndex) {
+                    _log.info('Switching to branch $relatedBranchIndex');
+                    context.switchBranch(relatedBranchIndex);
+                  } else if (MNavigator.of(context).state.canPop) {
+                    _log.info('Popping branch $relatedBranchIndex');
+                    context.pop();
+                  }
+                },
+                visualDensity: VisualDensity.compact,
+              ),
+              _NavigationBarItemActions(
+                pageActions: navigator
+                    .state.branches[relatedBranchIndex].top.pageActions,
+                showActions: MNavigator.of(context).state.currentBranchIndex ==
+                    relatedBranchIndex,
+              ),
+            ],
           ),
-          _NavigationBarItemActions(
-            pageActions:
-                navigator.state.branches[relatedBranchIndex].top.pageActions,
-            showActions: MNavigator.of(context).state.currentBranchIndex ==
-                relatedBranchIndex,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:muffed/router/router.dart';
 /// Holds a stack of pages and provides methods for manipulating them.
 class Branch extends Equatable {
   Branch(this.pages, {GlobalKey<NavigatorState>? key})
-      : key = key ?? GlobalKey();
+      : key = key ?? GlobalKey<NavigatorState>();
 
   /// The stack of pages
   final List<MPage<Object?>> pages;
@@ -35,6 +35,14 @@ class Branch extends Equatable {
     return Branch(
       pages ?? this.pages,
       key: key ?? this.key,
+    );
+  }
+
+  /// Deep copies the branch
+  Branch copy() {
+    return Branch(
+      List.of(pages),
+      key: key,
     );
   }
 

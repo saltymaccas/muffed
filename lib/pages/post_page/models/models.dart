@@ -3,8 +3,8 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 /// Defines how the comments will be retrieved for the [ContentScrollView]
-class PostCommentRetriever extends ContentRetriever with EquatableMixin {
-  PostCommentRetriever({
+class CommentRetriever extends ContentRetriever with EquatableMixin {
+  CommentRetriever({
     required this.postId,
     required this.repo,
     this.sortType = LemmyCommentSortType.hot,
@@ -25,4 +25,16 @@ class PostCommentRetriever extends ContentRetriever with EquatableMixin {
 
   @override
   List<Object?> get props => [postId, repo, sortType];
+
+  CommentRetriever copyWith({
+    int? postId,
+    ServerRepo? repo,
+    LemmyCommentSortType? sortType,
+  }) {
+    return CommentRetriever(
+      postId: postId ?? this.postId,
+      repo: repo ?? this.repo,
+      sortType: sortType ?? this.sortType,
+    );
+  }
 }

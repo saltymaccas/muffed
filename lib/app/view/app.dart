@@ -2,9 +2,6 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/navigation_bar/navigation_bar.dart';
-import 'package:muffed/pages/home/home.dart';
-import 'package:muffed/pages/inbox_page/inbox_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 
@@ -37,57 +34,14 @@ class _AppView extends StatelessWidget {
   final ThemeData darkTheme;
   final ThemeMode themeMode;
 
-  MNavigatorState get initialState => MNavigatorState(
-        currentBranchIndex: 0,
-        branches: [
-          Branch(
-            [HomePage()],
-            key: GlobalKey<NavigatorState>(debugLabel: 'Home'),
-          ),
-          Branch(
-            [InboxPage()],
-            key: GlobalKey<NavigatorState>(debugLabel: 'Inbox'),
-          ),
-        ],
-      );
-
-  /// The navigation items, each relates to a branch
-  List<NavigationBarItem> get navigationItems => [
-        const NavigationBarItem(
-          relatedBranchIndex: 0,
-          icon: Icons.home_outlined,
-          selectedIcon: Icons.home,
-        ),
-        const NavigationBarItem(
-          relatedBranchIndex: 1,
-          icon: Icons.inbox_outlined,
-          selectedIcon: Icons.inbox,
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MNavigator(initialState),
-      child: Builder(
-        builder: (context) {
-          return MaterialApp.router(
-            routerDelegate: MRouterDelegate(
-              MNavigator.of(context),
-            ),
-            builder: (context, child) {
-              return Scaffold(
-                body: child,
-                bottomNavigationBar: MNavigationBar(navigationItems),
-              );
-            },
-            title: 'Muffed',
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: themeMode,
-          );
-        },
-      ),
+    return MaterialApp.router(
+      routerConfig: routerConfig,
+      title: 'Muffed',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
     );
   }
 }

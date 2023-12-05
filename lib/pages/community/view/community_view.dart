@@ -5,7 +5,6 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/widgets/content_scroll_view/view/content_scroll_view.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
@@ -23,12 +22,9 @@ class CommunityView extends StatelessWidget {
         final blocContext = context;
 
         final communityBloc = BlocProvider.of<CommunityScreenBloc>(blocContext);
-        final contentScrollBloc =
-            BlocProvider.of<ContentScrollBloc>(blocContext);
 
         return Scaffold(
           body: ContentScrollView(
-            contentScrollBloc: contentScrollBloc,
             headerSlivers: [
               SliverPersistentHeader(
                 delegate: _TopBarDelegate(

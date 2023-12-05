@@ -8,8 +8,8 @@ final class PullDownRefresh extends ContentScrollEvent {}
 
 final class ReachedNearEndOfScroll extends ContentScrollEvent {}
 
-final class RetrieveContentFunctionChanged extends ContentScrollEvent {
-  RetrieveContentFunctionChanged(this.retrieveContent);
+final class RetrieveContentMethodChanged extends ContentScrollEvent {
+  RetrieveContentMethodChanged(this.retrieveContent);
 
   final ContentRetriever retrieveContent;
 }

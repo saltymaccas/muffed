@@ -12,11 +12,11 @@ final _log = Logger('ContentScrollView');
 /// Controls the state of a content scroll view
 class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
   ///
-  ContentScrollBloc({required this.retrieveContent})
+  ContentScrollBloc({required ContentRetriever contentRetriever})
       : super(
           ContentScrollState(
             status: ContentScrollStatus.initial,
-            retrieveContent: retrieveContent,
+            retrieveContent: contentRetriever,
           ),
         ) {
     on<Initialise>((event, emit) async {
@@ -96,7 +96,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
       },
       transformer: droppable(),
     );
-    on<RetrieveContentFunctionChanged>(
+    on<RetrieveContentMethodChanged>(
       (event, emit) async {
         try {
           emit(
@@ -129,8 +129,6 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
       transformer: droppable(),
     );
   }
-
-  final ContentRetriever retrieveContent;
 
   @override
   void onChange(Change<ContentScrollState> change) {
