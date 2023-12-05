@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/comment_item/comment_item.dart';
+import 'package:muffed/widgets/comment/view/comment.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post/post_widget.dart';
+import 'package:muffed/widgets/post/post.dart';
 
 import 'bloc/bloc.dart';
 
@@ -223,7 +223,7 @@ class _UserScreenSuccess extends StatelessWidget {
                     height: _headerMinHeight,
                   );
                 }
-                return CommentItem(
+                return CommentWidget(
                   displayMode: CommentItemDisplayMode.single,
                   comment: comments[index - 1],
                   children: const [],

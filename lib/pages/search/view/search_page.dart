@@ -4,9 +4,9 @@ import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/comment_item/comment_item.dart';
+import 'package:muffed/widgets/comment/view/comment.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post/post_widget.dart';
+import 'package:muffed/widgets/post/post.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
 /// A full screen page for searching for communities, posts, comments and users.
@@ -285,7 +285,7 @@ class _SearchView extends StatelessWidget {
                                 controller: commentsScrollController,
                                 itemCount: state.comments.length,
                                 itemBuilder: (context, index) {
-                                  return CommentItem(
+                                  return CommentWidget(
                                     displayMode: CommentItemDisplayMode.single,
                                     key: ValueKey(state.comments[index].id),
                                     comment: state.comments[index],

@@ -7,7 +7,7 @@ import 'package:muffed/router/router.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post/post_widget.dart';
+import 'package:muffed/widgets/post/post.dart';
 import 'package:muffed/widgets/url_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

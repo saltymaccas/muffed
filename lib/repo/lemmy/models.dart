@@ -364,7 +364,7 @@ class LemmyComment extends Equatable {
   // TODO: see if still in api, bc the api seems to not return it
   final int? hotRank;
 
-  int getLevel() => path.length;
+  int get level => path.length;
 
   @override
   List<Object?> get props => [

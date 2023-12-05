@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/widgets/comment_item/comment_item.dart';
+import 'package:muffed/widgets/comment/view/comment.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/nothing_to_show.dart';
 
@@ -74,7 +74,7 @@ class RepliesScreen extends StatelessWidget {
                                         !state.showAll)
                                     ? 0
                                     : null,
-                                child: CommentItem(
+                                child: CommentWidget(
                                   key: ValueKey(state.replies[index].id),
                                   markedAsReadCallback: () {
                                     context.read<RepliesBloc>().add(

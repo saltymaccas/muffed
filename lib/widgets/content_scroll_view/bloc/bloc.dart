@@ -74,12 +74,14 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             final response =
                 await state.retrieveContent(page: state.pagesLoaded + 1);
 
-            if (response.isEmpty) {
+            final newContentList = {...state.content!, ...response}.toList();
+
+            if (newContentList.length == state.content!.length) {
               emit(state.copyWith(isLoadingMore: false, reachedEnd: true));
             } else {
               emit(
                 state.copyWith(
-                  content: {...state.content!, ...response}.toList(),
+                  content: newContentList,
                   pagesLoaded: state.pagesLoaded + 1,
                   isLoadingMore: false,
                 ),

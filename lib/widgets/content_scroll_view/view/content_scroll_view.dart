@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/comment_item/comment_item.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/error.dart';
-import 'package:muffed/widgets/post/post_widget.dart';
+import 'package:muffed/widgets/post/post.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
 /// A function for retrieving content
@@ -17,7 +16,7 @@ class ContentScrollView extends StatelessWidget {
     this.contentRetriever,
     this.headerSlivers = const [],
     this.contentScrollBloc,
-    this.commentItemDisplayMode = CommentItemDisplayMode.single,
+    this.itemBuilder,
     super.key,
   });
 
@@ -30,8 +29,7 @@ class ContentScrollView extends StatelessWidget {
   /// If the bloc is already made it can be provided here
   final ContentScrollBloc? contentScrollBloc;
 
-  /// How any comments will be displayed
-  final CommentItemDisplayMode commentItemDisplayMode;
+  final Widget? Function(BuildContext, int, List<Object> content)? itemBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +119,10 @@ class ContentScrollView extends StatelessWidget {
                       SliverList.builder(
                         itemCount: state.content!.length,
                         itemBuilder: (context, index) {
+                          if (itemBuilder != null) {
+                            return itemBuilder!(context, index, state.content!);
+                          }
+
                           final item = state.content![index];
 
                           if (item is LemmyPost) {
@@ -128,13 +130,8 @@ class ContentScrollView extends StatelessWidget {
                               post: item,
                               displayType: PostDisplayType.list,
                             );
-                          } else if (item is LemmyComment) {
-                            return CommentItem(
-                              comment: item,
-                              displayMode: commentItemDisplayMode,
-                            );
                           } else {
-                            return const Text('could not display item');
+                            return const Text('Item type did not match any');
                           }
                         },
                       ),
