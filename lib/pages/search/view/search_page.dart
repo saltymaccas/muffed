@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/comment/view/comment.dart';
-import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post/post.dart';
-import 'package:muffed/widgets/snackbars.dart';
+import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 /// A full screen page for searching for communities, posts, comments and users.
 class SearchPage extends MPage<void> {
@@ -37,12 +33,10 @@ class SearchPage extends MPage<void> {
         // in order to search for the search query
         if (searchQuery != null && searchQuery != '') {
           return SearchBloc(
-            repo: context.read<ServerRepo>(),
             initialState: initialState,
-          )..add(SearchQueryChanged(searchQuery: searchQuery!));
+          )..add(SearchRequested(searchQuery: searchQuery!));
         } else {
           return SearchBloc(
-            repo: context.read<ServerRepo>(),
             initialState: initialState,
             communityId: communityId,
             communityName: communityName,
@@ -55,7 +49,6 @@ class SearchPage extends MPage<void> {
 }
 
 class _SearchView extends StatelessWidget {
-  /// Creates a [SearchPage]
   const _SearchView();
 
   @override
@@ -63,30 +56,14 @@ class _SearchView extends StatelessWidget {
     /// Focuses on the search bar then unfocuses to make sure the back button
     /// removes the keyboard instead on popping the page
     final textFocusNode = FocusNode();
-    final textController = TextEditingController(
-      text: context.read<SearchBloc>().state.searchQuery,
-    );
+    final textController = TextEditingController();
 
-    final communitiesScrollController = ScrollController();
-    final personsScrollController = ScrollController();
-    final postsScrollController = ScrollController();
-    final commentsScrollController = ScrollController();
-
-    return BlocConsumer<SearchBloc, SearchState>(
-      listenWhen: (previous, current) {
-        if (previous.error != current.error && current.error != null) {
-          return true;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        showErrorSnackBar(context, error: state.error);
-      },
+    return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
         return Scaffold(
           body: SafeArea(
             child: DefaultTabController(
-              length: (state.communityId != null) ? 2 : 4,
+              length: 2,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,206 +79,26 @@ class _SearchView extends StatelessWidget {
                         const Tab(
                           text: 'People',
                         ),
-                      const Tab(
-                        text: 'Posts',
-                      ),
-                      const Tab(
-                        text: 'Comments',
-                      ),
+                      // const Tab(
+                      //   text: 'Posts',
+                      // ),
+                      // const Tab(
+                      //   text: 'Comments',
+                      // ),
                     ],
                   ),
                   const Divider(
                     height: 1,
                   ),
-                  Expanded(
-                    child: Stack(
+                  const Expanded(
+                    child: TabBarView(
                       children: [
-                        NotificationListener(
-                          onNotification: (ScrollNotification scrollInfo) {
-                            if (scrollInfo.metrics.pixels >=
-                                    scrollInfo.metrics.maxScrollExtent - 500 &&
-                                scrollInfo.metrics.axis == Axis.vertical) {
-                              context.read<SearchBloc>().add(
-                                    ReachedNearEndOfPage(),
-                                  );
-                            }
-                            return true;
-                          },
-                          child: TabBarView(
-                            children: [
-                              // communities
-                              if (state.communityId == null)
-                                ListView.builder(
-                                  key: ValueKey(
-                                    'search communities ${state.loadedSearchQuery}, ${state.loadedSortType}',
-                                  ),
-                                  controller: communitiesScrollController,
-                                  itemCount: state.communities.length,
-                                  itemBuilder: (context, index) {
-                                    final theme = Theme.of(context);
-
-                                    final community = state.communities[index];
-
-                                    return InkWell(
-                                      onTap: () {
-                                        context.push(
-                                          CommunityPage(
-                                            community: community,
-                                          ),
-                                        );
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 8,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                    16,
-                                                  ),
-                                                  child: MuffedAvatar(
-                                                    url: community.icon,
-                                                    radius: 16,
-                                                  ),
-                                                ),
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        community.title,
-                                                        style: theme.textTheme
-                                                            .titleMedium,
-                                                      ),
-                                                      RichText(
-                                                        text: TextSpan(
-                                                          children: [
-                                                            TextSpan(
-                                                              text:
-                                                                  '${community.subscribers}',
-                                                              style: theme
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                color: Theme.of(
-                                                                  context,
-                                                                )
-                                                                    .colorScheme
-                                                                    .outline,
-                                                              ),
-                                                            ),
-                                                            TextSpan(
-                                                              text: ' members ',
-                                                              style: theme
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                color: Theme.of(
-                                                                  context,
-                                                                )
-                                                                    .colorScheme
-                                                                    .outline,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 4,
-                                                      ),
-                                                      if (community
-                                                              .description !=
-                                                          null)
-                                                        Text(
-                                                          community
-                                                              .description!,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: theme.textTheme
-                                                              .bodySmall!
-                                                              .copyWith(
-                                                            color: Theme.of(
-                                                              context,
-                                                            )
-                                                                .colorScheme
-                                                                .outline,
-                                                          ),
-                                                        ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const Divider(height: 1),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              if (state.communityId == null)
-                                ListView.builder(
-                                  key: ValueKey(
-                                    'search persons ${state.loadedSearchQuery}, ${state.loadedSortType}',
-                                  ),
-                                  controller: personsScrollController,
-                                  itemCount: state.persons.length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      onTap: () {
-                                        // TODO: add navigation
-                                      },
-                                      leading: MuffedAvatar(
-                                        url: state.persons[index].avatar,
-                                        radius: 20,
-                                      ),
-                                      title: Text(state.persons[index].name),
-                                      visualDensity: VisualDensity.comfortable,
-                                    );
-                                  },
-                                ),
-                              // posts
-                              ListView.builder(
-                                key: ValueKey(
-                                  'search posts ${state.loadedSearchQuery}, ${state.loadedSortType}',
-                                ),
-                                controller: postsScrollController,
-                                itemCount: state.posts.length,
-                                itemBuilder: (context, index) {
-                                  return PostWidget(post: state.posts[index]);
-                                },
-                              ),
-
-                              ListView.builder(
-                                key: ValueKey(
-                                  'search comments ${state.loadedSearchQuery}, ${state.loadedSortType}',
-                                ),
-                                controller: commentsScrollController,
-                                itemCount: state.comments.length,
-                                itemBuilder: (context, index) {
-                                  return CommentWidget(
-                                    displayMode: CommentItemDisplayMode.single,
-                                    key: ValueKey(state.comments[index].id),
-                                    comment: state.comments[index],
-                                    children: const [],
-                                    sortType: LemmyCommentSortType.hot,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                        _CommunitySearchView(
+                          key: PageStorageKey('community'),
                         ),
-                        if (state.isLoading)
-                          const Align(
-                            alignment: Alignment.topCenter,
-                            child: LinearProgressIndicator(),
-                          ),
+                        _PersonSearchView(
+                          key: PageStorageKey('person'),
+                        ),
                       ],
                     ),
                   ),
@@ -345,12 +142,6 @@ class _SearchView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              context.read<SearchBloc>().add(SearchAll());
-                            },
-                            child: const Text('Search all'),
-                          ),
                         ],
                       ),
                     ),
@@ -361,17 +152,16 @@ class _SearchView extends StatelessWidget {
                   TextField(
                     focusNode: textFocusNode,
                     controller: textController,
-                    onChanged: (query) {
-                      context.read<SearchBloc>().add(
-                            SearchQueryChanged(
-                              searchQuery: query,
-                            ),
-                          );
-                    },
                     autofocus: true,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<SearchBloc>().add(
+                                SearchRequested(
+                                  searchQuery: textController.text,
+                                ),
+                              );
+                        },
                         icon: const Icon(Icons.search),
                       ),
                       prefixIcon: IconButton(
@@ -396,6 +186,77 @@ class _SearchView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _PersonSearchView extends StatelessWidget {
+  const _PersonSearchView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<ContentScrollBloc>(
+      create: (context) => ContentScrollBloc(
+        contentRetriever: PersonSearchRetriever(
+          repo: context.read<ServerRepo>(),
+          query: context.read<SearchBloc>().state.searchQuery,
+          sortType: context.read<SearchBloc>().state.sortType,
+        ),
+      )..add(Initialise(loadInitialContent: false)),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<SearchBloc, SearchState>(
+            listener: (context, state) {
+              context.read<ContentScrollBloc>().add(
+                    RetrieveContentMethodChanged(
+                      PersonSearchRetriever(
+                        sortType: state.sortType,
+                        query: state.searchQuery,
+                        repo: context.read<ServerRepo>(),
+                      ),
+                    ),
+                  );
+            },
+            child: const ContentScrollView(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CommunitySearchView extends StatelessWidget {
+  const _CommunitySearchView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<ContentScrollBloc>(
+      create: (context) => ContentScrollBloc(
+        contentRetriever: CommunitySearchRetriever(
+          repo: context.read<ServerRepo>(),
+          query: context.read<SearchBloc>().state.searchQuery,
+          sortType: context.read<SearchBloc>().state.sortType,
+        ),
+      )..add(Initialise(loadInitialContent: false)),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<SearchBloc, SearchState>(
+            listener: (context, state) {
+              print('list');
+              context.read<ContentScrollBloc>().add(
+                    RetrieveContentMethodChanged(
+                      CommunitySearchRetriever(
+                        sortType: state.sortType,
+                        query: state.searchQuery,
+                        repo: context.read<ServerRepo>(),
+                      ),
+                    ),
+                  );
+            },
+            child: const ContentScrollView(),
+          );
+        },
+      ),
     );
   }
 }

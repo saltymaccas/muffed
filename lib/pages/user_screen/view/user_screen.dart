@@ -9,7 +9,7 @@ import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/post/post.dart';
 
-import 'bloc/bloc.dart';
+import '../bloc/bloc.dart';
 
 const _headerMaxHeight = 300.0;
 const _headerMinHeight = 130.0;
@@ -77,7 +77,7 @@ class _UserScreenSuccess extends StatelessWidget {
     required this.isLoading,
   });
 
-  final LemmyPerson user;
+  final LemmyUser user;
   final List<LemmyPost> posts;
   final List<LemmyComment> comments;
   final bool isLoading;
@@ -128,11 +128,11 @@ class _UserScreenSuccess extends StatelessWidget {
                                 children: [
                                   Text(
                                     user.postCount.toString(),
-                                    style: context.textTheme().displaySmall,
+                                    style: context.textTheme.displaySmall,
                                   ),
                                   Text(
                                     'Posts',
-                                    style: context.textTheme().labelLarge,
+                                    style: context.textTheme.labelLarge,
                                   ),
                                 ],
                               ),
@@ -145,11 +145,11 @@ class _UserScreenSuccess extends StatelessWidget {
                                 children: [
                                   Text(
                                     user.commentCount.toString(),
-                                    style: context.textTheme().displaySmall,
+                                    style: context.textTheme.displaySmall,
                                   ),
                                   Text(
                                     'Comments',
-                                    style: context.textTheme().labelLarge,
+                                    style: context.textTheme.labelLarge,
                                   ),
                                 ],
                               ),
@@ -172,7 +172,7 @@ class _UserScreenSuccess extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: Text(
                         'Moderates (${user.moderates!.length})',
-                        style: context.textTheme().titleMedium,
+                        style: context.textTheme.titleMedium,
                       ),
                     ),
                   ],
@@ -263,7 +263,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     return true;
   }
 
-  final LemmyPerson user;
+  final LemmyUser user;
 
   @override
   Widget build(

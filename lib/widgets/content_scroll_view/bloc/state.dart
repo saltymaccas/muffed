@@ -6,7 +6,7 @@ final class ContentScrollState extends Equatable {
   const ContentScrollState({
     required this.status,
     required this.retrieveContent,
-    this.content,
+    this.content = const [],
     this.isRefreshing = false,
     this.pagesLoaded = 0,
     this.isLoadingMore = false,
@@ -17,7 +17,7 @@ final class ContentScrollState extends Equatable {
   }) : loadedRetrieveContent = loadedRetrieveContent ?? retrieveContent;
 
   final ContentScrollStatus status;
-  final List<Object>? content;
+  final List<Object> content;
   final bool isRefreshing;
   final int pagesLoaded;
   final bool isLoadingMore;

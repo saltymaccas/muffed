@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/user_screen/user.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
@@ -48,6 +50,12 @@ class ContentScrollView extends StatelessWidget {
             post: item,
             displayType: PostDisplayType.list,
           );
+        }
+        if (item is LemmyCommunity) {
+          return CommunityListTile(item);
+        }
+        if (item is LemmyUser) {
+          return UserListTile(person: item);
         } else {
           return const Text('Item type did not match any');
         }
@@ -96,8 +104,6 @@ class ContentScrollView extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          print('build');
-
           if (state.status == ContentScrollStatus.initial) {
             return CustomScrollView(
               slivers: [

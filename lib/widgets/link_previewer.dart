@@ -127,10 +127,10 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                         builder: (context, constraints) {
                           // Set text styles
                           final titleTextStyle = widget.titleTextStyle ??
-                              context.textTheme().titleMedium!;
+                              context.textTheme.titleMedium!;
 
                           final bodyTextStyle = widget.bodyTextStyle ??
-                              context.textTheme().bodySmall!;
+                              context.textTheme.bodySmall!;
 
                           final bool titleAvailable = metadata!.title != null &&
                               metadata!.title!.isNotEmpty;

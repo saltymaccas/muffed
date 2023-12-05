@@ -36,7 +36,7 @@ class NavigationBarItem extends StatelessWidget {
                     relatedBranchIndex,
                 selectedIcon: Icon(
                   selectedIcon,
-                  color: context.colorScheme().primary,
+                  color: context.colorScheme.primary,
                 ),
                 icon: Icon(icon),
                 onPressed: () {

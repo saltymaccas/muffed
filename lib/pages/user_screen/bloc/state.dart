@@ -19,7 +19,7 @@ final class UserScreenState extends Equatable {
   final int? userId;
   final String? username;
   final UserStatus status;
-  final LemmyPerson? user;
+  final LemmyUser? user;
 
   final List<LemmyComment> comments;
   final List<LemmyPost> posts;
@@ -50,7 +50,7 @@ final class UserScreenState extends Equatable {
     int? userId,
     String? username,
     UserStatus? status,
-    LemmyPerson? user,
+    LemmyUser? user,
     List<LemmyComment>? comments,
     List<LemmyPost>? posts,
     bool? loading,

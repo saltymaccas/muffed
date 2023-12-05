@@ -594,7 +594,7 @@ class LemmyCommunity extends Equatable {
       moderators: (getCommunityResponse != null)
           ? List.generate(
               getCommunityResponse['moderators'].length,
-              (index) => LemmyPerson.fromJson(
+              (index) => LemmyUser.fromJson(
                 getCommunityResponse?['moderators'][index]['moderator'],
               ),
             )
@@ -668,7 +668,7 @@ An open source Lemmy client written in flutter with a focus on usability and pri
 
   /// from [JsonTypes.getCommunityResponse]
 
-  final List<LemmyPerson>? moderators;
+  final List<LemmyUser>? moderators;
 
   String get tag {
     final regex = RegExp('https://([^/]+)/c/([^/]+)');
@@ -738,7 +738,7 @@ An open source Lemmy client written in flutter with a focus on usability and pri
     int? usersActiveWeek,
     bool? blocked,
     LemmySubscribedType? subscribed,
-    List<LemmyPerson>? moderators,
+    List<LemmyUser>? moderators,
   }) {
     return LemmyCommunity(
       id: id ?? this.id,
@@ -773,8 +773,8 @@ An open source Lemmy client written in flutter with a focus on usability and pri
   }
 }
 
-class LemmyPerson extends Equatable {
-  const LemmyPerson({
+class LemmyUser extends Equatable {
+  const LemmyUser({
     required this.actorId,
     required this.admin,
     required this.banned,
@@ -799,7 +799,7 @@ class LemmyPerson extends Equatable {
     this.moderates,
   });
 
-  factory LemmyPerson.fromJson(Map<String, dynamic> json) {
+  factory LemmyUser.fromJson(Map<String, dynamic> json) {
     late final JsonTypes jsonType;
 
     // gets what type of json was parsed in
@@ -849,7 +849,7 @@ class LemmyPerson extends Equatable {
         personDetailsResponse = null;
     }
 
-    return LemmyPerson(
+    return LemmyUser(
       actorId: person['actor_id'],
       admin: person['admin'],
       banned: person['banned'],
@@ -884,7 +884,7 @@ class LemmyPerson extends Equatable {
     );
   }
 
-  LemmyPerson.placeHolder()
+  LemmyUser.placeHolder()
       : actorId = 'https://sh.itjust.works/u/muffed',
         admin = false,
         banned = false,
@@ -979,7 +979,7 @@ class LemmyGetPersonDetailsResponse {
     required this.moderates,
   });
 
-  final LemmyPerson person;
+  final LemmyUser person;
   final List<LemmyPost> posts;
   final List<LemmyComment> comments;
   final List<String> moderates;
@@ -996,7 +996,7 @@ class LemmySearchResponse {
   final List<LemmyPost>? lemmyPosts;
   final List<LemmyCommunity>? lemmyCommunities;
   final List<LemmyComment>? lemmyComments;
-  final List<LemmyPerson>? lemmyPersons;
+  final List<LemmyUser>? lemmyPersons;
 }
 
 class LemmyLoginResponse {
@@ -1033,7 +1033,7 @@ class LemmySite extends Equatable {
   LemmySite.fromGetSiteResponse(Map<String, dynamic> json)
       : admins = List.generate(
           json['admins'].length,
-          (index) => LemmyPerson.fromJson(json['admins'][index]),
+          (index) => LemmyUser.fromJson(json['admins'][index]),
         ),
         languages = List.generate(
           json['all_languages'].length,
@@ -1057,7 +1057,7 @@ class LemmySite extends Equatable {
         sidebar = json['site_view']['site']['sidebar'],
         updated = DateTime.parse('${json['site_view']['site']['updated']}Z');
 
-  final List<LemmyPerson> admins;
+  final List<LemmyUser> admins;
   final List<LemmyLanguage> languages;
   final List<int> discussionLanguages;
   final String version;

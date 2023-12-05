@@ -8,6 +8,7 @@ import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post/post.dart';
 
+/// A Page that shows the post on top and the comments under
 class PostPage extends MPage<void> {
   PostPage({int? postId, this.post, this.postBloc})
       : assert(
@@ -110,7 +111,6 @@ class PostPage extends MPage<void> {
   }
 }
 
-/// Displays a screen that shows the post on top and the comments under
 class _PostView extends StatelessWidget {
   const _PostView();
 

@@ -2,10 +2,10 @@ part of 'bloc.dart';
 
 sealed class SearchEvent {}
 
-class SearchQueryChanged extends SearchEvent {
-  final String searchQuery;
+class SearchRequested extends SearchEvent {
+  SearchRequested({required this.searchQuery});
 
-  SearchQueryChanged({required this.searchQuery});
+  final String searchQuery;
 }
 
 class SortTypeChanged extends SearchEvent {
@@ -13,7 +13,3 @@ class SortTypeChanged extends SearchEvent {
 
   final LemmySortType sortType;
 }
-
-class ReachedNearEndOfPage extends SearchEvent {}
-
-class SearchAll extends SearchEvent {}
