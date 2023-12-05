@@ -57,130 +57,142 @@ class ContentScrollView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late ContentScrollBloc contentScrollBloc;
+    late bool blocAlreadyExists;
 
     try {
-      contentScrollBloc = BlocProvider.of<ContentScrollBloc>(context);
+      BlocProvider.of<ContentScrollBloc>(context);
       _log.info('Found bloc in context, using it');
+      blocAlreadyExists = true;
     } catch (err) {
       _log.info('No bloc found in context, creating new one');
-      contentScrollBloc = ContentScrollBloc(contentRetriever: contentRetriever!)
-        ..add(Initialise());
+      blocAlreadyExists = false;
     }
 
-    return BlocProvider.value(
-      value: contentScrollBloc,
-      child: BlocListener<GlobalBloc, GlobalState>(
-        // resets scroll view if account changes
-        listenWhen: (previous, current) {
-          return previous.requestUrlDifferent(current);
-        },
+    if (blocAlreadyExists) {
+      return buildView(context);
+    } else {
+      return BlocProvider(
+        create: (context) =>
+            ContentScrollBloc(contentRetriever: contentRetriever!)
+              ..add(Initialise()),
+        child: buildView(context),
+      );
+    }
+  }
+
+  Widget buildView(BuildContext context) {
+    return BlocListener<GlobalBloc, GlobalState>(
+      // resets scroll view if account changes
+      listenWhen: (previous, current) {
+        return previous.requestUrlDifferent(current);
+      },
+      listener: (context, state) {
+        context.read<ContentScrollBloc>().add(Initialise());
+      },
+      child: BlocConsumer<ContentScrollBloc, ContentScrollState>(
         listener: (context, state) {
-          context.read<ContentScrollBloc>().add(Initialise());
+          if (state.exception != null) {
+            showErrorSnackBar(context, error: state.exception);
+          }
         },
-        child: BlocConsumer<ContentScrollBloc, ContentScrollState>(
-          listener: (context, state) {
-            if (state.exception != null) {
-              showErrorSnackBar(context, error: state.exception);
-            }
-          },
-          builder: (context, state) {
-            if (state.status == ContentScrollStatus.initial) {
-              return CustomScrollView(
-                slivers: [
-                  ...headerSlivers,
-                ],
-              );
-            }
+        builder: (context, state) {
+          print('build');
 
-            if (state.status == ContentScrollStatus.loading) {
-              return CustomScrollView(
-                slivers: [
-                  ...headerSlivers,
-                  const SliverFillRemaining(
-                    child: Center(
-                      child: SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
+          if (state.status == ContentScrollStatus.initial) {
+            return CustomScrollView(
+              slivers: [
+                ...headerSlivers,
+              ],
+            );
+          }
 
-            if (state.status == ContentScrollStatus.failure) {
-              return CustomScrollView(
-                slivers: [
-                  ...headerSlivers,
-                  SliverFillRemaining(
-                    child: ErrorComponentTransparent(error: state.exception),
-                  ),
-                ],
-              );
-            }
-
-            // **** ON SUCCESS ****
-            return Stack(
-              children: [
-                NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 500 &&
-                        scrollInfo.depth == 0) {
-                      context
-                          .read<ContentScrollBloc>()
-                          .add(ReachedNearEndOfScroll());
-                    }
-                    return true;
-                  },
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<ContentScrollBloc>().add(PullDownRefresh());
-                      await context
-                          .read<ContentScrollBloc>()
-                          .stream
-                          .firstWhere((element) {
-                        if (element.isRefreshing == false) {
-                          return true;
-                        }
-                        return false;
-                      });
-                    },
-                    child: CustomScrollView(
-                      key: ValueKey(state.loadedRetrieveContent),
-                      cacheExtent: 500,
-                      slivers: [
-                        ...headerSlivers,
-                        buildContentList(state.content!),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 50,
-                            child: Center(
-                              child: (state.isLoadingMore)
-                                  ? const CircularProgressIndicator()
-                                  : (state.reachedEnd)
-                                      ? Text('Reached End')
-                                      : null,
-                            ),
-                          ),
-                        ),
-                      ],
+          if (state.status == ContentScrollStatus.loading) {
+            return CustomScrollView(
+              slivers: [
+                ...headerSlivers,
+                const SliverFillRemaining(
+                  child: Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(),
                     ),
                   ),
                 ),
-                if (state.isLoading)
-                  const SafeArea(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: LinearProgressIndicator(),
-                    ),
-                  ),
               ],
             );
-          },
-        ),
+          }
+
+          if (state.status == ContentScrollStatus.failure) {
+            return CustomScrollView(
+              slivers: [
+                ...headerSlivers,
+                SliverFillRemaining(
+                  child: ErrorComponentTransparent(error: state.exception),
+                ),
+              ],
+            );
+          }
+
+          // **** ON SUCCESS ****
+          return Stack(
+            children: [
+              NotificationListener(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 500 &&
+                      scrollInfo.depth == 0) {
+                    context
+                        .read<ContentScrollBloc>()
+                        .add(ReachedNearEndOfScroll());
+                  }
+                  return true;
+                },
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<ContentScrollBloc>().add(PullDownRefresh());
+                    await context
+                        .read<ContentScrollBloc>()
+                        .stream
+                        .firstWhere((element) {
+                      if (element.isRefreshing == false) {
+                        return true;
+                      }
+                      return false;
+                    });
+                  },
+                  child: CustomScrollView(
+                    key: ValueKey(state.loadedRetrieveContent),
+                    cacheExtent: 500,
+                    slivers: [
+                      ...headerSlivers,
+                      buildContentList(state.content!),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 50,
+                          child: Center(
+                            child: (state.isLoadingMore)
+                                ? const CircularProgressIndicator()
+                                : (state.reachedEnd)
+                                    ? Text('Reached End')
+                                    : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (state.isLoading)
+                const SafeArea(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: LinearProgressIndicator(),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
