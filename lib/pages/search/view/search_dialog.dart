@@ -50,14 +50,13 @@ class _SearchDialog extends StatelessWidget {
                   Flexible(
                     child: ListView.builder(
                       reverse: true,
-                      clipBehavior: Clip.hardEdge,
                       itemCount: state.content.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final community =
                             state.content[index] as LemmyCommunity;
 
-                        return CommunityListTile(community);
+                        return CommunityListTile.compact(community);
                       },
                     ),
                   ),
@@ -68,9 +67,11 @@ class _SearchDialog extends StatelessWidget {
                     focusNode: textFocusNode,
                     controller: textController,
                     onChanged: (query) {
-                      context.read<SearchBloc>().add(
-                            SearchRequested(
-                              searchQuery: query,
+                      context.read<ContentScrollBloc>().add(
+                            RetrieveContentMethodChanged(
+                              (state.retrieveContent
+                                      as CommunitySearchRetriever)
+                                  .copyWith(query: query),
                             ),
                           );
                     },
@@ -80,7 +81,9 @@ class _SearchDialog extends StatelessWidget {
                         onPressed: () {
                           textFocusNode.unfocus();
                           Navigator.pop(context);
-                          context.push(SearchPage());
+                          context.push(
+                            SearchPage(searchQuery: textController.text),
+                          );
                         },
                         icon: const Icon(Icons.open_in_new),
                       ),

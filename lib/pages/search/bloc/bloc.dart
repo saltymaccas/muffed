@@ -14,11 +14,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchState? initialState,
     int? communityId,
     String? communityName,
+    String? searchQuery,
   }) : super(
           initialState ??
               SearchState(
                 communityId: communityId,
                 communityName: communityName,
+                searchQuery: searchQuery ?? '',
               ),
         ) {
     on<SearchRequested>(

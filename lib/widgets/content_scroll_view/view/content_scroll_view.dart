@@ -51,6 +51,12 @@ class ContentScrollView extends StatelessWidget {
             displayType: PostDisplayType.list,
           );
         }
+        if (item is LemmyComment) {
+          return CommentWidget(
+            displayMode: CommentItemDisplayMode.single,
+            comment: item,
+          );
+        }
         if (item is LemmyCommunity) {
           return CommunityListTile(item);
         }

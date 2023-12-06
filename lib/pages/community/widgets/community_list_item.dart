@@ -7,7 +7,17 @@ import 'package:muffed/widgets/muffed_avatar.dart';
 
 /// Shows information about a community in a list tile format
 class CommunityListTile extends StatelessWidget {
-  const CommunityListTile(this.community, {super.key});
+  const CommunityListTile(
+    this.community, {
+    super.key,
+  });
+
+  factory CommunityListTile.compact(
+    LemmyCommunity community, {
+    Key? key,
+  }) {
+    return _CompactCommunityListTile(community, key: key);
+  }
 
   final LemmyCommunity community;
 
@@ -91,6 +101,57 @@ class CommunityListTile extends StatelessWidget {
           const Divider(height: 1),
         ],
       ),
+    );
+  }
+}
+
+class _CompactCommunityListTile extends CommunityListTile {
+  const _CompactCommunityListTile(super.community, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            context
+              ..pop()
+              ..push(CommunityPage());
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            child: Row(
+              children: [
+                MuffedAvatar(
+                  url: community.icon,
+                  radius: 12,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      community.name,
+                    ),
+                    Text(
+                      '${community.subscribers} members',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: context.colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Divider(),
+      ],
     );
   }
 }

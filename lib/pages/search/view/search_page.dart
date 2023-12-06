@@ -28,21 +28,12 @@ class SearchPage extends MPage<void> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        // if search query if not null or empty add search query changed event
-        // in order to search for the search query
-        if (searchQuery != null && searchQuery != '') {
-          return SearchBloc(
-            initialState: initialState,
-          )..add(SearchRequested(searchQuery: searchQuery!));
-        } else {
-          return SearchBloc(
-            initialState: initialState,
-            communityId: communityId,
-            communityName: communityName,
-          );
-        }
-      },
+      create: (context) => SearchBloc(
+        initialState: initialState,
+        communityId: communityId,
+        communityName: communityName,
+        searchQuery: searchQuery,
+      ),
       child: const _SearchView(),
     );
   }
@@ -56,48 +47,60 @@ class _SearchView extends StatelessWidget {
     /// Focuses on the search bar then unfocuses to make sure the back button
     /// removes the keyboard instead on popping the page
     final textFocusNode = FocusNode();
-    final textController = TextEditingController();
+    final textController = TextEditingController(
+      text: context.read<SearchBloc>().state.searchQuery,
+    );
 
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
         return Scaffold(
           body: SafeArea(
             child: DefaultTabController(
-              length: 2,
+              length: 4,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TabBar(
                     isScrollable: true,
+                    tabAlignment: TabAlignment.start,
                     tabs: [
+                      const Tab(
+                        text: 'Posts',
+                      ),
                       if (state.communityId == null)
                         const Tab(
                           text: 'Communities',
                         ),
+                      const Tab(
+                        text: 'Comments',
+                      ),
                       if (state.communityId == null)
                         const Tab(
                           text: 'People',
                         ),
-                      // const Tab(
-                      //   text: 'Posts',
-                      // ),
-                      // const Tab(
-                      //   text: 'Comments',
-                      // ),
                     ],
                   ),
                   const Divider(
                     height: 1,
                   ),
-                  const Expanded(
+                  Expanded(
                     child: TabBarView(
                       children: [
+                        // keys added to kill scroll views when search changes
+                        // to make them only search the new query when to user
+                        // switches to its page
+                        _PostSearchView(
+                          key: ValueKey(['post', state]),
+                        ),
                         _CommunitySearchView(
-                          key: PageStorageKey('community'),
+                          key: ValueKey(['community', state]),
+                        ),
+                        _CommentSearchView(
+                          key: ValueKey(['comment', state]),
                         ),
                         _PersonSearchView(
-                          key: PageStorageKey('person'),
+                          key: ValueKey(['person', state]),
                         ),
                       ],
                     ),
@@ -161,6 +164,7 @@ class _SearchView extends StatelessWidget {
                                   searchQuery: textController.text,
                                 ),
                               );
+                          textFocusNode.unfocus();
                         },
                         icon: const Icon(Icons.search),
                       ),
@@ -170,7 +174,7 @@ class _SearchView extends StatelessWidget {
                           if (textFocusNode.hasFocus) {
                             textFocusNode.unfocus();
                           } else {
-                            // TODO: add navigation
+                            context.pop();
                           }
                         },
                         icon: const Icon(Icons.arrow_back),
@@ -179,6 +183,15 @@ class _SearchView extends StatelessWidget {
                       focusedBorder: InputBorder.none,
                       border: InputBorder.none,
                     ),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (query) {
+                      context.read<SearchBloc>().add(
+                            SearchRequested(
+                              searchQuery: query,
+                            ),
+                          );
+                    },
                   ),
                 ],
               ),
@@ -190,11 +203,18 @@ class _SearchView extends StatelessWidget {
   }
 }
 
-class _PersonSearchView extends StatelessWidget {
+class _PersonSearchView extends StatefulWidget {
   const _PersonSearchView({super.key});
 
   @override
+  State<_PersonSearchView> createState() => _PersonSearchViewState();
+}
+
+class _PersonSearchViewState extends State<_PersonSearchView>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider<ContentScrollBloc>(
       create: (context) => ContentScrollBloc(
         contentRetriever: PersonSearchRetriever(
@@ -202,7 +222,10 @@ class _PersonSearchView extends StatelessWidget {
           query: context.read<SearchBloc>().state.searchQuery,
           sortType: context.read<SearchBloc>().state.sortType,
         ),
-      )..add(Initialise(loadInitialContent: false)),
+      )..add(Initialise(
+          loadInitialContent:
+              context.read<SearchBloc>().state.searchQuery.isNotEmpty,
+        )),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
@@ -214,6 +237,7 @@ class _PersonSearchView extends StatelessWidget {
                         query: state.searchQuery,
                         repo: context.read<ServerRepo>(),
                       ),
+                      persistContent: false,
                     ),
                   );
             },
@@ -223,13 +247,23 @@ class _PersonSearchView extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class _CommunitySearchView extends StatelessWidget {
+class _CommunitySearchView extends StatefulWidget {
   const _CommunitySearchView({super.key});
 
   @override
+  State<_CommunitySearchView> createState() => _CommunitySearchViewState();
+}
+
+class _CommunitySearchViewState extends State<_CommunitySearchView>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider<ContentScrollBloc>(
       create: (context) => ContentScrollBloc(
         contentRetriever: CommunitySearchRetriever(
@@ -237,12 +271,16 @@ class _CommunitySearchView extends StatelessWidget {
           query: context.read<SearchBloc>().state.searchQuery,
           sortType: context.read<SearchBloc>().state.sortType,
         ),
-      )..add(Initialise(loadInitialContent: false)),
+      )..add(
+          Initialise(
+            loadInitialContent:
+                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
+          ),
+        ),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
             listener: (context, state) {
-              print('list');
               context.read<ContentScrollBloc>().add(
                     RetrieveContentMethodChanged(
                       CommunitySearchRetriever(
@@ -250,6 +288,7 @@ class _CommunitySearchView extends StatelessWidget {
                         query: state.searchQuery,
                         repo: context.read<ServerRepo>(),
                       ),
+                      persistContent: false,
                     ),
                   );
             },
@@ -259,4 +298,111 @@ class _CommunitySearchView extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class _PostSearchView extends StatefulWidget {
+  const _PostSearchView({super.key});
+
+  @override
+  State<_PostSearchView> createState() => _PostSearchViewState();
+}
+
+class _PostSearchViewState extends State<_PostSearchView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocProvider<ContentScrollBloc>(
+      create: (context) => ContentScrollBloc(
+        contentRetriever: PostSearchRetriever(
+          repo: context.read<ServerRepo>(),
+          query: context.read<SearchBloc>().state.searchQuery,
+          sortType: context.read<SearchBloc>().state.sortType,
+          communityId: context.read<SearchBloc>().state.communityId,
+        ),
+      )..add(
+          Initialise(
+            loadInitialContent:
+                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
+          ),
+        ),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<SearchBloc, SearchState>(
+            listener: (context, state) {
+              context.read<ContentScrollBloc>().add(
+                    RetrieveContentMethodChanged(
+                      PostSearchRetriever(
+                        sortType: state.sortType,
+                        query: state.searchQuery,
+                        repo: context.read<ServerRepo>(),
+                      ),
+                      persistContent: false,
+                    ),
+                  );
+            },
+            child: const ContentScrollView(),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class _CommentSearchView extends StatefulWidget {
+  const _CommentSearchView({super.key});
+
+  @override
+  State<_CommentSearchView> createState() => _CommentSearchViewState();
+}
+
+class _CommentSearchViewState extends State<_CommentSearchView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocProvider<ContentScrollBloc>(
+      create: (context) => ContentScrollBloc(
+        contentRetriever: CommentSearchRetriever(
+          repo: context.read<ServerRepo>(),
+          query: context.read<SearchBloc>().state.searchQuery,
+          sortType: context.read<SearchBloc>().state.sortType,
+          communityId: context.read<SearchBloc>().state.communityId,
+        ),
+      )..add(
+          Initialise(
+            loadInitialContent:
+                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
+          ),
+        ),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<SearchBloc, SearchState>(
+            listener: (context, state) {
+              context.read<ContentScrollBloc>().add(
+                    RetrieveContentMethodChanged(
+                      CommentSearchRetriever(
+                        sortType: state.sortType,
+                        query: state.searchQuery,
+                        repo: context.read<ServerRepo>(),
+                      ),
+                      persistContent: false,
+                    ),
+                  );
+            },
+            child: const ContentScrollView(),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
