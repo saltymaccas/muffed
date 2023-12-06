@@ -33,5 +33,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(state.copyWith(sortType: event.sortType));
       },
     );
+    on<SearchAllRequested>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            setCommunityNameAndIdToNull: true,
+          ),
+        );
+      },
+    );
   }
 }

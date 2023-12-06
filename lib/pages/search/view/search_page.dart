@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
+import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
 /// A full screen page for searching for communities, posts, comments and users.
@@ -50,13 +51,50 @@ class _SearchView extends StatelessWidget {
     final textController = TextEditingController(
       text: context.read<SearchBloc>().state.searchQuery,
     );
-
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
+        final tabs = [
+          const Tab(
+            text: 'Posts',
+          ),
+          if (state.communityId == null)
+            const Tab(
+              text: 'Communities',
+            ),
+          const Tab(
+            text: 'Comments',
+          ),
+          if (state.communityId == null)
+            const Tab(
+              text: 'People',
+            ),
+        ];
+
+        final tabViews = [
+          // keys added to kill scroll views when search changes
+          // to make them only search the new query when to user
+          // switches to its page
+          _PostSearchView(
+            key: ValueKey(['post', state]),
+          ),
+          if (state.communityId == null)
+            _CommunitySearchView(
+              key: ValueKey(['community', state]),
+            ),
+          _CommentSearchView(
+            key: ValueKey(['comment', state]),
+          ),
+          if (state.communityId == null)
+            _PersonSearchView(
+              key: ValueKey(['person', state]),
+            ),
+        ];
+
         return Scaffold(
+          backgroundColor: context.colorScheme.background,
           body: SafeArea(
             child: DefaultTabController(
-              length: 4,
+              length: tabs.length,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,134 +102,85 @@ class _SearchView extends StatelessWidget {
                   TabBar(
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
-                    tabs: [
-                      const Tab(
-                        text: 'Posts',
-                      ),
-                      if (state.communityId == null)
-                        const Tab(
-                          text: 'Communities',
-                        ),
-                      const Tab(
-                        text: 'Comments',
-                      ),
-                      if (state.communityId == null)
-                        const Tab(
-                          text: 'People',
-                        ),
-                    ],
+                    tabs: tabs,
                   ),
-                  const Divider(
-                    height: 1,
-                  ),
+                  // const Divider(
+                  //   height: 1,
+                  // ),
                   Expanded(
                     child: TabBarView(
-                      children: [
-                        // keys added to kill scroll views when search changes
-                        // to make them only search the new query when to user
-                        // switches to its page
-                        _PostSearchView(
-                          key: ValueKey(['post', state]),
-                        ),
-                        _CommunitySearchView(
-                          key: ValueKey(['community', state]),
-                        ),
-                        _CommentSearchView(
-                          key: ValueKey(['comment', state]),
-                        ),
-                        _PersonSearchView(
-                          key: ValueKey(['person', state]),
-                        ),
-                      ],
+                      children: tabViews,
                     ),
                   ),
-                  if (state.communityId != null) ...[
-                    const Divider(
-                      height: 1,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Searching in ',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: state.communityName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  const Divider(
-                    height: 1,
-                  ),
-                  TextField(
-                    focusNode: textFocusNode,
-                    controller: textController,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          context.read<SearchBloc>().add(
-                                SearchRequested(
-                                  searchQuery: textController.text,
-                                ),
-                              );
-                          textFocusNode.unfocus();
-                        },
-                        icon: const Icon(Icons.search),
-                      ),
-                      prefixIcon: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          if (textFocusNode.hasFocus) {
+
+                  Material(
+                    child: TextField(
+                      focusNode: textFocusNode,
+                      controller: textController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            context.read<SearchBloc>().add(
+                                  SearchRequested(
+                                    searchQuery: textController.text,
+                                  ),
+                                );
                             textFocusNode.unfocus();
-                          } else {
-                            context.pop();
-                          }
-                        },
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-                      hintText: 'Search',
-                      focusedBorder: InputBorder.none,
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.search,
-                    onSubmitted: (query) {
-                      context.read<SearchBloc>().add(
-                            SearchRequested(
-                              searchQuery: query,
+                          },
+                          icon: const Icon(Icons.search),
+                        ),
+                        prefixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () {
+                                if (textFocusNode.hasFocus) {
+                                  textFocusNode.unfocus();
+                                } else {
+                                  context.pop();
+                                }
+                              },
+                              icon: const Icon(Icons.arrow_back),
                             ),
-                          );
-                    },
+                            if (state.communityName != null)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: Chip(
+                                  label: Text('c/${state.communityName}'),
+                                  visualDensity: VisualDensity.compact,
+                                  onDeleted: () {
+                                    context.read<SearchBloc>().add(
+                                          SearchAllRequested(),
+                                        );
+                                  },
+                                  backgroundColor:
+                                      context.colorScheme.surfaceVariant,
+                                  side: BorderSide.none,
+                                  padding: EdgeInsets.only(left: 6),
+                                  labelPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                          ],
+                        ),
+                        hintText: 'Search',
+                        focusedBorder: InputBorder.none,
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (query) {
+                        context.read<SearchBloc>().add(
+                              SearchRequested(
+                                searchQuery: query,
+                              ),
+                            );
+                      },
+                      onTapOutside: (_) {
+                        textFocusNode.unfocus();
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -6,31 +6,27 @@ class MNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 2,
-      color: Theme.of(context).colorScheme.surface,
-      child: const SizedBox(
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            NavigationBarItem(
-              relatedBranchIndex: 0,
-              icon: Icons.home_outlined,
-              selectedIcon: Icons.home,
-            ),
-            NavigationBarItem(
-              relatedBranchIndex: 1,
-              icon: Icons.inbox_outlined,
-              selectedIcon: Icons.inbox,
-            ),
-            NavigationBarItem(
-              relatedBranchIndex: 2,
-              icon: Icons.account_circle_outlined,
-              selectedIcon: Icons.account_circle,
-            ),
-          ],
-        ),
+    return const SizedBox(
+      height: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          NavigationBarItem(
+            relatedBranchIndex: 0,
+            icon: Icons.home_outlined,
+            selectedIcon: Icons.home,
+          ),
+          NavigationBarItem(
+            relatedBranchIndex: 1,
+            icon: Icons.inbox_outlined,
+            selectedIcon: Icons.inbox,
+          ),
+          NavigationBarItem(
+            relatedBranchIndex: 2,
+            icon: Icons.account_circle_outlined,
+            selectedIcon: Icons.account_circle,
+          ),
+        ],
       ),
     );
   }

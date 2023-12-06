@@ -13,3 +13,5 @@ class SortTypeChanged extends SearchEvent {
 
   final LemmySortType sortType;
 }
+
+class SearchAllRequested extends SearchEvent {}

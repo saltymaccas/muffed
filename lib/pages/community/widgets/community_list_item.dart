@@ -114,9 +114,8 @@ class _CompactCommunityListTile extends CommunityListTile {
       children: [
         InkWell(
           onTap: () {
-            context
-              ..pop()
-              ..push(CommunityPage());
+            Navigator.pop(context);
+            context.push(CommunityPage(community: community));
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(
