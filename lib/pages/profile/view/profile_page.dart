@@ -3,18 +3,69 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/profile/profile.dart';
 import 'package:muffed/router/router.dart';
+import 'package:muffed/theme/theme.dart';
 
 class ProfilePage extends MPage<void> {
   const ProfilePage();
 
   @override
   Widget build(BuildContext context) {
-    return const ProfileView();
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (context, state) {
+        if (state.isLoggedIn()) {
+          return const _LoggedInProfileView();
+        } else {
+          return const _NotLoggedInProfileView();
+        }
+      },
+    );
   }
 }
 
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+class _NotLoggedInProfileView extends StatelessWidget {
+  const _NotLoggedInProfileView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  size: 50,
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Text(
+                  'Anonymous',
+                  style: context.textTheme.titleLarge,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showAccountSwitcher(context);
+              },
+              child: const Text('Log in'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoggedInProfileView extends StatelessWidget {
+  const _LoggedInProfileView();
 
   @override
   Widget build(BuildContext context) {

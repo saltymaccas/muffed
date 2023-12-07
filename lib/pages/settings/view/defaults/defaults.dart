@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
-class DefaultsSettingsPage extends StatelessWidget {
-  const DefaultsSettingsPage({super.key});
+class SettingsDefaultsPage extends MPage<void> {
+  const SettingsDefaultsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _DefaultsSettingsView();
+  }
+}
+
+class _DefaultsSettingsView extends StatelessWidget {
+  const _DefaultsSettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +25,7 @@ class DefaultsSettingsPage extends StatelessWidget {
             title: const Text('Defaults'),
             leading: IconButton(
               onPressed: () {
-                // TODO: add navigation
+                context.pop();
               },
               icon: const Icon(Icons.arrow_back),
             ),

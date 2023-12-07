@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:muffed/router/router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String version = '0.8.5+14';
 
-class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key});
+class AboutPage extends MPage<void> {
+  const AboutPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _AboutView();
+  }
+}
+
+class _AboutView extends StatelessWidget {
+  const _AboutView();
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +24,6 @@ class AboutScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
             Text('Muffed', style: Theme.of(context).textTheme.titleLarge),

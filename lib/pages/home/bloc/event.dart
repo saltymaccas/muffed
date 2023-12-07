@@ -18,3 +18,9 @@ class Initialise extends HomePageEvent {
 
   final bool isLoggedIn;
 }
+
+class PageChanged extends HomePageEvent {
+  const PageChanged({required this.newPageIndex});
+
+  final int newPageIndex;
+}

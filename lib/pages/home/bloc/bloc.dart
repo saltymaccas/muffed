@@ -12,13 +12,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       // defines the scroll views
       final scrollViews = [
         if (event.isLoggedIn)
-          LemmyPostGetter(
+          LemmyPostRetriever(
             title: 'Subscribed',
             sortType: LemmySortType.hot,
             listingType: LemmyListingType.subscribed,
             repo: event.repo,
           ),
-        LemmyPostGetter(
+        LemmyPostRetriever(
           title: 'Popular',
           sortType: LemmySortType.hot,
           listingType: LemmyListingType.all,
@@ -33,13 +33,16 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         ),
       );
     });
+    on<PageChanged>((event, emit) {
+      emit(state.copyWith(currentPage: event.newPageIndex));
+    });
 
     on<SortTypeChanged>((event, emit) {
       final newScrollViewConfigs = [...state.scrollViewConfigs];
 
       final newScrollConfig = newScrollViewConfigs[event.pageIndex];
 
-      if (newScrollConfig is LemmyPostGetter) {
+      if (newScrollConfig is LemmyPostRetriever) {
         newScrollViewConfigs[event.pageIndex] = newScrollConfig.copyWith(
           sortType: event.newSortType,
         );

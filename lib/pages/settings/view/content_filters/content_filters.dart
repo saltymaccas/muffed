@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/router/router.dart';
 
-class ContentFiltersPage extends StatelessWidget {
-  const ContentFiltersPage({super.key});
+class SettingsContentFiltersPage extends MPage<void> {
+  const SettingsContentFiltersPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _SettingsContentFiltersView();
+  }
+}
+
+class _SettingsContentFiltersView extends StatelessWidget {
+  const _SettingsContentFiltersView();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +24,7 @@ class ContentFiltersPage extends StatelessWidget {
             title: const Text('Content Filters'),
             leading: IconButton(
               onPressed: () {
-                // TODO: add navigation
+                context.pop();
               },
               icon: const Icon(Icons.arrow_back),
             ),

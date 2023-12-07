@@ -6,6 +6,7 @@ import 'package:muffed/pages/search/view/search_dialog.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll_view/view/content_scroll_view.dart';
+import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends MPage<void> {
   HomePage() : super(pageActions: PageActions([]));
@@ -23,6 +24,15 @@ class HomePage extends MPage<void> {
       child: Builder(
         builder: (context) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            void changeSortType(LemmySortType sortType) {
+              context.read<HomePageBloc>().add(
+                    SortTypeChanged(
+                      pageIndex: context.read<HomePageBloc>().state.currentPage,
+                      newSortType: sortType,
+                    ),
+                  );
+            }
+
             pageActions!.setActions([
               IconButton(
                 onPressed: () {
@@ -30,6 +40,112 @@ class HomePage extends MPage<void> {
                 },
                 icon: const Icon(Icons.search_rounded),
                 visualDensity: VisualDensity.compact,
+              ),
+              BlocBuilder<HomePageBloc, HomePageState>(
+                bloc: context.read<HomePageBloc>(),
+                builder: (context, state) {
+                  return MuffedPopupMenuButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.sort),
+                    selectedValue:
+                        (state.currentScrollViewConfig as LemmyPostRetriever)
+                            .sortType,
+                    items: [
+                      MuffedPopupMenuItem(
+                        title: 'Hot',
+                        icon: const Icon(Icons.local_fire_department),
+                        value: LemmySortType.hot,
+                        onTap: () => changeSortType(LemmySortType.hot),
+                      ),
+                      MuffedPopupMenuItem(
+                        title: 'Active',
+                        icon: const Icon(Icons.rocket_launch),
+                        value: LemmySortType.active,
+                        onTap: () => changeSortType(LemmySortType.active),
+                      ),
+                      MuffedPopupMenuItem(
+                        title: 'New',
+                        icon: const Icon(Icons.auto_awesome),
+                        value: LemmySortType.latest,
+                        onTap: () => changeSortType(LemmySortType.latest),
+                      ),
+                      MuffedPopupMenuExpandableItem(
+                        title: 'Top',
+                        items: [
+                          MuffedPopupMenuItem(
+                            title: 'All Time',
+                            icon: const Icon(Icons.military_tech),
+                            value: LemmySortType.topAll,
+                            onTap: () => changeSortType(LemmySortType.topAll),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Year',
+                            icon: const Icon(Icons.calendar_today),
+                            value: LemmySortType.topYear,
+                            onTap: () => changeSortType(LemmySortType.topYear),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Month',
+                            icon: const Icon(Icons.calendar_month),
+                            value: LemmySortType.topMonth,
+                            onTap: () => changeSortType(LemmySortType.topMonth),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Week',
+                            icon: const Icon(Icons.view_week),
+                            value: LemmySortType.topWeek,
+                            onTap: () => changeSortType(LemmySortType.topWeek),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Day',
+                            icon: const Icon(Icons.view_day),
+                            value: LemmySortType.topDay,
+                            onTap: () => changeSortType(LemmySortType.topDay),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Twelve Hours',
+                            icon: const Icon(Icons.schedule),
+                            value: LemmySortType.topTwelveHour,
+                            onTap: () =>
+                                changeSortType(LemmySortType.topTwelveHour),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Six Hours',
+                            icon: const Icon(Icons.view_module_outlined),
+                            value: LemmySortType.topSixHour,
+                            onTap: () =>
+                                changeSortType(LemmySortType.topSixHour),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'Hour',
+                            icon: const Icon(Icons.hourglass_bottom),
+                            value: LemmySortType.topHour,
+                            onTap: () => changeSortType(LemmySortType.topHour),
+                          ),
+                        ],
+                      ),
+                      MuffedPopupMenuExpandableItem(
+                        title: 'Comments',
+                        items: [
+                          MuffedPopupMenuItem(
+                            title: 'Most Comments',
+                            icon: const Icon(Icons.comment_bank),
+                            value: LemmySortType.mostComments,
+                            onTap: () =>
+                                changeSortType(LemmySortType.mostComments),
+                          ),
+                          MuffedPopupMenuItem(
+                            title: 'New Comments',
+                            icon: const Icon(Icons.add_comment),
+                            value: LemmySortType.newComments,
+                            onTap: () =>
+                                changeSortType(LemmySortType.newComments),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
               ),
             ]);
           });
@@ -40,15 +156,8 @@ class HomePage extends MPage<void> {
   }
 }
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  int currentPage = 0;
+class HomeView extends StatelessWidget {
+  const HomeView();
 
   @override
   Widget build(BuildContext context) {
@@ -58,60 +167,45 @@ class _HomeViewState extends State<HomeView> {
           return const SizedBox();
         }
         return Scaffold(
-          body: Builder(
-            builder: (context) {
-              final allPageActions = [
-                IconButton(
-                  onPressed: () {
-                    openSearchDialog(context);
-                  },
-                  icon: const Icon(Icons.search_rounded),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ];
-
-              return ContentScrollView(
-                key: ValueKey(state.scrollViewConfigs[currentPage]),
-                contentRetriever: state.scrollViewConfigs[currentPage],
-                headerSlivers: [
-                  SliverAppBar(
-                    clipBehavior: Clip.hardEdge,
-                    toolbarHeight: 50,
-                    floating: true,
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    foregroundColor: Theme.of(context).colorScheme.background,
-                    surfaceTintColor: Theme.of(context).colorScheme.background,
-                    snap: true,
-                    flexibleSpace: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).padding.top,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: List.generate(
-                            state.scrollViewConfigs.length,
-                            (index) => PageTab(
-                              onTap: () {
-                                setState(() {
-                                  currentPage = index;
-                                });
-                              },
-                              name: state.scrollViewConfigs[index].title,
-                              selected: index == currentPage,
-                            ),
-                          ),
-                        ),
-                        const Divider(
-                          height: 0.5,
-                        ),
-                      ],
+          body: ContentScrollView(
+            key: ValueKey(state.currentScrollViewConfig),
+            contentRetriever: state.currentScrollViewConfig,
+            headerSlivers: [
+              SliverAppBar(
+                clipBehavior: Clip.hardEdge,
+                toolbarHeight: 50,
+                floating: true,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                foregroundColor: Theme.of(context).colorScheme.background,
+                surfaceTintColor: Theme.of(context).colorScheme.background,
+                snap: true,
+                flexibleSpace: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.top,
                     ),
-                  ),
-                ],
-              );
-            },
+                    Row(
+                      children: List.generate(
+                        state.scrollViewConfigs.length,
+                        (index) => PageTab(
+                          onTap: () {
+                            context
+                                .read<HomePageBloc>()
+                                .add(PageChanged(newPageIndex: index));
+                          },
+                          name: state.scrollViewConfigs[index].title,
+                          selected: index == state.currentPage,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 0.5,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },

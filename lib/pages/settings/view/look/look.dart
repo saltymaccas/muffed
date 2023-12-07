@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/router/router.dart';
 
-class SettingsLookPage extends StatelessWidget {
-  const SettingsLookPage({super.key});
+class SettingsLookPage extends MPage<void> {
+  const SettingsLookPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _SettingsLookView();
+  }
+}
+
+class _SettingsLookView extends StatelessWidget {
+  const _SettingsLookView();
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +25,7 @@ class SettingsLookPage extends StatelessWidget {
             title: const Text('User Interface'),
             leading: IconButton(
               onPressed: () {
-                // TODO: add navigation
+                context.pop();
               },
               icon: const Icon(Icons.arrow_back),
             ),

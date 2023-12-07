@@ -9,8 +9,8 @@ abstract class HomePageContentRetriever extends ContentRetriever
   final String title;
 }
 
-class LemmyPostGetter extends HomePageContentRetriever {
-  const LemmyPostGetter({
+class LemmyPostRetriever extends HomePageContentRetriever {
+  const LemmyPostRetriever({
     required super.title,
     required this.listingType,
     required this.sortType,
@@ -35,13 +35,13 @@ class LemmyPostGetter extends HomePageContentRetriever {
         repo,
       ];
 
-  LemmyPostGetter copyWith({
+  LemmyPostRetriever copyWith({
     String? title,
     LemmySortType? sortType,
     LemmyListingType? listingType,
     ServerRepo? repo,
   }) {
-    return LemmyPostGetter(
+    return LemmyPostRetriever(
       title: title ?? this.title,
       sortType: sortType ?? this.sortType,
       listingType: listingType ?? this.listingType,
