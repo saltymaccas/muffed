@@ -14,7 +14,7 @@ class InboxPage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return InboxView();
+    return const InboxView();
   }
 }
 

@@ -4,6 +4,7 @@ class CommentItemState extends Equatable {
   const CommentItemState({
     required this.comment,
     required this.children,
+    required this.sortType,
     this.error,
     this.loadingChildren = false,
     this.minimised = false,
@@ -11,12 +12,14 @@ class CommentItemState extends Equatable {
 
   final List<LemmyComment> children;
   final LemmyComment comment;
-  final Object? error;
+  final MException? error;
   final bool loadingChildren;
   final bool minimised;
+  final LemmyCommentSortType sortType;
 
   @override
   List<Object?> get props => [
+        sortType,
         comment,
         children,
         error,
@@ -25,13 +28,15 @@ class CommentItemState extends Equatable {
       ];
 
   CommentItemState copyWith({
+    LemmyCommentSortType? sortType,
     List<LemmyComment>? children,
     LemmyComment? comment,
-    Object? error,
+    MException? error,
     bool? loadingChildren,
     bool? minimised,
   }) {
     return CommentItemState(
+      sortType: sortType ?? this.sortType,
       children: children ?? this.children,
       comment: comment ?? this.comment,
       error: error,

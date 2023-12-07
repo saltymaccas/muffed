@@ -24,7 +24,7 @@ class ContentScrollView extends StatelessWidget {
   }) : headerSlivers = headerSlivers ?? const [];
 
   factory ContentScrollView.commentTree(
-      {LemmyCommentSortType? sortType,
+      {required LemmyCommentSortType sortType,
       List<Widget>? headerSlivers,
       ContentRetriever? contentRetriever}) {
     return _CommentTreeContentScrollView(
@@ -55,6 +55,7 @@ class ContentScrollView extends StatelessWidget {
           return CommentWidget(
             displayMode: CommentItemDisplayMode.single,
             comment: item,
+            sortType: LemmyCommentSortType.hot,
           );
         }
         if (item is LemmyCommunity) {
@@ -178,7 +179,7 @@ class ContentScrollView extends StatelessWidget {
                     cacheExtent: 500,
                     slivers: [
                       ...headerSlivers,
-                      buildContentList(state.content!),
+                      buildContentList(state.content),
                       SliverToBoxAdapter(
                         child: SizedBox(
                           height: 50,
@@ -212,14 +213,14 @@ class ContentScrollView extends StatelessWidget {
 
 class _CommentTreeContentScrollView extends ContentScrollView {
   const _CommentTreeContentScrollView({
-    this.sortType,
+    required this.sortType,
     super.contentRetriever,
     super.headerSlivers,
   });
 
   /// The sort type used to get the comment used when children comments are
   /// retrieved so they can be gotten with the same sort type
-  final LemmyCommentSortType? sortType;
+  final LemmyCommentSortType sortType;
 
   @override
   SliverList buildContentList(List<Object> content) {

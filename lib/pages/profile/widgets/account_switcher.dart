@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/pages/login/login.dart';
+import 'package:muffed/router/models/models.dart';
 
 /// Shows a bottom dialog that allows a user to switch accounts
 void showAccountSwitcher(BuildContext context) {
@@ -70,7 +72,7 @@ void showAccountSwitcher(BuildContext context) {
                     icon: const Icon(Icons.remove_circle),
                   ),
                   onTap: () {
-                    // TODO: add navigation
+                    Navigator.pop(context);
                     globalBloc.add(
                       AccountSwitched(
                         index,
@@ -100,7 +102,8 @@ void showAccountSwitcher(BuildContext context) {
                 title: const Text('Add Account'),
                 leading: const Icon(Icons.add),
                 onTap: () {
-                  // TODO: add navigation
+                  Navigator.pop(context);
+                  context.push(const LoginPage());
                 },
               ),
             ],

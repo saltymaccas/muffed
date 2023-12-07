@@ -2,12 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/error.dart';
 
-import 'bloc/bloc.dart';
+import '../bloc/bloc.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage extends MPage<void> {
+  const LoginPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _LoginView();
+  }
+}
+
+class _LoginView extends StatelessWidget {
+  const _LoginView();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +48,7 @@ class LoginPage extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
-                  // TODO: add navigation
+                  context.pop();
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
@@ -128,7 +138,7 @@ class LoginPage extends StatelessWidget {
                           onPressed: () {
                             context.read<LoginPageBloc>().add(
                               Submitted(() {
-                                // TODO: add navigation
+                                context.pop();
                               }),
                             );
                           },

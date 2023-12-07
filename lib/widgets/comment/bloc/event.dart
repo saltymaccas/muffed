@@ -2,11 +2,7 @@ part of 'bloc.dart';
 
 sealed class CommentItemEvent {}
 
-class LoadChildrenRequested extends CommentItemEvent {
-  LoadChildrenRequested(this.sortType);
-
-  final LemmyCommentSortType sortType;
-}
+class LoadChildrenRequested extends CommentItemEvent {}
 
 class UpvotePressed extends CommentItemEvent {}
 

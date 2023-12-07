@@ -118,6 +118,9 @@ class _PostView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ContentScrollView.commentTree(
+        sortType: (context.read<ContentScrollBloc>().state.retrieveContent
+                as CommentRetriever)
+            .sortType,
         headerSlivers: [
           const SliverAppBar(
             title: Text('Comments'),
