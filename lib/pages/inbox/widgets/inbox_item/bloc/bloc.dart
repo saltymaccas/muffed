@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -13,7 +13,7 @@ final _log = Logger('InboxItemBloc');
 abstract class InboxItemBloc extends Bloc<InboxItemEvent, InboxItemState> {
   InboxItemBloc({required bool read, required this.repo})
       : super(InboxItemState(read: read)) {
-    on<ReadStatusToggled>(onReadStatusToggled);
+    on<ReadStatusToggled>(onReadStatusToggled, transformer: restartable());
   }
 
   Future<void> onReadStatusToggled(
@@ -25,7 +25,8 @@ abstract class InboxItemBloc extends Bloc<InboxItemEvent, InboxItemState> {
 }
 
 class ReplyItemBloc extends InboxItemBloc {
-  ReplyItemBloc({required super.read, required super.repo});
+  ReplyItemBloc({required this.item, required super.repo})
+      : super(read: item.read);
 
   @override
   Future<void> onReadStatusToggled(
@@ -37,16 +38,19 @@ class ReplyItemBloc extends InboxItemBloc {
       final response = await super
           .repo
           .lemmyRepo
-          .markReplyAsRead(id: event.id, read: super.state.read);
+          .markReplyAsRead(id: item.id, read: super.state.read);
     } catch (exc, stackTrace) {
       final exception = MException(exc, stackTrace)..log(_log);
       emit(state.copyWith(read: !super.state.read, exception: exception));
     }
   }
+
+  final LemmyInboxReply item;
 }
 
 class MentionItemBloc extends InboxItemBloc {
-  MentionItemBloc({required super.read, required super.repo});
+  MentionItemBloc({required this.item, required super.repo})
+      : super(read: item.read);
 
   @override
   Future<void> onReadStatusToggled(
@@ -58,10 +62,12 @@ class MentionItemBloc extends InboxItemBloc {
       final response = await super
           .repo
           .lemmyRepo
-          .markMentionAsRead(id: event.id, read: super.state.read);
+          .markMentionAsRead(id: item.id, read: super.state.read);
     } catch (exc, stackTrace) {
       final exception = MException(exc, stackTrace)..log(_log);
       emit(state.copyWith(read: !super.state.read, exception: exception));
     }
   }
+
+  final LemmyInboxMention item;
 }

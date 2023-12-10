@@ -14,19 +14,26 @@ class InboxReplyItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ReplyItemBloc(read: item.read, repo: context.read<ServerRepo>()),
+          ReplyItemBloc(item: item, repo: context.read<ServerRepo>()),
       child: Builder(
         builder: (context) {
-          return BlocConsumer<InboxItemBloc, InboxItemState>(
+          return BlocConsumer<ReplyItemBloc, InboxItemState>(
             listener: (previous, current) {},
             builder: (context, state) {
               return CommentWidget.card(
                 comment: item.comment,
                 trailingPostTitle: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.done,
-                  ),
+                  onPressed: () {
+                    context.read<ReplyItemBloc>().add(ReadStatusToggled());
+                  },
+                  icon: state.read
+                      ? Icon(
+                          Icons.check_circle,
+                          color: context.colorScheme.primary,
+                        )
+                      : const Icon(
+                          Icons.check_circle_outline,
+                        ),
                 ),
               );
             },
@@ -46,16 +53,18 @@ class InboxMentionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          MentionItemBloc(read: item.read, repo: context.read<ServerRepo>()),
+          MentionItemBloc(item: item, repo: context.read<ServerRepo>()),
       child: Builder(
         builder: (context) {
-          return BlocConsumer<InboxItemBloc, InboxItemState>(
+          return BlocConsumer<MentionItemBloc, InboxItemState>(
             listener: (previous, current) {},
             builder: (context, state) {
               return CommentWidget.card(
                 comment: item.comment,
                 trailingPostTitle: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<MentionItemBloc>().add(ReadStatusToggled());
+                  },
                   icon: state.read
                       ? Icon(
                           Icons.check_circle,
