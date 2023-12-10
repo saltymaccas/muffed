@@ -1,1 +1,1 @@
-export 'comment.dart';
+export 'comment/comment.dart';

@@ -1,11 +1,9 @@
 part of 'bloc.dart';
 
-sealed class CommentItemEvent {}
+sealed class CommentEvent {}
 
-class LoadChildrenRequested extends CommentItemEvent {}
+class LoadChildrenRequested extends CommentEvent {}
 
-class UpvotePressed extends CommentItemEvent {}
+class UpvotePressed extends CommentEvent {}
 
-class DownvotePressed extends CommentItemEvent {}
-
-class MinimiseToggled extends CommentItemEvent {}
+class DownvotePressed extends CommentEvent {}

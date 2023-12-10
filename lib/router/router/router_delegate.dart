@@ -9,7 +9,7 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
             currentBranchIndex: 0,
             branches: [
               Branch([HomePage()]),
-              Branch(const [InboxPage()]),
+              Branch([InboxPage()]),
               Branch(const [ProfilePage()])
             ],
             rootBranch: Branch(const []),

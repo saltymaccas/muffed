@@ -204,7 +204,7 @@ class _SearchView extends StatelessWidget {
             key: ValueKey(['comment', state]),
           ),
           if (state.communityId == null)
-            _PersonSearchView(
+            _UserSearchView(
               key: ValueKey(['person', state]),
             ),
         ];
@@ -311,14 +311,14 @@ class _SearchView extends StatelessWidget {
   }
 }
 
-class _PersonSearchView extends StatefulWidget {
-  const _PersonSearchView({super.key});
+class _UserSearchView extends StatefulWidget {
+  const _UserSearchView({super.key});
 
   @override
-  State<_PersonSearchView> createState() => _PersonSearchViewState();
+  State<_UserSearchView> createState() => _UserSearchViewState();
 }
 
-class _PersonSearchViewState extends State<_PersonSearchView>
+class _UserSearchViewState extends State<_UserSearchView>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
@@ -349,7 +349,7 @@ class _PersonSearchViewState extends State<_PersonSearchView>
                     ),
                   );
             },
-            child: const ContentScrollView(),
+            child: ContentScrollView.users(),
           );
         },
       ),
@@ -400,7 +400,7 @@ class _CommunitySearchViewState extends State<_CommunitySearchView>
                     ),
                   );
             },
-            child: const ContentScrollView(),
+            child: ContentScrollView.communities(),
           );
         },
       ),
@@ -452,7 +452,7 @@ class _PostSearchViewState extends State<_PostSearchView>
                     ),
                   );
             },
-            child: const ContentScrollView(),
+            child: ContentScrollView.posts(),
           );
         },
       ),
@@ -504,7 +504,7 @@ class _CommentSearchViewState extends State<_CommentSearchView>
                     ),
                   );
             },
-            child: const ContentScrollView(),
+            child: ContentScrollView.communities(),
           );
         },
       ),

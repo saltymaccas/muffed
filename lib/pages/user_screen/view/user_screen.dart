@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/comment/view/comment.dart';
+import 'package:muffed/widgets/comment/view/comment/comment.dart';
 import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
@@ -223,8 +223,7 @@ class _UserScreenSuccess extends StatelessWidget {
                     height: _headerMinHeight,
                   );
                 }
-                return CommentWidget(
-                  displayMode: CommentItemDisplayMode.single,
+                return CommentWidget.card(
                   comment: comments[index - 1],
                   children: const [],
                   sortType: LemmyCommentSortType.hot,

@@ -24,7 +24,7 @@ class CommunityView extends StatelessWidget {
         final communityBloc = BlocProvider.of<CommunityScreenBloc>(blocContext);
 
         return Scaffold(
-          body: ContentScrollView(
+          body: ContentScrollView.communities(
             headerSlivers: [
               SliverPersistentHeader(
                 delegate: _TopBarDelegate(

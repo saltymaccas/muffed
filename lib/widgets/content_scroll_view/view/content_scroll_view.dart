@@ -13,25 +13,105 @@ import 'package:muffed/widgets/snackbars.dart';
 
 final _log = Logger('ContentScrollView');
 
-typedef ItemBuilder = Widget? Function(BuildContext, int, List<Object> content);
+typedef ContentSliverListBuilder = Widget Function(
+    BuildContext context, List<Object> content);
+
+typedef ContentItemBuilder = Widget Function(
+    BuildContext context, int index, Object item);
 
 /// Display items retrieved from an API in a paginated scroll view
 class ContentScrollView extends StatelessWidget {
-  const ContentScrollView({
+  ContentScrollView({
+    required ContentItemBuilder itemBuilder,
     this.contentRetriever,
     List<Widget>? headerSlivers,
     super.key,
-  }) : headerSlivers = headerSlivers ?? const [];
+  })  : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = ((BuildContext context, List<Object> content) {
+          return SliverList.builder(
+            itemCount: content.length,
+            itemBuilder: (context, index) =>
+                itemBuilder(context, index, content[index]),
+          );
+        });
 
-  factory ContentScrollView.commentTree(
-      {required LemmyCommentSortType sortType,
-      List<Widget>? headerSlivers,
-      ContentRetriever? contentRetriever}) {
-    return _CommentTreeContentScrollView(
-      sortType: sortType,
-      headerSlivers: headerSlivers,
-      contentRetriever: contentRetriever,
+  ContentScrollView.commentTree({
+    LemmyCommentSortType sortType = LemmyCommentSortType.hot,
+    this.contentRetriever,
+    List<Widget>? headerSlivers,
+    super.key,
+  })  : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = ((BuildContext context, List<Object> content) {
+          return commentTreeListBuilder(context, content, sortType);
+        });
+
+  ContentScrollView.posts({
+    this.contentRetriever,
+    List<Widget>? headerSlivers,
+    super.key,
+  })  : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = itemBuilderToSliverListBuilder(
+            (context, index, item) => PostWidget(post: item as LemmyPost));
+
+  ContentScrollView.communities({
+    this.contentRetriever,
+    List<Widget>? headerSlivers,
+    super.key,
+  })  : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = itemBuilderToSliverListBuilder(
+          (context, index, item) => CommunityListTile(item as LemmyCommunity),
+        );
+
+  ContentScrollView.cardComments({
+    this.contentRetriever,
+    List<Widget>? headerSlivers,
+    super.key,
+  })  : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = itemBuilderToSliverListBuilder(
+          (context, index, item) =>
+              CommentWidget.card(comment: item as LemmyComment),
+        );
+
+  ContentScrollView.users(
+      {this.contentRetriever, List<Widget>? headerSlivers, super.key})
+      : headerSlivers = headerSlivers ?? const [],
+        sliverListBuilder = itemBuilderToSliverListBuilder(
+          (context, index, item) => UserListTile(person: item as LemmyUser),
+        );
+
+  static Widget commentTreeListBuilder(BuildContext context,
+      List<Object> content, LemmyCommentSortType sortType) {
+    if (content is! List<LemmyComment>) {
+      throw Exception('Content is not a list of comments');
+    }
+
+    final organisedComments = organiseCommentsWithChildren(0, content);
+
+    return SliverList.builder(
+      itemCount: organisedComments.length,
+      itemBuilder: (context, index) {
+        final baseComment = organisedComments.keys.elementAt(index);
+        final childComments = organisedComments[baseComment]!;
+
+        return CommentWidget.tree(
+          sortType: sortType,
+          comment: baseComment,
+          children: childComments,
+        );
+      },
     );
+  }
+
+  static ContentSliverListBuilder itemBuilderToSliverListBuilder(
+      ContentItemBuilder itemBuilder) {
+    return (context, content) {
+      return SliverList.builder(
+        itemCount: content.length,
+        itemBuilder: (context, index) {
+          return itemBuilder(context, index, content[index]);
+        },
+      );
+    };
   }
 
   /// Slivers that will go above the scroll
@@ -39,36 +119,7 @@ class ContentScrollView extends StatelessWidget {
 
   final ContentRetriever? contentRetriever;
 
-  SliverList buildContentList(List<Object> content) {
-    return SliverList.builder(
-      itemCount: content.length,
-      itemBuilder: (context, index) {
-        final item = content[index];
-
-        if (item is LemmyPost) {
-          return PostWidget(
-            post: item,
-            displayType: PostDisplayType.list,
-          );
-        }
-        if (item is LemmyComment) {
-          return CommentWidget(
-            displayMode: CommentItemDisplayMode.single,
-            comment: item,
-            sortType: LemmyCommentSortType.hot,
-          );
-        }
-        if (item is LemmyCommunity) {
-          return CommunityListTile(item);
-        }
-        if (item is LemmyUser) {
-          return UserListTile(person: item);
-        } else {
-          return const Text('Item type did not match any');
-        }
-      },
-    );
-  }
+  final ContentSliverListBuilder sliverListBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +205,8 @@ class ContentScrollView extends StatelessWidget {
                 onNotification: (ScrollNotification scrollInfo) {
                   if (scrollInfo.metrics.pixels >=
                           scrollInfo.metrics.maxScrollExtent - 500 &&
-                      scrollInfo.depth == 0) {
+                      scrollInfo.depth == 0 &&
+                      state.content.isNotEmpty) {
                     context
                         .read<ContentScrollBloc>()
                         .add(ReachedNearEndOfScroll());
@@ -179,7 +231,12 @@ class ContentScrollView extends StatelessWidget {
                     cacheExtent: 500,
                     slivers: [
                       ...headerSlivers,
-                      buildContentList(state.content),
+                      if (state.content.isNotEmpty)
+                        sliverListBuilder(context, state.content)
+                      else
+                        const SliverFillRemaining(
+                          child: Center(child: Text('nothing to show')),
+                        ),
                       SliverToBoxAdapter(
                         child: SizedBox(
                           height: 50,
@@ -207,41 +264,6 @@ class ContentScrollView extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _CommentTreeContentScrollView extends ContentScrollView {
-  const _CommentTreeContentScrollView({
-    required this.sortType,
-    super.contentRetriever,
-    super.headerSlivers,
-  });
-
-  /// The sort type used to get the comment used when children comments are
-  /// retrieved so they can be gotten with the same sort type
-  final LemmyCommentSortType sortType;
-
-  @override
-  SliverList buildContentList(List<Object> content) {
-    if (content is! List<LemmyComment>) {
-      throw Exception('Content is not a list of comments');
-    }
-
-    final organisedComments = organiseCommentsWithChildren(0, content);
-
-    return SliverList.builder(
-      itemCount: organisedComments.length,
-      itemBuilder: (context, index) {
-        final baseComment = organisedComments.keys.elementAt(index);
-        final childComments = organisedComments[baseComment]!;
-
-        return CommentWidget(
-          sortType: sortType,
-          comment: baseComment,
-          children: childComments,
-        );
-      },
     );
   }
 }

@@ -167,7 +167,7 @@ class HomeView extends StatelessWidget {
           return const SizedBox();
         }
         return Scaffold(
-          body: ContentScrollView(
+          body: ContentScrollView.posts(
             key: ValueKey(state.currentScrollViewConfig),
             contentRetriever: state.currentScrollViewConfig,
             headerSlivers: [

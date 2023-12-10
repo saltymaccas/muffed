@@ -11,16 +11,16 @@ part 'state.dart';
 
 final _log = Logger('CommentBloc');
 
-class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
+class CommentBloc extends Bloc<CommentEvent, CommentState> {
   ///
-  CommentItemBloc({
+  CommentBloc({
     required LemmyComment comment,
     required List<LemmyComment> children,
     required LemmyCommentSortType sortType,
     required this.repo,
     required this.globalBloc,
   }) : super(
-          CommentItemState(
+          CommentState(
             comment: comment,
             children: children,
             sortType: sortType,
@@ -208,9 +208,6 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
       },
       transformer: droppable(),
     );
-    on<MinimiseToggled>((event, emit) {
-      emit(state.copyWith(minimised: !state.minimised));
-    });
   }
 
   final ServerRepo repo;

@@ -457,7 +457,7 @@ class LemmyInboxReply extends Equatable {
   }
 
   @override
-  List<Object?> get props => [comment, read];
+  List<Object?> get props => [comment, read, id];
 }
 
 class LemmyInboxMention extends Equatable {
@@ -477,7 +477,7 @@ class LemmyInboxMention extends Equatable {
   final int id;
 
   @override
-  List<Object?> get props => [comment, read];
+  List<Object?> get props => [comment, read, id];
 
   LemmyInboxMention copyWith({
     LemmyComment? comment,
