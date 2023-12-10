@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/comment/view/comment/comment.dart';
-import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/post/post.dart';
@@ -425,11 +424,6 @@ class _UserScreenFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorComponentTransparent(
-      retryFunction: () {
-        context.read<UserScreenBloc>().add(InitializeEvent());
-      },
-      error: context.read<UserScreenBloc>().state.error ?? '',
-    );
+    return SizedBox();
   }
 }

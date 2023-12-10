@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/pictrs/models.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -25,7 +26,7 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
 
         try {
           if (state.commentBeingEdited == null) {
-            final response = await repo.lemmyRepo.createComment(
+            await repo.lemmyRepo.createComment(
               event.commentContents,
               event.postId,
               event.commentId,
@@ -33,19 +34,24 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
 
             emit(state.copyWith(isLoading: false, successfullyPosted: true));
           } else {
-            final response = await repo.lemmyRepo.editComment(
+            await repo.lemmyRepo.editComment(
               content: event.commentContents,
               id: state.commentBeingEdited!.id,
             );
 
             emit(state.copyWith(isLoading: false, successfullyPosted: true));
           }
-        } catch (err) {
-          emit(state.copyWith(isLoading: false, error: err));
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
+          emit(state.copyWith(isLoading: false, exception: exception));
         }
       } else {
         _log.info('Comment submitted with no text');
-        emit(state.copyWith(error: 'No text inputted'));
+        emit(
+          state.copyWith(
+            exception: MException('No text inputted', null),
+          ),
+        );
       }
     });
     on<PreviewToggled>((event, emit) {
@@ -75,10 +81,11 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
             ),
           );
         }
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             images: SplayTreeMap()
               ..addAll(state.images)
               ..remove(id),
@@ -103,10 +110,11 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
           removedImage.imageName!,
           removedImage.baseUrl!,
         );
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             images: SplayTreeMap()
               ..addAll({...state.images, event.id: removedImage}),
           ),

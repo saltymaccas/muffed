@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
-import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -72,7 +72,7 @@ class CommunityInfoView extends StatelessWidget {
           case CommunityStatus.loading:
             return const _CommunityInfoLoading();
           case CommunityStatus.failure:
-            return _CommunityInfoError(error: state.exception);
+            return _CommunityInfoError(state.exception!);
           case CommunityStatus.success:
             return _CommunityInfoSuccess(community: state.community!);
         }
@@ -294,14 +294,14 @@ class _CommunityInfoLoading extends StatelessWidget {
 }
 
 class _CommunityInfoError extends StatelessWidget {
-  const _CommunityInfoError({this.error});
+  const _CommunityInfoError(this.exception);
 
-  final Object? error;
+  final MException exception;
 
   @override
   Widget build(BuildContext context) {
-    return ErrorComponentTransparent(
-      error: error,
+    return ExceptionWidget(
+      exception: exception,
       retryFunction: () {
         context.read<CommunityScreenBloc>().add(InitialiseCommunityScreen());
       },

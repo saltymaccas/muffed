@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/error.dart';
 
 import '../bloc/bloc.dart';
 
@@ -144,10 +143,6 @@ class _LoginView extends StatelessWidget {
                           },
                           child: const Text('Login'),
                         ),
-                        if (state.errorMessage != null)
-                          ErrorComponentTransparent(
-                            error: state.errorMessage,
-                          ),
                       ],
                     ),
                   ),

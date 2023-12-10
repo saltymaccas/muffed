@@ -2,6 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -17,25 +18,22 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required this.globalBloc,
     this.post,
     this.postId,
-  }) : super(PostState(post: post)) {
+  })  : assert(post != null || postId != null),
+        super(PostState(post: post)) {
     on<Initialize>((event, emit) async {
       if (post != null) {
         emit(state.copyWith(status: PostStatus.success, post: post));
-      } else if (postId != null) {
+      } else {
         emit(state.copyWith(status: PostStatus.loading));
         try {
           final post = await repo.lemmyRepo.getPost(id: postId!);
           emit(state.copyWith(status: PostStatus.success, post: post));
-        } catch (err) {
-          emit(state.copyWith(status: PostStatus.failure, error: err));
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
+          emit(
+              state.copyWith(status: PostStatus.failure, exception: exception));
         }
-      } else
-        emit(
-          state.copyWith(
-            status: PostStatus.failure,
-            error: 'No post or postId given',
-          ),
-        );
+      }
     });
     on<UpvotePressed>(
       (event, emit) {
@@ -52,14 +50,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.upVote);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
                       myVote: LemmyVoteType.none,
                       upVotes: state.post!.upVotes - 1,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -74,14 +73,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.none);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
                       myVote: LemmyVoteType.upVote,
                       score: state.post!.upVotes + 1,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -97,7 +97,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.upVote);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
@@ -105,7 +106,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                       downVotes: state.post!.downVotes + 1,
                       upVotes: state.post!.upVotes - 1,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -129,14 +130,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.downVote);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
                       myVote: LemmyVoteType.none,
                       downVotes: state.post!.downVotes - 1,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -152,7 +154,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.downVote);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
@@ -160,7 +163,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                       downVotes: state.post!.downVotes - 1,
                       myVote: LemmyVoteType.upVote,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -175,14 +178,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               );
               try {
                 repo.lemmyRepo.votePost(state.post!.id, LemmyVoteType.none);
-              } catch (err) {
+              } catch (exc, stackTrace) {
+                final exception = MException(exc, stackTrace)..log(_log);
                 emit(
                   state.copyWith(
                     post: state.post!.copyWith(
                       downVotes: state.post!.downVotes + 1,
                       myVote: LemmyVoteType.downVote,
                     ),
-                    error: err,
+                    exception: exception,
                   ),
                 );
               }
@@ -201,10 +205,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         final result = await repo.lemmyRepo
             .savePost(postId: state.post!.id, save: state.post!.saved);
         emit(state.copyWith(post: state.post!.copyWith(saved: result)));
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             post: state.post!.copyWith(saved: !state.post!.saved),
           ),
         );

@@ -3,7 +3,7 @@ part of 'bloc.dart';
 enum PostStatus { initial, loading, success, failure }
 
 class PostState extends Equatable {
-  const PostState({this.post, this.status = PostStatus.initial, this.error})
+  const PostState({this.post, this.status = PostStatus.initial, this.exception})
       : assert(
           status != PostStatus.success || post != null,
           'Post cannot be null when status is success',
@@ -11,19 +11,19 @@ class PostState extends Equatable {
 
   final PostStatus status;
   final LemmyPost? post;
-  final Object? error;
+  final MException? exception;
 
   @override
-  List<Object?> get props => [post, error, status];
+  List<Object?> get props => [post, exception, status];
 
   PostState copyWith({
     LemmyPost? post,
-    Object? error,
+    MException? exception,
     PostStatus? status,
   }) {
     return PostState(
       post: post ?? this.post,
-      error: error,
+      exception: exception,
       status: status ?? this.status,
     );
   }

@@ -2,12 +2,16 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/pictrs/models.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/utils/url.dart';
 
 part 'event.dart';
 part 'state.dart';
+
+final _log = Logger('CreatePostBloc');
 
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   ///
@@ -43,10 +47,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
               communityInfo: response,
             ),
           );
-        } catch (err) {
+        } catch (exc, stackTrace) {
+          final exception = MException(exc, stackTrace)..log(_log);
           emit(
             state.copyWith(
-              error: err,
+              exception: exception,
               communityInfoStatus: CommunityInfoStatus.failure,
             ),
           );
@@ -81,9 +86,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           );
           emit(state.copyWith(successfullyPosted: response, isLoading: false));
         }
-      } catch (err) {
-        emit(state.copyWith(error: err, isLoading: false));
-        rethrow;
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
+        emit(state.copyWith(exception: exception, isLoading: false));
       }
     });
     on<BodyImageToUploadSelected>((event, emit) async {
@@ -114,10 +119,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             ),
           );
         }
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             images: SplayTreeMap()
               ..addAll(state.bodyImages)
               ..remove(id),
@@ -142,10 +148,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             ),
           );
         }
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             setImageToNull: true,
           ),
         );
@@ -168,10 +175,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           removedImage.imageName!,
           removedImage.baseUrl!,
         );
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
             images: SplayTreeMap()
               ..addAll({...state.bodyImages, event.id: removedImage}),
           ),
@@ -193,10 +201,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           removedImage.imageName!,
           removedImage.baseUrl!,
         );
-      } catch (err) {
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
-            error: err,
+            exception: exception,
           ),
         );
       }

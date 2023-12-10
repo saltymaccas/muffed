@@ -8,7 +8,7 @@ class CreatePostState extends Equatable {
     this.communityInfo,
     this.communityInfoStatus = CommunityInfoStatus.initial,
     this.communityId,
-    this.error,
+    this.exception,
     this.successfullyPostedPost,
     this.isPreviewingBody = false,
     this.url,
@@ -20,7 +20,7 @@ class CreatePostState extends Equatable {
   final bool isLoading;
   final LemmyCommunity? communityInfo;
   final int? communityId;
-  final Object? error;
+  final MException? exception;
   final CommunityInfoStatus communityInfoStatus;
   final LemmyPost? successfullyPostedPost;
   final bool isPreviewingBody;
@@ -37,7 +37,7 @@ class CreatePostState extends Equatable {
   List<Object?> get props => [
         isLoading,
         communityInfo,
-        error,
+        exception,
         communityInfoStatus,
         communityId,
         successfullyPostedPost,
@@ -51,7 +51,7 @@ class CreatePostState extends Equatable {
   CreatePostState copyWith({
     bool? isLoading,
     LemmyCommunity? communityInfo,
-    Object? error,
+    MException? exception,
     CommunityInfoStatus? communityInfoStatus,
     int? communityId,
     LemmyPost? successfullyPosted,
@@ -66,7 +66,7 @@ class CreatePostState extends Equatable {
     return CreatePostState(
       isLoading: isLoading ?? this.isLoading,
       communityInfo: communityInfo ?? this.communityInfo,
-      error: error,
+      exception: exception,
       communityInfoStatus: communityInfoStatus ?? this.communityInfoStatus,
       communityId: communityId ?? this.communityId,
       successfullyPostedPost: successfullyPosted ?? successfullyPostedPost,

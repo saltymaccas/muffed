@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/user_screen/user.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
-import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post/post.dart';
-import 'package:muffed/widgets/snackbars.dart';
 
 final _log = Logger('ContentScrollView');
 
@@ -158,7 +157,7 @@ class ContentScrollView extends StatelessWidget {
       child: BlocConsumer<ContentScrollBloc, ContentScrollState>(
         listener: (context, state) {
           if (state.exception != null) {
-            showErrorSnackBar(context, error: state.exception);
+            showExceptionSnackBar(context, state.exception!);
           }
         },
         builder: (context, state) {
@@ -192,7 +191,7 @@ class ContentScrollView extends StatelessWidget {
               slivers: [
                 ...headerSlivers,
                 SliverFillRemaining(
-                  child: ErrorComponentTransparent(error: state.exception),
+                  child: ExceptionWidget(exception: state.exception!),
                 ),
               ],
             );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/block_dialog/bloc/bloc.dart';
-import 'package:muffed/widgets/error.dart';
 
 enum BlockDialogType { person, community }
 
@@ -87,14 +86,7 @@ class _BlockDialogFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: ErrorComponentTransparent(
-        error: state.error,
-        retryFunction: () {
-          context.read<BlockDialogBloc>().add(InitializeEvent());
-        },
-      ),
-    );
+    return AlertDialog();
   }
 }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/post/post.dart';
 
 /// A widget that displays a post, The form the post is displayed in can be
@@ -42,8 +42,8 @@ class _PostViewState extends State<PostView>
           }
         }
         if (state.status == PostStatus.failure) {
-          return ErrorComponentTransparent(
-            error: state.error,
+          return ExceptionWidget(
+            exception: state.exception!,
             retryFunction: () {
               context.read<PostBloc>().add(Initialize());
             },

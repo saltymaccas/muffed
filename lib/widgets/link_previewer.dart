@@ -1,8 +1,8 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/utils/url.dart';
-import 'package:muffed/widgets/error.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,7 +36,7 @@ class LinkPreviewer extends StatefulWidget {
 
 class _LinkPreviewerState extends State<LinkPreviewer> {
   _LinkPreviewerStatus status = _LinkPreviewerStatus.initial;
-  Object? error;
+  MException? exception;
   Metadata? metadata;
 
   @override
@@ -67,14 +67,14 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                 {
                   setState(() {
                     status = _LinkPreviewerStatus.error;
-                    this.error = error;
+                    this.exception = MException(error, null);
                   }),
                 },
             },
           );
     } else {
       status = _LinkPreviewerStatus.error;
-      error = 'Invalid link';
+      exception = MException('Invalid link', null);
     }
 
     super.initState();
@@ -100,8 +100,8 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
               case _LinkPreviewerStatus.loading:
                 return const Text('Loading url data...');
               case _LinkPreviewerStatus.error:
-                return ErrorComponentTransparent(
-                  error: error,
+                return ExceptionWidget(
+                  exception: exception!,
                   showErrorIcon: false,
                 );
               case _LinkPreviewerStatus.success:

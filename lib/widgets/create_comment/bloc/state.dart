@@ -4,7 +4,7 @@ class CreateCommentState extends Equatable {
   ///
   CreateCommentState({
     this.isLoading = false,
-    this.error,
+    this.exception,
     this.successfullyPosted = false,
     this.isPreviewing = false,
     this.commentBeingEdited,
@@ -12,7 +12,7 @@ class CreateCommentState extends Equatable {
   }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
-  final Object? error;
+  final MException? exception;
 
   final bool isPreviewing;
 
@@ -28,7 +28,7 @@ class CreateCommentState extends Equatable {
   @override
   List<Object?> get props => [
         isLoading,
-        error,
+        exception,
         successfullyPosted,
         isPreviewing,
         images,
@@ -37,7 +37,7 @@ class CreateCommentState extends Equatable {
 
   CreateCommentState copyWith({
     bool? isLoading,
-    Object? error,
+    MException? exception,
     bool? successfullyPosted,
     bool? isPreviewing,
     SplayTreeMap<int, ImageUploadState>? images,
@@ -45,7 +45,7 @@ class CreateCommentState extends Equatable {
   }) {
     return CreateCommentState(
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      exception: exception,
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
       isPreviewing: isPreviewing ?? this.isPreviewing,
       images: images ?? this.images,

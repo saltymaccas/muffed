@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:muffed/exception/exception.dart';
 
-import 'package:muffed/utils/error.dart';
-
-class ErrorComponentTransparent extends StatelessWidget {
-  const ErrorComponentTransparent({
-    this.error = '',
+class ExceptionWidget extends StatelessWidget {
+  const ExceptionWidget({
+    required this.exception,
     this.retryFunction,
     this.showErrorIcon = true,
     this.textAlign = TextAlign.center,
     super.key,
   });
 
-  final Object? error;
+  final MException exception;
   final void Function()? retryFunction;
   final bool showErrorIcon;
   final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = errorObjectToString(error);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showErrorIcon)
           Icon(
@@ -31,7 +27,7 @@ class ErrorComponentTransparent extends StatelessWidget {
             color: Theme.of(context).colorScheme.error,
           ),
         Text(
-          errorMessage ?? '',
+          exception.exceptionToString(),
           style: TextStyle(color: Theme.of(context).colorScheme.error),
           textAlign: textAlign,
         ),

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
@@ -167,9 +168,9 @@ class CreatePostScreen extends StatelessWidget {
                 IconButton(
                   onPressed: () {
                     if (titleTextController.text.isEmpty) {
-                      showErrorSnackBar(
+                      showExceptionSnackBar(
                         context,
-                        error: 'Title must not be empty',
+                        MException('Title must not be empty', null),
                       );
                     } else {
                       context.read<CreatePostBloc>().add(
