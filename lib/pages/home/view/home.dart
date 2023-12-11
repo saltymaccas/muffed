@@ -5,7 +5,7 @@ import 'package:muffed/pages/home/home.dart';
 import 'package:muffed/pages/search/view/search_dialog.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/content_scroll_view/view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends MPage<void> {
@@ -149,7 +149,13 @@ class HomePage extends MPage<void> {
               ),
             ]);
           });
-          return const HomeView();
+          return BlocProvider(
+            create: (context) => ContentScrollBloc(
+              contentRetriever:
+                  context.read<HomePageBloc>().state.currentScrollViewConfig,
+            )..add(Initialise()),
+            child: HomeView(),
+          );
         },
       ),
     );
@@ -167,7 +173,7 @@ class HomeView extends StatelessWidget {
           return const SizedBox();
         }
         return Scaffold(
-          body: ContentScrollView.posts(
+          body: ContentScrollView<Object>.posts(
             key: ValueKey(state.currentScrollViewConfig),
             contentRetriever: state.currentScrollViewConfig,
             headerSlivers: [

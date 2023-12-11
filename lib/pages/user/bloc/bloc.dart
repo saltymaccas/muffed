@@ -7,16 +7,14 @@ part 'event.dart';
 part 'state.dart';
 
 class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
-  UserScreenBloc({required this.repo, this.userId, this.username})
+  UserScreenBloc({required this.repo, int? userId, String? username})
       : super(UserScreenState(userId: userId, username: username)) {
     on<InitializeEvent>((event, emit) async {
       emit(state.copyWith(status: UserStatus.loading));
-
       try {
         final response = await repo.lemmyRepo.getPersonDetails(
           username: state.username,
           id: state.userId,
-          page: 1,
         );
 
         emit(
@@ -72,7 +70,5 @@ class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
     );
   }
 
-  final int? userId;
-  final String? username;
   final ServerRepo repo;
 }

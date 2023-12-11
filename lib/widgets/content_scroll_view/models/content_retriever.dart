@@ -1,6 +1,8 @@
 /// Provides a base class for setting up how content is retrieved.
-abstract class ContentRetriever {
+abstract class ContentRetriever<T> {
   const ContentRetriever();
 
-  Future<List<Object>> call({required int page});
+  Future<List<T>> call({required int page});
+
+  bool hasReachedEnd(List<T> content) => content.isEmpty;
 }

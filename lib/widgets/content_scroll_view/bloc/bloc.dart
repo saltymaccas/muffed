@@ -11,10 +11,11 @@ part 'state.dart';
 final _log = Logger('ContentScrollView');
 
 /// Controls the state of a content scroll view
-class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
+class ContentScrollBloc<T>
+    extends Bloc<ContentScrollEvent, ContentScrollState<T>> {
   ///
   ContentScrollBloc({
-    required ContentRetriever contentRetriever,
+    required ContentRetriever<T> contentRetriever,
   }) : super(
           ContentScrollState(
             status: ContentScrollStatus.initial,
@@ -85,11 +86,10 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             final response =
                 await state.retrieveContent(page: state.pagesLoaded + 1);
 
-            final newContentList = {...state.content, ...response}.toList();
-
-            if (newContentList.length == state.content.length) {
+            if (state.loadedRetrieveContent.hasReachedEnd(response)) {
               emit(state.copyWith(isLoadingMore: false, reachedEnd: true));
             } else {
+              final newContentList = {...state.content, ...response}.toList();
               emit(
                 state.copyWith(
                   content: newContentList,
@@ -115,7 +115,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
           try {
             emit(
               state.copyWith(
-                retrieveContent: event.retrieveContent,
+                retrieveContent: event.retrieveContent as ContentRetriever<T>,
                 isLoading: true,
               ),
             );
@@ -124,8 +124,9 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
 
             emit(
               state.copyWith(
-                loadedRetrieveContent: event.retrieveContent,
-                content: response,
+                loadedRetrieveContent:
+                    event.retrieveContent as ContentRetriever<T>,
+                content: response as List<T>,
                 pagesLoaded: 1,
                 isLoading: false,
               ),
@@ -144,7 +145,7 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
           emit(
             state.copyWith(
               status: ContentScrollStatus.loading,
-              retrieveContent: event.retrieveContent,
+              retrieveContent: event.retrieveContent as ContentRetriever<T>,
               pagesLoaded: 0,
               content: [],
             ),
@@ -153,8 +154,9 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
             final response = await event.retrieveContent(page: 1);
             emit(
               state.copyWith(
-                loadedRetrieveContent: event.retrieveContent,
-                content: response,
+                loadedRetrieveContent:
+                    event.retrieveContent as ContentRetriever<T>,
+                content: response as List<T>,
                 pagesLoaded: 1,
                 status: ContentScrollStatus.success,
               ),
@@ -175,14 +177,14 @@ class ContentScrollBloc extends Bloc<ContentScrollEvent, ContentScrollState> {
   }
 
   @override
-  void onChange(Change<ContentScrollState> change) {
+  void onChange(Change<ContentScrollState<T>> change) {
     super.onChange(change);
     _log.finest(change);
   }
 
   @override
   void onTransition(
-    Transition<ContentScrollEvent, ContentScrollState> transition,
+    Transition<ContentScrollEvent, ContentScrollState<T>> transition,
   ) {
     super.onTransition(transition);
     _log.finest(transition);

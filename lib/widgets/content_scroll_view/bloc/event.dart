@@ -13,8 +13,10 @@ final class PullDownRefresh extends ContentScrollEvent {}
 final class ReachedNearEndOfScroll extends ContentScrollEvent {}
 
 final class RetrieveContentMethodChanged extends ContentScrollEvent {
-  RetrieveContentMethodChanged(this.retrieveContent,
-      {this.persistContent = true});
+  RetrieveContentMethodChanged(
+    this.retrieveContent, {
+    this.persistContent = true,
+  });
 
   final ContentRetriever retrieveContent;
   final bool persistContent;

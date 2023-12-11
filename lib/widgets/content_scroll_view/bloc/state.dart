@@ -2,7 +2,7 @@ part of 'bloc.dart';
 
 enum ContentScrollStatus { initial, loading, success, failure }
 
-final class ContentScrollState extends Equatable {
+final class ContentScrollState<T> extends Equatable {
   const ContentScrollState({
     required this.status,
     required this.retrieveContent,
@@ -13,11 +13,11 @@ final class ContentScrollState extends Equatable {
     this.exception,
     this.reachedEnd = false,
     this.isLoading = false,
-    ContentRetriever? loadedRetrieveContent,
+    ContentRetriever<T>? loadedRetrieveContent,
   }) : loadedRetrieveContent = loadedRetrieveContent ?? retrieveContent;
 
   final ContentScrollStatus status;
-  final List<Object> content;
+  final List<T> content;
   final bool isRefreshing;
   final int pagesLoaded;
   final bool isLoadingMore;
@@ -30,11 +30,11 @@ final class ContentScrollState extends Equatable {
   final bool reachedEnd;
 
   /// The method that should be used to retrieve content
-  final ContentRetriever retrieveContent;
+  final ContentRetriever<T> retrieveContent;
 
   /// The content retriever that was used to load the currently displayed
   /// content
-  final ContentRetriever loadedRetrieveContent;
+  final ContentRetriever<T> loadedRetrieveContent;
 
   final bool isLoading;
 
@@ -52,15 +52,15 @@ final class ContentScrollState extends Equatable {
         loadedRetrieveContent,
       ];
 
-  ContentScrollState copyWith({
+  ContentScrollState<T> copyWith({
     MException? exception,
     ContentScrollStatus? status,
-    List<Object>? content,
+    List<T>? content,
     bool? isRefreshing,
     int? pagesLoaded,
     bool? reachedEnd,
-    ContentRetriever? retrieveContent,
-    ContentRetriever? loadedRetrieveContent,
+    ContentRetriever<T>? retrieveContent,
+    ContentRetriever<T>? loadedRetrieveContent,
     bool? isLoading,
     bool? isLoadingMore,
   }) {

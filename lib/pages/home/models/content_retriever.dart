@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
 
-abstract class HomePageContentRetriever extends ContentRetriever
+abstract class HomePageContentRetriever extends ContentRetriever<Object>
     with EquatableMixin {
   const HomePageContentRetriever({required this.title});
 

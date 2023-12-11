@@ -906,7 +906,7 @@ class LemmyUser extends Equatable {
         commentScore = null,
         postCount = null,
         postScore = null,
-        moderates = null;
+        moderates = [];
 
   final String actorId;
   final bool? admin;
