@@ -4,7 +4,7 @@ import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll_view/content_list_view.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class CommunityPage extends MPage<void> {
