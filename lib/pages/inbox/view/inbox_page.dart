@@ -35,9 +35,11 @@ class InboxPage extends MPage<void> {
                           inboxBloc.add(ShowUnreadToggled());
                         },
                         icon: state.showUnreadOnly
-                            ? const Icon(Icons.remove_red_eye)
-                            : Icon(
+                            ? const Icon(
                                 Icons.remove_red_eye_outlined,
+                              )
+                            : Icon(
+                                Icons.remove_red_eye,
                                 color: context.colorScheme.primary,
                               ),
                         visualDensity: VisualDensity.compact,
@@ -117,8 +119,8 @@ class _RepliesScrollViewState extends State<_RepliesScrollView>
                 ),
               );
             },
-            child: ContentScrollView(
-              builderDelegate: ContentBuilderDelegate<LemmyInboxReply>(),
+            child: const ContentScrollView(
+              builderDelegate: _RepliesBuilderDelegate(),
             ),
           );
         },
@@ -128,6 +130,19 @@ class _RepliesScrollViewState extends State<_RepliesScrollView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class _RepliesBuilderDelegate extends ContentBuilderDelegate<LemmyInboxReply> {
+  const _RepliesBuilderDelegate();
+
+  @override
+  Widget itemBuilder(
+      BuildContext context, int index, List<LemmyInboxReply> items) {
+    return InboxReplyItem(
+      item: items[index],
+      sortType: LemmyCommentSortType.hot,
+    );
+  }
 }
 
 class _MentionsScrollView extends StatefulWidget {
@@ -164,8 +179,8 @@ class _MentionsScrollViewState extends State<_MentionsScrollView>
                 ),
               );
             },
-            child: ContentScrollView(
-              builderDelegate: ContentBuilderDelegate<LemmyInboxMention>(),
+            child: const ContentScrollView(
+              builderDelegate: _MentionsBuilderDelegate(),
             ),
           );
         },
@@ -175,4 +190,21 @@ class _MentionsScrollViewState extends State<_MentionsScrollView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class _MentionsBuilderDelegate
+    extends ContentBuilderDelegate<LemmyInboxMention> {
+  const _MentionsBuilderDelegate();
+
+  @override
+  Widget itemBuilder(
+    BuildContext context,
+    int index,
+    List<LemmyInboxMention> items,
+  ) {
+    return InboxMentionItem(
+      item: items[index],
+      sortType: LemmyCommentSortType.hot,
+    );
+  }
 }
