@@ -5,11 +5,9 @@ import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/comment/comment.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
-import 'package:muffed/widgets/post/post.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 part 'header.dart';
@@ -38,7 +36,7 @@ class UserPage extends MPage<void> {
           userId: userId,
           username: username,
         ),
-      )..add(Initialise()),
+      )..add(LoadInitialItems()),
       child: const UserView(),
     );
   }
@@ -95,21 +93,8 @@ class _UserPostsTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContentScrollView<LemmyGetPersonDetailsResponse>.sliverListBuilder(
-      sliverListBuilder: (context, content) {
-        final List<LemmyPost> posts = [];
-
-        for (final item in content) {
-          posts.addAll(item.posts);
-        }
-
-        return SliverList.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return PostWidget(post: posts[index]);
-          },
-        );
-      },
+    return ContentScrollView<LemmyGetPersonDetailsResponse>(
+      builderDelegate: ContentBuilderDelegate(),
     );
   }
 }
@@ -119,20 +104,8 @@ class _UserCommentsTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContentScrollView<LemmyGetPersonDetailsResponse>.sliverListBuilder(
-        sliverListBuilder: (context, content) {
-      final List<LemmyComment> comments = [];
-
-      for (final item in content) {
-        comments.addAll(item.comments);
-      }
-
-      return SliverList.builder(
-        itemCount: comments.length,
-        itemBuilder: (context, index) {
-          return CommentWidget.card(comment: comments[index]);
-        },
-      );
-    });
+    return ContentScrollView<LemmyGetPersonDetailsResponse>(
+      builderDelegate: ContentBuilderDelegate(),
+    );
   }
 }

@@ -9,18 +9,18 @@ class HomePageState extends Equatable {
     this.currentPage = 0,
   });
 
-  final List<HomePageContentRetriever> scrollViewConfigs;
+  final List<LemmyPostRetriever> scrollViewConfigs;
   final HomePageStatus status;
   final int currentPage;
 
-  HomePageContentRetriever get currentScrollViewConfig =>
+  HomePageContentRetriever<Object> get currentScrollViewConfig =>
       scrollViewConfigs[currentPage];
 
   @override
   List<Object?> get props => [currentPage, scrollViewConfigs, status];
 
   HomePageState copyWith({
-    List<HomePageContentRetriever>? scrollViewConfigs,
+    List<LemmyPostRetriever>? scrollViewConfigs,
     HomePageStatus? status,
     int? currentPage,
   }) {

@@ -4,7 +4,7 @@ import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/extensions.dart';
-import 'package:muffed/widgets/content_scroll_view/bloc/bloc.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
@@ -67,9 +67,9 @@ class _SearchDialog extends StatelessWidget {
                     focusNode: textFocusNode,
                     controller: textController,
                     onChanged: (query) {
-                      context.read<ContentScrollBloc>().add(
-                            RetrieveContentMethodChanged(
-                              (state.retrieveContent
+                      context.read<ContentScrollBloc<LemmyCommunity>>().add(
+                            RetrieveContentDelegateChanged<LemmyCommunity>(
+                              (state.contentDelegate
                                       as CommunitySearchRetriever)
                                   .copyWith(query: query),
                             ),

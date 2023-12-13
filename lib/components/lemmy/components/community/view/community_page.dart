@@ -1,34 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/pages/home/home.dart';
-import 'package:muffed/pages/search/view/search_dialog.dart';
+import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/content_scroll/content_scroll.dart';
+import 'package:muffed/router/models/models.dart';
+import 'package:muffed/widgets/content_scroll/bloc/bloc.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
-class HomePage extends MPage<void> {
-  HomePage() : super(pageActions: PageActions([]));
+class CommunityPage extends MPage<void> {
+  CommunityPage({
+    int? communityId,
+    String? communityName,
+    this.community,
+  })  : communityId = communityId ?? community?.id,
+        communityName = communityName ?? community?.name,
+        assert(
+          communityId != null || communityName != null || community != null,
+          'No community defined',
+        ),
+        super(pageActions: PageActions([]));
+
+  /// The community ID
+  final int? communityId;
+
+  /// The community name
+  final String? communityName;
+
+  /// The community object which contains the community information.
+  ///
+  /// If this is set to null the information will be loaded from the API.
+  /// Setting the value will mean the community information can be shown
+  /// instantly
+  final LemmyCommunity? community;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomePageBloc()
-        ..add(
-          Initialise(
-            isLoggedIn: context.read<GlobalBloc>().isLoggedIn(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CommunityScreenBloc>(
+          create: (context) => CommunityScreenBloc(
+            communityId: communityId,
+            community: community,
+            communityName: communityName,
             repo: context.read<ServerRepo>(),
-          ),
+          )..add(InitialiseCommunityScreen()),
         ),
+        BlocProvider<ContentScrollBloc<LemmyPost>>(
+          create: (context) => ContentScrollBloc(
+            contentRetriever: CommunityScreenPostRetrieverDelegate(
+              sortType: LemmySortType.hot,
+              repo: context.read<ServerRepo>(),
+              communityId: communityId,
+            ),
+          )..add(LoadInitialItems()),
+        ),
+      ],
       child: Builder(
         builder: (context) {
+          final contentScrollBloc =
+              context.read<ContentScrollBloc<LemmyPost>>();
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             void changeSortType(LemmySortType sortType) {
-              context.read<HomePageBloc>().add(
-                    SortTypeChanged(
-                      pageIndex: context.read<HomePageBloc>().state.currentPage,
-                      newSortType: sortType,
+              context.read<ContentScrollBloc<LemmyPost>>().add(
+                    RetrieveContentDelegateChanged(
+                      (contentScrollBloc.state.contentDelegate
+                              as CommunityScreenPostRetrieverDelegate)
+                          .copyWith(sortType: sortType),
                     ),
                   );
             }
@@ -36,20 +74,28 @@ class HomePage extends MPage<void> {
             pageActions!.setActions([
               IconButton(
                 onPressed: () {
-                  openSearchDialog(context);
+                  context.push(
+                    SearchPage(
+                      communityId:
+                          context.read<CommunityScreenBloc>().communityId,
+                      communityName:
+                          context.read<CommunityScreenBloc>().communityName,
+                    ),
+                  );
                 },
-                icon: const Icon(Icons.search_rounded),
+                icon: const Icon(Icons.search),
                 visualDensity: VisualDensity.compact,
               ),
-              BlocBuilder<HomePageBloc, HomePageState>(
-                bloc: context.read<HomePageBloc>(),
+              BlocBuilder<ContentScrollBloc<LemmyPost>,
+                  ContentScrollState<LemmyPost>>(
+                bloc: contentScrollBloc,
                 builder: (context, state) {
                   return MuffedPopupMenuButton(
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(Icons.sort),
-                    selectedValue:
-                        (state.currentScrollViewConfig as LemmyPostRetriever)
-                            .sortType,
+                    selectedValue: (state.contentDelegate
+                            as CommunityScreenPostRetrieverDelegate)
+                        .sortType,
                     items: [
                       MuffedPopupMenuItem(
                         title: 'Hot',
@@ -149,74 +195,9 @@ class HomePage extends MPage<void> {
               ),
             ]);
           });
-          return BlocProvider(
-            create: (context) => ContentScrollBloc<LemmyPost>(
-              contentRetriever: context
-                  .read<HomePageBloc>()
-                  .state
-                  .currentScrollViewConfig as LemmyPostRetriever,
-            )..add(LoadInitialItems()),
-            child: _HomeView(),
-          );
+          return const CommunityView();
         },
       ),
-    );
-  }
-}
-
-class _HomeView extends StatelessWidget {
-  const _HomeView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<HomePageBloc, HomePageState>(
-      builder: (context, state) {
-        if (state.status == HomePageStatus.initial) {
-          return const SizedBox();
-        }
-        return Scaffold(
-          body: ContentScrollView<LemmyPost>(
-            key: ValueKey(state.currentScrollViewConfig),
-            builderDelegate: LemmyPostContentBuilderDelegate(),
-            headerSlivers: [
-              SliverAppBar(
-                clipBehavior: Clip.hardEdge,
-                toolbarHeight: 50,
-                floating: true,
-                backgroundColor: Theme.of(context).colorScheme.background,
-                foregroundColor: Theme.of(context).colorScheme.background,
-                surfaceTintColor: Theme.of(context).colorScheme.background,
-                snap: true,
-                flexibleSpace: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).padding.top,
-                    ),
-                    Row(
-                      children: List.generate(
-                        state.scrollViewConfigs.length,
-                        (index) => PageTab(
-                          onTap: () {
-                            context
-                                .read<HomePageBloc>()
-                                .add(PageChanged(newPageIndex: index));
-                          },
-                          name: state.scrollViewConfigs[index].title,
-                          selected: index == state.currentPage,
-                        ),
-                      ),
-                    ),
-                    const Divider(
-                      height: 0.5,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

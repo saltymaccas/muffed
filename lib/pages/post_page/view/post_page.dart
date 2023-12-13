@@ -4,7 +4,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post/post.dart';
 
@@ -34,7 +34,7 @@ class PostPage extends MPage<void> {
               repo: context.read<ServerRepo>(),
               postId: postId,
             ),
-          )..add(Initialise()),
+          )..add(LoadInitialItems()),
         ),
         if (postBloc != null)
           BlocProvider.value(value: postBloc!)
@@ -48,20 +48,22 @@ class PostPage extends MPage<void> {
       ],
       child: Builder(
         builder: (context) {
-          final contentScrollBloc = context.read<ContentScrollBloc>();
+          final contentScrollBloc =
+              context.read<ContentScrollBloc<LemmyComment>>();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             pageActions!.setActions(
               [
-                BlocBuilder<ContentScrollBloc, ContentScrollState>(
+                BlocBuilder<ContentScrollBloc<LemmyComment>,
+                    ContentScrollState<LemmyComment>>(
                   bloc: contentScrollBloc,
                   builder: (context, state) {
                     final retrieveContent =
-                        state.retrieveContent as CommentRetriever;
+                        state.contentDelegate as CommentRetriever;
 
                     void changeSortType(LemmyCommentSortType sortType) {
                       contentScrollBloc.add(
-                        RetrieveContentMethodChanged(
+                        RetrieveContentDelegateChanged(
                           retrieveContent.copyWith(sortType: sortType),
                         ),
                       );
@@ -116,26 +118,31 @@ class _PostView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ContentScrollView.commentTree(
-        sortType: (context.read<ContentScrollBloc>().state.retrieveContent
-                as CommentRetriever)
-            .sortType,
-        headerSlivers: [
-          const SliverAppBar(
-            title: Text('Comments'),
-            floating: true,
-            snap: true,
-          ),
-          SliverToBoxAdapter(
-            child: PostWidget(
-              displayType: PostDisplayType.comments,
-              bloc: BlocProvider.of<PostBloc>(context),
-              form: PostViewForm.card,
+    return BlocBuilder<ContentScrollBloc<LemmyComment>,
+        ContentScrollState<LemmyComment>>(
+      builder: (context, state) {
+        return Scaffold(
+          body: ContentScrollView(
+            builderDelegate: LemmyCommentTreeContentBuilderDelegate(
+              (state.contentDelegate as CommentRetriever).sortType,
             ),
+            headerSlivers: [
+              const SliverAppBar(
+                title: Text('Comments'),
+                floating: true,
+                snap: true,
+              ),
+              SliverToBoxAdapter(
+                child: PostWidget(
+                  displayType: PostDisplayType.comments,
+                  bloc: BlocProvider.of<PostBloc>(context),
+                  form: PostViewForm.card,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

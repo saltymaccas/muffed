@@ -1,8 +1,9 @@
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
-class InboxMentionsRetriever extends ContentRetriever {
-  InboxMentionsRetriever({
+class InboxMentionsRetrieverDelegate
+    extends ContentRetrieverDelegate<LemmyInboxMention> {
+  const InboxMentionsRetrieverDelegate({
     required this.repo,
     this.unreadOnly = false,
     this.sortType = LemmyCommentSortType.latest,
@@ -13,26 +14,30 @@ class InboxMentionsRetriever extends ContentRetriever {
   final ServerRepo repo;
 
   @override
-  Future<List<Object>> call({required int page}) {
+  Future<List<LemmyInboxMention>> retrieveContent({required int page}) {
     return repo.lemmyRepo
         .getMention(page: page, sort: sortType, unreadOnly: unreadOnly);
   }
 
-  InboxMentionsRetriever copyWith({
+  InboxMentionsRetrieverDelegate copyWith({
     LemmyCommentSortType? sortType,
     bool? unreadOnly,
     ServerRepo? repo,
   }) {
-    return InboxMentionsRetriever(
+    return InboxMentionsRetrieverDelegate(
       sortType: sortType ?? this.sortType,
       unreadOnly: unreadOnly ?? this.unreadOnly,
       repo: repo ?? this.repo,
     );
   }
+
+  @override
+  List<Object?> get props => [sortType, unreadOnly, repo];
 }
 
-class InboxRepliesRetriever extends ContentRetriever {
-  InboxRepliesRetriever({
+class InboxRepliesRetrieverDelegate
+    extends ContentRetrieverDelegate<LemmyInboxReply> {
+  const InboxRepliesRetrieverDelegate({
     required this.repo,
     this.unreadOnly = false,
     this.sortType = LemmyCommentSortType.latest,
@@ -43,20 +48,23 @@ class InboxRepliesRetriever extends ContentRetriever {
   final ServerRepo repo;
 
   @override
-  Future<List<Object>> call({required int page}) {
+  Future<List<LemmyInboxReply>> retrieveContent({required int page}) {
     return repo.lemmyRepo
         .getReplies(page: page, sort: sortType, unreadOnly: unreadOnly);
   }
 
-  InboxRepliesRetriever copyWith({
+  InboxRepliesRetrieverDelegate copyWith({
     LemmyCommentSortType? sortType,
     bool? unreadOnly,
     ServerRepo? repo,
   }) {
-    return InboxRepliesRetriever(
+    return InboxRepliesRetrieverDelegate(
       sortType: sortType ?? this.sortType,
       unreadOnly: unreadOnly ?? this.unreadOnly,
       repo: repo ?? this.repo,
     );
   }
+
+  @override
+  List<Object?> get props => [sortType, unreadOnly, repo];
 }

@@ -4,7 +4,7 @@ import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 /// A full screen page for searching for communities, posts, comments and users.
@@ -323,23 +323,20 @@ class _UserSearchViewState extends State<_UserSearchView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider<ContentScrollBloc>(
+    return BlocProvider<ContentScrollBloc<LemmyUser>>(
       create: (context) => ContentScrollBloc(
         contentRetriever: PersonSearchRetriever(
           repo: context.read<ServerRepo>(),
           query: context.read<SearchBloc>().state.searchQuery,
           sortType: context.read<SearchBloc>().state.sortType,
         ),
-      )..add(Initialise(
-          loadInitialContent:
-              context.read<SearchBloc>().state.searchQuery.isNotEmpty,
-        )),
+      ),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
             listener: (context, state) {
-              context.read<ContentScrollBloc>().add(
-                    RetrieveContentMethodChanged(
+              context.read<ContentScrollBloc<LemmyUser>>().add(
+                    RetrieveContentDelegateChanged(
                       PersonSearchRetriever(
                         sortType: state.sortType,
                         query: state.searchQuery,
@@ -349,7 +346,9 @@ class _UserSearchViewState extends State<_UserSearchView>
                     ),
                   );
             },
-            child: ContentScrollView.users(),
+            child: ContentScrollView<LemmyUser>(
+              builderDelegate: ContentBuilderDelegate<LemmyUser>(),
+            ),
           );
         },
       ),
@@ -372,25 +371,20 @@ class _CommunitySearchViewState extends State<_CommunitySearchView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider<ContentScrollBloc>(
+    return BlocProvider<ContentScrollBloc<LemmyCommunity>>(
       create: (context) => ContentScrollBloc(
         contentRetriever: CommunitySearchRetriever(
           repo: context.read<ServerRepo>(),
           query: context.read<SearchBloc>().state.searchQuery,
           sortType: context.read<SearchBloc>().state.sortType,
         ),
-      )..add(
-          Initialise(
-            loadInitialContent:
-                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
-          ),
-        ),
+      ),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
             listener: (context, state) {
-              context.read<ContentScrollBloc>().add(
-                    RetrieveContentMethodChanged(
+              context.read<ContentScrollBloc<LemmyCommunity>>().add(
+                    RetrieveContentDelegateChanged(
                       CommunitySearchRetriever(
                         sortType: state.sortType,
                         query: state.searchQuery,
@@ -400,7 +394,9 @@ class _CommunitySearchViewState extends State<_CommunitySearchView>
                     ),
                   );
             },
-            child: ContentScrollView.communities(),
+            child: ContentScrollView(
+              builderDelegate: ContentBuilderDelegate<LemmyCommunity>(),
+            ),
           );
         },
       ),
@@ -423,7 +419,7 @@ class _PostSearchViewState extends State<_PostSearchView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider<ContentScrollBloc>(
+    return BlocProvider<ContentScrollBloc<LemmyPost>>(
       create: (context) => ContentScrollBloc(
         contentRetriever: PostSearchRetriever(
           repo: context.read<ServerRepo>(),
@@ -431,18 +427,13 @@ class _PostSearchViewState extends State<_PostSearchView>
           sortType: context.read<SearchBloc>().state.sortType,
           communityId: context.read<SearchBloc>().state.communityId,
         ),
-      )..add(
-          Initialise(
-            loadInitialContent:
-                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
-          ),
-        ),
+      ),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
             listener: (context, state) {
-              context.read<ContentScrollBloc>().add(
-                    RetrieveContentMethodChanged(
+              context.read<ContentScrollBloc<LemmyPost>>().add(
+                    RetrieveContentDelegateChanged(
                       PostSearchRetriever(
                         sortType: state.sortType,
                         query: state.searchQuery,
@@ -452,7 +443,9 @@ class _PostSearchViewState extends State<_PostSearchView>
                     ),
                   );
             },
-            child: ContentScrollView.posts(),
+            child: ContentScrollView(
+              builderDelegate: ContentBuilderDelegate<LemmyPost>(),
+            ),
           );
         },
       ),
@@ -475,7 +468,7 @@ class _CommentSearchViewState extends State<_CommentSearchView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider<ContentScrollBloc>(
+    return BlocProvider<ContentScrollBloc<LemmyComment>>(
       create: (context) => ContentScrollBloc(
         contentRetriever: CommentSearchRetriever(
           repo: context.read<ServerRepo>(),
@@ -483,18 +476,13 @@ class _CommentSearchViewState extends State<_CommentSearchView>
           sortType: context.read<SearchBloc>().state.sortType,
           communityId: context.read<SearchBloc>().state.communityId,
         ),
-      )..add(
-          Initialise(
-            loadInitialContent:
-                context.read<SearchBloc>().state.searchQuery.isNotEmpty,
-          ),
-        ),
+      ),
       child: Builder(
         builder: (context) {
           return BlocListener<SearchBloc, SearchState>(
             listener: (context, state) {
-              context.read<ContentScrollBloc>().add(
-                    RetrieveContentMethodChanged(
+              context.read<ContentScrollBloc<LemmyComment>>().add(
+                    RetrieveContentDelegateChanged(
                       CommentSearchRetriever(
                         sortType: state.sortType,
                         query: state.searchQuery,
@@ -504,7 +492,9 @@ class _CommentSearchViewState extends State<_CommentSearchView>
                     ),
                   );
             },
-            child: ContentScrollView.communities(),
+            child: ContentScrollView(
+              builderDelegate: ContentBuilderDelegate<LemmyComment>(),
+            ),
           );
         },
       ),

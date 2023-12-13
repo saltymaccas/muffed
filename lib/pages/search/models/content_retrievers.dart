@@ -1,9 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
-class CommunitySearchRetriever extends ContentRetriever with EquatableMixin {
-  CommunitySearchRetriever({
+class CommunitySearchRetriever
+    extends ContentRetrieverDelegate<LemmyCommunity> {
+  const CommunitySearchRetriever({
     required this.repo,
     required this.query,
     required this.sortType,
@@ -14,7 +14,7 @@ class CommunitySearchRetriever extends ContentRetriever with EquatableMixin {
   final LemmySortType sortType;
 
   @override
-  Future<List<LemmyCommunity>> call({required int page}) async {
+  Future<List<LemmyCommunity>> retrieveContent({required int page}) async {
     final response = await repo.lemmyRepo.search(
       query: query,
       sortType: sortType,
@@ -45,8 +45,8 @@ class CommunitySearchRetriever extends ContentRetriever with EquatableMixin {
   }
 }
 
-class PersonSearchRetriever extends ContentRetriever with EquatableMixin {
-  PersonSearchRetriever({
+class PersonSearchRetriever extends ContentRetrieverDelegate<LemmyUser> {
+  const PersonSearchRetriever({
     required this.repo,
     required this.query,
     required this.sortType,
@@ -57,7 +57,7 @@ class PersonSearchRetriever extends ContentRetriever with EquatableMixin {
   final LemmySortType sortType;
 
   @override
-  Future<List<LemmyUser>> call({required int page}) async {
+  Future<List<LemmyUser>> retrieveContent({required int page}) async {
     final response = await repo.lemmyRepo.search(
       query: query,
       sortType: sortType,
@@ -88,8 +88,8 @@ class PersonSearchRetriever extends ContentRetriever with EquatableMixin {
       ];
 }
 
-class PostSearchRetriever extends ContentRetriever with EquatableMixin {
-  PostSearchRetriever({
+class PostSearchRetriever extends ContentRetrieverDelegate<LemmyPost> {
+  const PostSearchRetriever({
     required this.repo,
     required this.query,
     required this.sortType,
@@ -102,7 +102,7 @@ class PostSearchRetriever extends ContentRetriever with EquatableMixin {
   final int? communityId;
 
   @override
-  Future<List<LemmyPost>> call({required int page}) async {
+  Future<List<LemmyPost>> retrieveContent({required int page}) async {
     final response = await repo.lemmyRepo.search(
       query: query,
       sortType: sortType,
@@ -139,8 +139,8 @@ class PostSearchRetriever extends ContentRetriever with EquatableMixin {
   }
 }
 
-class CommentSearchRetriever extends ContentRetriever with EquatableMixin {
-  CommentSearchRetriever({
+class CommentSearchRetriever extends ContentRetrieverDelegate<LemmyComment> {
+  const CommentSearchRetriever({
     required this.repo,
     required this.query,
     required this.sortType,
@@ -153,7 +153,7 @@ class CommentSearchRetriever extends ContentRetriever with EquatableMixin {
   final int? communityId;
 
   @override
-  Future<List<LemmyComment>> call({required int page}) async {
+  Future<List<LemmyComment>> retrieveContent({required int page}) async {
     final response = await repo.lemmyRepo.search(
       query: query,
       sortType: sortType,

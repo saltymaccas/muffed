@@ -4,7 +4,7 @@ import 'package:muffed/pages/inbox/inbox.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
 class InboxPage extends MPage<void> {
   InboxPage() : super(pageActions: PageActions(const []));
@@ -86,27 +86,28 @@ class _RepliesScrollViewState extends State<_RepliesScrollView>
     super.build(context);
     return BlocProvider(
       create: (context) => ContentScrollBloc(
-        contentRetriever: InboxRepliesRetriever(
+        contentRetriever: InboxRepliesRetrieverDelegate(
           repo: context.read<ServerRepo>(),
           unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
         ),
-      )..add(Initialise()),
+      )..add(LoadInitialItems()),
       child: Builder(
         builder: (context) {
           return BlocListener<InboxBloc, InboxState>(
             listener: (context, state) {
-              final scrollBloc = context.read<ContentScrollBloc>();
+              final scrollBloc =
+                  context.read<ContentScrollBloc<LemmyInboxReply>>();
 
               scrollBloc.add(
-                RetrieveContentMethodChanged(
-                  (scrollBloc.state.retrieveContent as InboxRepliesRetriever)
+                RetrieveContentDelegateChanged(
+                  (scrollBloc.state.contentDelegate
+                          as InboxRepliesRetrieverDelegate)
                       .copyWith(unreadOnly: state.showUnreadOnly),
                 ),
               );
             },
             child: ContentScrollView(
-              itemBuilder: (context, index, item) =>
-                  InboxReplyItem(item: item as LemmyInboxReply),
+              builderDelegate: ContentBuilderDelegate<LemmyInboxReply>(),
             ),
           );
         },
@@ -132,27 +133,28 @@ class _MentionsScrollViewState extends State<_MentionsScrollView>
     super.build(context);
     return BlocProvider(
       create: (context) => ContentScrollBloc(
-        contentRetriever: InboxMentionsRetriever(
+        contentRetriever: InboxMentionsRetrieverDelegate(
           repo: context.read<ServerRepo>(),
           unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
         ),
-      )..add(Initialise()),
+      )..add(LoadInitialItems()),
       child: Builder(
         builder: (context) {
           return BlocListener<InboxBloc, InboxState>(
             listener: (context, state) {
-              final scrollBloc = context.read<ContentScrollBloc>();
+              final scrollBloc =
+                  context.read<ContentScrollBloc<LemmyInboxMention>>();
 
               scrollBloc.add(
-                RetrieveContentMethodChanged(
-                  (scrollBloc.state.retrieveContent as InboxMentionsRetriever)
+                RetrieveContentDelegateChanged(
+                  (scrollBloc.state.contentDelegate
+                          as InboxMentionsRetrieverDelegate)
                       .copyWith(unreadOnly: state.showUnreadOnly),
                 ),
               );
             },
             child: ContentScrollView(
-              itemBuilder: (context, index, item) =>
-                  InboxMentionItem(item: item as LemmyInboxMention),
+              builderDelegate: ContentBuilderDelegate<LemmyInboxMention>(),
             ),
           );
         },

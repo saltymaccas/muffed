@@ -1,15 +1,14 @@
-import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
-abstract class HomePageContentRetriever extends ContentRetriever<Object>
-    with EquatableMixin {
+abstract class HomePageContentRetriever<Data>
+    extends ContentRetrieverDelegate<Data> {
   const HomePageContentRetriever({required this.title});
 
   final String title;
 }
 
-class LemmyPostRetriever extends HomePageContentRetriever {
+class LemmyPostRetriever extends HomePageContentRetriever<LemmyPost> {
   const LemmyPostRetriever({
     required super.title,
     required this.listingType,
@@ -22,7 +21,7 @@ class LemmyPostRetriever extends HomePageContentRetriever {
   final ServerRepo repo;
 
   @override
-  Future<List<Object>> call({required int page}) {
+  Future<List<LemmyPost>> retrieveContent({required int page}) {
     return repo.lemmyRepo
         .getPosts(page: page, listingType: listingType, sortType: sortType);
   }
