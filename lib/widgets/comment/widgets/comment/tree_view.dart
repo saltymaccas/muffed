@@ -1,9 +1,7 @@
 part of 'comment.dart';
 
 class _TreeCommentView extends StatelessWidget {
-  const _TreeCommentView(this.commentState);
-
-  final CommentState commentState;
+  const _TreeCommentView();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +12,7 @@ class _TreeCommentView extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: (state.comment.level == 0)
+                  left: (state.comment.level != 0)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                         )

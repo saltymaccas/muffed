@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 
@@ -25,29 +24,25 @@ List<CommentPlateau> organiseCommentsWithChildren(
   int level,
   List<LemmyComment> comments,
 ) {
-  final grouped = groupBy(comments, (comment) => comment.level);
-
-  if (grouped[level] == null) return [];
-
   final List<CommentPlateau> commentPlateau = [];
 
-  for (final comment in grouped[level]!) {
-    final List<LemmyComment> children = [];
+  for (final comment in comments) {
+    if (comment.level == level) {
+      final List<LemmyComment> children = [];
 
-    if (grouped[level + 1] == null) continue;
-
-    for (final child in grouped[level + 1]!) {
-      if (child.path.contains(comment.id)) {
-        children.add(child);
+      for (final child in comments) {
+        if (child.path.contains(comment.id)) {
+          children.add(child);
+        }
       }
-    }
 
-    commentPlateau.add(
-      CommentPlateau(
-        comment: comment,
-        children: children,
-      ),
-    );
+      commentPlateau.add(
+        CommentPlateau(
+          comment: comment,
+          children: children,
+        ),
+      );
+    }
   }
 
   return commentPlateau;

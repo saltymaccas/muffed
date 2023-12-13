@@ -34,9 +34,8 @@ class _CommentChildrenInColumn extends StatelessWidget {
   const _CommentChildrenInColumn(
     this.comment,
     this.children,
-    this.sortType, {
-    super.key,
-  });
+    this.sortType,
+  );
 
   final LemmyComment comment;
   final List<LemmyComment> children;
@@ -45,11 +44,11 @@ class _CommentChildrenInColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: childrenWidgets,
+      children: childrenWidgets(),
     );
   }
 
-  List<Widget> get childrenWidgets {
+  List<Widget> childrenWidgets() {
     final organisedComments = organiseCommentsWithChildren(
       comment.level + 1,
       children,

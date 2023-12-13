@@ -34,7 +34,7 @@ class CommentWidget {
         builder: (context) {
           return BlocBuilder<CommentBloc, CommentState>(
             builder: (context, state) {
-              return _TreeCommentView(state);
+              return const _TreeCommentView();
             },
           );
         },
@@ -58,11 +58,7 @@ class CommentWidget {
       ),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CommentBloc, CommentState>(
-            builder: (context, state) {
-              return _TreeCommentView(state);
-            },
-          );
+          return const _TreeCommentView();
         },
       ),
     );
