@@ -70,8 +70,8 @@ class ContentScrollBloc<Data>
     });
     on<NearScrollEnd>(
       (event, emit) async {
-        try {
-          if (!state.reachedEnd && !state.isLoadingMore) {
+        if (!state.reachedEnd && !state.isLoadingMore) {
+          try {
             _log.info('Loading page ${state.pagesLoaded + 1}');
             emit(state.copyWith(isLoadingMore: true));
 
@@ -95,11 +95,11 @@ class ContentScrollBloc<Data>
             }
 
             _log.info('Loaded page ${state.pagesLoaded}');
-          }
-        } catch (exc, stackTrace) {
-          final exception = MException(exc, stackTrace)..log(_log);
+          } catch (exc, stackTrace) {
+            final exception = MException(exc, stackTrace)..log(_log);
 
-          emit(state.copyWith(exception: exception, isLoadingMore: false));
+            emit(state.copyWith(exception: exception, isLoadingMore: false));
+          }
         }
       },
       transformer: droppable(),

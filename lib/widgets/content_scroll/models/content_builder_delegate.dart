@@ -20,7 +20,9 @@ class ContentBuilderDelegate<Data> {
   }
 
   List<Widget> buildCustomScrollViewElements(
-      BuildContext context, List<Data> content) {
+    BuildContext context,
+    List<Data> content,
+  ) {
     return [
       buildSliverList(context, content),
     ];
