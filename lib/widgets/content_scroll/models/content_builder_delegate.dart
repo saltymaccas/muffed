@@ -14,20 +14,12 @@ class ContentBuilderDelegate<Data> {
   }
 
   /// Builds a whole sliver list
-  Widget buildSliverList(BuildContext context, List<Data> content) {
+  Widget buildSliverList(BuildContext context, List<Data> content, {Key? key}) {
     return SliverList.builder(
+      key: key,
       itemCount: content.length,
       itemBuilder: (context, index) => itemBuilder(context, index, content),
     );
-  }
-
-  List<Widget> buildCustomScrollViewElements(
-    BuildContext context,
-    List<Data> content,
-  ) {
-    return [
-      buildSliverList(context, content),
-    ];
   }
 }
 
@@ -50,10 +42,15 @@ class LemmyCommentTreeContentBuilderDelegate
   final LemmyCommentSortType sortType;
 
   @override
-  Widget buildSliverList(BuildContext context, List<LemmyComment> content) {
+  Widget buildSliverList(
+    BuildContext context,
+    List<LemmyComment> content, {
+    Key? key,
+  }) {
     final organisedComments = organiseCommentsWithChildren(0, content);
 
     return SliverList.builder(
+      key: key,
       itemCount: organisedComments.length,
       itemBuilder: (context, index) {
         return CommentWidget.tree(

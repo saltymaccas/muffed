@@ -42,6 +42,7 @@ class ContentScrollView<Data> extends StatelessWidget {
                           (element) => element.isReloading == false);
                     },
                     child: CustomScrollView(
+                      key: ValueKey(state.loadedContentDelegate),
                       cacheExtent: 500,
                       slivers: [
                         ...headerSlivers,
@@ -63,7 +64,7 @@ class ContentScrollView<Data> extends StatelessWidget {
                             ),
                           )
                         else if (state.status.isSuccess)
-                          ...builderDelegate.buildCustomScrollViewElements(
+                          builderDelegate.buildSliverList(
                             context,
                             state.content,
                           ),
