@@ -359,8 +359,8 @@ interface class LemmyRepo {
     );
 
     return LemmySubscribedType.fromJson(
-      [response['community_view']['subscribed']] as String,
-    );
+      response['community_view']['subscribed'] as String?,
+    )!;
   }
 
   /// Used to block and unblock a person, returns whether the user is now

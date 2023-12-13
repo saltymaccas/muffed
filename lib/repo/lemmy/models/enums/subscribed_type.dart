@@ -3,7 +3,7 @@ enum LemmySubscribedType {
   notSubscribed,
   pending;
 
-  static LemmySubscribedType fromJson(String json) {
+  static LemmySubscribedType? fromJson(String? json) {
     switch (json) {
       case 'Subscribed':
         return LemmySubscribedType.subscribed;
@@ -11,6 +11,8 @@ enum LemmySubscribedType {
         return LemmySubscribedType.pending;
       case 'NotSubscribed':
         return LemmySubscribedType.notSubscribed;
+      case null:
+        return null;
       default:
         throw Exception('Unknown LemmySubscribedType: $json');
     }

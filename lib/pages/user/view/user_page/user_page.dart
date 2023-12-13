@@ -1,13 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
+import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
+import 'package:muffed/widgets/post/post.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 part 'header.dart';
@@ -74,7 +77,7 @@ class UserView extends StatelessWidget {
             },
             body: TabBarView(
               children: [
-                _UserInfoTabView(),
+                _UserInfoTabView(user: user),
                 const _UserPostsTabView(key: PageStorageKey('user-comments')),
                 const _UserCommentsTabView(
                   key: PageStorageKey('user-posts'),
@@ -94,7 +97,14 @@ class _UserPostsTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ContentScrollView<LemmyGetPersonDetailsResponse>(
-      builderDelegate: ContentBuilderDelegate(),
+      headerSlivers: const [
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: _headerMinHeight,
+          ),
+        )
+      ],
+      builderDelegate: PostBuilderDelegate(),
     );
   }
 }
@@ -105,7 +115,61 @@ class _UserCommentsTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ContentScrollView<LemmyGetPersonDetailsResponse>(
-      builderDelegate: ContentBuilderDelegate(),
+      headerSlivers: const [
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: _headerMinHeight,
+          ),
+        )
+      ],
+      builderDelegate: ContentBuilderDelegateUserComments(),
+    );
+  }
+}
+
+class PostBuilderDelegate
+    extends ContentBuilderDelegate<LemmyGetPersonDetailsResponse> {
+  @override
+  Widget buildSliverList(
+    BuildContext context,
+    List<LemmyGetPersonDetailsResponse> content, {
+    Key? key,
+  }) {
+    final items = content.expand((element) => element.posts).toList();
+
+    return SliverList.list(
+      key: key,
+      children: List.generate(
+        items.length,
+        (index) => PostWidget(
+          post: items[index],
+          form: PostViewForm.card,
+          displayType: PostDisplayType.list,
+        ),
+      ),
+    );
+  }
+}
+
+class ContentBuilderDelegateUserComments
+    extends ContentBuilderDelegate<LemmyGetPersonDetailsResponse> {
+  @override
+  Widget buildSliverList(
+    BuildContext context,
+    List<LemmyGetPersonDetailsResponse> content, {
+    Key? key,
+  }) {
+    final items = content.expand((element) => element.comments).toList();
+
+    return SliverList.list(
+      key: key,
+      children: List.generate(
+        items.length,
+        (index) => CommentWidget.card(
+          comment: items[index],
+          sortType: LemmyCommentSortType.hot,
+        ),
+      ),
     );
   }
 }

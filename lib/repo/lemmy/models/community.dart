@@ -97,7 +97,7 @@ class LemmyCommunity extends Equatable {
       usersActiveWeek: communityView?['counts']['users_active_week'],
       blocked: communityView?['blocked'],
       subscribed: LemmySubscribedType.fromJson(
-        communityView?['subscribed'] as String,
+        communityView?['subscribed'] as String?,
       ),
       icon: community['icon'],
       description: community['description'],

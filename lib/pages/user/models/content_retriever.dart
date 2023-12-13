@@ -14,8 +14,9 @@ class UserContentRetriever
   final ServerRepo repo;
 
   @override
-  Future<List<LemmyGetPersonDetailsResponse>> retrieveContent(
-      {int page = 1}) async {
+  Future<List<LemmyGetPersonDetailsResponse>> retrieveContent({
+    int page = 1,
+  }) async {
     final response = await repo.lemmyRepo.getPersonDetails(
       id: userId,
       username: username,

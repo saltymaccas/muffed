@@ -44,6 +44,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   extended_image: ^8.2.0
   collection: ^1.18.0
+  extended_nested_scroll_view: ^6.1.2
 
 dev_dependencies:
   flutter_test:
