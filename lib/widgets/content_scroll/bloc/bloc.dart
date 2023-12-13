@@ -70,7 +70,10 @@ class ContentScrollBloc<Data>
     });
     on<NearScrollEnd>(
       (event, emit) async {
-        if (!state.reachedEnd && !state.isLoadingMore) {
+        if (!state.reachedEnd &&
+            !state.isLoadingMore &&
+            !state.status.isLoading &&
+            !state.status.isEmpty) {
           try {
             _log.info('Loading page ${state.pagesLoaded + 1}');
             emit(state.copyWith(isLoadingMore: true));
