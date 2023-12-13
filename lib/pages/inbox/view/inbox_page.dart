@@ -12,41 +12,45 @@ class InboxPage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    if (!context.read<GlobalBloc>().state.isLoggedIn()) {
-      return const Center(
-        child: Text('You must be logged in to view your inbox'),
-      );
-    }
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (context, state) {
+        if (!state.isLoggedIn()) {
+          return const Center(
+            child: Text('You must be logged in to view your inbox'),
+          );
+        }
 
-    return BlocProvider(
-      create: (context) => InboxBloc(),
-      child: Builder(
-        builder: (context) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final inboxBloc = context.read<InboxBloc>();
-            super.pageActions!.setActions([
-              BlocBuilder<InboxBloc, InboxState>(
-                bloc: inboxBloc,
-                builder: (context, state) {
-                  return IconButton(
-                    onPressed: () {
-                      inboxBloc.add(ShowUnreadToggled());
+        return BlocProvider(
+          create: (context) => InboxBloc(),
+          child: Builder(
+            builder: (context) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final inboxBloc = context.read<InboxBloc>();
+                super.pageActions!.setActions([
+                  BlocBuilder<InboxBloc, InboxState>(
+                    bloc: inboxBloc,
+                    builder: (context, state) {
+                      return IconButton(
+                        onPressed: () {
+                          inboxBloc.add(ShowUnreadToggled());
+                        },
+                        icon: state.showUnreadOnly
+                            ? const Icon(Icons.remove_red_eye)
+                            : Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: context.colorScheme.primary,
+                              ),
+                        visualDensity: VisualDensity.compact,
+                      );
                     },
-                    icon: state.showUnreadOnly
-                        ? const Icon(Icons.remove_red_eye)
-                        : Icon(
-                            Icons.remove_red_eye_outlined,
-                            color: context.colorScheme.primary,
-                          ),
-                    visualDensity: VisualDensity.compact,
-                  );
-                },
-              )
-            ]);
-          });
-          return const InboxView();
-        },
-      ),
+                  )
+                ]);
+              });
+              return const InboxView();
+            },
+          ),
+        );
+      },
     );
   }
 }
