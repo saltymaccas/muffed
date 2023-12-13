@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/lemmy_comment/comment.dart';
+import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/post/post.dart';
 
 class ContentBuilderDelegate<Data> {

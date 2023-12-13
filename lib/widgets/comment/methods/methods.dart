@@ -1,4 +1,4 @@
-import 'package:muffed/components/lemmy_comment/comment.dart';
+import 'package:muffed/repo/server_repo.dart';
 
 /// Organizes the comment into tree structure.
 ///

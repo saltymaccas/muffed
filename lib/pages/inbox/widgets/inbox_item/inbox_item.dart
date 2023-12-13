@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/pages/inbox/widgets/inbox_item/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/lemmy_comment/comment.dart';
+import 'package:muffed/widgets/comment/comment.dart';
 
 class InboxReplyItem extends StatelessWidget {
   const InboxReplyItem({required this.item, required this.sortType, super.key});

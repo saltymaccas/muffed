@@ -2,10 +2,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/components/lemmy/lemmy.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/widgets/comment/comment.dart';
 
 part 'event.dart';
 part 'state.dart';
