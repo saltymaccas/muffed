@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/inbox/inbox.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
@@ -11,6 +12,12 @@ class InboxPage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
+    if (!context.read<GlobalBloc>().state.isLoggedIn()) {
+      return const Center(
+        child: Text('You must be logged in to view your inbox'),
+      );
+    }
+
     return BlocProvider(
       create: (context) => InboxBloc(),
       child: Builder(
