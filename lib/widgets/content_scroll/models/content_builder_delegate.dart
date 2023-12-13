@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/post/post.dart';
@@ -61,5 +63,37 @@ class LemmyCommentTreeContentBuilderDelegate
         );
       },
     );
+  }
+}
+
+class ContentBuilderDelegateLemmyCommentCard
+    extends ContentBuilderDelegate<LemmyComment> {
+  @override
+  Widget itemBuilder(
+    BuildContext context,
+    int index,
+    List<LemmyComment> content,
+  ) {
+    return CommentWidget.card(
+      comment: content[index],
+      sortType: LemmyCommentSortType.hot,
+    );
+  }
+}
+
+class ContentBuilderDelegateLemmyCommunity
+    extends ContentBuilderDelegate<LemmyCommunity> {
+  @override
+  Widget itemBuilder(
+      BuildContext context, int index, List<LemmyCommunity> content) {
+    return CommunityListTile(content[index]);
+  }
+}
+
+class ContentBuilderDelegateLemmyUser
+    extends ContentBuilderDelegate<LemmyUser> {
+  @override
+  Widget itemBuilder(BuildContext context, int index, List<LemmyUser> content) {
+    return UserListTile(person: content[index]);
   }
 }

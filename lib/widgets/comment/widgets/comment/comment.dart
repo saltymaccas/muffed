@@ -34,7 +34,9 @@ class CommentWidget {
         builder: (context) {
           return BlocBuilder<CommentBloc, CommentState>(
             builder: (context, state) {
-              return const _TreeCommentView();
+              return _CardCommentView(
+                trailingPostTitle: trailingPostTitle,
+              );
             },
           );
         },

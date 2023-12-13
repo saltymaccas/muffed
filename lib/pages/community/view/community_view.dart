@@ -34,7 +34,7 @@ class CommunityView extends StatelessWidget {
                 pinned: true,
               ),
             ],
-            builderDelegate: ContentBuilderDelegate<LemmyPost>(),
+            builderDelegate: LemmyPostContentBuilderDelegate(),
           ),
         );
       },

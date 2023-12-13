@@ -11,7 +11,7 @@ void openSearchDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return BlocProvider(
-        create: (context) => ContentScrollBloc(
+        create: (context) => ContentScrollBloc<LemmyCommunity>(
           contentRetriever: CommunitySearchRetriever(
             repo: context.read<ServerRepo>(),
             sortType: LemmySortType.topAll,
@@ -37,7 +37,8 @@ class _SearchDialog extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         alignment: Alignment.bottomCenter,
         insetPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
+        child: BlocBuilder<ContentScrollBloc<LemmyCommunity>,
+            ContentScrollState<LemmyCommunity>>(
           builder: (context, state) {
             return AnimatedSize(
               duration: const Duration(milliseconds: 500),
@@ -53,8 +54,7 @@ class _SearchDialog extends StatelessWidget {
                       itemCount: state.content.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        final community =
-                            state.content[index] as LemmyCommunity;
+                        final community = state.content[index];
 
                         return CommunityListTile.compact(community);
                       },
