@@ -13,7 +13,7 @@ class HomePageState extends Equatable {
   final HomePageStatus status;
   final int currentPage;
 
-  HomePageContentRetriever<Object> get currentScrollViewConfig =>
+  LemmyPostRetriever get currentScrollViewConfig =>
       scrollViewConfigs[currentPage];
 
   @override

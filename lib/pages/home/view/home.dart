@@ -47,9 +47,7 @@ class HomePage extends MPage<void> {
                   return MuffedPopupMenuButton(
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(Icons.sort),
-                    selectedValue:
-                        (state.currentScrollViewConfig as LemmyPostRetriever)
-                            .sortType,
+                    selectedValue: state.currentScrollViewConfig.sortType,
                     items: [
                       MuffedPopupMenuItem(
                         title: 'Hot',
@@ -151,12 +149,29 @@ class HomePage extends MPage<void> {
           });
           return BlocProvider(
             create: (context) => ContentScrollBloc<LemmyPost>(
-              contentRetriever: context
-                  .read<HomePageBloc>()
-                  .state
-                  .currentScrollViewConfig as LemmyPostRetriever,
+              contentRetriever:
+                  context.read<HomePageBloc>().state.currentScrollViewConfig,
             )..add(LoadInitialItems()),
-            child: _HomeView(),
+            child: Builder(
+              builder: (context) {
+                return BlocListener<HomePageBloc, HomePageState>(
+                  listener: (context, state) {
+                    final scrollBloc =
+                        context.read<ContentScrollBloc<LemmyPost>>();
+
+                    scrollBloc.add(
+                      RetrieveContentDelegateChanged(
+                        (scrollBloc.state.contentDelegate as LemmyPostRetriever)
+                            .copyWith(
+                          sortType: state.currentScrollViewConfig.sortType,
+                        ),
+                      ),
+                    );
+                  },
+                  child: _HomeView(),
+                );
+              },
+            ),
           );
         },
       ),
@@ -165,7 +180,7 @@ class HomePage extends MPage<void> {
 }
 
 class _HomeView extends StatelessWidget {
-  const _HomeView({super.key});
+  const _HomeView();
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +191,6 @@ class _HomeView extends StatelessWidget {
         }
         return Scaffold(
           body: ContentScrollView<LemmyPost>(
-            key: ValueKey(state.currentScrollViewConfig),
             builderDelegate: LemmyPostContentBuilderDelegate(),
             headerSlivers: [
               SliverAppBar(
