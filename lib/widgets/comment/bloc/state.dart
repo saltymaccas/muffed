@@ -15,13 +15,6 @@ class CommentState extends Equatable {
   final bool loadingChildren;
   final LemmyCommentSortType sortType;
 
-  Map<LemmyComment, List<LemmyComment>> get organisedChildren {
-    return organiseCommentsWithChildren(
-      comment.level + 1,
-      children,
-    );
-  }
-
   @override
   List<Object?> get props => [
         sortType,

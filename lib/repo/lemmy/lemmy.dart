@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 import 'package:muffed/utils/url.dart';
 
 final _log = Logger('LemmyRepo');
@@ -133,9 +133,9 @@ interface class LemmyRepo {
       path: '/post/list',
       queryParameters: {
         'page': page,
-        'sort': lemmySortTypeToJson[sortType],
+        'sort': sortType.asJson,
         if (communityId != null) 'community_id': communityId,
-        'type_': lemmyListingTypeToJson[listingType],
+        'type_': listingType.asJson,
         'saved_only': savedOnly,
       },
     );
@@ -168,8 +168,8 @@ interface class LemmyRepo {
         if (parentId != null) 'parent_id': parentId,
         if (limit != null) 'limit': limit,
         'page': page,
-        'type_': lemmyListingTypeToJson[listingType],
-        'sort': lemmyCommentSortTypeToJson[sortType],
+        'type_': listingType.asJson,
+        'sort': sortType.asJson,
         'max_depth': 8,
       },
     );
@@ -186,7 +186,7 @@ interface class LemmyRepo {
     int? id,
     String? username,
     int page = 1,
-    LemmySortType? sortType,
+    LemmySortType sortType = LemmySortType.hot,
   }) async {
     if (id == null && username == null) {
       throw 'Both id and username equals null';
@@ -197,8 +197,7 @@ interface class LemmyRepo {
         if (id != null) 'person_id': id,
         if (username != null) 'username': username,
         'page': page,
-        'sort':
-            lemmySortTypeToJson[sortType ?? globalBloc.state.defaultSortType],
+        'sort': sortType.asJson,
       },
     );
 
@@ -237,11 +236,11 @@ interface class LemmyRepo {
       queryParameters: {
         'page': page,
         'q': query,
-        'type_': lemmySearchTypeToJson[searchType],
-        'sort': lemmySortTypeToJson[sortType],
+        'type_': searchType.asJson,
+        'sort': sortType.asJson,
         if (communityId != null) 'community_id': communityId.toString(),
         if (creatorId != null) 'creator_id': creatorId.toString(),
-        'listing_type': lemmyListingTypeToJson[listingType],
+        'listing_type': listingType.asJson,
       },
     );
 
@@ -320,7 +319,7 @@ interface class LemmyRepo {
         path: '/post/like',
         data: {
           'post_id': postId,
-          'score': lemmyVoteTypeJson[vote],
+          'score': vote.asJson,
         },
       );
 
@@ -332,7 +331,7 @@ interface class LemmyRepo {
         path: '/comment/like',
         data: {
           'comment_id': commentId,
-          'score': lemmyVoteTypeJson[vote],
+          'score': vote.asJson,
         },
       );
 
@@ -359,7 +358,9 @@ interface class LemmyRepo {
       data: {'community_id': communityId, 'follow': follow},
     );
 
-    return jsonToLemmySubscribedType[response['community_view']['subscribed']]!;
+    return LemmySubscribedType.fromJson(
+      [response['community_view']['subscribed']] as String,
+    );
   }
 
   /// Used to block and unblock a person, returns whether the user is now
@@ -488,7 +489,7 @@ interface class LemmyRepo {
       path: '/user/replies',
       queryParameters: {
         'page': page,
-        'sort': lemmyCommentSortTypeToJson[sort],
+        'sort': sort.asJson,
         'unread_only': unreadOnly,
       },
     );
@@ -509,7 +510,7 @@ interface class LemmyRepo {
       mustBeLoggedIn: true,
       queryParameters: {
         'page': page,
-        'sort': lemmyCommentSortTypeToJson[sort],
+        'sort': sort.asJson,
         'unread_only': unreadOnly,
       },
     );

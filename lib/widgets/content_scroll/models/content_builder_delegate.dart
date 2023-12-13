@@ -49,16 +49,12 @@ class LemmyCommentTreeContentBuilderDelegate
   Widget buildSliverList(BuildContext context, List<LemmyComment> content) {
     final organisedComments = organiseCommentsWithChildren(0, content);
 
-    final baseComments = organisedComments.keys.toList();
-
     return SliverList.builder(
       itemCount: organisedComments.length,
       itemBuilder: (context, index) {
-        final baseComment = baseComments[index];
-
         return CommentWidget.tree(
-          comment: baseComment,
-          children: organisedComments[baseComment]!,
+          comment: organisedComments[index].comment,
+          children: organisedComments[index].children,
           sortType: sortType,
         );
       },

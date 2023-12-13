@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 
 class UserListTile extends StatelessWidget {

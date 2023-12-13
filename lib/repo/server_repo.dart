@@ -2,7 +2,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/lemmy/lemmy.dart';
 import 'package:muffed/repo/pictrs/pictrs.dart';
 
-export 'lemmy/models.dart';
+export 'lemmy/models/models.dart';
 
 interface class ServerRepo {
   /// Creates a new instance of [ServerRepo].

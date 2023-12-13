@@ -32,15 +32,4 @@ class _TreeCommentView extends StatelessWidget {
       },
     );
   }
-
-  List<Widget> childrenWidgets() {
-    final organisedChildren = commentState.organisedChildren;
-    return organisedChildren.keys.map((LemmyComment key) {
-      return CommentWidget.tree(
-        comment: key,
-        children: organisedChildren[key]!,
-        sortType: commentState.sortType,
-      );
-    }).toList();
-  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';

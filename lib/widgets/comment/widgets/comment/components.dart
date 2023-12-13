@@ -56,11 +56,10 @@ class _CommentChildrenInColumn extends StatelessWidget {
     );
 
     return List.generate(organisedComments.length, (index) {
-      final key = organisedComments.keys.toList()[index];
       return CommentWidget.tree(
         sortType: sortType,
-        comment: key,
-        children: organisedComments[key]!,
+        comment: organisedComments[index].comment,
+        children: organisedComments[index].children,
       );
     });
   }

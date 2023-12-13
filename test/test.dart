@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 
 void main() {
   test('GlobalState should convert to map and back', () {
