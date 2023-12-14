@@ -9,16 +9,20 @@ import 'package:muffed/router/router.dart';
 
 part 'router_delegate.dart';
 
-class MRouterConfig extends RouterConfig<MPage<Object?>> {
-  MRouterConfig({
+final routerConfig = MRouterConfig();
+
+class MRouterConfig implements RouterConfig<MPage<Object?>> {
+  MRouterConfig.configure({
     required this.navigator,
-    required super.routerDelegate,
-    super.backButtonDispatcher,
-    super.routeInformationParser,
-    super.routeInformationProvider,
+    required this.routerDelegate,
+    required this.backButtonDispatcher,
+    this.routeInformationParser,
+    this.routeInformationProvider,
   });
 
-  factory MRouterConfig.create() {
+  factory MRouterConfig() {
+    print('create');
+
     final navigator = MNavigator(
       MNavigatorState(
         currentBranchIndex: 0,
@@ -39,9 +43,7 @@ class MRouterConfig extends RouterConfig<MPage<Object?>> {
       ),
     );
 
-    navigator.pushToRootBranch(_RootPage(navigator));
-
-    return MRouterConfig(
+    return MRouterConfig.configure(
       navigator: navigator,
       routerDelegate: MRouterDelegate(navigator),
       backButtonDispatcher: RootBackButtonDispatcher(),
@@ -49,4 +51,16 @@ class MRouterConfig extends RouterConfig<MPage<Object?>> {
   }
 
   final MNavigator navigator;
+
+  @override
+  final RouterDelegate<MPage<Object?>> routerDelegate;
+
+  @override
+  final BackButtonDispatcher backButtonDispatcher;
+
+  @override
+  final RouteInformationParser<MPage<Object?>>? routeInformationParser;
+
+  @override
+  RouteInformationProvider? routeInformationProvider;
 }

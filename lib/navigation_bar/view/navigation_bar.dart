@@ -12,16 +12,19 @@ class MNavigationBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           NavigationBarItem(
+            key: ValueKey('home'),
             relatedBranchIndex: 0,
             icon: Icons.home_outlined,
             selectedIcon: Icons.home,
           ),
           NavigationBarItem(
+            key: ValueKey('inbox'),
             relatedBranchIndex: 1,
             icon: Icons.inbox_outlined,
             selectedIcon: Icons.inbox,
           ),
           NavigationBarItem(
+            key: ValueKey('profile'),
             relatedBranchIndex: 2,
             icon: Icons.account_circle_outlined,
             selectedIcon: Icons.account_circle,

@@ -10,13 +10,16 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
 
   @override
   Widget build(BuildContext context) {
+    navigator
+        .pushToRootBranch(_RootPage(navigator, key: const ValueKey('root')));
+
     return BlocProvider.value(
       value: navigator,
       child: BlocBuilder<MNavigator, MNavigatorState>(
         bloc: navigator,
         builder: (context, state) {
           return Navigator(
-            key: GlobalKey<NavigatorState>(),
+            key: navigator.state.rootBranch.key,
             pages: state.rootBranch.pages,
             onPopPage: (route, result) {
               return false;
@@ -45,13 +48,17 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
 
   @override
   Future<bool> popRoute() {
-    navigator.state.currentKey.currentState!.maybePop();
+    // if (navigator.state.canPop) {
+    //   navigator.pop();
+    //   return SynchronousFuture(true);
+    // }
+
     return SynchronousFuture(true);
   }
 }
 
 class _RootPage extends MPage<void> {
-  const _RootPage(this.navigator);
+  const _RootPage(this.navigator, {super.key});
 
   final MNavigator navigator;
 
@@ -66,7 +73,7 @@ class _RootPage extends MPage<void> {
 
 /// Builds the nested branches in an indexed stack
 class _NestedBranchView extends StatelessWidget {
-  _NestedBranchView(
+  const _NestedBranchView(
     this.navigator,
   );
 

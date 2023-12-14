@@ -67,7 +67,10 @@ class NavigationBarItem extends StatelessWidget {
 }
 
 class _NavigationBarItemActions extends StatelessWidget {
-  const _NavigationBarItemActions({this.pageActions, this.showActions = false});
+  const _NavigationBarItemActions({
+    this.pageActions,
+    this.showActions = false,
+  });
 
   final PageActions? pageActions;
   final bool showActions;
@@ -101,40 +104,51 @@ class _NavigationBarItemActions extends StatelessWidget {
       duration: _animDur,
       alignment: Alignment.centerLeft,
       curve: Curves.easeInOutCubic,
-      child: IntrinsicHeight(
-        child: Builder(
-          builder: (context) {
-            if (showActions && pageActions != null) {
-              return ListenableBuilder(
-                listenable: pageActions!,
-                builder: (context, child) {
-                  return Row(
-                    children: [
-                      if (pageActions!.actions.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Container(
-                            width: 2,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                          ),
-                        ).animate().fade(
-                              duration: _animDur,
-                              curve: _animCurve,
-                              begin: 0,
-                            ),
-                      ...attachAnimations(pageActions!.actions),
-                    ],
-                  );
-                },
+      child: Builder(
+        builder: (context) {
+          if (!showActions || pageActions == null) {
+            return const SizedBox();
+          }
+
+          return ListenableBuilder(
+            listenable: pageActions!,
+            builder: (context, child) {
+              return AnimatedSize(
+                duration: _animDur,
+                alignment: Alignment.centerLeft,
+                curve: Curves.easeInOutCubic,
+                child: Builder(
+                  builder: (context) {
+                    return IntrinsicHeight(
+                      child: Row(
+                        key: ValueKey(pageActions!.actions.length),
+                        children: [
+                          if (pageActions!.actions.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              child: Container(
+                                width: 2,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            ).animate().fade(
+                                  duration: _animDur,
+                                  curve: _animCurve,
+                                  begin: 0,
+                                ),
+                          ...attachAnimations(pageActions!.actions),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               );
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
+            },
+          );
+        },
       ),
     );
   }
