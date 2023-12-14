@@ -147,31 +147,39 @@ class HomePage extends MPage<void> {
               ),
             ]);
           });
-          return BlocProvider(
-            create: (context) => ContentScrollBloc<LemmyPost>(
-              contentRetriever:
-                  context.read<HomePageBloc>().state.currentScrollViewConfig,
-            )..add(LoadInitialItems()),
-            child: Builder(
-              builder: (context) {
-                return BlocListener<HomePageBloc, HomePageState>(
-                  listener: (context, state) {
-                    final scrollBloc =
-                        context.read<ContentScrollBloc<LemmyPost>>();
+          return BlocBuilder<HomePageBloc, HomePageState>(
+            builder: (context, state) {
+              return BlocProvider(
+                key: ValueKey(state.currentPage),
+                create: (context) => ContentScrollBloc<LemmyPost>(
+                  contentRetriever: context
+                      .read<HomePageBloc>()
+                      .state
+                      .currentScrollViewConfig,
+                )..add(LoadInitialItems()),
+                child: Builder(
+                  builder: (context) {
+                    return BlocListener<HomePageBloc, HomePageState>(
+                      listener: (context, state) {
+                        final scrollBloc =
+                            context.read<ContentScrollBloc<LemmyPost>>();
 
-                    scrollBloc.add(
-                      RetrieveContentDelegateChanged(
-                        (scrollBloc.state.contentDelegate as LemmyPostRetriever)
-                            .copyWith(
-                          sortType: state.currentScrollViewConfig.sortType,
-                        ),
-                      ),
+                        scrollBloc.add(
+                          RetrieveContentDelegateChanged(
+                            (scrollBloc.state.contentDelegate
+                                    as LemmyPostRetriever)
+                                .copyWith(
+                              sortType: state.currentScrollViewConfig.sortType,
+                            ),
+                          ),
+                        );
+                      },
+                      child: _HomeView(),
                     );
                   },
-                  child: _HomeView(),
-                );
-              },
-            ),
+                ),
+              );
+            },
           );
         },
       ),
@@ -180,7 +188,7 @@ class HomePage extends MPage<void> {
 }
 
 class _HomeView extends StatelessWidget {
-  const _HomeView();
+  const _HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {

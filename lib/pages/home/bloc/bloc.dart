@@ -42,13 +42,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       final newScrollConfig = newScrollViewConfigs[event.pageIndex];
 
-      if (newScrollConfig is LemmyPostRetriever) {
-        newScrollViewConfigs[event.pageIndex] = newScrollConfig.copyWith(
-          sortType: event.newSortType,
-        );
-      } else {
-        throw 'Expected LemmyPostGetterType got ${newScrollConfig.runtimeType}';
-      }
+      newScrollViewConfigs[event.pageIndex] = newScrollConfig.copyWith(
+        sortType: event.newSortType,
+      );
 
       emit(state.copyWith(scrollViewConfigs: newScrollViewConfigs));
     });
