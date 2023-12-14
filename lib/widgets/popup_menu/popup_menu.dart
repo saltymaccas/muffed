@@ -228,14 +228,13 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
           .then((value) {
         // added delay to set menu open to false when the animation has
         // finished
-        Future.delayed(
-          _kMenuDuration,
-          () {
+        Future.delayed(_kMenuDuration, () {
+          if (mounted) {
             setState(() {
               menuOpen = false;
             });
-          },
-        );
+          }
+        });
       });
     }
 
