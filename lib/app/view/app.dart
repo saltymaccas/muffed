@@ -37,7 +37,7 @@ class _AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: routerConfig,
+      routerConfig: MRouterConfig.create(),
       title: 'Muffed',
       theme: lightTheme,
       darkTheme: darkTheme,

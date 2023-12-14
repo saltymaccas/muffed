@@ -2,37 +2,34 @@ part of 'router.dart';
 
 /// Builds the screen
 class MRouterDelegate extends RouterDelegate<MPage<Object?>>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<MPage<Object?>> {
-  MRouterDelegate()
-      : navigator = MNavigator(
-          MNavigatorState(
-            currentBranchIndex: 0,
-            branches: [
-              Branch([HomePage()]),
-              Branch([InboxPage()]),
-              Branch(const [ProfilePage()])
-            ],
-            rootBranch: Branch(const []),
-          ),
-        );
+    with ChangeNotifier {
+  MRouterDelegate(this.navigator);
 
   /// The navigator
   final MNavigator navigator;
 
   @override
   Widget build(BuildContext context) {
-    navigator.pushToRootBranch(_RootPage(navigator));
-
     return BlocProvider.value(
       value: navigator,
       child: BlocBuilder<MNavigator, MNavigatorState>(
         bloc: navigator,
         builder: (context, state) {
           return Navigator(
+            key: GlobalKey<NavigatorState>(),
             pages: state.rootBranch.pages,
             onPopPage: (route, result) {
-              log('Something attempted to pop a page from root navigator');
               return false;
+              final didPop = route.didPop(result);
+              if (!didPop) {
+                return false;
+              }
+              if (navigator.state.canPop) {
+                navigator.pop();
+                return true;
+              } else {
+                return false;
+              }
             },
           );
         },
@@ -40,19 +37,16 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
     );
   }
 
-  @override
-  GlobalKey<NavigatorState>? get navigatorKey =>
-      navigator.state.currentBranch.key;
-
-  /// called by router when it detects it may have changed because of a rebuild
-  /// necessary for backward and forward buttons to work properly
-  @override
-  MPage<Object?>? get currentConfiguration => navigator.state.currentPage;
-
   /// What to do when new route gets pushed by operating system
   @override
   Future<void> setNewRoutePath(MPage<Object?> page) async {
     navigator.push(page);
+  }
+
+  @override
+  Future<bool> popRoute() {
+    navigator.state.currentKey.currentState!.maybePop();
+    return SynchronousFuture(true);
   }
 }
 
@@ -72,7 +66,7 @@ class _RootPage extends MPage<void> {
 
 /// Builds the nested branches in an indexed stack
 class _NestedBranchView extends StatelessWidget {
-  const _NestedBranchView(
+  _NestedBranchView(
     this.navigator,
   );
 
