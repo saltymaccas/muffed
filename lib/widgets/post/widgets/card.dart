@@ -57,6 +57,7 @@ class PostViewCard extends StatelessWidget {
                       context.push(
                         CommunityPage(
                           communityId: post.communityId,
+                          communityName: post.communityName,
                         ),
                       );
                     },

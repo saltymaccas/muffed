@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -22,6 +23,17 @@ class CommunityView extends StatelessWidget {
         final blocContext = context;
 
         final communityBloc = BlocProvider.of<CommunityScreenBloc>(blocContext);
+
+        if (state.communityStatus == CommunityStatus.failure) {
+          return ExceptionWidget(
+            exception: state.exception!,
+            retryFunction: () {
+              context
+                  .read<CommunityScreenBloc>()
+                  .add(InitialiseCommunityScreen());
+            },
+          );
+        }
 
         return Scaffold(
           body: ContentScrollView(
