@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/router/router.dart';
 
@@ -16,8 +17,13 @@ class MNavigator extends Cubit<MNavigatorState> {
   }
 
   /// Removes the top page from the current branch
-  void pop() {
-    emit(state.copyWithPop());
+  Future<bool> maybePop() {
+    if (state.canPop) {
+      emit(state.copyWithPop());
+      return SynchronousFuture(true);
+    } else {
+      return SynchronousFuture(false);
+    }
   }
 
   /// Adds a page to the top of the current branch

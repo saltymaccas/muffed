@@ -6,7 +6,7 @@ extension RouterExtentions on BuildContext {
 
   /// Removes the top page from the current branch
   void pop() {
-    navigator.pop();
+    navigator.maybePop();
   }
 
   /// Adds a page to the top of the current branch

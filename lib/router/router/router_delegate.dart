@@ -28,7 +28,7 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
                 return false;
               }
               if (navigator.state.canPop) {
-                navigator.pop();
+                navigator.maybePop();
                 return true;
               } else {
                 return false;
@@ -48,12 +48,12 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
 
   @override
   Future<bool> popRoute() {
-    // if (navigator.state.canPop) {
-    //   navigator.pop();
-    //   return SynchronousFuture(true);
-    // }
-
-    return SynchronousFuture(true);
+    if (navigator.state.canPop) {
+      navigator.maybePop();
+      return SynchronousFuture(true);
+    } else {
+      return SynchronousFuture(false);
+    }
   }
 }
 
@@ -111,12 +111,11 @@ class _NestedBranchView extends StatelessWidget {
   }
 
   bool _onPopPage(Route<dynamic> route, dynamic result) {
-    final didPop = route.didPop(result);
-    if (!didPop) {
+    if (!route.didPop(result)) {
       return false;
     }
     if (navigator.state.canPop) {
-      navigator.pop();
+      navigator.maybePop();
       return true;
     } else {
       return false;
