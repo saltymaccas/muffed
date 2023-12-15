@@ -23,16 +23,6 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
             pages: state.rootBranch.pages,
             onPopPage: (route, result) {
               return false;
-              final didPop = route.didPop(result);
-              if (!didPop) {
-                return false;
-              }
-              if (navigator.state.canPop) {
-                navigator.maybePop();
-                return true;
-              } else {
-                return false;
-              }
             },
           );
         },

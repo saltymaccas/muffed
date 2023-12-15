@@ -40,8 +40,6 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
   LemmyAccountData? getSelectedLemmyAccount() =>
       state.getSelectedLemmyAccount();
 
-  String getLemmyBaseUrl() => state.getLemmyBaseUrl();
-
   bool isLoggedIn() => state.isLoggedIn();
 
   @override

@@ -43,13 +43,13 @@ void showAccountSwitcher(BuildContext context) {
                                       index,
                                     ),
                                   );
-                                  // TODO: add navigation
+                                  Navigator.pop(context);
                                 },
                                 child: const Text('Remove'),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  // TODO: add navigation
+                                  Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -86,7 +86,7 @@ void showAccountSwitcher(BuildContext context) {
                 selected: !globalBloc.isLoggedIn(),
                 leading: const Icon(Icons.security),
                 onTap: () {
-                  // TODO: add navigation
+                  Navigator.pop(context);
                   globalBloc.add(
                     AccountSwitched(-1),
                   );
@@ -94,7 +94,8 @@ void showAccountSwitcher(BuildContext context) {
                 trailing: IconButton(
                   icon: const Icon(Icons.settings),
                   onPressed: () {
-                    // TODO: add navigation
+                    Navigator.pop(context);
+                    // TODO: add navigation to settings page
                   },
                 ),
               ),

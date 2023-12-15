@@ -65,7 +65,7 @@ class _UserInfoTabView extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: MuffedMarkdownBody(data: user.bio!),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Container(
@@ -90,7 +90,12 @@ class _UserInfoTabView extends StatelessWidget {
                   user.moderates![index].name,
                 ),
                 onTap: () {
-                  // TODO: add navigation
+                  context.push(
+                    CommunityPage(
+                      communityName: user.moderates![index].name,
+                      communityId: user.moderates![index].id,
+                    ),
+                  );
                 },
               );
             },

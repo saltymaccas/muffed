@@ -32,7 +32,7 @@ interface class LemmyRepo {
     }
 
     final Response<Map<String, dynamic>> response = await dio.post(
-      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       data: {
         if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -59,7 +59,7 @@ interface class LemmyRepo {
       }
 
       final Response<Map<String, dynamic>> response = await dio.put(
-        '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+        '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
         data: {
           if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
             'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -101,11 +101,11 @@ interface class LemmyRepo {
     }
 
     _log.info(
-      'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters',
+      'Sending get request to ${globalBloc.state.lemmyBaseUrl}, Path: $path, Data: $queryParameters',
     );
 
     final Response<Map<String, dynamic>> response = await dio.get(
-      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       queryParameters: {
         if (jwt != null)
           'auth': jwt

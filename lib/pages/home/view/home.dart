@@ -159,21 +159,43 @@ class HomePage extends MPage<void> {
                 )..add(LoadInitialItems()),
                 child: Builder(
                   builder: (context) {
-                    return BlocListener<HomePageBloc, HomePageState>(
-                      listener: (context, state) {
-                        final scrollBloc =
-                            context.read<ContentScrollBloc<LemmyPost>>();
+                    return MultiBlocListener(
+                      listeners: [
+                        BlocListener<GlobalBloc, GlobalState>(
+                          listenWhen: (previous, current) {
+                            return previous.currentLemmyEndPointIdentifyer !=
+                                current.currentLemmyEndPointIdentifyer;
+                          },
+                          listener: (context, state) {
+                            context.read<HomePageBloc>().add(
+                                  Initialise(
+                                    isLoggedIn: state.isLoggedIn(),
+                                    repo: context.read<ServerRepo>(),
+                                  ),
+                                );
+                            context
+                                .read<ContentScrollBloc<LemmyPost>>()
+                                .add(LoadInitialItems());
+                          },
+                        ),
+                        BlocListener<HomePageBloc, HomePageState>(
+                          listener: (context, state) {
+                            final scrollBloc =
+                                context.read<ContentScrollBloc<LemmyPost>>();
 
-                        scrollBloc.add(
-                          RetrieveContentDelegateChanged(
-                            (scrollBloc.state.contentDelegate
-                                    as LemmyPostRetriever)
-                                .copyWith(
-                              sortType: state.currentScrollViewConfig.sortType,
-                            ),
-                          ),
-                        );
-                      },
+                            scrollBloc.add(
+                              RetrieveContentDelegateChanged(
+                                (scrollBloc.state.contentDelegate
+                                        as LemmyPostRetriever)
+                                    .copyWith(
+                                  sortType:
+                                      state.currentScrollViewConfig.sortType,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      ],
                       child: _HomeView(),
                     );
                   },

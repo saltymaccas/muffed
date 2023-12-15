@@ -21,36 +21,40 @@ class PictrsRepo {
 
     final streamController = StreamController<ImageUploadState>();
 
-    final baseUrl = globalBloc.getLemmyBaseUrl();
+    final baseUrl = globalBloc.state.lemmyBaseUrl;
 
-    final response = dio.post<Map<String, dynamic>>(
-      '$baseUrl/pictrs/image',
-      data: FormData.fromMap({
-        'images[]': await MultipartFile.fromFile(filePath),
-      }),
-      options: Options(
-        headers: {
-          'Cookie': 'jwt=${globalBloc.getSelectedLemmyAccount()!.jwt}',
-        },
-      ),
-      onSendProgress: (int sent, int total) {
-        final double progress = sent / total;
-        streamController
-            .add(ImageUploadState(uploadProgress: progress, id: id));
-      },
-    ).then((response) {
-      streamController.add(
-        ImageUploadState(
-          id: id,
-          deleteToken: response.data!['files'][0]['delete_token'],
-          uploadProgress: 1,
-          imageName: response.data!['files'][0]['file'],
-          imageLink:
-              '$baseUrl/pictrs/image/${response.data!['files'][0]['file']}',
-          baseUrl: baseUrl,
-        ),
-      );
-    }).catchError(streamController.addError).whenComplete(streamController.close);
+    final response = dio
+        .post<Map<String, dynamic>>(
+          '$baseUrl/pictrs/image',
+          data: FormData.fromMap({
+            'images[]': await MultipartFile.fromFile(filePath),
+          }),
+          options: Options(
+            headers: {
+              'Cookie': 'jwt=${globalBloc.getSelectedLemmyAccount()!.jwt}',
+            },
+          ),
+          onSendProgress: (int sent, int total) {
+            final double progress = sent / total;
+            streamController
+                .add(ImageUploadState(uploadProgress: progress, id: id));
+          },
+        )
+        .then((response) {
+          streamController.add(
+            ImageUploadState(
+              id: id,
+              deleteToken: response.data!['files'][0]['delete_token'],
+              uploadProgress: 1,
+              imageName: response.data!['files'][0]['file'],
+              imageLink:
+                  '$baseUrl/pictrs/image/${response.data!['files'][0]['file']}',
+              baseUrl: baseUrl,
+            ),
+          );
+        })
+        .catchError(streamController.addError)
+        .whenComplete(streamController.close);
 
     yield* streamController.stream;
   }

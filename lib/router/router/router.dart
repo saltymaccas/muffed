@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/navigation_bar/navigation_bar.dart';
 import 'package:muffed/pages/home/home.dart';
 import 'package:muffed/pages/inbox/inbox.dart';
