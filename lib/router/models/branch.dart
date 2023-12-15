@@ -16,10 +16,10 @@ class Branch extends Equatable {
 
   int get length => pages.length;
 
-  bool get canPop => pages.length > 1;
+  bool get atRootPage => pages.length == 1;
 
   Branch pop() {
-    if (canPop) pages.removeLast();
+    if (!atRootPage) pages.removeLast();
     return copyWith(pages: pages);
   }
 

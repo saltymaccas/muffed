@@ -194,7 +194,7 @@ class _CommentFooter extends StatelessWidget {
                     );
                   },
                 ),
-                if (context.read<GlobalBloc>().isLoggedIn())
+                if (context.read<GlobalBloc>().state.isLoggedIn)
                   if (state.comment.creatorId ==
                       context.read<GlobalBloc>().getSelectedLemmyAccount()!.id)
                     MuffedPopupMenuItem(

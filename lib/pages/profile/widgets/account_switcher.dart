@@ -83,7 +83,7 @@ void showAccountSwitcher(BuildContext context) {
               }),
               ListTile(
                 title: const Text('Anonymous'),
-                selected: !globalBloc.isLoggedIn(),
+                selected: !globalBloc.state.isLoggedIn,
                 leading: const Icon(Icons.security),
                 onTap: () {
                   Navigator.pop(context);
@@ -104,7 +104,7 @@ void showAccountSwitcher(BuildContext context) {
                 leading: const Icon(Icons.add),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push(const LoginPage());
+                  context.pushPage(const LoginPage());
                 },
               ),
             ],

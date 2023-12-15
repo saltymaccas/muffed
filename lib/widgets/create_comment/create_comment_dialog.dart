@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/router/models/extensions.dart';
 import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
+import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/snackbars.dart';
 
@@ -85,13 +87,12 @@ class CreateCommentDialog extends StatelessWidget {
       create: (context) => CreateCommentBloc(
         repo: context.read<ServerRepo>(),
         commentBeingEdited: commentBeingEdited,
-        onSuccess: () {},
       ),
       child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
         listener: (context, state) {
           // closes the dialog if the comment has been successfully posted
           if (state.successfullyPosted) {
-            // TODO: add navigation
+            Navigator.pop(context);
             if (onSuccessfullySubmitted != null) {
               onSuccessfullySubmitted!.call();
             }
@@ -173,7 +174,7 @@ class CreateCommentDialog extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          // TODO: add navigation
+                          Navigator.pop(context);
                         },
                         icon: const Icon(Icons.close),
                       ),
@@ -190,7 +191,15 @@ class CreateCommentDialog extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          // TODO: add navigation
+                          Navigator.pop(context);
+                          context.pushPage(
+                            CreateCommentPage(
+                              postId: postId,
+                              initialValue: textFieldController.text,
+                              onSuccess: onSuccessfullySubmitted,
+                              parentId: parentId,
+                            ),
+                          );
                         },
                         icon: const Icon(Icons.open_in_new),
                       ),

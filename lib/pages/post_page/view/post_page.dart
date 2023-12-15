@@ -5,8 +5,10 @@ import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
+import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/widgets/post/post.dart';
+import 'package:muffed/widgets/snackbars.dart';
 
 /// A Page that shows the post on top and the comments under
 class PostPage extends MPage<void> {
@@ -103,6 +105,21 @@ class PostPage extends MPage<void> {
                     );
                   },
                 ),
+                if (context.read<GlobalBloc>().state.isLoggedIn)
+                  IconButton(
+                    onPressed: () {
+                      showCreateCommentDialog(
+                        context: context,
+                        postId: postId,
+                        onSuccessfullySubmitted: () => showInfoSnackBar(
+                          context,
+                          text: 'Comment successfully posted',
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                    visualDensity: VisualDensity.compact,
+                  ),
               ],
             );
           });

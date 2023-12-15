@@ -90,7 +90,7 @@ class _UserInfoTabView extends StatelessWidget {
                   user.moderates![index].name,
                 ),
                 onTap: () {
-                  context.push(
+                  context.pushPage(
                     CommunityPage(
                       communityName: user.moderates![index].name,
                       communityId: user.moderates![index].id,

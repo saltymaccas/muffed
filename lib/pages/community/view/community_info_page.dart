@@ -235,7 +235,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           url: moderator.avatar,
                         ),
                         onPressed: () {
-                          context.push(
+                          context.pushPage(
                             UserPage(
                               userId: moderator.id,
                               username: moderator.name,
@@ -247,7 +247,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                 ),
               ),
             const Divider(),
-            if (context.read<GlobalBloc>().isLoggedIn())
+            if (context.read<GlobalBloc>().state.isLoggedIn)
               Skeletonizer(
                 enabled: community.blocked == null,
                 child: Padding(

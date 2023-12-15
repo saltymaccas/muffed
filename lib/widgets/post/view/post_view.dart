@@ -56,7 +56,7 @@ class _PostViewState extends State<PostView>
                 state.post!,
                 displayType: widget.displayType,
                 openPost: () {
-                  context.push(
+                  context.pushPage(
                     PostPage(
                       postBloc: context.read<PostBloc>(),
                       post: state.post,

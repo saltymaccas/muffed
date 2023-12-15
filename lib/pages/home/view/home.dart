@@ -17,7 +17,7 @@ class HomePage extends MPage<void> {
       create: (context) => HomePageBloc()
         ..add(
           Initialise(
-            isLoggedIn: context.read<GlobalBloc>().isLoggedIn(),
+            isLoggedIn: context.read<GlobalBloc>().state.isLoggedIn,
             repo: context.read<ServerRepo>(),
           ),
         ),
@@ -169,7 +169,7 @@ class HomePage extends MPage<void> {
                           listener: (context, state) {
                             context.read<HomePageBloc>().add(
                                   Initialise(
-                                    isLoggedIn: state.isLoggedIn(),
+                                    isLoggedIn: state.isLoggedIn,
                                     repo: context.read<ServerRepo>(),
                                   ),
                                 );

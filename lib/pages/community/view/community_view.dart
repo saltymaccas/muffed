@@ -293,14 +293,15 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          context.push(CommunityInfoPage(
+                                          context.pushPage(CommunityInfoPage(
                                               community: community));
                                         },
                                         child: const Text('See community info'),
                                       ),
                                       if (context
                                           .read<GlobalBloc>()
-                                          .isLoggedIn())
+                                          .state
+                                          .isLoggedIn)
                                         TextButton(
                                           onPressed: () {
                                             context

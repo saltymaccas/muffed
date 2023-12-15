@@ -15,7 +15,7 @@ class PictrsRepo {
     required String filePath,
     int? id,
   }) async* {
-    if (!globalBloc.isLoggedIn()) {
+    if (!globalBloc.state.isLoggedIn) {
       throw Exception('Not logged in');
     }
 

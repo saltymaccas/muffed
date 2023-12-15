@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:muffed/router/router.dart';
 
 /// Stores the list of app branches and provides methods for manipulating them.
@@ -24,11 +23,7 @@ class MNavigatorState extends Equatable {
 
   Branch get currentBranch => branches[currentBranchIndex];
 
-  GlobalKey<NavigatorState> get currentKey => currentBranch.key;
-
   MPage<Object?> get currentPage => branches[currentBranchIndex].top;
-
-  bool get canPop => branches[currentBranchIndex].canPop;
 
   MNavigatorState copyWithRootBranchPush(MPage<Object?> page) => copyWith(
         rootBranch: rootBranch.copy()..push(page),
@@ -68,5 +63,5 @@ class MNavigatorState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [branches, currentBranchIndex];
+  List<Object?> get props => [branches, currentBranchIndex, rootBranch];
 }

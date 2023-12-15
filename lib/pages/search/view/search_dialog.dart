@@ -81,7 +81,7 @@ class _SearchDialog extends StatelessWidget {
                         onPressed: () {
                           textFocusNode.unfocus();
                           Navigator.pop(context);
-                          context.push(
+                          context.pushPage(
                             SearchPage(searchQuery: textController.text),
                           );
                         },

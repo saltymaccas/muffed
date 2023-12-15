@@ -54,7 +54,7 @@ class PostViewCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      context.push(
+                      context.pushPage(
                         CommunityPage(
                           communityId: post.communityId,
                           communityName: post.communityName,
@@ -88,7 +88,7 @@ class PostViewCard extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                context.push(
+                                context.pushPage(
                                   UserPage(
                                     userId: post.creatorId,
                                   ),
@@ -197,7 +197,7 @@ class PostViewCard extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      if (context.read<GlobalBloc>().isLoggedIn())
+                      if (context.read<GlobalBloc>().state.isLoggedIn)
                         IconButton(
                           onPressed: () {
                             context.read<PostBloc>().add(SavePostToggled());

@@ -27,7 +27,7 @@ interface class LemmyRepo {
     bool mustBeLoggedIn = true,
     String? serverAddress,
   }) async {
-    if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+    if (!globalBloc.state.isLoggedIn && mustBeLoggedIn) {
       throw Exception('Not logged in');
     }
 
@@ -54,7 +54,7 @@ interface class LemmyRepo {
     String? serverAddress,
   }) async {
     try {
-      if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+      if (!globalBloc.state.isLoggedIn && mustBeLoggedIn) {
         throw Exception('Not logged in');
       }
 
@@ -96,7 +96,7 @@ interface class LemmyRepo {
     /// The jwt to use for the request
     String? jwt,
   }) async {
-    if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
+    if (mustBeLoggedIn && !globalBloc.state.isLoggedIn) {
       throw Exception('Not logged in');
     }
 
@@ -109,7 +109,7 @@ interface class LemmyRepo {
       queryParameters: {
         if (jwt != null)
           'auth': jwt
-        else if (globalBloc.isLoggedIn())
+        else if (globalBloc.state.isLoggedIn)
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
         ...queryParameters,
       },

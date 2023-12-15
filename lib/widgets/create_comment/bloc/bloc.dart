@@ -16,7 +16,6 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
   ///
   CreateCommentBloc({
     required this.repo,
-    required this.onSuccess,
     this.commentBeingEdited,
   }) : super(CreateCommentState(commentBeingEdited: commentBeingEdited)) {
     on<Submitted>((event, emit) async {
@@ -125,5 +124,4 @@ class CreateCommentBloc extends Bloc<CreateCommentEvent, CreateCommentState> {
 
   final LemmyComment? commentBeingEdited;
   final ServerRepo repo;
-  final void Function() onSuccess;
 }

@@ -45,9 +45,8 @@ class NavigationBarItem extends StatelessWidget {
                       relatedBranchIndex) {
                     _log.info('Switching to branch $relatedBranchIndex');
                     context.switchBranch(relatedBranchIndex);
-                  } else if (MNavigator.of(context).state.canPop) {
-                    _log.info('Popping branch $relatedBranchIndex');
-                    context.pop();
+                  } else {
+                    context.maybePopRouteFromCurrentBranch();
                   }
                 },
                 visualDensity: VisualDensity.compact,

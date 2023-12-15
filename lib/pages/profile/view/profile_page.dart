@@ -12,7 +12,7 @@ class ProfilePage extends MPage<void> {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        if (state.isLoggedIn()) {
+        if (state.isLoggedIn) {
           return const _LoggedInProfileView();
         } else {
           return const _NotLoggedInProfileView();
@@ -104,7 +104,7 @@ class _LoggedInProfileView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (context.read<GlobalBloc>().isLoggedIn())
+                    if (context.read<GlobalBloc>().state.isLoggedIn)
                       ElevatedButton(
                         onPressed: () {
                           // TODO: add navigation

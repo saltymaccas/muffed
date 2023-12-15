@@ -67,7 +67,7 @@ final class GlobalState extends Equatable {
   final double labelTextScaleFactor;
   final double titleTextScaleFactor;
 
-  bool isLoggedIn() => lemmySelectedAccount != -1;
+  bool get isLoggedIn => lemmySelectedAccount != -1;
 
   LemmyAccountData? getSelectedLemmyAccount() {
     return (lemmySelectedAccount == -1)

@@ -37,7 +37,7 @@ class _SettingsView extends StatelessWidget {
                 leading: const Icon(Icons.color_lens),
                 subtitle: const Text('Change how Muffed looks'),
                 onTap: () {
-                  context.push(const SettingsLookPage());
+                  context.pushPage(const SettingsLookPage());
                 },
               ),
               ListTile(
@@ -47,7 +47,7 @@ class _SettingsView extends StatelessWidget {
                 leading: const Icon(Icons.filter_list),
                 subtitle: const Text('Filter certain posts'),
                 onTap: () {
-                  context.push(const SettingsContentFiltersPage());
+                  context.pushPage(const SettingsContentFiltersPage());
                 },
               ),
               ListTile(
@@ -56,7 +56,7 @@ class _SettingsView extends StatelessWidget {
                 visualDensity: VisualDensity.comfortable,
                 leading: const Icon(Icons.info),
                 onTap: () {
-                  context.push(const AboutPage());
+                  context.pushPage(const AboutPage());
 
                   // showLicensePage(
                   //   context: context,

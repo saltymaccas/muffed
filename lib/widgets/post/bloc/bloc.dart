@@ -37,7 +37,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     });
     on<UpvotePressed>(
       (event, emit) {
-        if (globalBloc.isLoggedIn() && state.post != null) {
+        if (globalBloc.state.isLoggedIn && state.post != null) {
           switch (state.post!.myVote) {
             case (LemmyVoteType.none):
               emit(
@@ -117,7 +117,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<DownvotePressed>(
       (event, emit) {
-        if (globalBloc.isLoggedIn() && state.post != null) {
+        if (globalBloc.state.isLoggedIn && state.post != null) {
           switch (state.post!.myVote) {
             case LemmyVoteType.none:
               emit(

@@ -74,7 +74,7 @@ class CommunityPage extends MPage<void> {
             pageActions!.setActions([
               IconButton(
                 onPressed: () {
-                  context.push(
+                  context.pushPage(
                     SearchPage(
                       communityId:
                           context.read<CommunityScreenBloc>().communityId,

@@ -14,7 +14,7 @@ class InboxPage extends MPage<void> {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        if (!state.isLoggedIn()) {
+        if (!state.isLoggedIn) {
           return const Center(
             child: Text('You must be logged in to view your inbox'),
           );

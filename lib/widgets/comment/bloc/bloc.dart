@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/widgets/comment/comment.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -45,7 +44,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     });
     on<UpvotePressed>(
       (event, emit) {
-        if (globalBloc.isLoggedIn()) {
+        if (globalBloc.state.isLoggedIn) {
           switch (state.comment.myVote) {
             case (LemmyVoteType.none):
               emit(
@@ -128,7 +127,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     );
     on<DownvotePressed>(
       (event, emit) {
-        if (globalBloc.isLoggedIn()) {
+        if (globalBloc.state.isLoggedIn) {
           switch (state.comment.myVote) {
             case LemmyVoteType.none:
               emit(

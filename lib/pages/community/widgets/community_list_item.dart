@@ -25,7 +25,7 @@ class CommunityListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push(
+        context.pushPage(
           CommunityPage(
             community: community,
           ),
@@ -115,7 +115,7 @@ class _CompactCommunityListTile extends CommunityListTile {
         InkWell(
           onTap: () {
             Navigator.pop(context);
-            context.push(CommunityPage(community: community));
+            context.pushPage(CommunityPage(community: community));
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(
