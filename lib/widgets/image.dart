@@ -202,15 +202,13 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
       GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
 
-  double slideTransparency = 1.0;
-  double imageTransparency = 1.0;
+  double slideTransparency = 1;
+  double imageTransparency = 1;
 
   bool maybeSlideZooming = false;
   bool slideZooming = false;
   bool fullscreen = false;
   Offset downCoord = Offset.zero;
-
-  bool isSliding = false;
 
   /// User Settings
   bool isUserLoggedIn = false;
@@ -244,8 +242,9 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
       child: Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
-            color:
-                (fullscreen || isSliding) ? Colors.transparent : Colors.white,
+            color: (fullscreen || slideTransparency < 0.95)
+                ? Colors.transparent
+                : Colors.white,
             shadows: fullscreen
                 ? null
                 : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
@@ -261,16 +260,16 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                 fullscreen = !fullscreen;
               });
             },
-            onTap: () {
-              if (!fullscreen) {
-                slidePagekey.currentState!.popPage();
-                Navigator.pop(context);
-              } else {
-                setState(() {
-                  fullscreen = false;
-                });
-              }
-            },
+            // onTap: () {
+            //   if (!fullscreen) {
+            //     slidePagekey.currentState!.popPage();
+            //     Navigator.pop(context);
+            //   } else {
+            //     setState(() {
+            //       fullscreen = false;
+            //     });
+            //   }
+            // },
             // Start doubletap zoom if conditions are met
             onVerticalDragStart: maybeSlideZooming
                 ? (details) {
@@ -318,10 +317,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   return Colors.transparent;
                 },
                 onSlidingPage: (state) {
-                  setState(() {
-                    isSliding = state.isSliding;
-                  });
-
                   // Fade out image and background when sliding to dismiss
                   final offset = state.offset;
                   final pageSize = state.pageSize;
@@ -342,10 +337,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   ExtendedImageSlidePageState? state,
                   ScaleEndDetails? details,
                 }) {
-                  setState(() {
-                    isSliding = false;
-                  });
-
                   if (state != null) {
                     final offset = state.offset;
                     final pageSize = state.pageSize;
