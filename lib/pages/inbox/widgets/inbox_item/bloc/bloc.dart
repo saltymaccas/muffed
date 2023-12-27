@@ -35,7 +35,7 @@ class ReplyItemBloc extends InboxItemBloc {
   ) async {
     emit(super.state.copyWith(read: !super.state.read));
     try {
-      final response = await super
+      await super
           .repo
           .lemmyRepo
           .markReplyAsRead(id: item.id, read: super.state.read);
@@ -59,7 +59,7 @@ class MentionItemBloc extends InboxItemBloc {
   ) async {
     emit(super.state.copyWith(read: !super.state.read));
     try {
-      final response = await super
+      await super
           .repo
           .lemmyRepo
           .markMentionAsRead(id: item.id, read: super.state.read);
