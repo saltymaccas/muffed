@@ -43,6 +43,8 @@ dependencies:
   shimmer: ^3.0.0
   extended_image: ^8.2.0
   collection: ^1.18.0
+  gap: ^3.0.1
+  flutter_typeahead: ^5.0.1
 
 dev_dependencies:
   flutter_test:

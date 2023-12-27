@@ -7,6 +7,7 @@ import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
 import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/snackbars.dart';
+import 'package:shimmer/shimmer.dart';
 
 void showCreateCommentDialog({
   required BuildContext context,
@@ -135,7 +136,7 @@ class CreateCommentDialog extends StatelessWidget {
                 ],
                 SizedBox(
                   height: 5,
-                  child: state.isLoading
+                  child: state.isPosting
                       ? const LinearProgressIndicator()
                       : Container(),
                 ),
@@ -151,9 +152,9 @@ class CreateCommentDialog extends StatelessWidget {
                           physics: const ClampingScrollPhysics(),
                         ),
                         TextField(
+                          enabled: !state.isPosting,
                           controller: textFieldController,
                           autofocus: true,
-                          autocorrect: true,
                           keyboardType: TextInputType.multiline,
                           minLines: 5,
                           maxLines: null,
@@ -190,30 +191,41 @@ class CreateCommentDialog extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          context.pushPage(
-                            CreateCommentPage(
-                              postId: postId,
-                              initialValue: textFieldController.text,
-                              onSuccess: onSuccessfullySubmitted,
-                              parentId: parentId,
-                            ),
-                          );
-                        },
+                        onPressed: (state.isPosting)
+                            ? null
+                            : () {
+                                Navigator.pop(context);
+                                context.pushPage(
+                                  CreateCommentPage(
+                                    postId: postId,
+                                    initialValue: textFieldController.text,
+                                    onSuccess: onSuccessfullySubmitted,
+                                    parentId: parentId,
+                                  ),
+                                );
+                              },
                         icon: const Icon(Icons.open_in_new),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          context.read<CreateCommentBloc>().add(
-                                Submitted(
-                                  postId: postId,
-                                  commentContents: textFieldController.text,
-                                  commentId: parentId,
-                                ),
-                              );
-                        },
-                        icon: const Icon(Icons.send),
+                      Shimmer.fromColors(
+                        enabled: state.isPosting,
+                        baseColor: Theme.of(context).colorScheme.outline,
+                        highlightColor:
+                            Theme.of(context).colorScheme.outlineVariant,
+                        child: IconButton(
+                          onPressed: (state.isPosting)
+                              ? null
+                              : () {
+                                  context.read<CreateCommentBloc>().add(
+                                        Submitted(
+                                          postId: postId,
+                                          commentContents:
+                                              textFieldController.text,
+                                          commentId: parentId,
+                                        ),
+                                      );
+                                },
+                          icon: const Icon(Icons.send),
+                        ),
                       ),
                     ],
                   ),

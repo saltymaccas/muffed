@@ -1,52 +1,37 @@
 part of 'bloc.dart';
 
 final class LoginPageState extends Equatable {
-  final String usernameOrEmail;
-  final String totp;
-  final String password;
-  final String serverAddr;
-  final Object? errorMessage;
-  final bool loading;
-  final bool revealPassword;
-
-  LoginPageState({
-    this.totp = '',
-    this.password = '',
-    this.usernameOrEmail = '',
-    this.serverAddr = '',
-    this.errorMessage,
+  const LoginPageState({
+    this.exception,
     this.loading = false,
     this.revealPassword = false,
+    this.successfullyLoggedIn = false,
   });
+
+  final MException? exception;
+  final bool loading;
+  final bool revealPassword;
+  final bool successfullyLoggedIn;
 
   @override
   List<Object?> get props => [
-        usernameOrEmail,
-        password,
-        totp,
-        serverAddr,
-        errorMessage,
+        exception,
         loading,
         revealPassword,
+        successfullyLoggedIn,
       ];
 
   LoginPageState copyWith({
     bool? loading,
-    Object? errorMessage,
-    String? serverAddr,
-    String? usernameOrEmail,
-    String? totp,
-    String? password,
+    MException? exception,
     bool? revealPassword,
+    bool? successfullyLoggedIn,
   }) {
     return LoginPageState(
       loading: loading ?? this.loading,
-      errorMessage: errorMessage,
-      serverAddr: serverAddr ?? this.serverAddr,
-      usernameOrEmail: usernameOrEmail ?? this.usernameOrEmail,
-      totp: totp ?? this.totp,
-      password: password ?? this.password,
+      exception: exception,
       revealPassword: revealPassword ?? this.revealPassword,
+      successfullyLoggedIn: successfullyLoggedIn ?? this.successfullyLoggedIn,
     );
   }
 }

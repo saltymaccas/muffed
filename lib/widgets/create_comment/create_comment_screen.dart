@@ -90,53 +90,49 @@ class _CreateCommentViewState extends State<CreateCommentView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreateCommentBloc, CreateCommentState>(
-      listener: (context, state) {
-        if (state.successfullyPosted) {
-          widget.onSuccess?.call();
-          context.pop();
+    return PopScope(
+      canPop: canPop,
+      onPopInvoked: (bool didPop) {
+        if (!didPop) {
+          showDialog<void>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Discard'),
+                content: const Text('Exit while discarding changes?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      context.popPageFromCurrentBranch();
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       },
-      builder: (context, state) {
-        return PopScope(
-          canPop: canPop,
-          onPopInvoked: (bool didPop) {
-            print(textController.text);
-            print('$didPop');
-            if (!didPop) {
-              showDialog<void>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Discard'),
-                    content: const Text('Exit while discarding changes?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          context.popPageFromCurrentBranch();
-                        },
-                        child: const Text('Yes'),
-                      ),
-                      TextButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('No'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-          },
-          child: Scaffold(
+      child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
+        listener: (context, state) {
+          if (state.successfullyPosted) {
+            widget.onSuccess?.call();
+            context.popPageFromCurrentBranch();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
             appBar: AppBar(
               title: const Text('Create Comment'),
               actions: [
@@ -247,9 +243,9 @@ class _CreateCommentViewState extends State<CreateCommentView> {
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

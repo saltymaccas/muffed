@@ -77,7 +77,7 @@ final class GlobalState extends Equatable {
 
   String get lemmyBaseUrl => (lemmySelectedAccount == -1)
       ? lemmyDefaultHomeServer
-      : lemmyAccounts[lemmySelectedAccount].homeServer;
+      : lemmyAccounts[lemmySelectedAccount].homeServer.toString();
 
   String get currentLemmyEndPointIdentifyer =>
       '$lemmyBaseUrl${getSelectedLemmyAccount()?.jwt.split('.').last}';
@@ -174,7 +174,7 @@ final class LemmyAccountData extends Equatable {
   factory LemmyAccountData.fromMap(Map<String, dynamic> map) {
     return LemmyAccountData(
       jwt: map['jwt'] as String,
-      homeServer: map['homeServer'] as String,
+      homeServer: HttpUrl.fromMap(map['homeServer']),
       name: map['userName'] as String,
       id: map['id'] as int,
     );
@@ -182,8 +182,7 @@ final class LemmyAccountData extends Equatable {
 
   final String jwt;
 
-  /// home server should include the "https://" and not end with "/"
-  final String homeServer;
+  final HttpUrl homeServer;
   final String name;
 
   final int id;
@@ -191,7 +190,7 @@ final class LemmyAccountData extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'jwt': jwt,
-      'homeServer': homeServer,
+      'homeServer': homeServer.toMap(),
       'userName': name,
       'id': id,
     };

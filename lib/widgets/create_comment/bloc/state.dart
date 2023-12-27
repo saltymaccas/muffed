@@ -3,7 +3,7 @@ part of 'bloc.dart';
 class CreateCommentState extends Equatable {
   ///
   CreateCommentState({
-    this.isLoading = false,
+    this.isPosting = true,
     this.exception,
     this.successfullyPosted = false,
     this.isPreviewing = false,
@@ -11,7 +11,7 @@ class CreateCommentState extends Equatable {
     SplayTreeMap<int, ImageUploadState>? images,
   }) : images = images ?? SplayTreeMap<int, ImageUploadState>();
 
-  final bool isLoading;
+  final bool isPosting;
   final MException? exception;
 
   final bool isPreviewing;
@@ -27,7 +27,7 @@ class CreateCommentState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
+        isPosting,
         exception,
         successfullyPosted,
         isPreviewing,
@@ -44,7 +44,7 @@ class CreateCommentState extends Equatable {
     LemmyComment? commentBeingEdited,
   }) {
     return CreateCommentState(
-      isLoading: isLoading ?? this.isLoading,
+      isPosting: isLoading ?? this.isPosting,
       exception: exception,
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
       isPreviewing: isPreviewing ?? this.isPreviewing,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 import 'package:muffed/utils/url.dart';
 
@@ -25,14 +26,14 @@ interface class LemmyRepo {
     required String path,
     Map<String, dynamic> data = const {},
     bool mustBeLoggedIn = true,
-    String? serverAddress,
+    HttpUrl? serverUrl,
   }) async {
     if (!globalBloc.state.isLoggedIn && mustBeLoggedIn) {
       throw Exception('Not logged in');
     }
 
     final Response<Map<String, dynamic>> response = await dio.post(
-      '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
+      '${serverUrl?.url ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       data: {
         if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
           'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
@@ -91,7 +92,7 @@ interface class LemmyRepo {
     required String path,
     Map<String, dynamic> queryParameters = const {},
     bool mustBeLoggedIn = false,
-    String? serverAddress,
+    HttpUrl? serverAddress,
 
     /// The jwt to use for the request
     String? jwt,
@@ -291,7 +292,7 @@ interface class LemmyRepo {
     String password,
     String? totp,
     String usernameOrEmail,
-    String serverAddr,
+    HttpUrl serverAddress,
   ) async {
     final Map<String, dynamic> response = await postRequest(
       path: '/user/login',
@@ -301,7 +302,7 @@ interface class LemmyRepo {
         if (totp != null) 'totp_2fa_token': totp,
       },
       mustBeLoggedIn: false,
-      serverAddress: serverAddr,
+      serverUrl: serverAddress,
     );
 
     return LemmyLoginResponse(
@@ -434,7 +435,7 @@ interface class LemmyRepo {
 
   Future<LemmyUser> getPersonWithJwt({
     String? jwt,
-    String? serverAddress,
+    HttpUrl? serverAddress,
   }) async {
     final response =
         await getRequest(path: '/site', jwt: jwt, serverAddress: serverAddress);

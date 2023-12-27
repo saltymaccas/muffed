@@ -2,6 +2,7 @@ export 'comment.dart';
 export 'community.dart';
 export 'enums/enums.dart';
 export 'inbox.dart';
+export 'instance_list.dart';
 export 'language.dart';
 export 'login.dart';
 export 'post.dart';

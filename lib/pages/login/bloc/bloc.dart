@@ -1,54 +1,46 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:muffed/exception/models/models.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/utils/url.dart';
 
 part 'event.dart';
 part 'state.dart';
+
+final _log = Logger('LoginPageBloc');
 
 /// the bloc that manages the login screen including logging in the user
 /// when the user gets logged in it will add the credentials to the
 /// [GlobalBloc]
 class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
   /// initializes the bloc
-  LoginPageBloc(this.repo, this.globalBloc) : super(LoginPageState()) {
-    on<UserNameOrEmailChanged>((event, emit) {
-      emit(state.copyWith(usernameOrEmail: event.value));
-    });
-    on<PasswordChanged>((event, emit) {
-      emit(state.copyWith(password: event.value));
-    });
-    on<TotpChanged>((event, emit) {
-      emit(state.copyWith(totp: event.value));
-    });
-    on<ServerAddressChanged>((event, emit) {
-      emit(state.copyWith(serverAddr: event.value));
-    });
+  LoginPageBloc(this.repo, this.globalBloc) : super(const LoginPageState()) {
     on<RevealPasswordToggled>((event, emit) {
       emit(state.copyWith(revealPassword: !state.revealPassword));
     });
 
     /// when the user submits the login credentials
     on<Submitted>((event, emit) async {
-      final totp = (state.totp == '') ? null : state.totp;
-
-      final homeServer = cleanseUrl(state.serverAddr);
+      final totp = (event.totp == '') ? null : event.totp;
 
       emit(state.copyWith(loading: true));
 
       try {
         final login = await repo.lemmyRepo
-            .login(state.password, totp, state.usernameOrEmail, homeServer);
+            .login(event.password, totp, event.username, event.serverAddress);
 
-        final getPerson = await repo.lemmyRepo
-            .getPersonWithJwt(jwt: login.jwt, serverAddress: homeServer);
+        final getPerson = await repo.lemmyRepo.getPersonWithJwt(
+          jwt: login.jwt,
+          serverAddress: event.serverAddress,
+        );
 
         globalBloc.add(
           AccountLoggedIn(
             LemmyAccountData(
               jwt: login.jwt!,
-              homeServer: homeServer,
+              homeServer: event.serverAddress,
               name: getPerson.name,
               id: getPerson.id,
             ),
@@ -57,11 +49,10 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
 
         emit(state.copyWith(loading: false));
 
-        event.onLoginAccepted();
-      } catch (err) {
-        emit(state.copyWith(errorMessage: err, loading: false));
-
-        rethrow;
+        emit(state.copyWith(successfullyLoggedIn: true));
+      } catch (exc, stacktrace) {
+        final exception = MException(exc, stacktrace)..log(_log);
+        emit(state.copyWith(exception: exception, loading: false));
       }
     });
   }

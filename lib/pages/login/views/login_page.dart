@@ -1,58 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:gap/gap.dart';
+import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 
 import '../bloc/bloc.dart';
 
 class LoginPage extends MPage<void> {
-  const LoginPage();
+  const LoginPage({this.onSuccessfulLogin});
 
-  @override
-  Widget build(BuildContext context) {
-    return const _LoginView();
-  }
-}
-
-class _LoginView extends StatelessWidget {
-  const _LoginView();
+  final void Function()? onSuccessfulLogin;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           LoginPageBloc(context.read<ServerRepo>(), context.read<GlobalBloc>()),
-      child: BlocBuilder<LoginPageBloc, LoginPageState>(
-        buildWhen: (previous, current) {
-          if (previous.copyWith(
-                password: '',
-                serverAddr: '',
-                totp: '',
-                usernameOrEmail: '',
-              ) !=
-              current.copyWith(
-                password: '',
-                serverAddr: '',
-                totp: '',
-                usernameOrEmail: '',
-              )) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  context.pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
+      child: _LoginView(
+        onSuccessfulLogin: onSuccessfulLogin,
+      ),
+    );
+  }
+}
+
+class _LoginView extends StatefulWidget {
+  const _LoginView({this.onSuccessfulLogin});
+
+  final void Function()? onSuccessfulLogin;
+
+  @override
+  State<_LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<_LoginView> {
+  final formKey = GlobalKey<FormState>();
+
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final serverAddressController = TextEditingController();
+  final serverAddressFocusNode = FocusNode();
+  final totpController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    serverAddressController.dispose();
+    totpController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<LoginPageBloc, LoginPageState>(
+      listener: (context, state) {
+        if (state.successfullyLoggedIn) {
+          context.pop();
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                context.pop();
+              },
+              icon: const Icon(Icons.arrow_back),
             ),
-            body: ListView(
+          ),
+          body: Form(
+            key: formKey,
+            child: ListView(
               children: [
                 SizedBox(
                   height: 5,
@@ -67,38 +90,70 @@ class _LoginView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextField(
+                        TypeAheadField(
+                          hideOnEmpty: true,
+                          focusNode: serverAddressFocusNode,
+                          controller: serverAddressController,
+                          builder: (context, controller, focusNode) {
+                            return TextFormField(
+                              controller: serverAddressController,
+                              focusNode: focusNode,
+                              keyboardType: TextInputType.url,
+                              decoration: const InputDecoration(
+                                filled: false,
+                                border: OutlineInputBorder(),
+                                label: Text('Server Address'),
+                              ),
+                              validator: (value) {
+                                if (value != null && value.isEmpty) {
+                                  return 'Please enter the server address';
+                                }
+                                if (value != null &&
+                                    !HttpUrl.isValidHttpUrl(value)) {
+                                  return 'The server address is not valid';
+                                }
+                                return null;
+                              },
+                            );
+                          },
+                          itemBuilder: (context, value) {
+                            return ListTile(
+                              title: Text(value),
+                            );
+                          },
+                          onSelected: (value) {
+                            serverAddressController.text = value;
+                          },
+                          suggestionsCallback: (search) {
+                            if (search.isEmpty) {
+                              return List<String>.empty();
+                            }
+                            return instances
+                                .where((element) => element.contains(search))
+                                .toList();
+                          },
+                        ),
+                        const Gap(16),
+                        TextFormField(
                           decoration: const InputDecoration(
                             label: Text('Username or Email'),
-                            filled: true,
+                            filled: false,
+                            border: OutlineInputBorder(),
                           ),
-                          onChanged: (value) {
-                            context
-                                .read<LoginPageBloc>()
-                                .add(UserNameOrEmailChanged(value));
+                          validator: (value) {
+                            if (value != null && value.isEmpty) {
+                              return 'Please enter your username or email';
+                            }
+                            return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
+                          controller: usernameController,
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextField(
-                          decoration: const InputDecoration(
-                            filled: true,
-                            label: Text('TOTP (Optional)'),
-                          ),
-                          onChanged: (value) {
-                            context
-                                .read<LoginPageBloc>()
-                                .add(TotpChanged(value));
-                          },
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextField(
-                          obscureText: !state.revealPassword,
+                        const Gap(16),
+                        TextFormField(
                           autocorrect: false,
                           enableSuggestions: false,
+                          obscureText: !state.revealPassword,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -110,36 +165,51 @@ class _LoginView extends StatelessWidget {
                                   ? const Icon(Icons.visibility_off)
                                   : const Icon(Icons.visibility),
                             ),
-                            filled: true,
+                            filled: false,
+                            border: const OutlineInputBorder(),
+                            alignLabelWithHint: true,
                             label: const Text('Password'),
                           ),
-                          onChanged: (value) {
-                            context
-                                .read<LoginPageBloc>()
-                                .add(PasswordChanged(value));
+                          validator: (value) {
+                            if (value != null && value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
                           },
+                          controller: passwordController,
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextField(
+                        const Gap(16),
+                        TextFormField(
                           decoration: const InputDecoration(
-                            filled: true,
-                            label: Text('Server Address'),
+                            filled: false,
+                            isDense: true,
+                            border: OutlineInputBorder(),
+                            label: Text('TOTP (Optional)'),
                           ),
-                          onChanged: (value) {
-                            context
-                                .read<LoginPageBloc>()
-                                .add(ServerAddressChanged(value));
-                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          keyboardType: TextInputType.number,
+                          maxLength: 6,
+                          controller: totpController,
                         ),
                         TextButton(
                           onPressed: () {
-                            context.read<LoginPageBloc>().add(
-                              Submitted(() {
-                                context.pop();
-                              }),
-                            );
+                            if (formKey.currentState!.validate()) {
+                              final username = usernameController.text;
+                              final password = passwordController.text;
+                              final serverAddress =
+                                  serverAddressController.text;
+
+                              context.read<LoginPageBloc>().add(
+                                    Submitted(
+                                      username: username,
+                                      password: password,
+                                      serverAddress:
+                                          HttpUrl.parse(serverAddress),
+                                    ),
+                                  );
+                            }
                           },
                           child: const Text('Login'),
                         ),
@@ -147,11 +217,13 @@ class _LoginView extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (state.exception != null)
+                  ExceptionWidget(exception: state.exception!)
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

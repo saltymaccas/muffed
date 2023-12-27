@@ -6,7 +6,4 @@ analyzer:
 
 linter:
   rules:
-    omit_local_variable_types: false
     public_member_api_docs: false
-    parameter_assignments: false
-    one_member_abstracts: false

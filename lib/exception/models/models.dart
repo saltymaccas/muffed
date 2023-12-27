@@ -1,10 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 
-/// A class to hold errors and execute methods such as log and humanise message
+/// A class to hold and interpet any exception,
+///
+/// Should not be used to throw an error only to hold and interpret the error
+/// afterwards.
 class MException {
   MException(this.exception, this.stackTrace);
 
+  /// The exception object.
+  ///
+  /// Can take any object, the methods in this class are meant to be able to
+  /// interet any object that can be passed in here.
   final Object exception;
   final StackTrace? stackTrace;
 

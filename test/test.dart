@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 
 void main() {
@@ -16,17 +17,17 @@ void main() {
       lemmyDefaultHomeServer: 'test.home.server',
       titleTextScaleFactor: 23,
       useDynamicColorScheme: false,
-      lemmyAccounts: const [
+      lemmyAccounts: [
         LemmyAccountData(
           id: 12,
           name: 'testUser',
-          homeServer: 'test.home.server',
+          homeServer: HttpUrl.parse('test.home.server'),
           jwt: 'test.jwt',
         ),
         LemmyAccountData(
           id: 13,
           name: 'testUser1',
-          homeServer: 'test.home.server1',
+          homeServer: HttpUrl.parse('test.home.server1'),
           jwt: 'test.jwt1',
         ),
       ],
