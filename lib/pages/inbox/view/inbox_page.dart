@@ -45,7 +45,7 @@ class InboxPage extends MPage<void> {
                         visualDensity: VisualDensity.compact,
                       );
                     },
-                  )
+                  ),
                 ]);
               });
               return const InboxView();
@@ -72,8 +72,8 @@ class InboxView extends StatelessWidget {
               ),
               Tab(
                 child: Text('Mentions'),
-              )
-            ]),
+              ),
+            ],),
             body: TabBarView(
               children: [
                 _RepliesScrollView(),
@@ -81,7 +81,7 @@ class InboxView extends StatelessWidget {
               ],
             ),
           ),
-        ));
+        ),);
   }
 }
 
@@ -137,7 +137,7 @@ class _RepliesBuilderDelegate extends ContentBuilderDelegate<LemmyInboxReply> {
 
   @override
   Widget itemBuilder(
-      BuildContext context, int index, List<LemmyInboxReply> items) {
+      BuildContext context, int index, List<LemmyInboxReply> items,) {
     return InboxReplyItem(
       item: items[index],
       sortType: LemmyCommentSortType.hot,
@@ -146,7 +146,7 @@ class _RepliesBuilderDelegate extends ContentBuilderDelegate<LemmyInboxReply> {
 }
 
 class _MentionsScrollView extends StatefulWidget {
-  const _MentionsScrollView({super.key});
+  const _MentionsScrollView();
 
   @override
   State<_MentionsScrollView> createState() => _MentionsScrollViewState();

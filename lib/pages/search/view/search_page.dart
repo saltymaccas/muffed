@@ -277,7 +277,7 @@ class _SearchView extends StatelessWidget {
                                   backgroundColor:
                                       context.colorScheme.surfaceVariant,
                                   side: BorderSide.none,
-                                  padding: EdgeInsets.only(left: 6),
+                                  padding: const EdgeInsets.only(left: 6),
                                   labelPadding: EdgeInsets.zero,
                                 ),
                               ),
@@ -340,7 +340,7 @@ class _UserSearchViewState extends State<_UserSearchView>
         return create;
       },
       child: ContentScrollView<LemmyUser>(
-          builderDelegate: ContentBuilderDelegateLemmyUser()),
+          builderDelegate: ContentBuilderDelegateLemmyUser(),),
     );
   }
 

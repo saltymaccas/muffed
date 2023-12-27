@@ -31,7 +31,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         } catch (exc, stackTrace) {
           final exception = MException(exc, stackTrace)..log(_log);
           emit(
-              state.copyWith(status: PostStatus.failure, exception: exception));
+              state.copyWith(status: PostStatus.failure, exception: exception),);
         }
       }
     });

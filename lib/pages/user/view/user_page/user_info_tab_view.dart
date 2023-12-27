@@ -42,7 +42,6 @@ class _UserInfoTabView extends StatelessWidget {
                     Flexible(
                       child: Center(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               user.commentCount.toString(),
@@ -62,7 +61,7 @@ class _UserInfoTabView extends StatelessWidget {
               const Divider(),
               if (user.bio != null)
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: MuffedMarkdownBody(data: user.bio!),
                 ),
               const SizedBox(

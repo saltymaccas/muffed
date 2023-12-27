@@ -31,24 +31,4 @@ class ImageUploadState extends Equatable {
         imageName,
         error,
       ];
-
-  ImageUploadState copyWith({
-    int? id,
-    double? uploadProgress,
-    String? imageLink,
-    String? baseUrl,
-    String? imageName,
-    String? deleteToken,
-    Object? error,
-  }) {
-    return ImageUploadState(
-      id: id ?? this.id,
-      uploadProgress: uploadProgress ?? this.uploadProgress,
-      imageLink: imageLink ?? this.imageLink,
-      baseUrl: baseUrl ?? this.baseUrl,
-      imageName: imageName ?? this.imageName,
-      deleteToken: deleteToken ?? this.deleteToken,
-      error: error ?? this.error,
-    );
-  }
 }

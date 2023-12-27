@@ -24,11 +24,11 @@ List<CommentPlateau> organiseCommentsWithChildren(
   int level,
   List<LemmyComment> comments,
 ) {
-  final List<CommentPlateau> commentPlateau = [];
+  final commentPlateau = <CommentPlateau>[];
 
   for (final comment in comments) {
     if (comment.level == level) {
-      final List<LemmyComment> children = [];
+      final children = <LemmyComment>[];
 
       for (final child in comments) {
         if (child.path.contains(comment.id)) {

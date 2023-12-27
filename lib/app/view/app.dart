@@ -48,7 +48,7 @@ class _AppView extends StatelessWidget {
 
 /// Sets up the app theme
 class _AppTheme extends StatelessWidget {
-  const _AppTheme({super.key});
+  const _AppTheme();
 
   @override
   Widget build(BuildContext context) {

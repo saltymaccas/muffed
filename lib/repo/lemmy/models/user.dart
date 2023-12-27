@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 
 class LemmyGetPersonDetailsResponse {
   LemmyGetPersonDetailsResponse({
@@ -69,7 +69,7 @@ class LemmyUser extends Equatable {
         person = json;
       case _:
         throw Exception(
-            'Json parsed into person does not appear to be a person');
+            'Json parsed into person does not appear to be a person',);
     }
 
     late final Map<String, dynamic>? personView;

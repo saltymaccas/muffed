@@ -22,7 +22,7 @@ class MException {
   }
 
   String exceptionToString() {
-    final Object exc = exception;
+    final exc = exception;
     String? exceptionString;
 
     if (exc is DioException) {

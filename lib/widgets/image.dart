@@ -102,7 +102,6 @@ class _MuffedImageState extends State<MuffedImage> {
             },
             retries: widget.numOfRetries,
             handleLoadingProgress: true,
-            alignment: Alignment.center,
           ),
         );
       },
@@ -234,7 +233,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
       duration: const Duration(milliseconds: 140),
       vsync: this,
     );
-    void Function() animationListener = () {};
+    var animationListener = () {};
     Animation<double>? animation;
 
     return ScaffoldMessenger(
@@ -247,10 +246,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                 : Colors.white,
             shadows: fullscreen
                 ? null
-                : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
+                : <Shadow>[const Shadow(blurRadius: 50)],
           ),
           backgroundColor: Colors.transparent,
-          toolbarHeight: 70.0,
+          toolbarHeight: 70,
         ),
         backgroundColor: Colors.black.withOpacity(slideTransparency),
         body: Center(
@@ -283,10 +282,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                 ? (details) {
                     // Need to catch the drag during "maybe" phase or it wont activate fast enough
                     if (slideZooming) {
-                      double newScale = max(
+                      final double newScale = max(
                           gestureKey.currentState!.gestureDetails!.totalScale! *
                               (1 + (details.delta.dy / 150)),
-                          1);
+                          1,);
                       gestureKey.currentState?.handleDoubleTap(
                         scale: newScale,
                         doubleTapPosition:
@@ -367,7 +366,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   },
                   onDoubleTap: (ExtendedImageGestureState state) {
                     final pointerDownPosition = state.pointerDownPosition;
-                    final double begin = state.gestureDetails!.totalScale!;
+                    final begin = state.gestureDetails!.totalScale!;
                     double end;
 
                     animation?.removeListener(animationListener);
@@ -385,7 +384,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                     animationListener = () {
                       state.handleDoubleTap(
                           scale: animation!.value,
-                          doubleTapPosition: pointerDownPosition);
+                          doubleTapPosition: pointerDownPosition,);
                     };
                     animation = animationController
                         .drive(Tween<double>(begin: begin, end: end));

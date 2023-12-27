@@ -72,7 +72,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -116,11 +115,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
               SafeArea(
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
                           onPressed: () {

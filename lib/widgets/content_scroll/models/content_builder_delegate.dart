@@ -82,7 +82,7 @@ class ContentBuilderDelegateLemmyCommunity
     extends ContentBuilderDelegate<LemmyCommunity> {
   @override
   Widget itemBuilder(
-      BuildContext context, int index, List<LemmyCommunity> content) {
+      BuildContext context, int index, List<LemmyCommunity> content,) {
     return CommunityListTile(content[index]);
   }
 }

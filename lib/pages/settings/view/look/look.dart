@@ -149,7 +149,7 @@ class _SettingsLookView extends StatelessWidget {
                         (state.titleTextScaleFactor == 1.3),
                       ],
                       onPressed: (index) {
-                        final List<double> values = [0.9, 1, 1.1, 1.3];
+                        final values = <double>[0.9, 1, 1.1, 1.3];
 
                         context.read<GlobalBloc>().add(
                               SettingChanged(
@@ -189,7 +189,7 @@ class _SettingsLookView extends StatelessWidget {
                         (state.labelTextScaleFactor == 1.3),
                       ],
                       onPressed: (index) {
-                        final List<double> values = [0.9, 1, 1.1, 1.3];
+                        final values = <double>[0.9, 1, 1.1, 1.3];
 
                         context.read<GlobalBloc>().add(
                               SettingChanged(
@@ -229,7 +229,7 @@ class _SettingsLookView extends StatelessWidget {
                         (state.bodyTextScaleFactor == 1.3),
                       ],
                       onPressed: (index) {
-                        final List<double> values = [0.9, 1, 1.1, 1.3];
+                        final values = <double>[0.9, 1, 1.1, 1.3];
 
                         context.read<GlobalBloc>().add(
                               SettingChanged(

@@ -56,12 +56,11 @@ class UserView extends StatelessWidget {
     return BlocBuilder<ContentScrollBloc<LemmyGetPersonDetailsResponse>,
         ContentScrollState<LemmyGetPersonDetailsResponse>>(
       builder: (context, state) {
-        final LemmyUser? user = state.content.elementAtOrNull(0)?.person;
+        final user = state.content.elementAtOrNull(0)?.person;
 
         return DefaultTabController(
           length: 3,
           child: NestedScrollView(
-            floatHeaderSlivers: false,
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               // These are the slivers that show up in the "outer" scroll view.
@@ -103,7 +102,7 @@ class _UserPostsTabView extends StatelessWidget {
           child: SizedBox(
             height: _headerMinHeight,
           ),
-        )
+        ),
       ],
       builderDelegate: PostBuilderDelegate(),
     );
@@ -121,7 +120,7 @@ class _UserCommentsTabView extends StatelessWidget {
           child: SizedBox(
             height: _headerMinHeight,
           ),
-        )
+        ),
       ],
       builderDelegate: ContentBuilderDelegateUserComments(),
     );

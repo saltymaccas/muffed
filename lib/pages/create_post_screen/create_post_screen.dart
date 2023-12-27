@@ -5,14 +5,13 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/exception/exception.dart';
+import 'package:muffed/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/snackbars.dart';
 import 'package:muffed/widgets/url_view.dart';
-
-import 'bloc/bloc.dart';
 
 class CreatePostScreen extends StatelessWidget {
   CreatePostScreen({
@@ -66,8 +65,8 @@ class CreatePostScreen extends StatelessWidget {
         },
         builder: (context, state) {
           Future<void> openImagePickerForImageUpload() async {
-            final ImagePicker picker = ImagePicker();
-            final XFile? file = await picker.pickImage(
+            final picker = ImagePicker();
+            final file = await picker.pickImage(
               source: ImageSource.gallery,
             );
 
@@ -120,10 +119,7 @@ class CreatePostScreen extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(8),
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          // TODO: add navigation
-                                          runUrlAddedEvent();
-                                        },
+                                        onPressed: runUrlAddedEvent,
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: const Size(500, 50),
                                         ),
@@ -137,7 +133,7 @@ class CreatePostScreen extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50)),
+                            fixedSize: const Size(500, 50),),
                         child: const Text('Add Url'),
                       ),
                     ),
@@ -149,7 +145,7 @@ class CreatePostScreen extends StatelessWidget {
                           await openImagePickerForImageUpload();
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50)),
+                            fixedSize: const Size(500, 50),),
                         child: const Text('Add Image'),
                       ),
                     ),
@@ -187,7 +183,6 @@ class CreatePostScreen extends StatelessWidget {
               ],
             ),
             body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
                   child: SingleChildScrollView(
@@ -318,7 +313,6 @@ class CreatePostScreen extends StatelessWidget {
                                   focusNode: bodyTextFocusNode,
                                   label: 'Body',
                                   minLines: 5,
-                                  maxLines: null,
                                 ),
                               ),
                             ],
@@ -348,8 +342,8 @@ class CreatePostScreen extends StatelessWidget {
                           MarkdownType.code,
                         ],
                         customImageButtonAction: () async {
-                          final ImagePicker picker = ImagePicker();
-                          final XFile? file = await picker.pickImage(
+                          final picker = ImagePicker();
+                          final file = await picker.pickImage(
                             source: ImageSource.gallery,
                           );
 

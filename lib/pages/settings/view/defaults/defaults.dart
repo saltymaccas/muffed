@@ -14,7 +14,7 @@ class SettingsDefaultsPage extends MPage<void> {
 }
 
 class _DefaultsSettingsView extends StatelessWidget {
-  const _DefaultsSettingsView({super.key});
+  const _DefaultsSettingsView();
 
   @override
   Widget build(BuildContext context) {

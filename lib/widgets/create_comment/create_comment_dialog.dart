@@ -141,7 +141,6 @@ class CreateCommentDialog extends StatelessWidget {
                       : Container(),
                 ),
                 Flexible(
-                  flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(4),
                     child: IndexedStack(

@@ -294,7 +294,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                       TextButton(
                                         onPressed: () {
                                           context.pushPage(CommunityInfoPage(
-                                              community: community));
+                                              community: community,),);
                                         },
                                         child: const Text('See community info'),
                                       ),

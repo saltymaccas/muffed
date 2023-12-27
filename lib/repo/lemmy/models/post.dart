@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 
 class LemmyPost extends Equatable {
   /// initialize object

@@ -1,4 +1,4 @@
-import 'models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 
 class LemmySearchResponse {
   LemmySearchResponse({

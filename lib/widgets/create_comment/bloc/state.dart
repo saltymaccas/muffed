@@ -44,7 +44,7 @@ class CreateCommentState extends Equatable {
     LemmyComment? commentBeingEdited,
   }) {
     return CreateCommentState(
-      isPosting: isLoading ?? this.isPosting,
+      isPosting: isLoading ?? isPosting,
       exception: exception,
       successfullyPosted: successfullyPosted ?? this.successfullyPosted,
       isPreviewing: isPreviewing ?? this.isPreviewing,

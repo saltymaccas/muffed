@@ -194,9 +194,9 @@ class HomePage extends MPage<void> {
                               ),
                             );
                           },
-                        )
+                        ),
                       ],
-                      child: _HomeView(),
+                      child: const _HomeView(),
                     );
                   },
                 ),
@@ -210,7 +210,7 @@ class HomePage extends MPage<void> {
 }
 
 class _HomeView extends StatelessWidget {
-  const _HomeView({super.key});
+  const _HomeView();
 
   @override
   Widget build(BuildContext context) {

@@ -151,7 +151,6 @@ class _CreateCommentViewState extends State<CreateCommentView> {
               ],
             ),
             body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
                   child: SingleChildScrollView(
@@ -180,7 +179,6 @@ class _CreateCommentViewState extends State<CreateCommentView> {
                                 focusNode: textFocusNode,
                                 label: 'Comment...',
                                 minLines: 8,
-                                maxLines: null,
                               ),
                             ],
                           ),
@@ -209,8 +207,8 @@ class _CreateCommentViewState extends State<CreateCommentView> {
                           MarkdownType.code,
                         ],
                         customImageButtonAction: () async {
-                          final ImagePicker picker = ImagePicker();
-                          final XFile? file = await picker.pickImage(
+                          final picker = ImagePicker();
+                          final file = await picker.pickImage(
                             source: ImageSource.gallery,
                           );
 

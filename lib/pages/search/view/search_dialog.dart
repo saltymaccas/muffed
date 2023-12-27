@@ -111,6 +111,6 @@ class _SearchDialog extends StatelessWidget {
           },
         ),
       );
-    });
+    },);
   }
 }

@@ -32,7 +32,7 @@ interface class LemmyRepo {
       throw Exception('Not logged in');
     }
 
-    final Response<Map<String, dynamic>> response = await dio.post(
+    final response = await dio.post(
       '${serverUrl?.url ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       data: {
         if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
@@ -59,7 +59,7 @@ interface class LemmyRepo {
         throw Exception('Not logged in');
       }
 
-      final Response<Map<String, dynamic>> response = await dio.put(
+      final response = await dio.put(
         '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
         data: {
           if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
@@ -105,7 +105,7 @@ interface class LemmyRepo {
       'Sending get request to ${globalBloc.state.lemmyBaseUrl}, Path: $path, Data: $queryParameters',
     );
 
-    final Response<Map<String, dynamic>> response = await dio.get(
+    final response = await dio.get(
       '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       queryParameters: {
         if (jwt != null)
@@ -130,7 +130,7 @@ interface class LemmyRepo {
     LemmyListingType listingType = LemmyListingType.all,
     bool savedOnly = false,
   }) async {
-    final Map<String, dynamic> response = await getRequest(
+    final response = await getRequest(
       path: '/post/list',
       queryParameters: {
         'page': page,
@@ -162,7 +162,7 @@ interface class LemmyRepo {
       throw 'No id provided';
     }
 
-    final Map<String, dynamic> response = await getRequest(
+    final response = await getRequest(
       path: '/comment/list',
       queryParameters: {
         if (postId != null) 'post_id': postId,
@@ -294,7 +294,7 @@ interface class LemmyRepo {
     String usernameOrEmail,
     HttpUrl serverAddress,
   ) async {
-    final Map<String, dynamic> response = await postRequest(
+    final response = await postRequest(
       path: '/user/login',
       data: {
         'username_or_email': usernameOrEmail,
@@ -373,7 +373,6 @@ interface class LemmyRepo {
         'block': block,
         'person_id': personId,
       },
-      mustBeLoggedIn: true,
     );
     return response['blocked'];
   }
@@ -396,7 +395,6 @@ interface class LemmyRepo {
     final response = await postRequest(
       path: '/community/block',
       data: {'community_id': id, 'block': block},
-      mustBeLoggedIn: true,
     );
     return response['blocked'];
   }
@@ -447,7 +445,7 @@ interface class LemmyRepo {
 
   /// Gets any lemmy site
   Future<LemmySite> getSpecificSite(String url) async {
-    final Response<Map<String, dynamic>> response = await dio.get(
+    final response = await dio.get(
       '${cleanseUrl(url)}/api/v3/site',
     );
 
@@ -527,7 +525,6 @@ interface class LemmyRepo {
   Future<void> markReplyAsRead({required int id, bool read = true}) async {
     await postRequest(
       path: '/comment/mark_as_read',
-      mustBeLoggedIn: true,
       data: {'comment_reply_id': id, 'read': read},
     );
   }
@@ -535,7 +532,6 @@ interface class LemmyRepo {
   Future<void> markMentionAsRead({required int id, bool read = true}) async {
     await postRequest(
       path: '/user/mention/mark_as_read',
-      mustBeLoggedIn: true,
       data: {'person_mention_id': id, 'read': read},
     );
   }

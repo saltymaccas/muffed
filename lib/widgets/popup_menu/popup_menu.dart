@@ -197,14 +197,14 @@ class _MuffedPopupMenuButtonState extends State<MuffedPopupMenuButton> {
         menuOpen = true;
       });
 
-      final RenderBox button = context.findRenderObject()! as RenderBox;
-      final RenderBox overlay = Navigator.of(context)
+      final button = context.findRenderObject()! as RenderBox;
+      final overlay = Navigator.of(context)
           .overlay!
           .context
           .findRenderObject()! as RenderBox;
 
       // Gets position of button
-      final RelativeRect position = RelativeRect.fromRect(
+      final position = RelativeRect.fromRect(
         Rect.fromPoints(
           button.localToGlobal(widget.offset, ancestor: overlay),
           button.localToGlobal(
@@ -328,7 +328,7 @@ class _MuffedPopupMenuRoute extends PopupRoute<dynamic> {
     return Builder(
       builder: (context) {
         final menu = _MuffedPopupMenu(route: this);
-        final MediaQueryData mediaQuery = MediaQuery.of(context);
+        final mediaQuery = MediaQuery.of(context);
 
         return MediaQuery.removePadding(
           context: context,
@@ -370,15 +370,15 @@ class _MuffedPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double unit = 1.0 / (route.items.length + 1.5);
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
+    final unit = 1.0 / (route.items.length + 1.5);
+    final popupMenuTheme = PopupMenuTheme.of(context);
 
-    final CurveTween opacity = CurveTween(
+    final opacity = CurveTween(
       curve: const Interval(0, 1.0 / 3.0, curve: Curves.easeInOutCubic),
     );
-    final CurveTween width =
+    final width =
         CurveTween(curve: Interval(0, unit, curve: Curves.easeInOutCubic));
-    final CurveTween height = CurveTween(
+    final height = CurveTween(
       curve: Interval(
         0,
         unit * route.items.length,
@@ -476,9 +476,9 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
     // childSize: The size of the menu, when fully open, as determined by
     // getConstraintsForChild.
 
-    final double buttonHeight = size.height - position.top - position.bottom;
+    final buttonHeight = size.height - position.top - position.bottom;
     // Find the ideal vertical position.
-    final double y = position.top;
+    final y = position.top;
 
     // Find the ideal horizontal position.
     double x;
@@ -493,20 +493,20 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
       x = size.width - position.right - childSize.width;
     }
 
-    final Offset wantedPosition = Offset(x, y);
-    final Offset originCenter = position.toRect(Offset.zero & size).center;
-    final Iterable<Rect> subScreens =
+    final wantedPosition = Offset(x, y);
+    final originCenter = position.toRect(Offset.zero & size).center;
+    final subScreens =
         DisplayFeatureSubScreen.subScreensInBounds(
       Offset.zero & size,
       avoidBounds,
     );
-    final Rect subScreen = _closestScreen(subScreens, originCenter);
+    final subScreen = _closestScreen(subScreens, originCenter);
     return _fitInsideScreen(subScreen, childSize, wantedPosition);
   }
 
   Rect _closestScreen(Iterable<Rect> screens, Offset point) {
-    Rect closest = screens.first;
-    for (final Rect screen in screens) {
+    var closest = screens.first;
+    for (final screen in screens) {
       if ((screen.center - point).distance <
           (closest.center - point).distance) {
         closest = screen;
@@ -516,8 +516,8 @@ class _MuffedMenuRouteLayout extends SingleChildLayoutDelegate {
   }
 
   Offset _fitInsideScreen(Rect screen, Size childSize, Offset wantedPosition) {
-    double x = wantedPosition.dx;
-    double y = wantedPosition.dy;
+    var x = wantedPosition.dx;
+    var y = wantedPosition.dy;
     // Avoid going outside an area defined as the rectangle 8.0 pixels from the
     // edge of the screen in every direction.
     if (x < screen.left + _kMenuScreenPadding + padding.left) {

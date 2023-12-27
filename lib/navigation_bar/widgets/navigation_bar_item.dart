@@ -21,7 +21,7 @@ class NavigationBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MNavigator navigator = MNavigator.of(context);
+    final navigator = MNavigator.of(context);
 
     return BlocBuilder<MNavigator, MNavigatorState>(
       builder: (context, state) {

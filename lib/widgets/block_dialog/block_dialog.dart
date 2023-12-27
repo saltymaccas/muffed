@@ -86,7 +86,7 @@ class _BlockDialogFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog();
+    return const AlertDialog();
   }
 }
 

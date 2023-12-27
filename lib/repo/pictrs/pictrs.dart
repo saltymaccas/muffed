@@ -35,7 +35,7 @@ class PictrsRepo {
             },
           ),
           onSendProgress: (int sent, int total) {
-            final double progress = sent / total;
+            final progress = sent / total;
             streamController
                 .add(ImageUploadState(uploadProgress: progress, id: id));
           },

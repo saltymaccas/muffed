@@ -48,7 +48,7 @@ class InboxReplyItem extends StatelessWidget {
 
 class InboxMentionItem extends StatelessWidget {
   const InboxMentionItem(
-      {required this.item, required this.sortType, super.key});
+      {required this.item, required this.sortType, super.key,});
 
   final LemmyInboxMention item;
   final LemmyCommentSortType sortType;

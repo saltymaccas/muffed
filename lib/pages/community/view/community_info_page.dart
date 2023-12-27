@@ -114,7 +114,6 @@ class _CommunityInfoSuccess extends StatelessWidget {
             const Divider(),
             SizedBox(
               child: Row(
-                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Flexible(

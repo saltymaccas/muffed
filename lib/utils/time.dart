@@ -1,5 +1,5 @@
 String formattedPostedAgo (DateTime time){
-  final Duration t = time.difference(DateTime.now()).abs();
+  final t = time.difference(DateTime.now()).abs();
 
   if (t.inDays >= 365){
     return '${(t.inDays / 365).round()}y';

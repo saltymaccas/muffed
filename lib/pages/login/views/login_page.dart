@@ -6,10 +6,9 @@ import 'package:gap/gap.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/models/url.dart';
+import 'package:muffed/pages/login/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-
-import '../bloc/bloc.dart';
 
 class LoginPage extends MPage<void> {
   const LoginPage({this.onSuccessfulLogin});
@@ -218,7 +217,7 @@ class _LoginViewState extends State<_LoginView> {
                   ),
                 ),
                 if (state.exception != null)
-                  ExceptionWidget(exception: state.exception!)
+                  ExceptionWidget(exception: state.exception!),
               ],
             ),
           ),

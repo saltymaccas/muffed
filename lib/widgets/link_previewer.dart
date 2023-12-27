@@ -67,7 +67,7 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                 {
                   setState(() {
                     status = _LinkPreviewerStatus.error;
-                    this.exception = MException(error, null);
+                    exception = MException(error, null);
                   }),
                 },
             },
@@ -132,10 +132,10 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                           final bodyTextStyle = widget.bodyTextStyle ??
                               context.textTheme.bodySmall!;
 
-                          final bool titleAvailable = metadata!.title != null &&
+                          final titleAvailable = metadata!.title != null &&
                               metadata!.title!.isNotEmpty;
 
-                          final bool bodyAvailable = metadata!.desc != null &&
+                          final bodyAvailable = metadata!.desc != null &&
                               metadata!.desc!.isNotEmpty;
 
                           // get height and max lines of title

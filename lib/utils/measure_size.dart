@@ -13,7 +13,7 @@ class MeasureSizeRenderObject extends RenderProxyBox {
   void performLayout() {
     super.performLayout();
 
-    final Size newSize = child!.size;
+    final newSize = child!.size;
     if (oldSize == newSize) return;
 
     oldSize = newSize;

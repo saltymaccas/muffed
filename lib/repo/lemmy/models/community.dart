@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'models.dart';
+import 'package:muffed/repo/lemmy/models/models.dart';
 
 class LemmyCommunity extends Equatable {
   const LemmyCommunity({
@@ -49,7 +49,7 @@ class LemmyCommunity extends Equatable {
       jsonType = JsonTypes.community;
     } else {
       throw Exception(
-          'Json parsed into community does not appear to be a community');
+          'Json parsed into community does not appear to be a community',);
     }
 
     late final Map<String, dynamic> community;
@@ -71,7 +71,7 @@ class LemmyCommunity extends Equatable {
         getCommunityResponse = null;
       case _:
         throw Exception(
-            'Json parsed into community does not appear to be a community');
+            'Json parsed into community does not appear to be a community',);
     }
 
     return LemmyCommunity(
