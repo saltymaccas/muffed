@@ -4,9 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
-import 'package:muffed/router/models/extensions.dart';
 import 'package:muffed/router/models/models.dart';
-import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
@@ -16,16 +14,24 @@ part 'card_view.dart';
 part 'components.dart';
 part 'tree_view.dart';
 
-/// Constructs a comment widget.
-class CommentWidget {
-  static Widget card({
-    required LemmyComment comment,
-    required LemmyCommentSortType sortType,
-    List<LemmyComment> children = const [],
-    bool? ableToLoadChildren,
-    Widget? trailingPostTitle,
-  }) {
+class CommentCardWidget extends StatelessWidget {
+  const CommentCardWidget({
+    required this.comment,
+    this.sortType = LemmyCommentSortType.hot,
+    this.children = const [],
+    this.trailingPostTitle,
+    super.key,
+  });
+
+  final LemmyComment comment;
+  final List<LemmyComment> children;
+  final LemmyCommentSortType sortType;
+  final Widget? trailingPostTitle;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
+      key: key,
       create: (context) => CommentBloc(
         comment: comment,
         children: children,
@@ -46,14 +52,24 @@ class CommentWidget {
       ),
     );
   }
+}
 
-  static Widget tree({
-    required LemmyComment comment,
-    required LemmyCommentSortType sortType,
-    List<LemmyComment> children = const [],
-    bool? ableToLoadChildren,
-  }) {
+class CommentTreeItemWidget extends StatelessWidget {
+  const CommentTreeItemWidget({
+    required this.comment,
+    required this.children,
+    required this.sortType,
+    super.key,
+  });
+
+  final LemmyComment comment;
+  final List<LemmyComment> children;
+  final LemmyCommentSortType sortType;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
+      key: key,
       create: (context) => CommentBloc(
         comment: comment,
         children: children,

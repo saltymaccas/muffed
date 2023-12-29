@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -28,6 +28,7 @@ class LemmyPostContentBuilderDelegate
   @override
   Widget itemBuilder(BuildContext context, int index, List<LemmyPost> content) {
     return PostWidget(
+      key: ValueKey(content[index].id),
       post: content[index],
       form: PostViewForm.card,
       displayType: PostDisplayType.list,
@@ -53,7 +54,8 @@ class LemmyCommentTreeContentBuilderDelegate
       key: key,
       itemCount: organisedComments.length,
       itemBuilder: (context, index) {
-        return CommentWidget.tree(
+        return CommentTreeItemWidget(
+          key: ValueKey(organisedComments[index].comment.id),
           comment: organisedComments[index].comment,
           children: organisedComments[index].children,
           sortType: sortType,
@@ -71,7 +73,7 @@ class ContentBuilderDelegateLemmyCommentCard
     int index,
     List<LemmyComment> content,
   ) {
-    return CommentWidget.card(
+    return CommentCardWidget(
       comment: content[index],
       sortType: LemmyCommentSortType.hot,
     );
@@ -82,7 +84,10 @@ class ContentBuilderDelegateLemmyCommunity
     extends ContentBuilderDelegate<LemmyCommunity> {
   @override
   Widget itemBuilder(
-      BuildContext context, int index, List<LemmyCommunity> content,) {
+    BuildContext context,
+    int index,
+    List<LemmyCommunity> content,
+  ) {
     return CommunityListTile(content[index]);
   }
 }

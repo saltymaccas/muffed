@@ -21,7 +21,7 @@ class InboxReplyItem extends StatelessWidget {
           return BlocConsumer<ReplyItemBloc, InboxItemState>(
             listener: (previous, current) {},
             builder: (context, state) {
-              return CommentWidget.card(
+              return CommentCardWidget(
                 comment: item.comment,
                 sortType: sortType,
                 trailingPostTitle: IconButton(
@@ -47,8 +47,11 @@ class InboxReplyItem extends StatelessWidget {
 }
 
 class InboxMentionItem extends StatelessWidget {
-  const InboxMentionItem(
-      {required this.item, required this.sortType, super.key,});
+  const InboxMentionItem({
+    required this.item,
+    required this.sortType,
+    super.key,
+  });
 
   final LemmyInboxMention item;
   final LemmyCommentSortType sortType;
@@ -63,7 +66,7 @@ class InboxMentionItem extends StatelessWidget {
           return BlocConsumer<MentionItemBloc, InboxItemState>(
             listener: (previous, current) {},
             builder: (context, state) {
-              return CommentWidget.card(
+              return CommentCardWidget(
                 comment: item.comment,
                 sortType: sortType,
                 trailingPostTitle: IconButton(

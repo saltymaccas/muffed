@@ -165,9 +165,8 @@ class ContentBuilderDelegateUserComments
       key: key,
       children: List.generate(
         items.length,
-        (index) => CommentWidget.card(
+        (index) => CommentCardWidget(
           comment: items[index],
-          sortType: LemmyCommentSortType.hot,
         ),
       ),
     );
