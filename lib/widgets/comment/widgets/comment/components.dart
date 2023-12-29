@@ -158,60 +158,91 @@ class _CommentFooter extends StatelessWidget {
               icon: const Icon(Icons.reply),
               visualDensity: VisualDensity.compact,
             ),
-            MuffedPopupMenuButton(
+            IconButton(
               icon: const Icon(Icons.more_vert),
-              items: [
-                MuffedPopupMenuItem(
-                  title: 'Go to user',
-                  onTap: () {
-                    // TODO: add navigation
-                  },
-                ),
-                MuffedPopupMenuItem(
-                  title: 'View raw',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (context) => Scaffold(
-                          appBar: AppBar(),
-                          body: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SingleChildScrollView(
-                                child: SelectableText(
-                                  state.comment.content,
-                                  style: GoogleFonts.robotoMono(
-                                    textStyle:
-                                        Theme.of(context).textTheme.bodyMedium,
+              onPressed: () {
+                showModalBottomSheet<void>(
+                  useRootNavigator: true,
+                  context: context,
+                  builder: (context) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (state.comment.creatorId ==
+                            context
+                                .read<GlobalBloc>()
+                                .getSelectedLemmyAccount()
+                                ?.id)
+                          ListTile(
+                            title: const Text('Edit Comment'),
+                            leading: const Icon(Icons.edit),
+                            onTap: () {
+                              context.pop();
+                              showCreateCommentDialog(
+                                context: context,
+                                postId: state.comment.postId,
+                                commentBeingEdited: state.comment,
+                              );
+                            },
+                          )
+                        else
+                          ListTile(
+                            title: const Text('Go to user'),
+                            leading: const Icon(Icons.person),
+                            onTap: () {
+                              context
+                                ..pop()
+                                ..pushPage(
+                                  UserPage(
+                                    userId: state.comment.creatorId,
+                                    username: state.comment.creatorName,
                                   ),
-                                ),
-                              ),
-                            ),
+                                );
+                            },
                           ),
+                        ListTile(
+                          title: const Text('View raw'),
+                          leading: const Icon(Icons.memory),
+                          onTap: () {
+                            context
+                              ..pop()
+                              ..pushPage(_RawCommentPage(state.comment));
+                          },
                         ),
-                      ),
+                      ],
                     );
                   },
-                ),
-                if (context.read<GlobalBloc>().state.isLoggedIn)
-                  if (state.comment.creatorId ==
-                      context.read<GlobalBloc>().getSelectedLemmyAccount()!.id)
-                    MuffedPopupMenuItem(
-                      title: 'Edit Comment',
-                      onTap: () {
-                        showCreateCommentDialog(
-                          context: context,
-                          postId: state.comment.postId,
-                          commentBeingEdited: state.comment,
-                        );
-                      },
-                    ),
-              ],
+                );
+              },
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _RawCommentPage extends MPage<void> {
+  const _RawCommentPage(this.comment);
+
+  final LemmyComment comment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Raw comment',
+        ),
+      ),
+      body: Center(
+        child: SelectableText(
+          comment.content,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontFamily: GoogleFonts.jetBrainsMono().fontFamily,
+              ),
+        ),
+      ),
     );
   }
 }
