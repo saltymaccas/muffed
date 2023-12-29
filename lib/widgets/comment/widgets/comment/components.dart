@@ -55,7 +55,7 @@ class _CommentChildrenInColumn extends StatelessWidget {
     );
 
     return List.generate(organisedComments.length, (index) {
-      return CommentWidget.tree(
+      return CommentTreeItemWidget(
         sortType: sortType,
         comment: organisedComments[index].comment,
         children: organisedComments[index].children,
