@@ -236,11 +236,14 @@ class _RawCommentPage extends MPage<void> {
         ),
       ),
       body: Center(
-        child: SelectableText(
-          comment.content,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontFamily: GoogleFonts.jetBrainsMono().fontFamily,
-              ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: SelectableText(
+            comment.content,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  fontFamily: GoogleFonts.jetBrainsMono().fontFamily,
+                ),
+          ),
         ),
       ),
     );
