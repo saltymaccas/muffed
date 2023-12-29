@@ -18,6 +18,8 @@ class CreateCommentState extends Equatable {
 
   final LemmyComment? commentBeingEdited;
 
+  /// Splay tree map used instead of normal map to keep the order of the images
+  /// this is important for the UI to know which image is which
   final SplayTreeMap<int, ImageUploadState> images;
 
   /// Used to tell UI that the comment has been successfully posted

@@ -6,6 +6,7 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
+import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/create_comment/bloc/bloc.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
@@ -104,19 +105,15 @@ class _CreateCommentViewState extends State<CreateCommentView> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
+                    },
+                    child: const Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
                       context.popPageFromCurrentBranch();
                     },
                     child: const Text('Yes'),
-                  ),
-                  TextButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('No'),
                   ),
                 ],
               );
@@ -136,109 +133,131 @@ class _CreateCommentViewState extends State<CreateCommentView> {
             appBar: AppBar(
               title: const Text('Create Comment'),
               actions: [
-                IconButton(
-                  onPressed: () {
-                    context.read<CreateCommentBloc>().add(
-                          Submitted(
-                            postId: widget.postId,
-                            commentContents: textController.text,
-                            commentId: widget.parentId,
-                          ),
-                        );
-                  },
-                  icon: const Icon(Icons.send),
-                ),
+                if (state.isPosting)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      'Posting...',
+                      style: context.textTheme.labelLarge!.copyWith(
+                        color: context.colorScheme.primary,
+                      ),
+                    ),
+                  )
+                else
+                  IconButton(
+                    onPressed: () {
+                      context.read<CreateCommentBloc>().add(
+                            Submitted(
+                              postId: widget.postId,
+                              commentContents: textController.text,
+                              commentId: widget.parentId,
+                            ),
+                          );
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
               ],
             ),
-            body: Column(
+            body: Stack(
               children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
+                Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (state.images.isNotEmpty)
+                              ImageUploadView(
+                                images: state.images,
+                                onDelete: (id) {
+                                  context
+                                      .read<CreateCommentBloc>()
+                                      .add(UploadedImageRemoved(id: id));
+                                },
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: IndexedStack(
+                                index: (state.isPreviewing ? 0 : 1),
+                                children: [
+                                  MuffedMarkdownBody(
+                                    data: textController.text,
+                                  ),
+                                  MarkdownTextInputField(
+                                    initialValue: widget.initialValue,
+                                    controller: textController,
+                                    focusNode: textFocusNode,
+                                    label: 'Comment...',
+                                    minLines: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    Row(
                       children: [
-                        if (state.images.isNotEmpty)
-                          ImageUploadView(
-                            images: state.images,
-                            onDelete: (id) {
-                              context
-                                  .read<CreateCommentBloc>()
-                                  .add(UploadedImageRemoved(id: id));
+                        Expanded(
+                          child: MarkdownButtons(
+                            controller: textController,
+                            focusNode: textFocusNode,
+                            actions: const [
+                              MarkdownType.image,
+                              MarkdownType.link,
+                              MarkdownType.bold,
+                              MarkdownType.italic,
+                              MarkdownType.blockquote,
+                              MarkdownType.strikethrough,
+                              MarkdownType.title,
+                              MarkdownType.list,
+                              MarkdownType.separator,
+                              MarkdownType.code,
+                            ],
+                            customImageButtonAction: () async {
+                              final picker = ImagePicker();
+                              final file = await picker.pickImage(
+                                source: ImageSource.gallery,
+                              );
+
+                              context.read<CreateCommentBloc>().add(
+                                    ImageToUploadSelected(
+                                      filePath: file!.path,
+                                    ),
+                                  );
                             },
                           ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: IndexedStack(
-                            index: (state.isPreviewing ? 0 : 1),
-                            children: [
-                              MuffedMarkdownBody(
-                                data: textController.text,
-                              ),
-                              MarkdownTextInputField(
-                                initialValue: widget.initialValue,
-                                controller: textController,
-                                focusNode: textFocusNode,
-                                label: 'Comment...',
-                                minLines: 8,
-                              ),
-                            ],
+                        ),
+                        Material(
+                          elevation: 10,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: IconButton(
+                              isSelected: state.isPreviewing,
+                              icon: (state.isPreviewing)
+                                  ? const Icon(Icons.remove_red_eye)
+                                  : const Icon(Icons.remove_red_eye_outlined),
+                              onPressed: () {
+                                context
+                                    .read<CreateCommentBloc>()
+                                    .add(PreviewToggled());
+                              },
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                const Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: MarkdownButtons(
-                        controller: textController,
-                        focusNode: textFocusNode,
-                        actions: const [
-                          MarkdownType.image,
-                          MarkdownType.link,
-                          MarkdownType.bold,
-                          MarkdownType.italic,
-                          MarkdownType.blockquote,
-                          MarkdownType.strikethrough,
-                          MarkdownType.title,
-                          MarkdownType.list,
-                          MarkdownType.separator,
-                          MarkdownType.code,
-                        ],
-                        customImageButtonAction: () async {
-                          final picker = ImagePicker();
-                          final file = await picker.pickImage(
-                            source: ImageSource.gallery,
-                          );
-
-                          context.read<CreateCommentBloc>().add(
-                                ImageToUploadSelected(
-                                  filePath: file!.path,
-                                ),
-                              );
-                        },
-                      ),
-                    ),
-                    Material(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: IconButton(
-                          isSelected: state.isPreviewing,
-                          icon: (state.isPreviewing)
-                              ? const Icon(Icons.remove_red_eye)
-                              : const Icon(Icons.remove_red_eye_outlined),
-                          onPressed: () {
-                            context
-                                .read<CreateCommentBloc>()
-                                .add(PreviewToggled());
-                          },
-                        ),
-                      ),
-                    ),
                   ],
                 ),
+                if (state.isPosting)
+                  const SafeArea(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: LinearProgressIndicator(),
+                    ),
+                  ),
               ],
             ),
           );
