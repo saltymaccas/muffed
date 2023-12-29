@@ -3,7 +3,7 @@ part of 'bloc.dart';
 class CreateCommentState extends Equatable {
   ///
   CreateCommentState({
-    this.isPosting = true,
+    this.isPosting = false,
     this.exception,
     this.successfullyPosted = false,
     this.isPreviewing = false,

@@ -60,7 +60,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       }
     });
     on<PostSubmitted>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isPosting: true));
 
       try {
         if (idOfPostBeingEdited != null) {
@@ -74,7 +74,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
                     : state.image!.baseUrl
                 : cleanseUrl(state.enteredUrl!),
           );
-          emit(state.copyWith(successfullyPosted: response, isLoading: false));
+          emit(state.copyWith(successfullyPosted: response, isPosting: false));
         } else {
           final response = await repo.lemmyRepo.createPost(
             name: event.title,
@@ -86,11 +86,11 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
                     : state.image!.baseUrl
                 : cleanseUrl(state.enteredUrl!),
           );
-          emit(state.copyWith(successfullyPosted: response, isLoading: false));
+          emit(state.copyWith(successfullyPosted: response, isPosting: false));
         }
       } catch (exc, stackTrace) {
         final exception = MException(exc, stackTrace)..log(_log);
-        emit(state.copyWith(exception: exception, isLoading: false));
+        emit(state.copyWith(exception: exception, isPosting: false));
       }
     });
     on<BodyImageToUploadSelected>((event, emit) async {

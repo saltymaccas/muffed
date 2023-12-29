@@ -4,7 +4,7 @@ enum CommunityInfoStatus { initial, loading, failure, success }
 
 class CreatePostState extends Equatable {
   CreatePostState({
-    this.isLoading = false,
+    this.isPosting = false,
     this.recipientCommunityInfo,
     this.recipientCommunityInfoStatus = CommunityInfoStatus.initial,
     this.exception,
@@ -14,7 +14,7 @@ class CreatePostState extends Equatable {
     this.enteredUrl,
   }) : bodyImages = images ?? SplayTreeMap<int, ImageUploadState>();
 
-  final bool isLoading;
+  final bool isPosting;
   final LemmyCommunity? recipientCommunityInfo;
   final CommunityInfoStatus recipientCommunityInfoStatus;
 
@@ -26,7 +26,10 @@ class CreatePostState extends Equatable {
   /// The image that gets attached to the post.
   final ImageUploadState? image;
 
-  // images uploaded to be placed in the body of the post
+  /// images uploaded for the body off the post
+  ///
+  /// Kept as a splay tree map to keep the order of the images. So they are
+  /// correctly refered to
   final SplayTreeMap<int, ImageUploadState> bodyImages;
 
   /// The url the user can optionally enter that gets attached to the post.
@@ -34,7 +37,7 @@ class CreatePostState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
+        isPosting,
         recipientCommunityInfo,
         exception,
         recipientCommunityInfoStatus,
@@ -45,7 +48,7 @@ class CreatePostState extends Equatable {
       ];
 
   CreatePostState copyWith({
-    bool? isLoading,
+    bool? isPosting,
     LemmyCommunity? recipientCommunityInfo,
     CommunityInfoStatus? recipientCommunityInfoStatus,
     MException? exception,
@@ -57,7 +60,7 @@ class CreatePostState extends Equatable {
     bool setEnteredUrlToNull = false,
   }) {
     return CreatePostState(
-      isLoading: isLoading ?? this.isLoading,
+      isPosting: isPosting ?? this.isPosting,
       recipientCommunityInfo:
           recipientCommunityInfo ?? this.recipientCommunityInfo,
       exception: exception,
