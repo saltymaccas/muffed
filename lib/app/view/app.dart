@@ -86,69 +86,80 @@ class _AppTheme extends StatelessWidget {
       builder: (context, state) {
         return DynamicColorBuilder(
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-            ThemeData applyThemeAdjustments(ThemeData theme) {
-              final textTheme = theme.textTheme;
-              return theme.copyWith(
-                textTheme: textTheme.apply().copyWith(
-                      titleLarge: textTheme.titleLarge!.apply(
-                        fontSizeFactor: state.titleTextScaleFactor,
-                      ),
-                      titleMedium: textTheme.titleMedium!.apply(
-                        fontSizeFactor: state.titleTextScaleFactor,
-                      ),
-                      titleSmall: textTheme.titleSmall!.apply(
-                        fontSizeFactor: state.titleTextScaleFactor,
-                      ),
-                      labelLarge: textTheme.labelLarge!.apply(
-                        fontSizeFactor: state.labelTextScaleFactor,
-                      ),
-                      labelMedium: textTheme.labelMedium!.apply(
-                        fontSizeFactor: state.labelTextScaleFactor,
-                      ),
-                      labelSmall: textTheme.labelSmall!.apply(
-                        fontSizeFactor: state.labelTextScaleFactor,
-                      ),
-                      bodyLarge: textTheme.bodyLarge!.apply(
-                        fontSizeFactor: state.bodyTextScaleFactor,
-                      ),
-                      bodyMedium: textTheme.bodyMedium!.apply(
-                        fontSizeFactor: state.bodyTextScaleFactor,
-                      ),
-                      bodySmall: textTheme.bodySmall!.apply(
-                        fontSizeFactor: state.bodyTextScaleFactor,
-                      ),
-                    ),
-              );
-            }
+            final textTheme = Theme.of(context).textTheme;
+            // Changes the sizes of the text to match the user preferences
+            final adjustedTextTheme = textTheme.copyWith(
+              titleLarge: textTheme.titleLarge!.apply(
+                fontSizeFactor: state.titleTextScaleFactor,
+              ),
+              titleMedium: textTheme.titleMedium!.apply(
+                fontSizeFactor: state.titleTextScaleFactor,
+              ),
+              titleSmall: textTheme.titleSmall!.apply(
+                fontSizeFactor: state.titleTextScaleFactor,
+              ),
+              labelLarge: textTheme.labelLarge!.apply(
+                fontSizeFactor: state.labelTextScaleFactor,
+              ),
+              labelMedium: textTheme.labelMedium!.apply(
+                fontSizeFactor: state.labelTextScaleFactor,
+              ),
+              labelSmall: textTheme.labelSmall!.apply(
+                fontSizeFactor: state.labelTextScaleFactor,
+              ),
+              bodyLarge: textTheme.bodyLarge!.apply(
+                fontSizeFactor: state.bodyTextScaleFactor,
+              ),
+              bodyMedium: textTheme.bodyMedium!.apply(
+                fontSizeFactor: state.bodyTextScaleFactor,
+              ),
+              bodySmall: textTheme.bodySmall!.apply(
+                fontSizeFactor: state.bodyTextScaleFactor,
+              ),
+            );
 
-            var lightTheme = lightDynamic != null
-                ? ThemeData(
+            final lightColorScheme = ColorScheme.fromSeed(
+              seedColor: state.seedColor,
+            );
+
+            final lightTheme = lightDynamic != null
+                ? ThemeData.from(
                     colorScheme: lightDynamic,
                     useMaterial3: true,
+                    textTheme: adjustedTextTheme.apply(
+                      bodyColor: lightDynamic.onSurface,
+                    ),
                   )
                 : ThemeData.from(
                     colorScheme: ColorScheme.fromSeed(
                       seedColor: state.seedColor,
                     ),
                     useMaterial3: true,
+                    textTheme: adjustedTextTheme.apply(
+                      bodyColor: lightColorScheme.onSurface,
+                    ),
                   );
 
-            lightTheme = applyThemeAdjustments(lightTheme);
+            final darkColorScheme = ColorScheme.fromSeed(
+              seedColor: state.seedColor,
+              brightness: Brightness.dark,
+            );
 
-            var darkTheme = darkDynamic != null
-                ? ThemeData(
+            final darkTheme = darkDynamic != null
+                ? ThemeData.from(
                     colorScheme: darkDynamic,
                     useMaterial3: true,
+                    textTheme: adjustedTextTheme.apply(
+                      bodyColor: darkDynamic.onSurface,
+                    ),
                   )
                 : ThemeData.from(
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: state.seedColor,
-                      brightness: Brightness.dark,
+                    colorScheme: darkColorScheme,
+                    textTheme: adjustedTextTheme.apply(
+                      bodyColor: darkColorScheme.onSurface,
                     ),
                     useMaterial3: true,
                   );
-
-            darkTheme = applyThemeAdjustments(darkTheme);
 
             return _AppView(lightTheme, darkTheme, state.themeMode);
           },
