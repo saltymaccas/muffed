@@ -57,12 +57,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       },
                       blendMode: BlendMode.dstIn,
                       child: (user.banner != null)
-                          ? CachedNetworkImage(
+                          ? MuffedImage(
                               fit: BoxFit.cover,
                               width: double.maxFinite,
                               height: (_headerMaxHeight - shrinkOffset) *
                                   _bannerEndFraction,
-                              placeholder: (context, url) => placeholderBanner,
                               imageUrl: user.banner!,
                             )
                           : placeholderBanner,
@@ -121,14 +120,17 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                       children: [
                         IconButton(
                           onPressed: () {
-                            // TODO: add navigation
+                            context.pop();
                           },
                           icon: const Icon(Icons.arrow_back),
                         ),
                         Opacity(
                           opacity: shrinkOffset /
                               (_headerMaxHeight - _headerMinHeight),
-                          child: Text(user.name),
+                          child: Text(
+                            user.name,
+                            style: context.textTheme.titleLarge,
+                          ),
                         ),
                       ],
                     ),

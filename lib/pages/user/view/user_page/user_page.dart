@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
+import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:muffed/widgets/post/post.dart';
