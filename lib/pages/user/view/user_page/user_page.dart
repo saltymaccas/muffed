@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
