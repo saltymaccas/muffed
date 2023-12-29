@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 /// Holds a list of widgets that gets displayed to the appbar.
 class PageActions with ChangeNotifier, EquatableMixin {
   PageActions(this.actions);
+  PageActions.empty() : actions = [];
 
   List<Widget> actions;
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/create_post/views/create_post_page.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
@@ -18,7 +20,7 @@ class CommunityPage extends MPage<void> {
           communityId != null || communityName != null || community != null,
           'No community defined',
         ),
-        super(pageActions: PageActions([]));
+        super(pageActions: PageActions.empty());
 
   /// The community ID
   final int? communityId;
@@ -193,6 +195,18 @@ class CommunityPage extends MPage<void> {
                   );
                 },
               ),
+              if (context.read<GlobalBloc>().state.isLoggedIn)
+                IconButton(
+                  onPressed: () {
+                    context.pushPage(
+                      CreatePostPage(
+                        communityId: communityId ?? community!.id,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                  visualDensity: VisualDensity.compact,
+                ),
             ]);
           });
           return const CommunityView();

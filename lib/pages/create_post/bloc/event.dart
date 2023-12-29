@@ -4,14 +4,11 @@ abstract class CreatePostEvent {}
 
 class Initalize extends CreatePostEvent {}
 
-class PreviewToggled extends CreatePostEvent {}
-
 class PostSubmitted extends CreatePostEvent {
-  PostSubmitted({required this.title, this.body, this.url});
+  PostSubmitted({required this.title, this.body});
 
   final String title;
   final String? body;
-  final String? url;
 }
 
 class BodyImageToUploadSelected extends CreatePostEvent {

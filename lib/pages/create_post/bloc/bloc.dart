@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/repo/pictrs/models.dart';
@@ -14,37 +14,38 @@ part 'state.dart';
 final _log = Logger('CreatePostBloc');
 
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
-  ///
   CreatePostBloc({
-    required this.communityId,
     required this.repo,
-    this.initialUrl,
-    this.communityInfo,
-    this.postBeingEdited,
-  }) : super(
+    int? recipientCommunityId,
+    LemmyCommunity? recipientCommunity,
+    LemmyPost? postBeingEdited,
+  })  : assert(
+          recipientCommunity != null || recipientCommunityId != null,
+          'no community given',
+        ),
+        idOfPostBeingEdited = postBeingEdited?.id,
+        communityId = recipientCommunityId ?? recipientCommunity!.id,
+        super(
           CreatePostState(
-            url: initialUrl,
-            communityId: communityId,
-            communityInfo: communityInfo,
-            editingPostId: postBeingEdited?.id,
-            communityInfoStatus: (communityInfo == null)
+            recipientCommunityInfo: recipientCommunity,
+            recipientCommunityInfoStatus: (recipientCommunity == null)
                 ? CommunityInfoStatus.initial
                 : CommunityInfoStatus.success,
           ),
         ) {
     on<Initalize>((event, emit) async {
-      if (state.communityInfoStatus == CommunityInfoStatus.initial ||
-          state.communityInfoStatus == CommunityInfoStatus.failure) {
-        emit(state.copyWith(communityInfoStatus: CommunityInfoStatus.loading));
+      if (state.recipientCommunityInfoStatus == CommunityInfoStatus.initial ||
+          state.recipientCommunityInfoStatus == CommunityInfoStatus.failure) {
+        emit(state.copyWith(
+            recipientCommunityInfoStatus: CommunityInfoStatus.loading));
 
         try {
-          final response = await repo.lemmyRepo
-              .getCommunity(id: communityId ?? postBeingEdited!.communityId);
+          final response = await repo.lemmyRepo.getCommunity(id: communityId);
 
           emit(
             state.copyWith(
-              communityInfoStatus: CommunityInfoStatus.success,
-              communityInfo: response,
+              recipientCommunityInfoStatus: CommunityInfoStatus.success,
+              recipientCommunityInfo: response,
             ),
           );
         } catch (exc, stackTrace) {
@@ -52,37 +53,38 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           emit(
             state.copyWith(
               exception: exception,
-              communityInfoStatus: CommunityInfoStatus.failure,
+              recipientCommunityInfoStatus: CommunityInfoStatus.failure,
             ),
           );
         }
       }
     });
-    on<PreviewToggled>((event, emit) {
-      emit(state.copyWith(isPreviewingBody: !state.isPreviewingBody));
-    });
     on<PostSubmitted>((event, emit) async {
       emit(state.copyWith(isLoading: true));
 
       try {
-        if (state.communityId != null) {
+        if (idOfPostBeingEdited != null) {
+          final response = await repo.lemmyRepo.editPost(
+            id: idOfPostBeingEdited!,
+            name: event.title,
+            body: event.body,
+            url: (state.enteredUrl == null || state.enteredUrl == '')
+                ? (state.image == null)
+                    ? null
+                    : state.image!.baseUrl
+                : cleanseUrl(state.enteredUrl!),
+          );
+          emit(state.copyWith(successfullyPosted: response, isLoading: false));
+        } else {
           final response = await repo.lemmyRepo.createPost(
             name: event.title,
             body: event.body,
-            url: (event.url == null || event.url == '')
-                ? null
-                : cleanseUrl(event.url!),
-            communityId: communityId!,
-          );
-          emit(state.copyWith(successfullyPosted: response, isLoading: false));
-        } else if (state.editingPostId != null) {
-          final response = await repo.lemmyRepo.editPost(
-            id: state.editingPostId!,
-            name: event.title,
-            body: event.body,
-            url: (event.url == null || event.url == '')
-                ? null
-                : cleanseUrl(event.url!),
+            communityId: communityId,
+            url: (state.enteredUrl == null || state.enteredUrl == '')
+                ? (state.image == null)
+                    ? null
+                    : state.image!.baseUrl
+                : cleanseUrl(state.enteredUrl!),
           );
           emit(state.copyWith(successfullyPosted: response, isLoading: false));
         }
@@ -211,18 +213,19 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       }
     });
     on<UrlAdded>((event, emit) {
-      emit(state.copyWith(url: cleanseUrl(event.url)));
+      emit(state.copyWith(enteredUrl: event.url));
     });
     on<UrlRemoved>((event, emit) {
-      emit(state.copyWith(setUrlToNull: true));
+      emit(state.copyWith(setEnteredUrlToNull: true));
     });
   }
 
-  /// Only set if user is editing an existing post, should be the url in the
-  /// original post
-  final String? initialUrl;
-  final LemmyPost? postBeingEdited;
-  final LemmyCommunity? communityInfo;
-  final int? communityId;
+  final int communityId;
+
   final ServerRepo repo;
+
+  /// Set this if the user is editing a post rather then creating a new one.
+  final int? idOfPostBeingEdited;
+
+  bool get isEditingPost => idOfPostBeingEdited != null;
 }

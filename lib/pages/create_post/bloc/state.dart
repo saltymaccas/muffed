@@ -5,76 +5,68 @@ enum CommunityInfoStatus { initial, loading, failure, success }
 class CreatePostState extends Equatable {
   CreatePostState({
     this.isLoading = false,
-    this.communityInfo,
-    this.communityInfoStatus = CommunityInfoStatus.initial,
-    this.communityId,
+    this.recipientCommunityInfo,
+    this.recipientCommunityInfoStatus = CommunityInfoStatus.initial,
     this.exception,
     this.successfullyPostedPost,
-    this.isPreviewingBody = false,
-    this.url,
     this.image,
-    this.editingPostId,
     SplayTreeMap<int, ImageUploadState>? images,
+    this.enteredUrl,
   }) : bodyImages = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isLoading;
-  final LemmyCommunity? communityInfo;
-  final int? communityId;
-  final MException? exception;
-  final CommunityInfoStatus communityInfoStatus;
-  final LemmyPost? successfullyPostedPost;
-  final bool isPreviewingBody;
-  final String? url;
+  final LemmyCommunity? recipientCommunityInfo;
+  final CommunityInfoStatus recipientCommunityInfoStatus;
 
+  final MException? exception;
+
+  /// The resulting post, set when the post gets successfully posted.
+  final LemmyPost? successfullyPostedPost;
+
+  /// The image that gets attached to the post.
   final ImageUploadState? image;
 
-  /// If the screen is editing a post this would be the id of that post.
-  final int? editingPostId;
-
+  // images uploaded to be placed in the body of the post
   final SplayTreeMap<int, ImageUploadState> bodyImages;
+
+  /// The url the user can optionally enter that gets attached to the post.
+  final String? enteredUrl;
 
   @override
   List<Object?> get props => [
         isLoading,
-        communityInfo,
+        recipientCommunityInfo,
         exception,
-        communityInfoStatus,
-        communityId,
+        recipientCommunityInfoStatus,
         successfullyPostedPost,
-        isPreviewingBody,
         bodyImages,
-        url,
         image,
-        editingPostId,
+        enteredUrl,
       ];
 
   CreatePostState copyWith({
     bool? isLoading,
-    LemmyCommunity? communityInfo,
+    LemmyCommunity? recipientCommunityInfo,
+    CommunityInfoStatus? recipientCommunityInfoStatus,
     MException? exception,
-    CommunityInfoStatus? communityInfoStatus,
-    int? communityId,
     LemmyPost? successfullyPosted,
-    bool? isPreviewingBody,
     SplayTreeMap<int, ImageUploadState>? images,
-    String? url,
-    bool setUrlToNull = false,
     ImageUploadState? image,
     bool setImageToNull = false,
-    int? editingPostId,
+    String? enteredUrl,
+    bool setEnteredUrlToNull = false,
   }) {
     return CreatePostState(
       isLoading: isLoading ?? this.isLoading,
-      communityInfo: communityInfo ?? this.communityInfo,
+      recipientCommunityInfo:
+          recipientCommunityInfo ?? this.recipientCommunityInfo,
       exception: exception,
-      communityInfoStatus: communityInfoStatus ?? this.communityInfoStatus,
-      communityId: communityId ?? this.communityId,
+      recipientCommunityInfoStatus:
+          recipientCommunityInfoStatus ?? this.recipientCommunityInfoStatus,
       successfullyPostedPost: successfullyPosted ?? successfullyPostedPost,
-      isPreviewingBody: isPreviewingBody ?? this.isPreviewingBody,
       images: images ?? bodyImages,
-      url: setUrlToNull ? null : url ?? this.url,
       image: setImageToNull ? null : image ?? this.image,
-      editingPostId: editingPostId ?? this.editingPostId,
+      enteredUrl: setEnteredUrlToNull ? null : enteredUrl ?? this.enteredUrl,
     );
   }
 }

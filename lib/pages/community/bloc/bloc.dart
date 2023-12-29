@@ -12,7 +12,6 @@ final _log = Logger('CommunityScreenBloc');
 /// Provides logic for displaying a community
 class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
-  ///
   CommunityScreenBloc({
     required this.repo,
     LemmyCommunity? community,

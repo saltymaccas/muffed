@@ -9,7 +9,6 @@ import 'package:muffed/widgets/snackbars.dart';
 
 /// A widget that displays uploaded images and their upload progress.
 class ImageUploadView extends StatelessWidget {
-  /// Creates a widget that displays uploaded images and their upload progress.
   const ImageUploadView({
     required this.images,
     required this.onDelete,
@@ -81,8 +80,17 @@ class ImageUploadView extends StatelessWidget {
                                 return AlertDialog(
                                   title: const Text('Delete image?'),
                                   content: const Text(
-                                      'Are you sure you want to delete this image?',),
+                                    'Are you sure you want to delete this image from the server?',
+                                  ),
                                   actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(
+                                          context,
+                                        );
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
                                     TextButton(
                                       onPressed: () {
                                         Navigator.pop(
@@ -90,23 +98,7 @@ class ImageUploadView extends StatelessWidget {
                                         );
                                         onDelete(item.id!);
                                       },
-                                      child: const Text('Yes'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(
-                                          context,
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        foregroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                      ),
-                                      child: const Text('No'),
+                                      child: const Text('Delete'),
                                     ),
                                   ],
                                 );
