@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
+import 'package:muffed/theme/theme.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -138,6 +139,10 @@ class _AppTheme extends StatelessWidget {
                     textTheme: adjustedTextTheme.apply(
                       bodyColor: lightColorScheme.onSurface,
                     ),
+                  ).copyWith(
+                    extensions: [
+                      const AnimationThemeData(),
+                    ],
                   );
 
             final darkColorScheme = ColorScheme.fromSeed(
@@ -145,21 +150,26 @@ class _AppTheme extends StatelessWidget {
               brightness: Brightness.dark,
             );
 
-            final darkTheme = darkDynamic != null
-                ? ThemeData.from(
-                    colorScheme: darkDynamic,
-                    useMaterial3: true,
-                    textTheme: adjustedTextTheme.apply(
-                      bodyColor: darkDynamic.onSurface,
-                    ),
-                  )
-                : ThemeData.from(
-                    colorScheme: darkColorScheme,
-                    textTheme: adjustedTextTheme.apply(
-                      bodyColor: darkColorScheme.onSurface,
-                    ),
-                    useMaterial3: true,
-                  );
+            final darkTheme = (darkDynamic != null
+                    ? ThemeData.from(
+                        colorScheme: darkDynamic,
+                        useMaterial3: true,
+                        textTheme: adjustedTextTheme.apply(
+                          bodyColor: darkDynamic.onSurface,
+                        ),
+                      )
+                    : ThemeData.from(
+                        colorScheme: darkColorScheme,
+                        textTheme: adjustedTextTheme.apply(
+                          bodyColor: darkColorScheme.onSurface,
+                        ),
+                        useMaterial3: true,
+                      ))
+                .copyWith(
+              extensions: [
+                const AnimationThemeData(),
+              ],
+            );
 
             return _AppView(lightTheme, darkTheme, state.themeMode);
           },
