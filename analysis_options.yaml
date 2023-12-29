@@ -1,9 +1,1 @@
 include: package:very_good_analysis/analysis_options.yaml
-
-analyzer:
-  language:
-    strict-casts: false
-
-linter:
-  rules:
-    public_member_api_docs: false
