@@ -1,16 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
+import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/pages/user/user.dart';
+import 'package:muffed/repo/lemmy/models/post.dart';
+import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/post/post.dart';
 
+/// Displays a post
+class PostWidget extends StatelessWidget {
+  const PostWidget({
+    this.bloc,
+    this.form,
+    this.displayType,
+    this.post,
+    this.postId,
+    super.key,
+  }) : assert(
+          post != null || postId != null || bloc != null,
+          'No post defined',
+        );
+
+  final PostBloc? bloc;
+  final PostViewForm? form;
+  final PostDisplayType? displayType;
+  final LemmyPost? post;
+  final int? postId;
+
+  @override
+  Widget build(BuildContext context) {
+    if (bloc != null) {
+      return BlocProvider.value(
+        value: bloc!,
+        child: PostView(
+          form: form,
+          displayType: displayType,
+        ),
+      );
+    } else {
+      return BlocProvider(
+        create: (context) => PostBloc(
+          repo: context.read<ServerRepo>(),
+          globalBloc: context.read<GlobalBloc>(),
+          post: post,
+          postId: postId,
+        )..add(
+            Initialize(),
+          ),
+        child: PostView(form: form, displayType: displayType),
+      );
+    }
+  }
+}
+
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
-class PostView extends StatefulWidget {
+class PostView extends StatelessWidget {
   const PostView({
     PostViewForm? form,
     PostDisplayType? displayType,
@@ -22,11 +71,6 @@ class PostView extends StatefulWidget {
   final PostDisplayType displayType;
 
   @override
-  State<PostView> createState() => _PostViewState();
-}
-
-class _PostViewState extends State<PostView> {
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
       builder: (context, state) {
@@ -34,10 +78,10 @@ class _PostViewState extends State<PostView> {
           return const SizedBox();
         }
         if (state.status == PostStatus.loading) {
-          switch (widget.form) {
+          switch (form) {
             case PostViewForm.card:
               return PostViewCard.loading(
-                displayType: widget.displayType,
+                displayType: displayType,
               );
           }
         }
@@ -50,11 +94,11 @@ class _PostViewState extends State<PostView> {
           );
         }
         if (state.status == PostStatus.success) {
-          switch (widget.form) {
+          switch (form) {
             case PostViewForm.card:
               return PostViewCard(
                 state.post!,
-                displayType: widget.displayType,
+                displayType: displayType,
                 openPostCallback: () {
                   context.pushPage(
                     PostPage(

@@ -152,7 +152,6 @@ class _PostView extends StatelessWidget {
               SliverToBoxAdapter(
                 child: PostWidget(
                   displayType: PostDisplayType.comments,
-                  bloc: BlocProvider.of<PostBloc>(context),
                   form: PostViewForm.card,
                 ),
               ),

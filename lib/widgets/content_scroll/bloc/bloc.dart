@@ -87,7 +87,7 @@ class ContentScrollBloc<Data>
             )) {
               emit(state.copyWith(isLoadingMore: false, reachedEnd: true));
             } else {
-              final newContentList = {...state.content, ...response}.toList();
+              final newContentList = [...state.content, ...response];
               emit(
                 state.copyWith(
                   content: newContentList,

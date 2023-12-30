@@ -39,11 +39,10 @@ class ContentScrollView<Data> extends StatelessWidget {
                     onRefresh: () async {
                       bloc.add(PullDownRefresh());
                       await bloc.stream.firstWhere(
-                          (element) => element.isReloading == false,);
+                        (element) => element.isReloading == false,
+                      );
                     },
                     child: CustomScrollView(
-                      key: ValueKey(state.loadedContentDelegate),
-                      cacheExtent: 500,
                       slivers: [
                         ...headerSlivers,
                         if (state.status.isLoading)
