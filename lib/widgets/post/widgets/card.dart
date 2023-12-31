@@ -22,8 +22,7 @@ class PostViewCard extends StatelessWidget {
     this.openMoreMenuCallback,
     super.key,
   })  : displayType = displayType ?? PostDisplayType.list,
-        skeletonise = false,
-        skeletonEffect = null;
+        skeletonise = false;
 
   /// Creates a card post as a skeleton and with placeholder data
   PostViewCard.loading({
@@ -35,9 +34,7 @@ class PostViewCard extends StatelessWidget {
         post = placeHolderData ?? LemmyPost.placeHolder(),
         openPostCallback = null,
         openMoreMenuCallback = null,
-        skeletonise = true,
-        skeletonEffect =
-            animate ? const PulseEffect() : const SoldColorEffect();
+        skeletonise = true;
 
   /// The lemmy post
   final LemmyPost post;
@@ -49,7 +46,6 @@ class PostViewCard extends StatelessWidget {
   final void Function()? openMoreMenuCallback;
 
   final bool skeletonise;
-  final PaintingEffect? skeletonEffect;
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +54,14 @@ class PostViewCard extends StatelessWidget {
       return const SizedBox();
     }
 
-    return Skeletonizer(
-      enabled: skeletonise,
-      effect: skeletonEffect ?? const PulseEffect(),
-      child: Card(
+    return Card(
+      child: Skeletonizer(
+        enabled: skeletonise,
+        containersColor: context.colorScheme.surface,
+        effect: ShimmerEffect(
+          baseColor: context.colorScheme.surfaceVariant,
+          highlightColor: context.colorScheme.outline,
+        ),
         child: InkWell(
           onTap: displayType == PostDisplayType.list ? openPostCallback : null,
           child: Column(
