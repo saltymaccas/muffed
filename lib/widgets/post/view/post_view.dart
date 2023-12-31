@@ -75,12 +75,20 @@ class PostView extends StatelessWidget {
     return BlocBuilder<PostBloc, PostState>(
       builder: (context, state) {
         if (state.status == PostStatus.initial) {
+          // size should stay the same even on initial so scroll views can
+          // correctly calcuate its size
           switch (form) {
             case PostViewForm.card:
-              return PostViewCard.loading(
-                displayType: displayType,
-                animate: false,
-                placeHolderData: state.post,
+              return Visibility(
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: false,
+                child: PostViewCard.loading(
+                  displayType: displayType,
+                  animate: false,
+                  placeHolderData: state.post,
+                ),
               );
           }
         }
