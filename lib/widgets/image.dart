@@ -4,13 +4,19 @@ import 'dart:math';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/utils/image.dart';
+import 'package:muffed/theme/models/extentions.dart';
+import 'package:shimmer/shimmer.dart';
 
 final _log = Logger('MuffedImageViewer');
 
+enum ImagePlaceHolderType {
+  shimmer,
+  shimmerAndLinearProgressIfAvailable,
+  none,
+}
+
 /// Displays an image from a url
 class MuffedImage extends StatefulWidget {
-  ///
   const MuffedImage({
     required this.imageUrl,
     this.shouldBlur = false,
@@ -18,9 +24,11 @@ class MuffedImage extends StatefulWidget {
     this.numOfRetries = 3,
     this.fullScreenable = false,
     this.fit = BoxFit.contain,
-    this.adjustableHeight = false,
+    this.loadingPlaceholder = ImagePlaceHolderType.none,
+    this.alignment = Alignment.center,
     this.height,
     this.width,
+    this.sizeWhileLoading,
     super.key,
   });
 
@@ -39,8 +47,13 @@ class MuffedImage extends StatefulWidget {
   /// Whether a tap on the image makes opens the image in full screen view
   final bool fullScreenable;
 
-  /// Whether the height of the widget should be adjusted to the image
-  final bool adjustableHeight;
+  /// The size the image should be while it is loading
+  final Size? sizeWhileLoading;
+
+  /// The widget to display while loading
+  final ImagePlaceHolderType loadingPlaceholder;
+
+  final Alignment alignment;
 
   final double? height;
   final double? width;
@@ -52,61 +65,18 @@ class MuffedImage extends StatefulWidget {
 }
 
 class _MuffedImageState extends State<MuffedImage> {
-  double? height;
   late bool shouldBlur;
   late String heroTag;
-  Size? imageSize;
 
   @override
   void initState() {
-    height = widget.height;
     shouldBlur = widget.shouldBlur;
     heroTag = DateTime.now().microsecondsSinceEpoch.toString().substring(10);
-    if (widget.adjustableHeight) {
-      cachedImageExists(widget.imageUrl).then((cachedImageExists) {
-        if (!cachedImageExists) {
-          retrieveImageDimensions(widget.imageUrl).then((size) {
-            if (mounted) {
-              setState(() {
-                imageSize = size;
-              });
-            }
-          });
-        }
-      });
-    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final image = LayoutBuilder(
-      builder: (context, constraints) {
-        if (imageSize != null) {
-          height = imageSize!.height / imageSize!.width * constraints.maxWidth;
-        }
-        return Hero(
-          tag: heroTag,
-          child: ExtendedImage.network(
-            widget.imageUrl,
-            width: widget.width,
-            fit: widget.fit,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return SizedBox(
-                  width: double.maxFinite,
-                  height: height,
-                );
-              }
-              return null;
-            },
-            retries: widget.numOfRetries,
-            handleLoadingProgress: true,
-          ),
-        );
-      },
-    );
-
     return GestureDetector(
       onTap: (!shouldBlur && widget.fullScreenable)
           ? () {
@@ -123,19 +93,114 @@ class _MuffedImageState extends State<MuffedImage> {
               }
             }
           : null,
-      child: (widget.animateSizeChange)
-          ? AnimatedSize(
-              alignment: Alignment.topCenter,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOutCubic,
-              child: image,
-            )
-          : image,
+      child: Hero(
+        tag: heroTag,
+        child: ExtendedImage.network(
+          widget.imageUrl,
+          width: widget.width,
+          height: widget.height,
+          fit: widget.fit,
+          retries: widget.numOfRetries,
+          alignment: widget.alignment,
+          gaplessPlayback: true,
+          loadStateChanged: (state) {
+            if (state.wasSynchronouslyLoaded) {
+              return state.completedWidget;
+            }
+
+            if (state.extendedImageLoadState == LoadState.completed ||
+                state.extendedImageLoadState == LoadState.loading) {
+              return AnimatedCrossFade(
+                sizeCurve: context.animationTheme.sizeCurve,
+                firstCurve: context.animationTheme.fadeCurve,
+                secondCurve: context.animationTheme.fadeCurve,
+                reverseDuration: context.animationTheme.switchDuration,
+                duration: context.animationTheme.switchDuration,
+                alignment: widget.alignment,
+                crossFadeState:
+                    (state.extendedImageLoadState == LoadState.completed)
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                firstChild: ImageLoadingPlaceholder(
+                  state: state,
+                  placeholderType: widget.loadingPlaceholder,
+                  size: widget.sizeWhileLoading,
+                ),
+                secondChild: state.completedWidget,
+              );
+            }
+
+            return null;
+          },
+        ),
+      ),
     );
   }
 }
 
-// the below code was taken and modified from https://github.com/thunder-app/thunder/blob/b4be7d27c2f65ce261c6f2f96c2b351e18f01126/lib/shared/image_viewer.dart
+class ImageLoadingPlaceholder extends StatelessWidget {
+  const ImageLoadingPlaceholder({
+    required this.state,
+    this.placeholderType = ImagePlaceHolderType.none,
+    this.size,
+    super.key,
+  });
+
+  final Size? size;
+
+  final ImagePlaceHolderType placeholderType;
+
+  final ExtendedImageState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.fromSize(
+      size: size,
+      child: Builder(
+        builder: (context) {
+          switch (placeholderType) {
+            case ImagePlaceHolderType.shimmer:
+              return Shimmer.fromColors(
+                period: const Duration(milliseconds: 2000),
+                baseColor: context.colorScheme.outline.withOpacity(0.05),
+                highlightColor: Colors.transparent,
+                child: Container(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  color: Colors.red,
+                ),
+              );
+            case ImagePlaceHolderType.shimmerAndLinearProgressIfAvailable:
+              return Stack(
+                children: [
+                  Shimmer.fromColors(
+                    period: const Duration(milliseconds: 2000),
+                    baseColor: context.colorScheme.outline.withOpacity(0.05),
+                    highlightColor: Colors.transparent,
+                    child: Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      color: Colors.red,
+                    ),
+                  ),
+                  if (state.loadingProgress?.expectedTotalBytes != null)
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: LinearProgressIndicator(
+                        value: state.loadingProgress!.cumulativeBytesLoaded /
+                            state.loadingProgress!.expectedTotalBytes!,
+                      ),
+                    ),
+                ],
+              );
+            case ImagePlaceHolderType.none:
+              return const SizedBox();
+          }
+        },
+      ),
+    );
+  }
+}
 
 void showFullScreenImageView(BuildContext context, String url, String heroTag) {
   Navigator.push(
@@ -257,17 +322,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                 fullscreen = !fullscreen;
               });
             },
-            // onTap: () {
-            //   if (!fullscreen) {
-            //     slidePagekey.currentState!.popPage();
-            //     Navigator.pop(context);
-            //   } else {
-            //     setState(() {
-            //       fullscreen = false;
-            //     });
-            //   }
-            // },
-            // Start doubletap zoom if conditions are met
             onVerticalDragStart: maybeSlideZooming
                 ? (details) {
                     setState(() {
@@ -275,10 +329,8 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                     });
                   }
                 : null,
-            // Zoom image in an out based on movement in vertical axis if conditions are met
             onVerticalDragUpdate: maybeSlideZooming || slideZooming
                 ? (details) {
-                    // Need to catch the drag during "maybe" phase or it wont activate fast enough
                     if (slideZooming) {
                       final double newScale = max(
                         gestureKey.currentState!.gestureDetails!.totalScale! *
@@ -293,7 +345,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                     }
                   }
                 : null,
-            // End doubltap zoom
             onVerticalDragEnd: slideZooming
                 ? (details) {
                     setState(() {
@@ -302,7 +353,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   }
                 : null,
             child: Listener(
-              // Start watching for double tap zoom
               onPointerUp: (details) {
                 downCoord = details.position;
                 if (!slideZooming) {
@@ -315,7 +365,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   return Colors.transparent;
                 },
                 onSlidingPage: (state) {
-                  // Fade out image and background when sliding to dismiss
                   final offset = state.offset;
                   final pageSize = state.pageSize;
 
@@ -330,7 +379,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                   }
                 },
                 slideEndHandler: (
-                  // Decrease slide to dismiss threshold so it can be done easier
                   Offset offset, {
                   ExtendedImageSlidePageState? state,
                   ScaleEndDetails? details,

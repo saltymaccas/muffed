@@ -31,8 +31,10 @@ class UrlView extends StatelessWidget {
         imageUrl: url,
         shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
         fullScreenable: imageFullScreenable,
-        adjustableHeight: true,
-        height: 300,
+        sizeWhileLoading: Size(double.maxFinite, 300),
+        alignment: Alignment.topCenter,
+        loadingPlaceholder:
+            ImagePlaceHolderType.shimmerAndLinearProgressIfAvailable,
         width: double.maxFinite,
         animateSizeChange: true,
         fit: BoxFit.fitWidth,

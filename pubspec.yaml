@@ -45,6 +45,7 @@ dependencies:
   collection: ^1.18.0
   gap: ^3.0.1
   flutter_typeahead: ^5.0.1
+  image_size_getter: ^2.1.2
 
 dev_dependencies:
   flutter_test:
