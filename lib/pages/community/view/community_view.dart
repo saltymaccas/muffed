@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
+import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
@@ -74,6 +77,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
 
   double get bannerEnd => 0.5;
 
+  Curve get opacityCurve => Curves.easeInOutQuart;
+
   @override
   double get maxExtent => headerMaxHeight;
 
@@ -110,8 +115,9 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
           elevation: 5,
           child: Stack(
             children: [
-              Opacity(
-                opacity: 1 - fractionScrolled,
+              // displays community info and banner
+              Offstage(
+                offstage: fractionScrolled == 1,
                 child: Stack(
                   children: [
                     // banner
@@ -128,14 +134,12 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                         },
                         blendMode: BlendMode.dstIn,
                         child: (community.banner != null)
-                            ? SizedBox(
+                            ? MuffedImage(
                                 height: (headerMaxHeight - shrinkOffset) *
                                     bannerEnd,
-                                child: MuffedImage(
-                                  width: double.maxFinite,
-                                  fit: BoxFit.cover,
-                                  imageUrl: community.banner!,
-                                ),
+                                width: double.maxFinite,
+                                fit: BoxFit.cover,
+                                imageUrl: community.banner!,
                               )
                             : placeholderBanner,
                       ),
@@ -286,15 +290,17 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         );
                                       },
                                     ),
-
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          context.pushPage(CommunityInfoPage(
-                                              community: community,),);
+                                          context.pushPage(
+                                            CommunityInfoPage(
+                                              community: community,
+                                            ),
+                                          );
                                         },
                                         child: const Text('See community info'),
                                       ),
@@ -353,9 +359,16 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                   ],
                 ),
               ),
-              SizedBox(
-                height: headerMaxHeight - shrinkOffset,
+              Container(
+                height: clampDouble(
+                  headerMaxHeight - shrinkOffset,
+                  headerMinHeight,
+                  headerMaxHeight,
+                ),
                 width: double.maxFinite,
+                color: context.colorScheme.surface.withOpacity(
+                  opacityCurve.transform(fractionScrolled),
+                ),
               ),
               SafeArea(
                 child: Column(
@@ -378,8 +391,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                               width: 8,
                             ),
                             Opacity(
-                              opacity:
-                                  Curves.easeInCirc.transform(fractionScrolled),
+                              opacity: opacityCurve.flipped
+                                  .transform(fractionScrolled),
                               child: Row(
                                 children: [
                                   MuffedAvatar(url: community.icon, radius: 16),
