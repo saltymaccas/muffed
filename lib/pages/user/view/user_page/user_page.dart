@@ -58,31 +58,33 @@ class UserView extends StatelessWidget {
       builder: (context, state) {
         final user = state.content.elementAtOrNull(0)?.person;
 
-        return DefaultTabController(
-          length: 3,
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              // These are the slivers that show up in the "outer" scroll view.
-              return <Widget>[
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverPersistentHeader(
-                    delegate: _HeaderDelegate(user: user),
-                    pinned: true,
+        return Scaffold(
+          body: DefaultTabController(
+            length: 3,
+            child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                // These are the slivers that show up in the "outer" scroll view.
+                return <Widget>[
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverPersistentHeader(
+                      delegate: _HeaderDelegate(user: user),
+                      pinned: true,
+                    ),
                   ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                _UserInfoTabView(user: user),
-                const _UserPostsTabView(key: PageStorageKey('user-comments')),
-                const _UserCommentsTabView(
-                  key: PageStorageKey('user-posts'),
-                ),
-              ],
+                ];
+              },
+              body: TabBarView(
+                children: [
+                  _UserInfoTabView(user: user),
+                  const _UserPostsTabView(key: PageStorageKey('user-comments')),
+                  const _UserCommentsTabView(
+                    key: PageStorageKey('user-posts'),
+                  ),
+                ],
+              ),
             ),
           ),
         );
