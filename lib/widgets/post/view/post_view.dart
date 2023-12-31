@@ -75,7 +75,14 @@ class PostView extends StatelessWidget {
     return BlocBuilder<PostBloc, PostState>(
       builder: (context, state) {
         if (state.status == PostStatus.initial) {
-          return const SizedBox();
+          switch (form) {
+            case PostViewForm.card:
+              return PostViewCard.loading(
+                displayType: displayType,
+                animate: false,
+                placeHolderData: state.post,
+              );
+          }
         }
         if (state.status == PostStatus.loading) {
           switch (form) {

@@ -244,9 +244,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
             color: (fullscreen || slideTransparency < 0.95)
                 ? Colors.transparent
                 : Colors.white,
-            shadows: fullscreen
-                ? null
-                : <Shadow>[const Shadow(blurRadius: 50)],
+            shadows: fullscreen ? null : <Shadow>[const Shadow(blurRadius: 50)],
           ),
           backgroundColor: Colors.transparent,
           toolbarHeight: 70,
@@ -283,9 +281,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                     // Need to catch the drag during "maybe" phase or it wont activate fast enough
                     if (slideZooming) {
                       final double newScale = max(
-                          gestureKey.currentState!.gestureDetails!.totalScale! *
-                              (1 + (details.delta.dy / 150)),
-                          1,);
+                        gestureKey.currentState!.gestureDetails!.totalScale! *
+                            (1 + (details.delta.dy / 150)),
+                        1,
+                      );
                       gestureKey.currentState?.handleDoubleTap(
                         scale: newScale,
                         doubleTapPosition:
@@ -383,8 +382,9 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                     }
                     animationListener = () {
                       state.handleDoubleTap(
-                          scale: animation!.value,
-                          doubleTapPosition: pointerDownPosition,);
+                        scale: animation!.value,
+                        doubleTapPosition: pointerDownPosition,
+                      );
                     };
                     animation = animationController
                         .drive(Tween<double>(begin: begin, end: end));

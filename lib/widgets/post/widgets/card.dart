@@ -14,7 +14,7 @@ import 'package:muffed/widgets/url_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// Displays a Lemmy post in card format
-class PostViewCard extends StatefulWidget {
+class PostViewCard extends StatelessWidget {
   const PostViewCard(
     this.post, {
     PostDisplayType? displayType,
@@ -22,15 +22,22 @@ class PostViewCard extends StatefulWidget {
     this.openMoreMenuCallback,
     super.key,
   })  : displayType = displayType ?? PostDisplayType.list,
-        skeletonise = false;
+        skeletonise = false,
+        skeletonEffect = null;
 
   /// Creates a card post as a skeleton and with placeholder data
-  PostViewCard.loading({PostDisplayType? displayType, super.key})
-      : displayType = displayType ?? PostDisplayType.list,
-        post = LemmyPost.placeHolder(),
+  PostViewCard.loading({
+    LemmyPost? placeHolderData,
+    PostDisplayType? displayType,
+    bool animate = true,
+    super.key,
+  })  : displayType = displayType ?? PostDisplayType.list,
+        post = placeHolderData ?? LemmyPost.placeHolder(),
         openPostCallback = null,
         openMoreMenuCallback = null,
-        skeletonise = true;
+        skeletonise = true,
+        skeletonEffect =
+            animate ? const PulseEffect() : const SoldColorEffect();
 
   /// The lemmy post
   final LemmyPost post;
@@ -42,28 +49,21 @@ class PostViewCard extends StatefulWidget {
   final void Function()? openMoreMenuCallback;
 
   final bool skeletonise;
+  final PaintingEffect? skeletonEffect;
 
-  @override
-  State<PostViewCard> createState() => _PostViewCardState();
-}
-
-class _PostViewCardState extends State<PostViewCard>
-    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     // shows nothing if nsfw and show nsfw off
-    if (widget.post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
+    if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
       return const SizedBox();
     }
 
     return Skeletonizer(
-      enabled: widget.skeletonise,
+      enabled: skeletonise,
+      effect: skeletonEffect ?? const PulseEffect(),
       child: Card(
         child: InkWell(
-          onTap: widget.displayType == PostDisplayType.list
-              ? widget.openPostCallback
-              : null,
+          onTap: displayType == PostDisplayType.list ? openPostCallback : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -76,8 +76,8 @@ class _PostViewCardState extends State<PostViewCard>
                       onTap: () {
                         context.pushPage(
                           CommunityPage(
-                            communityId: widget.post.communityId,
-                            communityName: widget.post.communityName,
+                            communityId: post.communityId,
+                            communityName: post.communityName,
                           ),
                         );
                       },
@@ -87,14 +87,14 @@ class _PostViewCardState extends State<PostViewCard>
                           Row(
                             children: [
                               MuffedAvatar(
-                                url: widget.post.communityIcon,
+                                url: post.communityIcon,
                                 radius: 12,
                               ),
                               const SizedBox(
                                 width: 6,
                               ),
                               Text(
-                                widget.post.communityName,
+                                post.communityName,
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge!
@@ -110,12 +110,12 @@ class _PostViewCardState extends State<PostViewCard>
                                 onTap: () {
                                   context.pushPage(
                                     UserPage(
-                                      userId: widget.post.creatorId,
+                                      userId: post.creatorId,
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  widget.post.creatorName,
+                                  post.creatorName,
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
@@ -129,7 +129,7 @@ class _PostViewCardState extends State<PostViewCard>
                             ],
                           ),
                           Text(
-                            '${formattedPostedAgo(widget.post.timePublished)} ago',
+                            '${formattedPostedAgo(post.timePublished)} ago',
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge!
@@ -144,7 +144,7 @@ class _PostViewCardState extends State<PostViewCard>
                       height: 5,
                     ),
                     Text(
-                      widget.post.name,
+                      post.name,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -152,15 +152,15 @@ class _PostViewCardState extends State<PostViewCard>
               ),
               Column(
                 children: [
-                  if (widget.post.url != null) ...[
+                  if (post.url != null) ...[
                     UrlView(
-                      url: widget.post.url!,
-                      nsfw: widget.post.nsfw,
+                      url: post.url!,
+                      nsfw: post.nsfw,
                       imageFullScreenable:
-                          widget.displayType == PostDisplayType.comments,
+                          displayType == PostDisplayType.comments,
                     ),
                   ],
-                  if (widget.post.body != '' && widget.post.body != null) ...[
+                  if (post.body != '' && post.body != null) ...[
                     Padding(
                       padding: const EdgeInsets.all(4),
                       child: Container(
@@ -177,20 +177,17 @@ class _PostViewCardState extends State<PostViewCard>
                             top: 4,
                             left: 4,
                             right: 4,
-                            bottom: widget.displayType == PostDisplayType.list
-                                ? 0
-                                : 4,
+                            bottom: displayType == PostDisplayType.list ? 0 : 4,
                           ),
                           child: MuffedMarkdownBody(
-                            data: widget.post.body!,
-                            maxHeight:
-                                widget.displayType == PostDisplayType.list
-                                    ? 300
-                                    : null,
+                            data: post.body!,
+                            maxHeight: displayType == PostDisplayType.list
+                                ? 300
+                                : null,
                             onTapText: () {
-                              if (widget.displayType == PostDisplayType.list &&
-                                  widget.openPostCallback != null) {
-                                widget.openPostCallback!.call();
+                              if (displayType == PostDisplayType.list &&
+                                  openPostCallback != null) {
+                                openPostCallback!.call();
                               }
                             },
                           ),
@@ -211,7 +208,7 @@ class _PostViewCardState extends State<PostViewCard>
                         const SizedBox(
                           width: 5,
                         ),
-                        Text('${widget.post.commentCount}'),
+                        Text('${post.commentCount}'),
                       ],
                     ),
                     Row(
@@ -222,7 +219,7 @@ class _PostViewCardState extends State<PostViewCard>
                               context.read<PostBloc>().add(SavePostToggled());
                             },
                             icon: AnimatedCrossFade(
-                              crossFadeState: widget.post.saved
+                              crossFadeState: post.saved
                                   ? CrossFadeState.showFirst
                                   : CrossFadeState.showSecond,
                               duration:
@@ -244,7 +241,7 @@ class _PostViewCardState extends State<PostViewCard>
                           ),
                         IconButton(
                           icon: const Icon(Icons.arrow_upward_outlined),
-                          color: (widget.post.myVote == LemmyVoteType.upVote)
+                          color: (post.myVote == LemmyVoteType.upVote)
                               ? Colors.deepOrange
                               : null,
                           onPressed: () {
@@ -252,10 +249,10 @@ class _PostViewCardState extends State<PostViewCard>
                           },
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(widget.post.upVotes.toString()),
+                        Text(post.upVotes.toString()),
                         IconButton(
                           icon: const Icon(Icons.arrow_downward_outlined),
-                          color: (widget.post.myVote == LemmyVoteType.downVote)
+                          color: (post.myVote == LemmyVoteType.downVote)
                               ? Colors.purple
                               : null,
                           onPressed: () {
@@ -263,9 +260,9 @@ class _PostViewCardState extends State<PostViewCard>
                           },
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(widget.post.downVotes.toString()),
+                        Text(post.downVotes.toString()),
                         IconButton(
-                          onPressed: widget.openMoreMenuCallback,
+                          onPressed: openMoreMenuCallback,
                           icon: const Icon(Icons.more_vert),
                         ),
                       ],
@@ -279,7 +276,4 @@ class _PostViewCardState extends State<PostViewCard>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
