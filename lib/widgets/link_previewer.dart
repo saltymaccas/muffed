@@ -117,6 +117,8 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
                         child: MuffedImage(
                           imageUrl: metadata!.image!,
                           fit: BoxFit.cover,
+                          width: widget.imageWidth,
+                          height: widget.height,
                         ),
                       ),
                     const SizedBox(
