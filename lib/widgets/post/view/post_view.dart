@@ -22,7 +22,7 @@ class PostWidget extends StatelessWidget {
     super.key,
   }) : assert(
           post != null || postId != null || bloc != null,
-          'No post defined',
+          'No post defined in PostWidget constructor',
         );
 
   final PostBloc? bloc;
@@ -117,6 +117,7 @@ class PostView extends StatelessWidget {
                 openPostCallback: () {
                   context.pushPage(
                     PostPage(
+                      postId: state.post!.id,
                       postBloc: context.read<PostBloc>(),
                       post: state.post,
                     ),

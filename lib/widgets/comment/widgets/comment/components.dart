@@ -261,7 +261,7 @@ class _CommentHeader extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                // TODO: add navigation
+                cone
               },
               child: Text(
                 state.comment.creatorName,

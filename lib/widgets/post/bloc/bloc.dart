@@ -16,9 +16,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required this.repo,
     required this.globalBloc,
-    this.post,
-    this.postId,
-  })  : assert(post != null || postId != null),
+    LemmyPost? post,
+    int? postId,
+  })  : assert(
+          post != null || postId != null,
+          'No post provided in PostBloc constructuctor',
+        ),
         super(PostState(post: post)) {
     on<Initialize>((event, emit) async {
       if (post != null) {
@@ -31,7 +34,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         } catch (exc, stackTrace) {
           final exception = MException(exc, stackTrace)..log(_log);
           emit(
-              state.copyWith(status: PostStatus.failure, exception: exception),);
+            state.copyWith(status: PostStatus.failure, exception: exception),
+          );
         }
       }
     });
@@ -217,8 +221,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     });
   }
 
-  final LemmyPost? post;
-  final int? postId;
   final ServerRepo repo;
   final GlobalBloc globalBloc;
 

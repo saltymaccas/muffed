@@ -14,12 +14,10 @@ import 'package:muffed/widgets/snackbars.dart';
 class PostPage extends MPage<void> {
   PostPage({int? postId, this.post, this.postBloc})
       : assert(
-          post != null ||
-              postId != null ||
-              postBloc != null && postBloc.post != null,
-          'No post defined',
+          post != null || postId != null || postBloc != null,
+          'No post defined in PostPage constructor',
         ),
-        postId = postId ?? post?.id ?? postBloc!.post!.id,
+        postId = postId ?? post?.id ?? postBloc!.state.post!.id,
         super(pageActions: PageActions([]));
 
   final int postId;
@@ -153,6 +151,7 @@ class _PostView extends StatelessWidget {
                 child: PostWidget(
                   displayType: PostDisplayType.comments,
                   form: PostViewForm.card,
+                  bloc: context.read<PostBloc>(),
                 ),
               ),
             ],
