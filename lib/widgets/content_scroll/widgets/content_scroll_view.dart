@@ -43,6 +43,7 @@ class ContentScrollView<Data> extends StatelessWidget {
                       );
                     },
                     child: CustomScrollView(
+                      key: ObjectKey(state.loadedContentDelegate),
                       cacheExtent: 1000,
                       slivers: [
                         ...headerSlivers,
