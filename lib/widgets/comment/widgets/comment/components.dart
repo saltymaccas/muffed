@@ -261,7 +261,12 @@ class _CommentHeader extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                cone
+                context.pushPage(
+                  UserPage(
+                    userId: state.comment.creatorId,
+                    username: state.comment.creatorName,
+                  ),
+                );
               },
               child: Text(
                 state.comment.creatorName,

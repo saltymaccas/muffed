@@ -43,6 +43,8 @@ class PostPage extends MPage<void> {
             create: (context) => PostBloc(
               repo: context.read<ServerRepo>(),
               globalBloc: context.read<GlobalBloc>(),
+              post: post,
+              postId: postId,
             )..add(Initialize()),
           ),
       ],

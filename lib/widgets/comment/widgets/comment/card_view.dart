@@ -29,9 +29,16 @@ class _CardCommentView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            state.comment.postTitle,
-                            style: Theme.of(context).textTheme.titleMedium,
+                          InkWell(
+                            onTap: () => context.pushPage(
+                              PostPage(
+                                postId: state.comment.postId,
+                              ),
+                            ),
+                            child: Text(
+                              state.comment.postTitle,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ),
                           Row(
                             children: [
@@ -50,7 +57,13 @@ class _CardCommentView extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  // TODO: add navigation
+                                  context.pushPage(
+                                    CommunityPage(
+                                      communityId: state.comment.communityId,
+                                      communityName:
+                                          state.comment.communityName,
+                                    ),
+                                  );
                                 },
                                 child: Text(
                                   state.comment.communityName,
