@@ -54,6 +54,7 @@ class PostViewCard extends StatelessWidget {
     }
 
     return Card(
+      clipBehavior: Clip.hardEdge,
       child: Skeletonizer(
         enabled: skeletonise,
         containersColor: context.colorScheme.surface,
