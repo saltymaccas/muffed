@@ -68,7 +68,7 @@ class UserView extends StatelessWidget {
                 return <Widget>[
                   SliverOverlapAbsorber(
                     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context),
+                        context,),
                     sliver: SliverPersistentHeader(
                       delegate: _HeaderDelegate(user: user),
                       pinned: true,

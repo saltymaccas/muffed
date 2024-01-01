@@ -37,7 +37,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       if (state.recipientCommunityInfoStatus == CommunityInfoStatus.initial ||
           state.recipientCommunityInfoStatus == CommunityInfoStatus.failure) {
         emit(state.copyWith(
-            recipientCommunityInfoStatus: CommunityInfoStatus.loading));
+            recipientCommunityInfoStatus: CommunityInfoStatus.loading,),);
 
         try {
           final response = await repo.lemmyRepo.getCommunity(id: communityId);

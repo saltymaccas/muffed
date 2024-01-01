@@ -75,7 +75,6 @@ class ContentBuilderDelegateLemmyCommentCard
   ) {
     return CommentCardWidget(
       comment: content[index],
-      sortType: LemmyCommentSortType.hot,
     );
   }
 }

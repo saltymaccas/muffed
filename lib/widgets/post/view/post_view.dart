@@ -5,7 +5,6 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/pages/user/user.dart';
-import 'package:muffed/repo/lemmy/models/post.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
@@ -86,7 +85,6 @@ class PostView extends StatelessWidget {
                 visible: false,
                 child: PostViewCard.loading(
                   displayType: displayType,
-                  animate: false,
                   placeHolderData: state.post,
                 ),
               );

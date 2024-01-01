@@ -28,7 +28,6 @@ class PostViewCard extends StatelessWidget {
   PostViewCard.loading({
     LemmyPost? placeHolderData,
     PostDisplayType? displayType,
-    bool animate = true,
     super.key,
   })  : displayType = displayType ?? PostDisplayType.list,
         post = placeHolderData ?? LemmyPost.placeHolder(),
