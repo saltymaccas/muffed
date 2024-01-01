@@ -359,15 +359,17 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                   ],
                 ),
               ),
-              Container(
-                height: clampDouble(
-                  headerMaxHeight - shrinkOffset,
-                  headerMinHeight,
-                  headerMaxHeight,
-                ),
-                width: double.maxFinite,
-                color: context.colorScheme.surface.withOpacity(
-                  opacityCurve.transform(fractionScrolled),
+              IgnorePointer(
+                child: Container(
+                  height: clampDouble(
+                    headerMaxHeight - shrinkOffset,
+                    headerMinHeight,
+                    headerMaxHeight,
+                  ),
+                  width: double.maxFinite,
+                  color: context.colorScheme.surface.withOpacity(
+                    opacityCurve.transform(fractionScrolled),
+                  ),
                 ),
               ),
               SafeArea(
