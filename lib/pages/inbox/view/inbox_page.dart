@@ -26,7 +26,7 @@ class InboxPage extends MPage<void> {
             builder: (context) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 final inboxBloc = context.read<InboxBloc>();
-                super.pageActions!.setActions([
+                super.pageActions.setActions([
                   BlocBuilder<InboxBloc, InboxState>(
                     bloc: inboxBloc,
                     builder: (context, state) {

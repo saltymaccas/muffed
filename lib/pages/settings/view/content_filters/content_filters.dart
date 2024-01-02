@@ -4,7 +4,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/router/router.dart';
 
 class SettingsContentFiltersPage extends MPage<void> {
-  const SettingsContentFiltersPage();
+  SettingsContentFiltersPage();
 
   @override
   Widget build(BuildContext context) {

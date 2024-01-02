@@ -5,7 +5,7 @@ import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/router/router.dart';
 
 class SettingsLookPage extends MPage<void> {
-  const SettingsLookPage();
+  SettingsLookPage();
 
   @override
   Widget build(BuildContext context) {

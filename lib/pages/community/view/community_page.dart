@@ -73,7 +73,7 @@ class CommunityPage extends MPage<void> {
                   );
             }
 
-            pageActions!.setActions([
+            pageActions.setActions([
               IconButton(
                 onPressed: () {
                   context.pushPage(

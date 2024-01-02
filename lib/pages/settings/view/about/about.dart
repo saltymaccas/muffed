@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 const String version = '0.8.5+14';
 
 class AboutPage extends MPage<void> {
-  const AboutPage();
+  AboutPage();
 
   @override
   Widget build(BuildContext context) {

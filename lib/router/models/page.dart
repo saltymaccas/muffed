@@ -6,11 +6,12 @@ import 'package:muffed/router/router.dart';
 ///
 /// The type T is the return type
 abstract class MPage<T> extends Page<T> {
-  const MPage({this.pageActions, super.key});
+  MPage({PageActions? pageActions})
+      : pageActions = pageActions ?? PageActions.init();
 
   /// An updatable list of widgets that gets displayed on the navigation bar
   /// when the user is on the page
-  final PageActions? pageActions;
+  final PageActions pageActions;
 
   /// build page content by overridng this function
   Widget build(BuildContext context);

@@ -47,7 +47,7 @@ class MRouterDelegate extends RouterDelegate<MPage<Object?>>
 final initialNavigatorState = MNavigatorState(
   currentBranchIndex: 0,
   rootBranch: Branch(
-    const [_RootPage()],
+    [_RootPage()],
     key: GlobalKey<NavigatorState>(debugLabel: 'root'),
   ),
   branches: [
@@ -60,7 +60,7 @@ final initialNavigatorState = MNavigatorState(
       key: GlobalKey<NavigatorState>(debugLabel: 'inbox'),
     ),
     Branch(
-      const [ProfilePage()],
+      [ProfilePage()],
       key: GlobalKey<NavigatorState>(debugLabel: 'profile'),
     ),
   ],

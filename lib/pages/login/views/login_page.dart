@@ -11,7 +11,7 @@ import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 
 class LoginPage extends MPage<void> {
-  const LoginPage({this.onSuccessfulLogin});
+  LoginPage({this.onSuccessfulLogin});
 
   final void Function()? onSuccessfulLogin;
 

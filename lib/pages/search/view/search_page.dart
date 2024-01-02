@@ -45,7 +45,7 @@ class SearchPage extends MPage<void> {
                   );
             }
 
-            pageActions!.setActions([
+            pageActions.setActions([
               BlocBuilder<SearchBloc, SearchState>(
                 bloc: context.read<SearchBloc>(),
                 builder: (context, state) {

@@ -5,7 +5,7 @@ import 'package:muffed/pages/settings/settings.dart';
 import 'package:muffed/router/router.dart';
 
 class SettingsPage extends MPage<void> {
-  const SettingsPage();
+  SettingsPage();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _SettingsView extends StatelessWidget {
                 leading: const Icon(Icons.color_lens),
                 subtitle: const Text('Change how Muffed looks'),
                 onTap: () {
-                  context.pushPage(const SettingsLookPage());
+                  context.pushPage(SettingsLookPage());
                 },
               ),
               ListTile(
@@ -47,7 +47,7 @@ class _SettingsView extends StatelessWidget {
                 leading: const Icon(Icons.filter_list),
                 subtitle: const Text('Filter certain posts'),
                 onTap: () {
-                  context.pushPage(const SettingsContentFiltersPage());
+                  context.pushPage(SettingsContentFiltersPage());
                 },
               ),
               ListTile(
@@ -56,7 +56,7 @@ class _SettingsView extends StatelessWidget {
                 visualDensity: VisualDensity.comfortable,
                 leading: const Icon(Icons.info),
                 onTap: () {
-                  context.pushPage(const AboutPage());
+                  context.pushPage(AboutPage());
 
                   // showLicensePage(
                   //   context: context,

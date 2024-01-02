@@ -104,7 +104,7 @@ void showAccountSwitcher(BuildContext context) {
                 leading: const Icon(Icons.add),
                 onTap: () {
                   Navigator.pop(context);
-                  context.pushPage(const LoginPage());
+                  context.pushPage(LoginPage());
                 },
               ),
             ],

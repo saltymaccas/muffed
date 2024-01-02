@@ -1,7 +1,7 @@
 part of 'router.dart';
 
 class _RootPage extends MPage<void> {
-  const _RootPage();
+  _RootPage();
 
   @override
   Widget build(BuildContext context) {

@@ -22,7 +22,7 @@ const _headerMinHeight = 130.0;
 const _bannerEndFraction = 0.6;
 
 class UserPage extends MPage<void> {
-  const UserPage({this.userId, this.username})
+  UserPage({this.userId, this.username})
       : assert(
           userId != null || username != null,
           'Both userId and username equals null',
@@ -68,7 +68,8 @@ class UserView extends StatelessWidget {
                 return <Widget>[
                   SliverOverlapAbsorber(
                     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context,),
+                      context,
+                    ),
                     sliver: SliverPersistentHeader(
                       delegate: _HeaderDelegate(user: user),
                       pinned: true,

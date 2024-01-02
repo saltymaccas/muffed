@@ -5,7 +5,7 @@ import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class SettingsDefaultsPage extends MPage<void> {
-  const SettingsDefaultsPage();
+  SettingsDefaultsPage();
 
   @override
   Widget build(BuildContext context) {

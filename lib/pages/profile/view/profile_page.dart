@@ -6,7 +6,7 @@ import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
 
 class ProfilePage extends MPage<void> {
-  const ProfilePage();
+  ProfilePage();
 
   @override
   Widget build(BuildContext context) {
