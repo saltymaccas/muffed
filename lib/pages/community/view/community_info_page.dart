@@ -25,7 +25,7 @@ class CommunityInfoPage extends MPage<void> {
               bloc != null,
           'No community defined',
         ),
-        super(pageActions: PageActions([]));
+        super(pageActions: PageActions.init());
 
   /// The community ID
   final int? communityId;

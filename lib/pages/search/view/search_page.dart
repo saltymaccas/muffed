@@ -14,7 +14,7 @@ class SearchPage extends MPage<void> {
     this.initialState,
     this.communityId,
     this.communityName,
-  }) : super(pageActions: PageActions([]));
+  }) : super(pageActions: PageActions.init());
 
   /// The initial search query
   final String? searchQuery;
@@ -340,7 +340,8 @@ class _UserSearchViewState extends State<_UserSearchView>
         return create;
       },
       child: ContentScrollView<LemmyUser>(
-          builderDelegate: ContentBuilderDelegateLemmyUser(),),
+        builderDelegate: ContentBuilderDelegateLemmyUser(),
+      ),
     );
   }
 

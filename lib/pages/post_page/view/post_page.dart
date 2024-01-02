@@ -18,7 +18,7 @@ class PostPage extends MPage<void> {
           'No post defined in PostPage constructor',
         ),
         postId = postId ?? post?.id ?? postBloc!.state.post!.id,
-        super(pageActions: PageActions([]));
+        super(pageActions: PageActions.init());
 
   final int postId;
   final LemmyPost? post;

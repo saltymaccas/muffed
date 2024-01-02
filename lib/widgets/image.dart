@@ -111,7 +111,7 @@ class _MuffedImageState extends State<MuffedImage> {
             if (state.extendedImageLoadState == LoadState.completed ||
                 state.extendedImageLoadState == LoadState.loading) {
               return AnimatedCrossFade(
-                sizeCurve: context.animationTheme.sizeCurve,
+                sizeCurve: context.animationTheme.standeredCurve,
                 firstCurve: context.animationTheme.fadeCurve,
                 secondCurve: context.animationTheme.fadeCurve,
                 reverseDuration: context.animationTheme.switchDuration,

@@ -8,3 +8,4 @@ analyzer:
 linter:
   rules:
     public_member_api_docs: false
+    avoid_unused_constructor_parameters: false

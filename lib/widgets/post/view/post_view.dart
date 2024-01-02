@@ -156,12 +156,12 @@ void _openMoreMenu({required BuildContext context, required PostBloc bloc}) {
                   crossFadeState: state.post!.saved
                       ? CrossFadeState.showFirst
                       : CrossFadeState.showSecond,
-                  duration: context.animationTheme.switchInDurationSmall,
+                  duration: context.animationTheme.switchInDurationShort,
                   reverseDuration:
-                      context.animationTheme.switchOutDurationSmall,
-                  firstCurve: context.animationTheme.switchCurveSmall,
-                  secondCurve: context.animationTheme.switchCurveSmall,
-                  sizeCurve: context.animationTheme.switchCurveSmall,
+                      context.animationTheme.switchOutDurationShort,
+                  firstCurve: context.animationTheme.standeredCurve,
+                  secondCurve: context.animationTheme.standeredCurve,
+                  sizeCurve: context.animationTheme.standeredCurve,
                   firstChild: Icon(
                     Icons.bookmark,
                     color: context.colorScheme.primary,

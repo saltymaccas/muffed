@@ -9,7 +9,7 @@ import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends MPage<void> {
-  HomePage() : super(pageActions: PageActions([]));
+  HomePage() : super(pageActions: PageActions.init());
 
   @override
   Widget build(BuildContext context) {

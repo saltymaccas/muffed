@@ -223,15 +223,13 @@ class PostViewCard extends StatelessWidget {
                                   ? CrossFadeState.showFirst
                                   : CrossFadeState.showSecond,
                               duration:
-                                  context.animationTheme.switchInDurationSmall,
+                                  context.animationTheme.switchInDurationShort,
                               reverseDuration:
-                                  context.animationTheme.switchOutDurationSmall,
-                              firstCurve:
-                                  context.animationTheme.switchCurveSmall,
+                                  context.animationTheme.switchOutDurationShort,
+                              firstCurve: context.animationTheme.standeredCurve,
                               secondCurve:
-                                  context.animationTheme.switchCurveSmall,
-                              sizeCurve:
-                                  context.animationTheme.switchCurveSmall,
+                                  context.animationTheme.standeredCurve,
+                              sizeCurve: context.animationTheme.standeredCurve,
                               firstChild: const Icon(
                                 Icons.bookmark,
                                 color: Colors.red,

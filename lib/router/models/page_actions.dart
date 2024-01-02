@@ -1,18 +1,14 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Holds a list of widgets that gets displayed to the appbar.
-class PageActions with ChangeNotifier, EquatableMixin {
+class PageActions with ChangeNotifier {
   PageActions(this.actions);
-  PageActions.empty() : actions = [];
+  PageActions.init() : actions = null;
 
-  List<Widget> actions;
+  List<Widget>? actions;
 
   void setActions(List<Widget> actions) {
     this.actions = actions;
     notifyListeners();
   }
-
-  @override
-  List<Object?> get props => [actions];
 }

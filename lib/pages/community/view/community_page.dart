@@ -20,7 +20,7 @@ class CommunityPage extends MPage<void> {
           communityId != null || communityName != null || community != null,
           'No community defined',
         ),
-        super(pageActions: PageActions.empty());
+        super(pageActions: PageActions.init());
 
   /// The community ID
   final int? communityId;

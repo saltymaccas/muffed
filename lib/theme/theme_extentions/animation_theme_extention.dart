@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 
 class AnimationThemeData extends ThemeExtension<AnimationThemeData> {
   const AnimationThemeData({
-    this.switchInDurationSmall = const Duration(milliseconds: 250),
-    this.switchOutDurationSmall = const Duration(milliseconds: 200),
+    this.switchInDurationShort = const Duration(milliseconds: 300),
+    this.switchOutDurationShort = const Duration(milliseconds: 200),
     this.switchInDuration = const Duration(milliseconds: 400),
     this.switchOutDuration = const Duration(milliseconds: 300),
-    this.switchDuration = const Duration(milliseconds: 400),
+    this.switchDuration = const Duration(milliseconds: 500),
     this.fadeCurve = Curves.easeInOut,
-    this.sizeCurve = const Cubic(0, 0, 0, 1),
-    this.switchInCurveSmall = const Cubic(0.3, 0, 1, 1),
-    this.switchOutCurveSmall = const Cubic(0, 0, 0, 1),
-    this.switchCurveSmall = const Cubic(0.4, 0, 0.2, 1),
+    this.acelerateCurve = const Cubic(0.3, 0.0, 0.8, 0.15),
+    this.decelerateCurve = const Cubic(0.05, 0.7, 0.1, 1.0),
+    this.standeredCurve = Curves.easeInOutCubicEmphasized,
   });
 
-  final Duration switchInDurationSmall;
-  final Duration switchOutDurationSmall;
+  final Duration switchInDurationShort;
+  final Duration switchOutDurationShort;
 
   final Duration switchInDuration;
   final Duration switchOutDuration;
@@ -23,11 +22,9 @@ class AnimationThemeData extends ThemeExtension<AnimationThemeData> {
 
   final Curve fadeCurve;
 
-  final Curve sizeCurve;
-
-  final Curve switchInCurveSmall;
-  final Curve switchOutCurveSmall;
-  final Curve switchCurveSmall;
+  final Curve acelerateCurve;
+  final Curve decelerateCurve;
+  final Curve standeredCurve;
 
   @override
   ThemeExtension<AnimationThemeData> copyWith({
@@ -37,24 +34,22 @@ class AnimationThemeData extends ThemeExtension<AnimationThemeData> {
     Duration? switchOutDuration,
     Duration? switchDuration,
     Curve? fadeCurve,
-    Curve? sizeCurve,
     Curve? switchInCurveSmall,
     Curve? switchOutCurveSmall,
     Curve? switchCurveSmall,
   }) {
     return AnimationThemeData(
-      switchOutDurationSmall:
-          switchOutDurationSmall ?? this.switchOutDurationSmall,
-      switchInDurationSmall:
-          switchInDurationSmall ?? this.switchInDurationSmall,
+      switchOutDurationShort:
+          switchOutDurationSmall ?? this.switchOutDurationShort,
+      switchInDurationShort:
+          switchInDurationSmall ?? this.switchInDurationShort,
       switchInDuration: switchInDuration ?? this.switchInDuration,
       switchOutDuration: switchOutDuration ?? this.switchOutDuration,
       switchDuration: switchDuration ?? this.switchDuration,
-      sizeCurve: sizeCurve ?? this.sizeCurve,
       fadeCurve: fadeCurve ?? this.fadeCurve,
-      switchInCurveSmall: switchInCurveSmall ?? this.switchInCurveSmall,
-      switchOutCurveSmall: switchOutCurveSmall ?? this.switchOutCurveSmall,
-      switchCurveSmall: switchCurveSmall ?? this.switchCurveSmall,
+      acelerateCurve: switchInCurveSmall ?? this.acelerateCurve,
+      decelerateCurve: switchOutCurveSmall ?? this.decelerateCurve,
+      standeredCurve: switchCurveSmall ?? this.standeredCurve,
     );
   }
 

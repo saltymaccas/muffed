@@ -8,7 +8,7 @@ import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
 class InboxPage extends MPage<void> {
-  InboxPage() : super(pageActions: PageActions(const []));
+  InboxPage() : super(pageActions: PageActions.init());
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +63,28 @@ class InboxView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DefaultTabController(
-        length: 2,
-        child: SafeArea(
-          child: Scaffold(
-            appBar: TabBar(tabs: [
+      length: 2,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: TabBar(
+            tabs: [
               Tab(
                 child: Text('Replies'),
               ),
               Tab(
                 child: Text('Mentions'),
               ),
-            ],),
-            body: TabBarView(
-              children: [
-                _RepliesScrollView(),
-                _MentionsScrollView(),
-              ],
-            ),
+            ],
           ),
-        ),);
+          body: TabBarView(
+            children: [
+              _RepliesScrollView(),
+              _MentionsScrollView(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -137,7 +140,10 @@ class _RepliesBuilderDelegate extends ContentBuilderDelegate<LemmyInboxReply> {
 
   @override
   Widget itemBuilder(
-      BuildContext context, int index, List<LemmyInboxReply> items,) {
+    BuildContext context,
+    int index,
+    List<LemmyInboxReply> items,
+  ) {
     return InboxReplyItem(
       item: items[index],
       sortType: LemmyCommentSortType.hot,
