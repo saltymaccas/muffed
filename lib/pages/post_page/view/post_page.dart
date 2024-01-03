@@ -56,7 +56,6 @@ class PostPage extends MPage<void> {
               [
                 BlocBuilder<ContentScrollBloc<LemmyComment>,
                     ContentScrollState<LemmyComment>>(
-                  key: const ValueKey('test'),
                   bloc: contentScrollBloc,
                   builder: (context, state) {
                     final retrieveContent =
@@ -106,7 +105,6 @@ class PostPage extends MPage<void> {
                 ),
                 if (context.read<GlobalBloc>().state.isLoggedIn)
                   IconButton(
-                    key: const ValueKey('test'),
                     onPressed: () {
                       showCreateCommentDialog(
                         context: context,
