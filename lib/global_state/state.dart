@@ -69,7 +69,7 @@ final class GlobalState extends Equatable {
 
   bool get isLoggedIn => lemmySelectedAccount != -1;
 
-  LemmyAccountData? getSelectedLemmyAccount() {
+  LemmyAccountData? get selectedLemmyAccount {
     return (lemmySelectedAccount == -1)
         ? null
         : lemmyAccounts[lemmySelectedAccount];
@@ -80,15 +80,14 @@ final class GlobalState extends Equatable {
       : lemmyAccounts[lemmySelectedAccount].homeServer.toString();
 
   String get currentLemmyEndPointIdentifyer =>
-      '$lemmyBaseUrl${getSelectedLemmyAccount()?.jwt.split('.').last}';
+      '$lemmyBaseUrl${selectedLemmyAccount?.jwt.split('.').last}';
 
   /// if the content the app gets may be different
   ///
   /// Used in content scroll view to see whether the posts should be reloaded
   bool lemmyRequestEndPointDifferent(GlobalState state) {
     if (state.lemmyBaseUrl != lemmyBaseUrl ||
-        state.getSelectedLemmyAccount()?.jwt !=
-            getSelectedLemmyAccount()?.jwt) {
+        state.selectedLemmyAccount?.jwt != selectedLemmyAccount?.jwt) {
       return true;
     }
     return false;

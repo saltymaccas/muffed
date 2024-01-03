@@ -38,9 +38,6 @@ class GlobalBloc extends HydratedBloc<GlobalEvent, GlobalState> {
     });
   }
 
-  LemmyAccountData? getSelectedLemmyAccount() =>
-      state.getSelectedLemmyAccount();
-
   @override
   void onChange(Change<GlobalState> change) {
     super.onChange(change);
