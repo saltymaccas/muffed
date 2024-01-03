@@ -31,7 +31,7 @@ class PictrsRepo {
           }),
           options: Options(
             headers: {
-              'Cookie': 'jwt=${globalBloc.getSelectedLemmyAccount()!.jwt}',
+              'Cookie': 'jwt=${globalBloc.state.selectedLemmyAccount!.jwt}',
             },
           ),
           onSendProgress: (int sent, int total) {

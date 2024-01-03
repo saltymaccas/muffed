@@ -171,7 +171,8 @@ class _CommentFooter extends StatelessWidget {
                         if (state.comment.creatorId ==
                             context
                                 .read<GlobalBloc>()
-                                .state.selectedLemmyAccount
+                                .state
+                                .selectedLemmyAccount
                                 ?.id)
                           ListTile(
                             title: const Text('Edit Comment'),
@@ -299,9 +300,9 @@ class _CommentHeader extends StatelessWidget {
             ],
 
             // displays if the user created the comment
-            if (context.read<GlobalBloc>().getSelectedLemmyAccount() != null)
+            if (context.read<GlobalBloc>().state.selectedLemmyAccount != null)
               if (state.comment.creatorId ==
-                  context.read<GlobalBloc>().getSelectedLemmyAccount()!.id)
+                  context.read<GlobalBloc>().state.selectedLemmyAccount!.id)
                 Text(
                   'YOU',
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(

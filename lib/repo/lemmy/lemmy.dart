@@ -35,8 +35,8 @@ interface class LemmyRepo {
     final response = await dio.post(
       '${serverUrl?.url ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
       data: {
-        if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
-          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+        if (globalBloc.state.selectedLemmyAccount != null && mustBeLoggedIn)
+          'auth': globalBloc.state.selectedLemmyAccount!.jwt,
         ...data,
       },
     );
@@ -62,8 +62,8 @@ interface class LemmyRepo {
       final response = await dio.put(
         '${serverAddress ?? globalBloc.state.lemmyBaseUrl}/api/v3$path',
         data: {
-          if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
-            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          if (globalBloc.state.selectedLemmyAccount != null && mustBeLoggedIn)
+            'auth': globalBloc.state.selectedLemmyAccount!.jwt,
           ...data,
         },
       );
@@ -111,7 +111,7 @@ interface class LemmyRepo {
         if (jwt != null)
           'auth': jwt
         else if (globalBloc.state.isLoggedIn)
-          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          'auth': globalBloc.state.selectedLemmyAccount!.jwt,
         ...queryParameters,
       },
     );
