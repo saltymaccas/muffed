@@ -17,8 +17,7 @@ class PostPage extends MPage<void> {
           post != null || postId != null || postBloc != null,
           'No post defined in PostPage constructor',
         ),
-        postId = postId ?? post?.id ?? postBloc!.state.post!.id,
-        super(pageActions: PageActions.init());
+        postId = postId ?? post?.id ?? postBloc!.state.post!.id;
 
   final int postId;
   final LemmyPost? post;
@@ -52,12 +51,12 @@ class PostPage extends MPage<void> {
         builder: (context) {
           final contentScrollBloc =
               context.read<ContentScrollBloc<LemmyComment>>();
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            pageActions!.setActions(
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            pageActions.setActions(
               [
                 BlocBuilder<ContentScrollBloc<LemmyComment>,
                     ContentScrollState<LemmyComment>>(
+                  key: ValueKey('test'),
                   bloc: contentScrollBloc,
                   builder: (context, state) {
                     final retrieveContent =
@@ -107,6 +106,7 @@ class PostPage extends MPage<void> {
                 ),
                 if (context.read<GlobalBloc>().state.isLoggedIn)
                   IconButton(
+                    key: ValueKey('test'),
                     onPressed: () {
                       showCreateCommentDialog(
                         context: context,
@@ -123,6 +123,7 @@ class PostPage extends MPage<void> {
               ],
             );
           });
+
           return const _PostView();
         },
       ),

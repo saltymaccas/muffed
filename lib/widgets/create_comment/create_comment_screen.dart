@@ -12,12 +12,11 @@ import 'package:muffed/widgets/image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 
 class CreateCommentPage extends MPage<void> {
-  const CreateCommentPage({
+  CreateCommentPage({
     required this.postId,
     this.initialValue,
     this.parentId,
     this.onSuccess,
-    super.key,
   });
 
   final int postId;

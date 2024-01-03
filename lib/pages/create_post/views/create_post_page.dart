@@ -23,11 +23,10 @@ class CreatePostPage extends MPage<void> {
     this.communityId,
     this.community,
     this.postBeingEdited,
-  })  : assert(
+  }) : assert(
           communityId != null || community != null,
           'No community was given',
-        ),
-        super(pageActions: PageActions.init());
+        );
 
   /// The id of the community the post will be posted to.
   final int? communityId;

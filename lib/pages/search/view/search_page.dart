@@ -14,7 +14,7 @@ class SearchPage extends MPage<void> {
     this.initialState,
     this.communityId,
     this.communityName,
-  }) : super(pageActions: PageActions.init());
+  });
 
   /// The initial search query
   final String? searchQuery;

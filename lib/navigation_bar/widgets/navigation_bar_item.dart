@@ -22,173 +22,289 @@ class NavigationBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MNavigator, MNavigatorState>(
-      builder: (context, state) {
-        return Material(
-          clipBehavior: Clip.hardEdge,
-          borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          child: Row(
-            children: [
-              IconButton(
-                isSelected: MNavigator.of(context).state.currentBranchIndex ==
-                    relatedBranchIndex,
-                selectedIcon: Icon(
-                  selectedIcon,
-                  color: context.colorScheme.primary,
-                ),
-                icon: Icon(icon),
-                onPressed: () {
-                  _log.info('Branch $relatedBranchIndex pressed');
-                  if (MNavigator.of(context).state.currentBranchIndex !=
-                      relatedBranchIndex) {
-                    _log.info('Switching to branch $relatedBranchIndex');
-                    context.switchBranch(relatedBranchIndex);
-                  } else {
-                    context.maybePopRouteFromCurrentBranch();
-                  }
-                },
-                visualDensity: VisualDensity.compact,
-              ),
-              if (state.currentBranchIndex == relatedBranchIndex)
-                AnimatedSize(
+      builder: (context, navState) {
+        final onBranch = navState.currentBranchIndex == relatedBranchIndex;
+        final pageActions =
+            navState.branches[relatedBranchIndex].top.pageActions;
+        return ListenableBuilder(
+          listenable: pageActions,
+          builder: (context, child) {
+            final actions = pageActions.actions;
+            return Material(
+              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.surfaceVariant,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 40),
+                child: AnimatedSize(
                   duration: context.animationTheme.switchDuration,
                   curve: context.animationTheme.standeredCurve,
-                  child: _NavigationBarItemActions(
-                    key: ValueKey(relatedBranchIndex),
-                    pageActions:
-                        state.branches[relatedBranchIndex].top.pageActions,
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(icon),
+                        selectedIcon: Icon(
+                          selectedIcon,
+                          color: context.colorScheme.primary,
+                        ),
+                        isSelected: onBranch,
+                        onPressed: () {
+                          if (!onBranch) {
+                            context.switchBranch(relatedBranchIndex);
+                          } else {
+                            context.maybePopRouteFromCurrentBranch();
+                          }
+                        },
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: onBranch ? 1 : 0,
+                        child: _ActionsRowFactory(
+                          key: ValueKey(relatedBranchIndex),
+                          onBranch: onBranch,
+                          actions: actions,
+                          alignment: Alignment.centerLeft,
+                          actionInCurve: context.animationTheme.decelerateCurve,
+                          actionInDuration:
+                              context.animationTheme.switchInDurationShort,
+                          actionOutCurve: context.animationTheme.acelerateCurve,
+                          actionOutDuration:
+                              context.animationTheme.switchInDurationShort,
+                          sizeAnimCurve: context.animationTheme.standeredCurve,
+                          sizeAnimDuration:
+                              context.animationTheme.switchDuration,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-            ],
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 }
 
-class _NavigationBarItemActions extends StatelessWidget {
-  const _NavigationBarItemActions({required this.pageActions, super.key});
+/// Creates a row of actions, when a differnt
+/// list of actions is parsed in a new row is created and added on top of the
+/// stack and the last rows are ordered to remove themselves
+class _ActionsRowFactory extends StatefulWidget {
+  const _ActionsRowFactory({
+    required this.actions,
+    required this.onBranch,
+    required this.alignment,
+    required this.actionInCurve,
+    required this.actionInDuration,
+    required this.actionOutCurve,
+    required this.actionOutDuration,
+    required this.sizeAnimCurve,
+    required this.sizeAnimDuration,
+    super.key,
+  });
 
-  final PageActions? pageActions;
+  final List<Widget>? actions;
+  final bool onBranch;
 
-  int get _animInterval => 200;
+  final AlignmentGeometry alignment;
+
+  final Curve sizeAnimCurve;
+  final Duration sizeAnimDuration;
+
+  final Curve actionInCurve;
+  final Curve actionOutCurve;
+
+  final Duration actionInDuration;
+  final Duration actionOutDuration;
+
+  @override
+  State<_ActionsRowFactory> createState() => _ActionsRowFactoryState();
+}
+
+class _ActionsRowFactoryState extends State<_ActionsRowFactory> {
+  /// Action Row meaning a row of actions that the page has declared
+  late List<_ActionRow> actionRows;
+
+  /// stores that are animating out temporarily
+  List<_ActionRow> rowsBeingRemoved = [];
+
+  Future<void> removeFromActionRow(int i) async {
+    final key = actionRows[i].key;
+    if (key is GlobalKey<__ActionRowState>) {
+      rowsBeingRemoved.add(actionRows[i]);
+      final removeIndex = rowsBeingRemoved.length - 1;
+      actionRows.removeAt(i);
+      await key.currentState!.animateOut();
+      rowsBeingRemoved.removeAt(removeIndex);
+    } else {
+      throw Exception('Key is not a GlobalKey<__ActionRowState>');
+    }
+  }
+
+  Future<void> appendActionRow(List<Widget> actionList) async {
+    setState(() {
+      actionRows.add(
+        _ActionRow(
+          key: GlobalKey<__ActionRowState>(),
+          actions: actionList,
+          inCurve: widget.actionInCurve,
+          inDuration: widget.actionInDuration,
+          outCurve: widget.actionOutCurve,
+          outDuration: widget.actionOutDuration,
+          alignment: Alignment.centerLeft,
+        ),
+      );
+    });
+    if (actionRows.length > 1) {
+      await Future.wait(
+        List.generate(actionRows.length - 1, removeFromActionRow),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    actionRows = [];
+    appendActionRow(widget.actions ?? []);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ActionsRowFactory oldWidget) {
+    if (oldWidget.actions != widget.actions &&
+        widget.actions != null &&
+        // Only runs if on branch as a quick fix to it animating when branch
+        // changes, this should be changed to identify if the actions are
+        // the same or not
+        widget.onBranch) {
+      appendActionRow(widget.actions!);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> attachAnimations(List<Widget> widgets) => List.generate(
-          widgets.length,
-          (index) => widgets[index]
-              .animate(autoPlay: true)
-              .slideY(
-                duration: context.animationTheme.switchInDuration,
-                curve: context.animationTheme.decelerateCurve,
-                begin: 3,
-                delay: Duration(milliseconds: _animInterval * index),
-                end: 0,
-              )
-              .fadeIn(
-                duration: context.animationTheme.switchInDuration,
-                begin: 0,
-                curve: context.animationTheme.decelerateCurve,
-                delay: Duration(milliseconds: _animInterval * index),
-              ),
-        );
-    if (pageActions != null) {
-      return _ShouldAnimate(
-        animate: true,
-        child: ListenableBuilder(
-          listenable: pageActions!,
-          builder: (context, child) {
-            return _ShouldAnimate(
-              animate: true,
-              child: Row(
-                children: [
-                  AnimatedCrossFade(
-                    firstChild: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Container(
-                        width: 2,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                      ),
-                    ),
-                    secondChild: const SizedBox(),
-                    crossFadeState: (pageActions!.actions == null ||
-                            pageActions!.actions != null &&
-                                pageActions!.actions!.isNotEmpty)
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: context.animationTheme.switchDuration,
-                  ),
-                  AnimatedSwitcher(
-                    duration: context.animationTheme.switchDuration,
-                    layoutBuilder: (currentChild, previousChildren) {
-                      return Stack(
-                        alignment: Alignment.centerLeft,
-                        children: [
-                          if (previousChildren.isNotEmpty)
-                            _ShouldAnimate(
-                              animate: false,
-                              child: SizedOverflowBox(
-                                alignment: Alignment.centerLeft,
-                                size: Size.zero,
-                                child: previousChildren[0],
-                              ),
-                            ),
-                          if (currentChild != null) currentChild,
-                        ],
-                      );
-                    },
-                    child: Builder(
-                      key: ObjectKey(pageActions),
-                      builder: (context) {
-                        final animate = _ShouldAnimate.of(context).animate;
-
-                        final actions = pageActions!.actions ?? [];
-
-                        if (animate) {
-                          return Row(
-                            children: attachAnimations(actions),
-                          );
-                        } else {
-                          return Row(children: actions);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      );
-    } else {
-      return const SizedBox();
-    }
+    return AnimatedSize(
+      alignment: Alignment.centerLeft,
+      duration: widget.sizeAnimDuration,
+      curve: widget.sizeAnimCurve,
+      child: Stack(
+        children: actionRows + rowsBeingRemoved,
+      ),
+    );
   }
 }
 
-class _ShouldAnimate extends InheritedWidget {
-  const _ShouldAnimate({
-    required this.animate,
-    required super.child,
+/// A row of actions that are able to animate themselves out,
+class _ActionRow extends StatefulWidget {
+  const _ActionRow({
+    required this.actions,
+    required this.inCurve,
+    required this.inDuration,
+    required this.outCurve,
+    required this.outDuration,
+    required this.alignment,
+    super.key,
   });
 
-  final bool animate;
+  final List<Widget> actions;
 
-  static _ShouldAnimate? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_ShouldAnimate>();
-  }
+  final Curve inCurve;
+  final Duration inDuration;
 
-  static _ShouldAnimate of(BuildContext context) {
-    final result = maybeOf(context);
-    assert(result != null, 'No _ShouldAnimate found in context');
-    return result!;
+  final Curve outCurve;
+  final Duration outDuration;
+
+  final AlignmentGeometry alignment;
+
+  @override
+  State<_ActionRow> createState() => __ActionRowState();
+}
+
+class __ActionRowState extends State<_ActionRow> with TickerProviderStateMixin {
+  @override
+  void initState() {
+    const animInterval = 200;
+    final animatedActions = List.generate(
+      widget.actions.length,
+      // Make each widget slide in individually
+      (index) => widget.actions[index].animate(autoPlay: true).slideY(
+            duration: widget.inDuration,
+            curve: widget.inCurve,
+            begin: 3,
+            delay: Duration(milliseconds: animInterval * index),
+            end: 0,
+          ),
+    );
+    children = animatedActions;
+
+    /// Animates fade and size, in and out for the whole row, 1 = in, 0 = out
+    animationController = AnimationController(
+      vsync: this,
+      value: 0,
+      duration: widget.inDuration,
+      reverseDuration: widget.outDuration,
+    );
+
+    animation = CurvedAnimation(
+      parent: animationController,
+      curve: widget.inCurve,
+      reverseCurve: widget.outCurve,
+    )..addListener(() {
+        setState(() {});
+      });
+
+    animationController.animateTo(1);
+
+    super.initState();
   }
 
   @override
-  bool updateShouldNotify(_ShouldAnimate oldWidget) => false;
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> animateOut() async {
+    setState(() {
+      isAnimatingOut = true;
+    });
+    await animationController.animateBack(0);
+  }
+
+  late final List<Widget> children;
+  late final AnimationController animationController;
+  late final CurvedAnimation animation;
+
+  bool isAnimatingOut = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final divider = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Container(
+        width: 2,
+        height: 10,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.outline,
+        ),
+      ),
+    );
+
+    return Align(
+      // The width is set to 0 so the parent animated size will ignore it's
+      // width
+      alignment: Alignment.centerLeft,
+      widthFactor: isAnimatingOut ? 0 : 1,
+      child: Opacity(
+        opacity: animation.value,
+        child: Row(
+          children: (children.isNotEmpty) ? [divider, ...children] : [],
+        ),
+      ),
+    );
+  }
 }

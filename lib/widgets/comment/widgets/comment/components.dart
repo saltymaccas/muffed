@@ -223,7 +223,7 @@ class _CommentFooter extends StatelessWidget {
 }
 
 class _RawCommentPage extends MPage<void> {
-  const _RawCommentPage(this.comment);
+  _RawCommentPage(this.comment);
 
   final LemmyComment comment;
 

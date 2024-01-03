@@ -8,7 +8,7 @@ import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
 class InboxPage extends MPage<void> {
-  InboxPage() : super(pageActions: PageActions.init());
+  InboxPage();
 
   @override
   Widget build(BuildContext context) {

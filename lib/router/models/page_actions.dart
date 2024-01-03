@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// Holds a list of widgets that gets displayed to the appbar.
-class PageActions with ChangeNotifier {
-  PageActions(this.actions);
-  PageActions.init() : actions = null;
+/// Holds a list of widgets that gets displayed to the naviagtion bar.
+class PageActions extends ChangeNotifier {
+  PageActions({this.actions});
 
   List<Widget>? actions;
 
-  void setActions(List<Widget> actions) {
-    this.actions = actions;
-    notifyListeners();
+  void setActions(List<Widget> items) {
+    if (items != actions) {
+      actions = items;
+      notifyListeners();
+    }
   }
 }

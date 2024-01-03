@@ -9,7 +9,7 @@ import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends MPage<void> {
-  HomePage() : super(pageActions: PageActions.init());
+  HomePage();
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +23,25 @@ class HomePage extends MPage<void> {
         ),
       child: Builder(
         builder: (context) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            void changeSortType(LemmySortType sortType) {
-              context.read<HomePageBloc>().add(
-                    SortTypeChanged(
-                      pageIndex: context.read<HomePageBloc>().state.currentPage,
-                      newSortType: sortType,
-                    ),
-                  );
-            }
+          void changeSortType(LemmySortType sortType) {
+            context.read<HomePageBloc>().add(
+                  SortTypeChanged(
+                    pageIndex: context.read<HomePageBloc>().state.currentPage,
+                    newSortType: sortType,
+                  ),
+                );
+          }
 
-            pageActions!.setActions([
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<HomePageBloc>().add(
+                  PageChanged(
+                    newPageIndex:
+                        context.read<HomePageBloc>().state.currentPage,
+                  ),
+                );
+          });
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            pageActions.setActions([
               IconButton(
                 onPressed: () {
                   openSearchDialog(context);
@@ -47,7 +55,7 @@ class HomePage extends MPage<void> {
                   return MuffedPopupMenuButton(
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(Icons.sort),
-                    selectedValue: state.currentScrollViewConfig.sortType,
+                    selectedValue: state.currentScrollViewConfig?.sortType,
                     items: [
                       MuffedPopupMenuItem(
                         title: 'Hot',
@@ -147,6 +155,7 @@ class HomePage extends MPage<void> {
               ),
             ]);
           });
+
           return BlocBuilder<HomePageBloc, HomePageState>(
             builder: (context, state) {
               return BlocProvider(
@@ -155,7 +164,7 @@ class HomePage extends MPage<void> {
                   contentRetriever: context
                       .read<HomePageBloc>()
                       .state
-                      .currentScrollViewConfig,
+                      .currentScrollViewConfig!,
                 )..add(LoadInitialItems()),
                 child: Builder(
                   builder: (context) {
@@ -189,7 +198,7 @@ class HomePage extends MPage<void> {
                                         as LemmyPostRetriever)
                                     .copyWith(
                                   sortType:
-                                      state.currentScrollViewConfig.sortType,
+                                      state.currentScrollViewConfig!.sortType,
                                 ),
                               ),
                             );

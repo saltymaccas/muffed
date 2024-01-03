@@ -19,8 +19,7 @@ class CommunityPage extends MPage<void> {
         assert(
           communityId != null || communityName != null || community != null,
           'No community defined',
-        ),
-        super(pageActions: PageActions.init());
+        );
 
   /// The community ID
   final int? communityId;

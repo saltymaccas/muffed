@@ -6,11 +6,14 @@ import 'package:muffed/router/router.dart';
 ///
 /// The type T is the return type
 abstract class MPage<T> extends Page<T> {
-  MPage({PageActions? pageActions})
-      : pageActions = pageActions ?? PageActions.init();
+  MPage({PageActions? pageActions, super.key})
+      : pageActions = pageActions ?? PageActions();
 
   /// An updatable list of widgets that gets displayed on the navigation bar
   /// when the user is on the page
+  ///
+  /// If the actions are null it will be assumed the page is not loaded and
+  /// the navigation bar will continue displaying the previous page's actions
   final PageActions pageActions;
 
   /// build page content by overridng this function
@@ -18,6 +21,11 @@ abstract class MPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
+    // // If the page actions are not set when route is created, it is assumed
+    // // that the page does not want to have any actions
+    // if (pageActions.actions == null) {
+    //   pageActions.setActions([]);
+    // }
     return MaterialPageRoute<T>(
       settings: this,
       builder: build,

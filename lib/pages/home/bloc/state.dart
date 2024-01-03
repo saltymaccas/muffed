@@ -13,8 +13,8 @@ class HomePageState extends Equatable {
   final HomePageStatus status;
   final int currentPage;
 
-  LemmyPostRetriever get currentScrollViewConfig =>
-      scrollViewConfigs[currentPage];
+  LemmyPostRetriever? get currentScrollViewConfig =>
+      (scrollViewConfigs.isEmpty) ? null : scrollViewConfigs[currentPage];
 
   @override
   List<Object?> get props => [currentPage, scrollViewConfigs, status];
