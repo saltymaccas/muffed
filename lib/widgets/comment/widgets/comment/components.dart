@@ -171,7 +171,7 @@ class _CommentFooter extends StatelessWidget {
                         if (state.comment.creatorId ==
                             context
                                 .read<GlobalBloc>()
-                                .getSelectedLemmyAccount()
+                                .state.selectedLemmyAccount
                                 ?.id)
                           ListTile(
                             title: const Text('Edit Comment'),
