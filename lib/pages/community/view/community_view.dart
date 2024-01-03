@@ -401,7 +401,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   MuffedAvatar(
                                       url: community.icon,
                                       identiconID: community.name,
-                                      radius: 16),
+                                      radius: 16,),
                                   const SizedBox(
                                     width: 8,
                                   ),
