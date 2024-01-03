@@ -129,6 +129,7 @@ class _AppTheme extends StatelessWidget {
                     useMaterial3: true,
                     textTheme: adjustedTextTheme.apply(
                       bodyColor: lightDynamic.onSurface,
+                      displayColor: lightDynamic.onSurface,
                     ),
                   )
                 : ThemeData.from(
@@ -138,6 +139,7 @@ class _AppTheme extends StatelessWidget {
                     useMaterial3: true,
                     textTheme: adjustedTextTheme.apply(
                       bodyColor: lightColorScheme.onSurface,
+                      displayColor: lightColorScheme.onSurface,
                     ),
                   ).copyWith(
                     extensions: [
@@ -156,12 +158,14 @@ class _AppTheme extends StatelessWidget {
                         useMaterial3: true,
                         textTheme: adjustedTextTheme.apply(
                           bodyColor: darkDynamic.onSurface,
+                          displayColor: darkDynamic.onSurface,
                         ),
                       )
                     : ThemeData.from(
                         colorScheme: darkColorScheme,
                         textTheme: adjustedTextTheme.apply(
                           bodyColor: darkColorScheme.onSurface,
+                          displayColor: darkColorScheme.onSurface,
                         ),
                         useMaterial3: true,
                       ))

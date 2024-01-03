@@ -26,9 +26,11 @@ class _UserInfoTabView extends StatelessWidget {
                     Flexible(
                       child: Center(
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               user.postCount.toString(),
+                              textAlign: TextAlign.center,
                               style: context.textTheme.displaySmall,
                             ),
                             Text(
@@ -42,9 +44,11 @@ class _UserInfoTabView extends StatelessWidget {
                     Flexible(
                       child: Center(
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               user.commentCount.toString(),
+                              textAlign: TextAlign.center,
                               style: context.textTheme.displaySmall,
                             ),
                             Text(
