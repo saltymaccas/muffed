@@ -165,6 +165,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                     children: [
                                       MuffedAvatar(
                                         url: community.icon,
+                                        identiconID: community.name,
                                         radius: 34,
                                       ),
                                       const SizedBox(width: 8),
@@ -397,7 +398,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   .transform(fractionScrolled),
                               child: Row(
                                 children: [
-                                  MuffedAvatar(url: community.icon, radius: 16),
+                                  MuffedAvatar(
+                                      url: community.icon,
+                                      identiconID: community.name,
+                                      radius: 16),
                                   const SizedBox(
                                     width: 8,
                                   ),

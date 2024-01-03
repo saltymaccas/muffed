@@ -87,6 +87,7 @@ class _UserInfoTabView extends StatelessWidget {
               return ListTile(
                 leading: MuffedAvatar(
                   url: user.moderates![index].icon,
+                  identiconID: user.moderates![index].name,
                   radius: 16,
                 ),
                 title: Text(

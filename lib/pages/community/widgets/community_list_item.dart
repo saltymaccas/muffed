@@ -125,6 +125,7 @@ class _CompactCommunityListTile extends CommunityListTile {
               children: [
                 MuffedAvatar(
                   url: community.icon,
+                  identiconID: community.name,
                   radius: 12,
                 ),
                 const SizedBox(

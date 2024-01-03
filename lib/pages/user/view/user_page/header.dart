@@ -79,6 +79,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                             ),
                             child: MuffedAvatar(
                               url: user.avatar,
+                              identiconID: user.name,
                             ),
                           ),
                           SizedBox(

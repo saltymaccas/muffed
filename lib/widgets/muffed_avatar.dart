@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:muffed/widgets/image.dart';
 
 class MuffedAvatar extends StatelessWidget {
-  const MuffedAvatar({this.url, super.key, this.radius = 24});
+  const MuffedAvatar({this.url, this.identiconID, super.key, this.radius = 24});
 
   /// The url to the avatar, if null will use placeholder
   final String? url;
+
+  final String? identiconID;
 
   /// The radius of the avatar
   final double radius;
@@ -15,19 +17,12 @@ class MuffedAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: ClipRRect(
-        clipBehavior: Clip.hardEdge,
-        borderRadius: BorderRadius.circular(radius),
-        child: (url != null)
-            ? MuffedImage(
-                fit: BoxFit.cover,
-                imageUrl: url!,
-              )
-            : ExtendedImage.asset(
-                'assets/logo.png',
-                fit: BoxFit.cover,
-              ),
-      ),
+      foregroundImage: (url != null || identiconID != null)
+          ? ExtendedNetworkImageProvider(
+              url ?? 'https://github.com/identicons/$identiconID.png',
+              cache: true,
+            )
+          : Image.asset('assets/logo.png').image,
     );
   }
 }

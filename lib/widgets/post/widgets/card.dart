@@ -88,6 +88,7 @@ class PostViewCard extends StatelessWidget {
                             children: [
                               MuffedAvatar(
                                 url: post.communityIcon,
+                                identiconID: post.communityName,
                                 radius: 12,
                               ),
                               const SizedBox(

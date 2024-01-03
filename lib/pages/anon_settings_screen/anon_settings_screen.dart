@@ -34,6 +34,7 @@ class AnonSettingsScreen extends StatelessWidget {
             if (state.siteOfInputted!.icon != null) {
               siteAvatar = MuffedAvatar(
                 url: state.siteOfInputted!.icon,
+                identiconID: state.siteOfInputted!.name,
                 radius: 100,
               );
             }

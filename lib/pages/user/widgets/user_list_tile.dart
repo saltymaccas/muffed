@@ -15,6 +15,7 @@ class UserListTile extends StatelessWidget {
       },
       leading: MuffedAvatar(
         url: person.avatar,
+        identiconID: person.name,
         radius: 20,
       ),
       title: Text(person.name),

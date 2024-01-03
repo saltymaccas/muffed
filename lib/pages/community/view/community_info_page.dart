@@ -232,6 +232,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                         label: Text(moderator.name),
                         avatar: MuffedAvatar(
                           url: moderator.avatar,
+                          identiconID: moderator.name,
                         ),
                         onPressed: () {
                           context.pushPage(
