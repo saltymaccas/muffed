@@ -26,7 +26,8 @@ class UserPage extends MPage<void> {
       : assert(
           userId != null || username != null,
           'Both userId and username equals null',
-        );
+        ),
+        super(pageActions: PageActions([]));
 
   final int? userId;
   final String? username;

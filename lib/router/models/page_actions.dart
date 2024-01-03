@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Holds a list of widgets that gets displayed to the naviagtion bar.
 class PageActions extends ChangeNotifier {
-  PageActions({this.actions});
+  PageActions(this.actions);
 
   List<Widget>? actions;
 
