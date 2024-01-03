@@ -76,18 +76,19 @@ class ContentScrollView<Data> extends StatelessWidget {
                               context,
                               state.content,
                             ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 50,
-                            child: Center(
-                              child: state.isLoadingMore
-                                  ? const CircularProgressIndicator()
-                                  : state.reachedEnd
-                                      ? const Text('Reached End')
-                                      : null,
+                        if (state.status.isSuccess && state.content.isNotEmpty)
+                          SliverToBoxAdapter(
+                            child: SizedBox(
+                              height: 50,
+                              child: Center(
+                                child: state.isLoadingMore
+                                    ? const CircularProgressIndicator()
+                                    : state.reachedEnd
+                                        ? const Text('Reached End')
+                                        : null,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
