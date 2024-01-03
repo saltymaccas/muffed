@@ -65,10 +65,17 @@ class ContentScrollView<Data> extends StatelessWidget {
                             ),
                           )
                         else if (state.status.isSuccess)
-                          builderDelegate.buildSliverList(
-                            context,
-                            state.content,
-                          ),
+                          if (state.content.isEmpty)
+                            const SliverFillRemaining(
+                              child: Center(
+                                child: Text('Nothing to show  :('),
+                              ),
+                            )
+                          else
+                            builderDelegate.buildSliverList(
+                              context,
+                              state.content,
+                            ),
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height: 50,
