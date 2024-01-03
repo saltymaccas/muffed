@@ -37,8 +37,8 @@ class NavigationBarItem extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 40),
                 child: AnimatedSize(
-                  duration: context.animationTheme.switchDuration,
-                  curve: context.animationTheme.standeredCurve,
+                  duration: context.animationTheme.durLong,
+                  curve: context.animationTheme.empasizedCurve,
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
@@ -66,15 +66,14 @@ class NavigationBarItem extends StatelessWidget {
                           onBranch: onBranch,
                           actions: actions,
                           alignment: Alignment.centerLeft,
-                          actionInCurve: context.animationTheme.decelerateCurve,
-                          actionInDuration:
-                              context.animationTheme.switchInDurationShort,
-                          actionOutCurve: context.animationTheme.acelerateCurve,
-                          actionOutDuration:
-                              context.animationTheme.switchInDurationShort,
-                          sizeAnimCurve: context.animationTheme.standeredCurve,
-                          sizeAnimDuration:
-                              context.animationTheme.switchDuration,
+                          actionInCurve:
+                              context.animationTheme.empasizedDecelerateCurve,
+                          actionInDuration: context.animationTheme.durMed1,
+                          actionOutCurve:
+                              context.animationTheme.empasizedAcelerateCurve,
+                          actionOutDuration: context.animationTheme.durMed1,
+                          sizeAnimCurve: context.animationTheme.empasizedCurve,
+                          sizeAnimDuration: context.animationTheme.durLong,
                         ),
                       ),
                     ],

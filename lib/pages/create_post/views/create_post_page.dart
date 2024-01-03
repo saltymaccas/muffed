@@ -9,7 +9,6 @@ import 'package:muffed/pages/create_post/create_post.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/extensions.dart';
 import 'package:muffed/router/models/page.dart';
-import 'package:muffed/router/models/page_actions.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/image_upload_view.dart';
