@@ -98,3 +98,49 @@ class ContentBuilderDelegateLemmyUser
     return UserListTile(person: content[index]);
   }
 }
+
+class UserPostBuilderDelegate
+    extends ContentBuilderDelegate<LemmyGetPersonDetailsResponse> {
+  @override
+  Widget buildSliverList(
+    BuildContext context,
+    List<LemmyGetPersonDetailsResponse> content, {
+    Key? key,
+  }) {
+    final items = content.expand((element) => element.posts).toList();
+
+    return SliverList.list(
+      key: key,
+      children: List.generate(
+        items.length,
+        (index) => PostWidget(
+          post: items[index],
+          form: PostViewForm.card,
+          displayType: PostDisplayType.list,
+        ),
+      ),
+    );
+  }
+}
+
+class UserCommentsBuilderDelegate
+    extends ContentBuilderDelegate<LemmyGetPersonDetailsResponse> {
+  @override
+  Widget buildSliverList(
+    BuildContext context,
+    List<LemmyGetPersonDetailsResponse> content, {
+    Key? key,
+  }) {
+    final items = content.expand((element) => element.comments).toList();
+
+    return SliverList.list(
+      key: key,
+      children: List.generate(
+        items.length,
+        (index) => CommentCardWidget(
+          comment: items[index],
+        ),
+      ),
+    );
+  }
+}
