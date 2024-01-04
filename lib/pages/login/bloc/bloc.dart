@@ -35,17 +35,17 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
           jwt: login.jwt,
           serverAddress: event.serverAddress,
         );
-
-        globalBloc.add(
-          AccountLoggedIn(
-            LemmyAccountData(
-              jwt: login.jwt!,
-              homeServer: event.serverAddress,
-              name: getPerson.name,
-              id: getPerson.id,
-            ),
-          ),
-        );
+        /// FIXME
+        // globalBloc.add(
+        //   AccountLoggedIn(
+        //     LemmyAccountData(
+        //       jwt: login.jwt!,
+        //       homeServer: event.serverAddress,
+        //       name: getPerson.name,
+        //       id: getPerson.id,
+        //     ),
+        //   ),
+        // );
 
         emit(state.copyWith(loading: false));
 

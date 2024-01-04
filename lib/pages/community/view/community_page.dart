@@ -194,7 +194,7 @@ class CommunityPage extends MPage<void> {
                   );
                 },
               ),
-              if (context.read<DB>().state.isLoggedIn)
+              if (context.db.state.auth.lemmy.loggedIn)
                 IconButton(
                   onPressed: () {
                     context.pushPage(

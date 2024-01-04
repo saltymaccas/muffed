@@ -247,7 +247,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                 ),
               ),
             const Divider(),
-            if (context.read<DB>().state.isLoggedIn)
+            if (context.db.state.auth.lemmy.loggedIn) 
               Skeletonizer(
                 enabled: community.blocked == null,
                 child: Padding(

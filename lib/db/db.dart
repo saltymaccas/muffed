@@ -4,11 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
+
 import 'package:muffed/db/models/app_look.dart';
 import 'package:muffed/db/models/auth.dart';
 
-part 'db_model.dart';
+export 'extentions.dart';
+
 part 'db.g.dart';
+part 'db_model.dart';
 
 final _log = Logger('GlobalBloc');
 

@@ -5,7 +5,6 @@ import 'package:muffed/db/db.dart';
 import 'package:muffed/db/models/app_look.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
-import 'package:muffed/theme/theme.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -56,7 +55,7 @@ class _AppTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DB, DBModel>(
       buildWhen: (previous, current) {
-        if (previous.appLook != current.appLook) {
+        if (previous.look != current.look) {
           return true;
         }
         return false;
@@ -66,12 +65,12 @@ class _AppTheme extends StatelessWidget {
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
             final lightColorScheme = lightDynamic ??
                 ColorScheme.fromSeed(
-                  seedColor: state.appLook.seedColor,
+                  seedColor: state.look.seedColor,
                 );
 
             final darkColorScheme = darkDynamic ??
                 ColorScheme.fromSeed(
-                  seedColor: state.appLook.seedColor,
+                  seedColor: state.look.seedColor,
                   brightness: Brightness.dark,
                 );
 
@@ -84,7 +83,7 @@ class _AppTheme extends StatelessWidget {
 
             final lightTheme = ThemeData.from(
               colorScheme: lightColorScheme,
-              textTheme: _adjustTextTheme(lightTextTheme, state.appLook),
+              textTheme: _adjustTextTheme(lightTextTheme, state.look),
               useMaterial3: true,
             );
 
@@ -97,7 +96,7 @@ class _AppTheme extends StatelessWidget {
             return _AppView(
               lightTheme,
               darkTheme,
-              state.appLook.colorSchemeMode,
+              state.look.colorSchemeMode,
             );
           },
         );

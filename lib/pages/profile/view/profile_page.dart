@@ -31,7 +31,7 @@ class ProfilePage extends MPage<void> {
   Widget build(BuildContext context) {
     return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
-        if (state.isLoggedIn) {
+        if (state.auth.lemmy.loggedIn) {
           return const _LoggedInProfileView();
         } else {
           return const _NotLoggedInProfileView();
@@ -72,7 +72,8 @@ class _NotLoggedInProfileView extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                showAccountSwitcher(context);
+                // FIXME:
+                // showAccountSwitcher(context);
               },
               child: const Text('Log in'),
             ),
@@ -92,56 +93,59 @@ class _LoggedInProfileView extends StatelessWidget {
 
     return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
-        return BlocProvider(
-          create: (context) => ContentScrollBloc(
-            contentRetriever: UserContentRetriever(
-              repo: context.read<ServerRepo>(),
-              userId: state.selectedLemmyAccount!.id,
-              username: state.selectedLemmyAccount!.name,
-            ),
-          )..add(LoadInitialItems()),
-          child: BlocBuilder<ContentScrollBloc<LemmyGetPersonDetailsResponse>,
-              ContentScrollState<LemmyGetPersonDetailsResponse>>(
-            builder: (context, state) {
-              final user = state.content.elementAtOrNull(0)?.person;
+        // FIXME: 
+        return Placeholder();
 
-              return Scaffold(
-                body: DefaultTabController(
-                  length: 3,
-                  child: NestedScrollView(
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      // These are the slivers that show up in the "outer" scroll view.
-                      return <Widget>[
-                        SliverOverlapAbsorber(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context,
-                          ),
-                          sliver: SliverPersistentHeader(
-                            delegate: _HeaderDelegate(user: user),
-                            pinned: true,
-                          ),
-                        ),
-                      ];
-                    },
-                    body: TabBarView(
-                      children: [
-                        _UserInfoTabView(user: user),
-                        const _UserPostsTabView(
-                          key: PageStorageKey('user-comments'),
-                        ),
-                        const _UserCommentsTabView(
-                          key: PageStorageKey('user-posts'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        );
+        // return BlocProvider(
+        //   create: (context) => ContentScrollBloc(
+        //     contentRetriever: UserContentRetriever(
+        //       repo: context.read<ServerRepo>(),
+        //       userId: state.selectedLemmyAccount!.id,
+        //       username: state.selectedLemmyAccount!.name,
+        //     ),
+        //   )..add(LoadInitialItems()),
+        //   child: BlocBuilder<ContentScrollBloc<LemmyGetPersonDetailsResponse>,
+        //       ContentScrollState<LemmyGetPersonDetailsResponse>>(
+        //     builder: (context, state) {
+        //       final user = state.content.elementAtOrNull(0)?.person;
+
+        //       return Scaffold(
+        //         body: DefaultTabController(
+        //           length: 3,
+        //           child: NestedScrollView(
+        //             headerSliverBuilder:
+        //                 (BuildContext context, bool innerBoxIsScrolled) {
+        //               // These are the slivers that show up in the "outer" scroll view.
+        //               return <Widget>[
+        //                 SliverOverlapAbsorber(
+        //                   handle:
+        //                       NestedScrollView.sliverOverlapAbsorberHandleFor(
+        //                     context,
+        //                   ),
+        //                   sliver: SliverPersistentHeader(
+        //                     delegate: _HeaderDelegate(user: user),
+        //                     pinned: true,
+        //                   ),
+        //                 ),
+        //               ];
+        //             },
+        //             body: TabBarView(
+        //               children: [
+        //                 _UserInfoTabView(user: user),
+        //                 const _UserPostsTabView(
+        //                   key: PageStorageKey('user-comments'),
+        //                 ),
+        //                 const _UserCommentsTabView(
+        //                   key: PageStorageKey('user-posts'),
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // );
       },
     );
   }

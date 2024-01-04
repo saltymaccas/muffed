@@ -3,13 +3,12 @@ part of 'db.dart';
 @JsonSerializable()
 final class DBModel extends Equatable {
   const DBModel({
-    this.authRepository = const AuthRepository(
-      currentLemmyAuthKey: 0,
-      lemmyAuthKeys: [
+    this.auth = const AuthRepository(
+      lemmy: LemmyAuthRepository(keys: [
         LemmyAnonAuthKey(url: 'sh.itjust.works', name: 'Anonymous', id: 0),
-      ],
+      ], selectedKey: 0,),
     ),
-    this.appLook = const AppLookModel(
+    this.look = const AppLookModel(
       bodyTextScaleFactor: 1,
       labelTextScaleFactor: 1,
       titleTextScaleFactor: 1,
@@ -19,17 +18,16 @@ final class DBModel extends Equatable {
     ),
   });
 
-  factory DBModel.fromMap(Map<String, dynamic> json) =>
-      _$DBModelFromJson(json);
+  factory DBModel.fromMap(Map<String, dynamic> json) => _$DBModelFromJson(json);
 
-  final AuthRepository authRepository;
-  final AppLookModel appLook;
+  final AuthRepository auth;
+  final AppLookModel look;
 
   Map<String, dynamic> toMap() => _$DBModelToJson(this);
 
   @override
   List<Object?> get props => [
-        authRepository,
-        appLook,
+        auth,
+        look,
       ];
 }

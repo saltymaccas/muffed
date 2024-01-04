@@ -305,7 +305,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         },
                                         child: const Text('See community info'),
                                       ),
-                                      if (context.read<DB>().state.isLoggedIn)
+                                      if (context.db.state.auth.lemmy.loggedIn)
                                         TextButton(
                                           onPressed: () {
                                             context

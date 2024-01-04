@@ -44,7 +44,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     });
     on<UpvotePressed>(
       (event, emit) {
-        if (globalBloc.state.isLoggedIn) {
+        if (globalBloc.state.auth.lemmy.loggedIn) {
           switch (state.comment.myVote) {
             case (LemmyVoteType.none):
               emit(
@@ -127,7 +127,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     );
     on<DownvotePressed>(
       (event, emit) {
-        if (globalBloc.state.isLoggedIn) {
+        if (globalBloc.state.auth.lemmy.loggedIn) {
           switch (state.comment.myVote) {
             case LemmyVoteType.none:
               emit(

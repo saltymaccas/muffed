@@ -12,26 +12,41 @@ AuthRepository _$AuthRepositoryFromJson(Map<String, dynamic> json) =>
       json,
       ($checkedConvert) {
         final val = AuthRepository(
-          lemmyAuthKeys: $checkedConvert(
-              'lemmy_auth_keys',
-              (v) => (v as List<dynamic>)
-                  .map((e) => LemmyAuthKey.fromJson(e as Map<String, dynamic>))
-                  .toList()),
-          currentLemmyAuthKey:
-              $checkedConvert('current_lemmy_auth_key', (v) => v as int),
+          lemmy: $checkedConvert('lemmy',
+              (v) => LemmyAuthRepository.fromJson(v as Map<String, dynamic>)),
         );
         return val;
-      },
-      fieldKeyMap: const {
-        'lemmyAuthKeys': 'lemmy_auth_keys',
-        'currentLemmyAuthKey': 'current_lemmy_auth_key'
       },
     );
 
 Map<String, dynamic> _$AuthRepositoryToJson(AuthRepository instance) =>
     <String, dynamic>{
-      'lemmy_auth_keys': instance.lemmyAuthKeys.map((e) => e.toJson()).toList(),
-      'current_lemmy_auth_key': instance.currentLemmyAuthKey,
+      'lemmy': instance.lemmy.toJson(),
+    };
+
+LemmyAuthRepository _$LemmyAuthRepositoryFromJson(Map<String, dynamic> json) =>
+    $checkedCreate(
+      'LemmyAuthRepository',
+      json,
+      ($checkedConvert) {
+        final val = LemmyAuthRepository(
+          keys: $checkedConvert(
+              'keys',
+              (v) => (v as List<dynamic>)
+                  .map((e) => LemmyAuthKey.fromJson(e as Map<String, dynamic>))
+                  .toList()),
+          selectedKey: $checkedConvert('selected_key', (v) => v as int),
+        );
+        return val;
+      },
+      fieldKeyMap: const {'selectedKey': 'selected_key'},
+    );
+
+Map<String, dynamic> _$LemmyAuthRepositoryToJson(
+        LemmyAuthRepository instance) =>
+    <String, dynamic>{
+      'keys': instance.keys.map((e) => e.toJson()).toList(),
+      'selected_key': instance.selectedKey,
     };
 
 LemmyAuthKey _$LemmyAuthKeyFromJson(Map<String, dynamic> json) =>

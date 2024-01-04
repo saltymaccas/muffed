@@ -17,7 +17,7 @@ class HomePage extends MPage<void> {
       create: (context) => HomePageBloc()
         ..add(
           Initialise(
-            isLoggedIn: context.read<DB>().state.isLoggedIn,
+            isLoggedIn: context.db.state.auth.lemmy.loggedIn,
             repo: context.read<ServerRepo>(),
           ),
         ),
@@ -172,13 +172,15 @@ class HomePage extends MPage<void> {
                       listeners: [
                         BlocListener<DB, DBModel>(
                           listenWhen: (previous, current) {
-                            return previous.currentLemmyEndPointIdentifyer !=
-                                current.currentLemmyEndPointIdentifyer;
+                            return false;
+                            // TODO:
+                            // return previous.currentLemmyEndPointIdentifyer !=
+                            //     current.currentLemmyEndPointIdentifyer;
                           },
                           listener: (context, state) {
                             context.read<HomePageBloc>().add(
                                   Initialise(
-                                    isLoggedIn: state.isLoggedIn,
+                                    isLoggedIn: state.auth.lemmy.loggedIn,
                                     repo: context.read<ServerRepo>(),
                                   ),
                                 );

@@ -11,18 +11,17 @@ DBModel _$DBModelFromJson(Map<String, dynamic> json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = DBModel(
-          authRepository: $checkedConvert(
-              'auth_repository',
+          auth: $checkedConvert(
+              'auth',
               (v) => v == null
                   ? const AuthRepository(
-                      currentLemmyAuthKey: 0,
-                      lemmyAuthKeys: [
-                          LemmyAnonAuthKey(
-                              url: 'sh.itjust.works', name: 'Anonymous', id: 0)
-                        ])
+                      lemmy: LemmyAuthRepository(keys: [
+                      LemmyAnonAuthKey(
+                          url: 'sh.itjust.works', name: 'Anonymous', id: 0)
+                    ], selectedKey: 0))
                   : AuthRepository.fromJson(v as Map<String, dynamic>)),
-          appLook: $checkedConvert(
-              'app_look',
+          look: $checkedConvert(
+              'look',
               (v) => v == null
                   ? const AppLookModel(
                       bodyTextScaleFactor: 1,
@@ -35,13 +34,9 @@ DBModel _$DBModelFromJson(Map<String, dynamic> json) => $checkedCreate(
         );
         return val;
       },
-      fieldKeyMap: const {
-        'authRepository': 'auth_repository',
-        'appLook': 'app_look'
-      },
     );
 
 Map<String, dynamic> _$DBModelToJson(DBModel instance) => <String, dynamic>{
-      'auth_repository': instance.authRepository.toJson(),
-      'app_look': instance.appLook.toJson(),
+      'auth': instance.auth.toJson(),
+      'look': instance.look.toJson(),
     };

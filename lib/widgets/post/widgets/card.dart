@@ -48,10 +48,6 @@ class PostViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // shows nothing if nsfw and show nsfw off
-    if (post.nsfw && !context.read<DB>().state.showNsfw) {
-      return const SizedBox();
-    }
 
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -214,7 +210,7 @@ class PostViewCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        if (context.read<DB>().state.isLoggedIn)
+                        if (context.db.state.auth.lemmy.loggedIn)
                           IconButton(
                             onPressed: () {
                               context.read<PostBloc>().add(SavePostToggled());

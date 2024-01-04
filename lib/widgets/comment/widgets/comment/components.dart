@@ -169,7 +169,7 @@ class _CommentFooter extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (state.comment.creatorId ==
-                            context.read<DB>().state.selectedLemmyAccount?.id)
+                            context.db.state.auth.lemmy.userId)
                           ListTile(
                             title: const Text('Edit Comment'),
                             leading: const Icon(Icons.edit),
@@ -296,9 +296,9 @@ class _CommentHeader extends StatelessWidget {
             ],
 
             // displays if the user created the comment
-            if (context.read<DB>().state.selectedLemmyAccount != null)
-              if (state.comment.creatorId ==
-                  context.read<DB>().state.selectedLemmyAccount!.id)
+
+            if (context.db.state.auth.lemmy.userId != null)
+              if (state.comment.creatorId == context.db.state.auth.lemmy.userId)
                 Text(
                   'YOU',
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(
