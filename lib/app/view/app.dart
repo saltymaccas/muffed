@@ -85,6 +85,9 @@ class _AppTheme extends StatelessWidget {
         return false;
       },
       builder: (context, state) {
+
+/// TODO: improve how text is made (probably use tapography.material contructor)
+
         return DynamicColorBuilder(
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
             final textTheme = Theme.of(context).textTheme;
