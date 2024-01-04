@@ -488,6 +488,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -712,6 +720,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  lemmy_api_client:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "001271f"
+      resolved-ref: "001271f4b9f326c15c6046104bab73b07cc7b7d3"
+      url: "https://github.com/thunder-app/lemmy_api_client.git"
+    source: git
+    version: "0.21.0"
   logging:
     dependency: "direct main"
     description:

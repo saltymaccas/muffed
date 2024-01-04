@@ -33,6 +33,11 @@ dependencies:
     git:
       url: https://github.com/thunder-app/markdown-editor.git
       ref: 017c8614c59b7081f54a7af70cc9586888d53b56
+
+  lemmy_api_client:
+    git:
+      url: https://github.com/thunder-app/lemmy_api_client.git
+      ref: 001271f
   cross_file: ^0.3.3+6
   image_picker: ^1.0.4
   google_fonts: ^6.1.0
