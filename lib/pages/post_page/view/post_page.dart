@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
@@ -41,7 +41,7 @@ class PostPage extends MPage<void> {
           BlocProvider(
             create: (context) => PostBloc(
               repo: context.read<ServerRepo>(),
-              globalBloc: context.read<LocalStore>(),
+              globalBloc: context.read<DB>(),
               post: post,
               postId: postId,
             )..add(Initialize()),
@@ -103,7 +103,7 @@ class PostPage extends MPage<void> {
                     );
                   },
                 ),
-                if (context.read<LocalStore>().state.isLoggedIn)
+                if (context.read<DB>().state.isLoggedIn)
                   IconButton(
                     onPressed: () {
                       showCreateCommentDialog(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/create_post/views/create_post_page.dart';
 import 'package:muffed/pages/search/search.dart';
@@ -194,7 +194,7 @@ class CommunityPage extends MPage<void> {
                   );
                 },
               ),
-              if (context.read<LocalStore>().state.isLoggedIn)
+              if (context.read<DB>().state.isLoggedIn)
                 IconButton(
                   onPressed: () {
                     context.pushPage(

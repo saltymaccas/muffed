@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/login/login.dart';
 import 'package:muffed/router/models/models.dart';
 
 /// Shows a bottom dialog that allows a user to switch accounts
 void showAccountSwitcher(BuildContext context) {
-  final globalBloc = context.read<LocalStore>();
+  final globalBloc = context.read<DB>();
   showModalBottomSheet<void>(
     useRootNavigator: true,
     context: context,
     builder: (context) {
-      return BlocBuilder<LocalStore, LocalStoreModel>(
+      return BlocBuilder<DB, DBModel>(
         builder: (context, state) {
           return Column(
             mainAxisSize: MainAxisSize.min,

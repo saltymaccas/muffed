@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/inbox/inbox.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
@@ -12,7 +12,7 @@ class InboxPage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, LocalStoreModel>(
+    return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
         if (!state.isLoggedIn) {
           return const Center(

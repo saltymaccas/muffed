@@ -1,7 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
@@ -14,12 +14,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => LocalStore()),
+        BlocProvider(create: (context) => DB()),
       ],
       child: Builder(
         builder: (context) {
           return RepositoryProvider(
-            create: (context) => ServerRepo(context.read<LocalStore>()),
+            create: (context) => ServerRepo(context.read<DB>()),
             child: const _AppTheme(),
           );
         },
@@ -53,7 +53,7 @@ class _AppTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, LocalStoreModel>(
+    return BlocBuilder<DB, DBModel>(
       buildWhen: (previous, current) {
         if (previous.useDynamicColorScheme != current.useDynamicColorScheme) {
           return true;

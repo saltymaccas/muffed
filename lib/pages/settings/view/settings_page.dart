@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/settings/settings.dart';
 import 'package:muffed/router/router.dart';
 
@@ -18,7 +18,7 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, LocalStoreModel>(
+    return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

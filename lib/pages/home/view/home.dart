@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/home/home.dart';
 import 'package:muffed/pages/search/view/search_dialog.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -17,7 +17,7 @@ class HomePage extends MPage<void> {
       create: (context) => HomePageBloc()
         ..add(
           Initialise(
-            isLoggedIn: context.read<LocalStore>().state.isLoggedIn,
+            isLoggedIn: context.read<DB>().state.isLoggedIn,
             repo: context.read<ServerRepo>(),
           ),
         ),
@@ -170,7 +170,7 @@ class HomePage extends MPage<void> {
                   builder: (context) {
                     return MultiBlocListener(
                       listeners: [
-                        BlocListener<LocalStore, LocalStoreModel>(
+                        BlocListener<DB, DBModel>(
                           listenWhen: (previous, current) {
                             return previous.currentLemmyEndPointIdentifyer !=
                                 current.currentLemmyEndPointIdentifyer;

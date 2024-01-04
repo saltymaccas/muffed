@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/link_previewer.dart';
 
@@ -29,7 +29,7 @@ class UrlView extends StatelessWidget {
         urlPath.endsWith('.bmp')) {
       return MuffedImage(
         imageUrl: url,
-        shouldBlur: nsfw && context.read<LocalStore>().state.blurNsfw,
+        shouldBlur: nsfw && context.read<DB>().state.blurNsfw,
         fullScreenable: imageFullScreenable,
         sizeWhileLoading: const Size(double.maxFinite, 300),
         alignment: Alignment.topCenter,

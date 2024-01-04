@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/pages/login/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -19,7 +19,7 @@ class LoginPage extends MPage<void> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          LoginPageBloc(context.read<ServerRepo>(), context.read<LocalStore>()),
+          LoginPageBloc(context.read<ServerRepo>(), context.read<DB>()),
       child: _LoginView(
         onSuccessfulLogin: onSuccessfulLogin,
       ),

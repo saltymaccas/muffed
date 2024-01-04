@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/anon_settings_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
@@ -11,13 +11,13 @@ class AnonSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textFieldController = TextEditingController(
-      text: context.read<LocalStore>().state.lemmyDefaultHomeServer,
+      text: context.read<DB>().state.lemmyDefaultHomeServer,
     );
 
     return BlocProvider(
       create: (context) => AnonSettingsBloc(
         repo: context.read<ServerRepo>(),
-        globalBloc: context.read<LocalStore>(),
+        globalBloc: context.read<DB>(),
       ),
       child: BlocBuilder<AnonSettingsBloc, AnonSettingsState>(
         buildWhen: (previous, current) {

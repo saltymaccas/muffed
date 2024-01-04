@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/post_page/post_page.dart';
 import 'package:muffed/pages/user/user.dart';
@@ -44,7 +44,7 @@ class PostWidget extends StatelessWidget {
       return BlocProvider(
         create: (context) => PostBloc(
           repo: context.read<ServerRepo>(),
-          globalBloc: context.read<LocalStore>(),
+          globalBloc: context.read<DB>(),
           post: post,
           postId: postId,
         )..add(

@@ -1,14 +1,22 @@
 import 'package:equatable/equatable.dart';
-import 'package:muffed/repo/lemmy/models/user.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'auth.g.dart';
+
+@JsonSerializable()
 final class AuthRepository extends Equatable {
   const AuthRepository({
     required this.lemmyAuthKeys,
     required this.currentLemmyAuthKey,
   });
 
+  factory AuthRepository.fromJson(Map<String, dynamic> json) =>
+      _$AuthRepositoryFromJson(json);
+
   final List<LemmyAuthKey> lemmyAuthKeys;
   final int currentLemmyAuthKey;
+
+  Map<String, dynamic> toJson() => _$AuthRepositoryToJson(this);
 
   @override
   List<Object?> get props => [
@@ -17,11 +25,18 @@ final class AuthRepository extends Equatable {
       ];
 }
 
+@JsonSerializable()
 final class LemmyAuthKey extends Equatable {
   const LemmyAuthKey({
     required this.url,
   });
+
+  factory LemmyAuthKey.fromJson(Map<String, dynamic> json) =>
+      _$LemmyAuthKeyFromJson(json);
+
   final String url;
+
+  Map<String, dynamic> toJson() => _$LemmyAuthKeyToJson(this);
 
   @override
   List<Object?> get props => [
@@ -29,6 +44,7 @@ final class LemmyAuthKey extends Equatable {
       ];
 }
 
+@JsonSerializable()
 final class LemmyAnonAuthKey extends LemmyAuthKey {
   const LemmyAnonAuthKey({
     required super.url,
@@ -36,11 +52,16 @@ final class LemmyAnonAuthKey extends LemmyAuthKey {
     required this.id,
   });
 
+  factory LemmyAnonAuthKey.fromJson(Map<String, dynamic> json) =>
+      _$LemmyAnonAuthKeyFromJson(json);
+
   // Local only, the user chooses and can change the name
   final String name;
 
   // Unique id, local only, user cant see or change
   final int id;
+
+  Map<String, dynamic> toJson() => _$LemmyAnonAuthKeyToJson(this);
 
   @override
   List<Object?> get props => [
@@ -50,6 +71,7 @@ final class LemmyAnonAuthKey extends LemmyAuthKey {
       ];
 }
 
+@JsonSerializable()
 final class LemmyUserAuthKey extends LemmyAuthKey {
   const LemmyUserAuthKey({
     required super.url,
@@ -57,8 +79,13 @@ final class LemmyUserAuthKey extends LemmyAuthKey {
     this.userInfo,
   });
 
+  factory LemmyUserAuthKey.fromJson(Map<String, dynamic> json) =>
+      _$LemmyUserAuthKeyFromJson(json);
+
   final String jwt;
   final LemmyUserAuthInfo? userInfo;
+
+  Map<String, dynamic> toJson() => _$LemmyUserAuthKeyToJson(this);
 
   @override
   List<Object?> get props => [
@@ -68,6 +95,7 @@ final class LemmyUserAuthKey extends LemmyAuthKey {
       ];
 }
 
+@JsonSerializable()
 final class LemmyUserAuthInfo extends Equatable {
   const LemmyUserAuthInfo({
     required this.name,
@@ -77,11 +105,16 @@ final class LemmyUserAuthInfo extends Equatable {
     this.banner,
   });
 
+  factory LemmyUserAuthInfo.fromJson(Map<String, dynamic> json) =>
+      _$LemmyUserAuthInfoFromJson(json);
+
   final String name;
   final int id;
   final String? displayName;
   final String? avatar;
   final String? banner;
+
+  Map<String, dynamic> toJson() => _$LemmyUserAuthInfoToJson(this);
 
   @override
   List<Object?> get props => [

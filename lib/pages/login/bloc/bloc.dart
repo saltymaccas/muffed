@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/models/models.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/server_repo.dart';
 
@@ -13,7 +13,7 @@ final _log = Logger('LoginPageBloc');
 
 /// the bloc that manages the login screen including logging in the user
 /// when the user gets logged in it will add the credentials to the
-/// [LocalStore]
+/// [DB]
 class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
   /// initializes the bloc
   LoginPageBloc(this.repo, this.globalBloc) : super(const LoginPageState()) {
@@ -61,5 +61,5 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
   final ServerRepo repo;
 
   /// the global bloc used to add the user credentials when logged in
-  final LocalStore globalBloc;
+  final DB globalBloc;
 }

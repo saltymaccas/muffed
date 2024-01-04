@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/pages/community/view/community_page.dart';
 import 'package:muffed/pages/profile/profile.dart';
 import 'package:muffed/pages/user/models/content_retriever.dart';
@@ -29,7 +29,7 @@ class ProfilePage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, LocalStoreModel>(
+    return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
         if (state.isLoggedIn) {
           return const _LoggedInProfileView();
@@ -88,9 +88,9 @@ class _LoggedInProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final globalBloc = context.read<LocalStore>();
+    final globalBloc = context.read<DB>();
 
-    return BlocBuilder<LocalStore, LocalStoreModel>(
+    return BlocBuilder<DB, DBModel>(
       builder: (context, state) {
         return BlocProvider(
           create: (context) => ContentScrollBloc(

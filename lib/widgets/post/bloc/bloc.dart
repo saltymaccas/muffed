@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
@@ -222,7 +222,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   final ServerRepo repo;
-  final LocalStore globalBloc;
+  final DB globalBloc;
 
   @override
   void onChange(Change<PostState> change) {

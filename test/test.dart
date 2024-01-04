@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:muffed/local_store/local_store.dart';
+import 'package:muffed/db/local_store.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 
 void main() {
   test('GlobalState should convert to map and back', () {
-    final globalState = LocalStoreModel(
+    final globalState = DBModel(
       lemmySelectedAccount: 1,
       themeMode: ThemeMode.light,
       seedColor: Colors.red.shade50,
@@ -36,7 +36,7 @@ void main() {
 
     final globalStateToMap = globalState.toMap();
 
-    final globalStateFromMap = LocalStoreModel.fromMap(globalStateToMap);
+    final globalStateFromMap = DBModel.fromMap(globalStateToMap);
 
     expect(globalStateFromMap, globalState);
   });
