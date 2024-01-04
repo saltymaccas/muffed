@@ -1,6 +1,8 @@
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 
+/// FIXME: Keeps on loading the same comments over and over again
+
 /// Defines how the comments will be retrieved for the [ContentScrollView]
 class CommentRetriever extends ContentRetrieverDelegate<LemmyComment> {
   const CommentRetriever({
