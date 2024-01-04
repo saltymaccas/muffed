@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/db/local_store.dart';
+import 'package:muffed/db/db.dart';
 import 'package:muffed/pages/community/view/community_page.dart';
 import 'package:muffed/pages/profile/profile.dart';
 import 'package:muffed/pages/user/models/content_retriever.dart';

@@ -1,4 +1,4 @@
-import 'package:muffed/db/local_store.dart';
+import 'package:muffed/db/db.dart';
 import 'package:muffed/repo/lemmy/lemmy.dart';
 import 'package:muffed/repo/pictrs/pictrs.dart';
 

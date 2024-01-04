@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/models/models.dart';
-import 'package:muffed/db/local_store.dart';
+import 'package:muffed/db/db.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/server_repo.dart';
 

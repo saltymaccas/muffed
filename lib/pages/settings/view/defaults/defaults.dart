@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/db/local_store.dart';
+import 'package:muffed/db/db.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 

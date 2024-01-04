@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/db/local_store.dart';
+import 'package:muffed/db/db.dart';
 import 'package:muffed/pages/anon_settings_screen/bloc/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';

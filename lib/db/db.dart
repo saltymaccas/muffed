@@ -7,8 +7,8 @@ import 'package:logging/logging.dart';
 import 'package:muffed/db/models/app_look.dart';
 import 'package:muffed/db/models/auth.dart';
 
-part 'local_store_model.dart';
-part 'local_store.g.dart';
+part 'db_model.dart';
+part 'db.g.dart';
 
 final _log = Logger('GlobalBloc');
 

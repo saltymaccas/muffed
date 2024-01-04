@@ -1,4 +1,4 @@
-part of 'local_store.dart';
+part of 'db.dart';
 
 @JsonSerializable()
 final class DBModel extends Equatable {

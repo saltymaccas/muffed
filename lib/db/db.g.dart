@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'local_store.dart';
+part of 'db.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -18,7 +18,7 @@ DBModel _$DBModelFromJson(Map<String, dynamic> json) => $checkedCreate(
                       currentLemmyAuthKey: 0,
                       lemmyAuthKeys: [
                           LemmyAnonAuthKey(
-                              url: 'sh.itjust.works', name: "Anonymous", id: 0)
+                              url: 'sh.itjust.works', name: 'Anonymous', id: 0)
                         ])
                   : AuthRepository.fromJson(v as Map<String, dynamic>)),
           appLook: $checkedConvert(
