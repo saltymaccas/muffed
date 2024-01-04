@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/user/user.dart';
 import 'package:muffed/repo/server_repo.dart';
@@ -49,7 +49,7 @@ class PostViewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // shows nothing if nsfw and show nsfw off
-    if (post.nsfw && !context.read<GlobalBloc>().state.showNsfw) {
+    if (post.nsfw && !context.read<LocalStore>().state.showNsfw) {
       return const SizedBox();
     }
 
@@ -214,7 +214,7 @@ class PostViewCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        if (context.read<GlobalBloc>().state.isLoggedIn)
+                        if (context.read<LocalStore>().state.isLoggedIn)
                           IconButton(
                             onPressed: () {
                               context.read<PostBloc>().add(SavePostToggled());

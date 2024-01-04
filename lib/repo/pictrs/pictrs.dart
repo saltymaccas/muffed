@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/repo/pictrs/models.dart';
 
 class PictrsRepo {
   PictrsRepo({required this.globalBloc}) : dio = Dio();
 
-  final GlobalBloc globalBloc;
+  final LocalStore globalBloc;
 
   final Dio dio;
 

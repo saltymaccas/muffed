@@ -1,7 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
@@ -14,12 +14,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => GlobalBloc()),
+        BlocProvider(create: (context) => LocalStore()),
       ],
       child: Builder(
         builder: (context) {
           return RepositoryProvider(
-            create: (context) => ServerRepo(context.read<GlobalBloc>()),
+            create: (context) => ServerRepo(context.read<LocalStore>()),
             child: const _AppTheme(),
           );
         },
@@ -53,7 +53,7 @@ class _AppTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GlobalBloc, GlobalState>(
+    return BlocBuilder<LocalStore, GlobalState>(
       buildWhen: (previous, current) {
         if (previous.useDynamicColorScheme != current.useDynamicColorScheme) {
           return true;
@@ -85,8 +85,7 @@ class _AppTheme extends StatelessWidget {
         return false;
       },
       builder: (context, state) {
-
-/// TODO: improve how text is made (probably use tapography.material contructor)
+        /// TODO: improve how text is made (probably use tapography.material contructor)
 
         return DynamicColorBuilder(
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {

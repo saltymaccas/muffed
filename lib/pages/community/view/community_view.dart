@@ -4,7 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
@@ -306,7 +306,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         child: const Text('See community info'),
                                       ),
                                       if (context
-                                          .read<GlobalBloc>()
+                                          .read<LocalStore>()
                                           .state
                                           .isLoggedIn)
                                         TextButton(
@@ -399,9 +399,10 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                               child: Row(
                                 children: [
                                   MuffedAvatar(
-                                      url: community.icon,
-                                      identiconID: community.name,
-                                      radius: 16,),
+                                    url: community.icon,
+                                    identiconID: community.name,
+                                    radius: 16,
+                                  ),
                                   const SizedBox(
                                     width: 8,
                                   ),

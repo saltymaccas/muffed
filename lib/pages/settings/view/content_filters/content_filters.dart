@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/router/router.dart';
 
 class SettingsContentFiltersPage extends MPage<void> {
@@ -17,7 +17,7 @@ class _SettingsContentFiltersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GlobalBloc, GlobalState>(
+    return BlocBuilder<LocalStore, GlobalState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -35,7 +35,7 @@ class _SettingsContentFiltersView extends StatelessWidget {
                 title: const Text('Show NSFW posts'),
                 value: state.showNsfw,
                 onChanged: (value) {
-                  context.read<GlobalBloc>().add(
+                  context.read<LocalStore>().add(
                         SettingChanged(
                           state.copyWith(
                             showNsfw: value,
@@ -50,7 +50,7 @@ class _SettingsContentFiltersView extends StatelessWidget {
                   value: state.blurNsfw,
                   onChanged: (value) {
                     context
-                        .read<GlobalBloc>()
+                        .read<LocalStore>()
                         .add(SettingChanged(state.copyWith(blurNsfw: value)));
                   },
                 ),

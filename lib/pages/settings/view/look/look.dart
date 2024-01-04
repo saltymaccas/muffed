@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/router/router.dart';
 
 class SettingsLookPage extends MPage<void> {
@@ -18,7 +18,7 @@ class _SettingsLookView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GlobalBloc, GlobalState>(
+    return BlocBuilder<LocalStore, GlobalState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -42,9 +42,9 @@ class _SettingsLookView extends StatelessWidget {
               RadioListTile<ThemeMode>(
                 title: const Text('System'),
                 value: ThemeMode.system,
-                groupValue: context.read<GlobalBloc>().state.themeMode,
+                groupValue: context.read<LocalStore>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context.read<GlobalBloc>().add(
+                  context.read<LocalStore>().add(
                         SettingChanged(state.copyWith(themeMode: themeMode)),
                       );
                 },
@@ -52,9 +52,9 @@ class _SettingsLookView extends StatelessWidget {
               RadioListTile<ThemeMode>(
                 title: const Text('Light'),
                 value: ThemeMode.light,
-                groupValue: context.read<GlobalBloc>().state.themeMode,
+                groupValue: context.read<LocalStore>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context.read<GlobalBloc>().add(
+                  context.read<LocalStore>().add(
                         SettingChanged(state.copyWith(themeMode: themeMode)),
                       );
                 },
@@ -62,9 +62,9 @@ class _SettingsLookView extends StatelessWidget {
               RadioListTile<ThemeMode>(
                 title: const Text('Dark'),
                 value: ThemeMode.dark,
-                groupValue: context.read<GlobalBloc>().state.themeMode,
+                groupValue: context.read<LocalStore>().state.themeMode,
                 onChanged: (ThemeMode? themeMode) {
-                  context.read<GlobalBloc>().add(
+                  context.read<LocalStore>().add(
                         SettingChanged(state.copyWith(themeMode: themeMode)),
                       );
                 },
@@ -78,23 +78,23 @@ class _SettingsLookView extends StatelessWidget {
               ),
               SwitchListTile(
                 title: const Text('Auto set color scheme'),
-                value: context.read<GlobalBloc>().state.useDynamicColorScheme,
+                value: context.read<LocalStore>().state.useDynamicColorScheme,
                 onChanged: (bool value) {
-                  context.read<GlobalBloc>().add(
+                  context.read<LocalStore>().add(
                         SettingChanged(
                           state.copyWith(useDynamicColorScheme: value),
                         ),
                       );
                 },
               ),
-              if (!context.read<GlobalBloc>().state.useDynamicColorScheme)
+              if (!context.read<LocalStore>().state.useDynamicColorScheme)
                 ListTile(
                   title: const Text('Seed Color'),
                   leading: Container(
                     width: 20,
                     height: 20,
                     decoration: BoxDecoration(
-                      color: context.read<GlobalBloc>().state.seedColor,
+                      color: context.read<LocalStore>().state.seedColor,
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                   ),
@@ -106,9 +106,9 @@ class _SettingsLookView extends StatelessWidget {
                           child: IntrinsicHeight(
                             child: MaterialPicker(
                               pickerColor:
-                                  context.read<GlobalBloc>().state.seedColor,
+                                  context.read<LocalStore>().state.seedColor,
                               onColorChanged: (color) {
-                                context.read<GlobalBloc>().add(
+                                context.read<LocalStore>().add(
                                       SettingChanged(
                                         state.copyWith(seedColor: color),
                                       ),
@@ -151,7 +151,7 @@ class _SettingsLookView extends StatelessWidget {
                       onPressed: (index) {
                         final values = <double>[0.9, 1, 1.1, 1.3];
 
-                        context.read<GlobalBloc>().add(
+                        context.read<LocalStore>().add(
                               SettingChanged(
                                 state.copyWith(
                                   titleTextScaleFactor: values[index],
@@ -191,7 +191,7 @@ class _SettingsLookView extends StatelessWidget {
                       onPressed: (index) {
                         final values = <double>[0.9, 1, 1.1, 1.3];
 
-                        context.read<GlobalBloc>().add(
+                        context.read<LocalStore>().add(
                               SettingChanged(
                                 state.copyWith(
                                   labelTextScaleFactor: values[index],
@@ -231,7 +231,7 @@ class _SettingsLookView extends StatelessWidget {
                       onPressed: (index) {
                         final values = <double>[0.9, 1, 1.1, 1.3];
 
-                        context.read<GlobalBloc>().add(
+                        context.read<LocalStore>().add(
                               SettingChanged(
                                 state.copyWith(
                                   bodyTextScaleFactor: values[index],

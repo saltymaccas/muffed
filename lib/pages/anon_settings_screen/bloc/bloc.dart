@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
@@ -9,8 +9,11 @@ part 'state.dart';
 class AnonSettingsBloc extends Bloc<AnonSettingsEvent, AnonSettingsState> {
   ///
   AnonSettingsBloc({required this.repo, required this.globalBloc})
-      : super(AnonSettingsState(
-            urlInput: globalBloc.state.lemmyDefaultHomeServer,),) {
+      : super(
+          AnonSettingsState(
+            urlInput: globalBloc.state.lemmyDefaultHomeServer,
+          ),
+        ) {
     on<UrlTextFieldChanged>(
       (event, emit) {
         emit(state.copyWith(urlInput: event.text, setSiteToNull: true));
@@ -46,5 +49,5 @@ class AnonSettingsBloc extends Bloc<AnonSettingsEvent, AnonSettingsState> {
   }
 
   final ServerRepo repo;
-  final GlobalBloc globalBloc;
+  final LocalStore globalBloc;
 }

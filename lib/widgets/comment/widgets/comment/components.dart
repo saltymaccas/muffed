@@ -170,7 +170,7 @@ class _CommentFooter extends StatelessWidget {
                       children: [
                         if (state.comment.creatorId ==
                             context
-                                .read<GlobalBloc>()
+                                .read<LocalStore>()
                                 .state
                                 .selectedLemmyAccount
                                 ?.id)
@@ -300,9 +300,9 @@ class _CommentHeader extends StatelessWidget {
             ],
 
             // displays if the user created the comment
-            if (context.read<GlobalBloc>().state.selectedLemmyAccount != null)
+            if (context.read<LocalStore>().state.selectedLemmyAccount != null)
               if (state.comment.creatorId ==
-                  context.read<GlobalBloc>().state.selectedLemmyAccount!.id)
+                  context.read<LocalStore>().state.selectedLemmyAccount!.id)
                 Text(
                   'YOU',
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(

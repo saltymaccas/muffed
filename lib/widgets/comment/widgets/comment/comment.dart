@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/post_page/view/post_page.dart';
 import 'package:muffed/pages/user/user.dart';
@@ -39,7 +39,7 @@ class CommentCardWidget extends StatelessWidget {
         children: children,
         sortType: sortType,
         repo: context.read<ServerRepo>(),
-        globalBloc: context.read<GlobalBloc>(),
+        globalBloc: context.read<LocalStore>(),
       ),
       child: Builder(
         builder: (context) {
@@ -77,7 +77,7 @@ class CommentTreeItemWidget extends StatelessWidget {
         children: children,
         sortType: sortType,
         repo: context.read<ServerRepo>(),
-        globalBloc: context.read<GlobalBloc>(),
+        globalBloc: context.read<LocalStore>(),
       ),
       child: Builder(
         builder: (context) {

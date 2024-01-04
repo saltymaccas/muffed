@@ -1,7 +1,6 @@
-part of 'bloc.dart';
+part of 'local_store.dart';
 
 final class GlobalState extends Equatable {
-  ///
   const GlobalState({
     this.themeMode = ThemeMode.system,
     this.lemmyAccounts = const [],
@@ -16,26 +15,6 @@ final class GlobalState extends Equatable {
     this.labelTextScaleFactor = 1.0,
     this.titleTextScaleFactor = 1.0,
   });
-
-  factory GlobalState.fromMap(Map<String, dynamic> map) {
-    return GlobalState(
-      lemmyAccounts: List.generate(
-        (map['lemmyAccounts'] as List).length,
-        (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index]),
-      ),
-      lemmySelectedAccount: map['lemmySelectedAccount'] as int,
-      lemmyDefaultHomeServer: map['lemmyDefaultHomeServer'],
-      themeMode: ThemeMode.values[map['themeMode']],
-      useDynamicColorScheme: map['useDynamicColorScheme'] as bool,
-      seedColor: Color(map['seedColor'] as int),
-      showNsfw: map['showNsfw'],
-      blurNsfw: map['blurNsfw'],
-      defaultSortType: LemmySortType.values[map['defaultSortType']],
-      bodyTextScaleFactor: map['bodyTextScaleFactor'],
-      labelTextScaleFactor: map['labelTextScaleFactor'],
-      titleTextScaleFactor: map['titleTextScaleFactor'],
-    );
-  }
 
   /// All the lemmy accounts the user has added
   final List<LemmyAccountData> lemmyAccounts;
@@ -108,26 +87,6 @@ final class GlobalState extends Equatable {
         labelTextScaleFactor,
         titleTextScaleFactor,
       ];
-
-  Map<String, dynamic> toMap() {
-    return {
-      'lemmyAccounts': List.generate(
-        lemmyAccounts.length,
-        (index) => lemmyAccounts[index].toMap(),
-      ),
-      'lemmySelectedAccount': lemmySelectedAccount,
-      'lemmyDefaultHomeServer': lemmyDefaultHomeServer,
-      'themeMode': themeMode.index,
-      'useDynamicColorScheme': useDynamicColorScheme,
-      'seedColor': seedColor.value,
-      'showNsfw': showNsfw,
-      'blurNsfw': blurNsfw,
-      'defaultSortType': defaultSortType.index,
-      'bodyTextScaleFactor': bodyTextScaleFactor,
-      'labelTextScaleFactor': labelTextScaleFactor,
-      'titleTextScaleFactor': titleTextScaleFactor,
-    };
-  }
 
   GlobalState copyWith({
     List<LemmyAccountData>? lemmyAccounts,

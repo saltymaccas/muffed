@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 import 'package:muffed/utils/url.dart';
@@ -18,7 +18,7 @@ interface class LemmyRepo {
   final Dio dio;
 
   /// used to get information such as the home server to use for requests
-  final GlobalBloc globalBloc;
+  final LocalStore globalBloc;
 
   /// Creates a post request to the lemmy api, If logged in auth parameter will
   /// be added automatically

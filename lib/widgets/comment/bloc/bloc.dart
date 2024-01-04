@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/global_state/bloc.dart';
+import 'package:muffed/local_store/local_store.dart';
 import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
@@ -211,5 +211,5 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   }
 
   final ServerRepo repo;
-  final GlobalBloc globalBloc;
+  final LocalStore globalBloc;
 }
