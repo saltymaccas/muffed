@@ -5,8 +5,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 
-import 'package:muffed/db/models/app_look.dart';
 import 'package:muffed/db/models/auth.dart';
+import 'package:muffed/theme/models/theme_config/theme_config.dart';
 
 export 'extentions.dart';
 

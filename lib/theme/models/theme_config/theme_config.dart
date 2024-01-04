@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'app_look.g.dart';
+part 'theme_config.g.dart';
 
 @JsonSerializable()
-final class AppLookModel extends Equatable {
-  const AppLookModel({
+final class ThemeConfig extends Equatable {
+  const ThemeConfig({
     required this.colorSchemeMode,
     required this.seedColor,
     required this.wallBasedColorScheme,
@@ -15,8 +15,8 @@ final class AppLookModel extends Equatable {
     required this.titleTextScaleFactor,
   });
 
-  factory AppLookModel.fromJson(Map<String, dynamic> json) =>
-      _$AppLookModelFromJson(json);
+  factory ThemeConfig.fromJson(Map<String, dynamic> json) =>
+      _$ThemeConfigFromJson(json);
 
   final ThemeMode colorSchemeMode;
 
@@ -33,7 +33,7 @@ final class AppLookModel extends Equatable {
   final double labelTextScaleFactor;
   final double titleTextScaleFactor;
 
-  Map<String, dynamic> toJson() => _$AppLookModelToJson(this);
+  Map<String, dynamic> toJson() => _$ThemeConfigToJson(this);
 
   static Color _colorFromInt(int c) => Color(c);
   static int _colorToInt(Color c) => c.value;

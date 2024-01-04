@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
-import 'package:flutter/rendering.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:muffed/repo/server_repo.dart';
 
 part 'auth.g.dart';
 
@@ -30,29 +26,34 @@ final class AuthRepository extends Equatable {
 final class LemmyAuthRepository extends Equatable {
   const LemmyAuthRepository({
     required this.keys,
-    required this.selectedKey,
+    required this.activeKeyIndex,
   });
 
   factory LemmyAuthRepository.fromJson(Map<String, dynamic> json) =>
       _$LemmyAuthRepositoryFromJson(json);
 
   final List<LemmyAuthKey> keys;
-  final int selectedKey;
+  final int activeKeyIndex;
 
-  bool get loggedIn => keys[selectedKey] is LemmyUserAuthKey;
-  LemmyAuthKey get key => keys[selectedKey];
+  bool get loggedIn => keys[activeKeyIndex] is LemmyUserAuthKey;
+  LemmyAuthKey get activeKey => keys[activeKeyIndex];
 
-  LemmyUserAuthKey? get userAuthKey => (keys[selectedKey] is LemmyAuthKey)
-      ? keys[selectedKey] as LemmyUserAuthKey
+  LemmyUserAuthKey? get _userAuthKey => loggedIn
+      ? keys[activeKeyIndex] as LemmyUserAuthKey
       : null;
-  int? get userId => userAuthKey?.userInfo?.id;
+
+  int? get activeUserId => _userAuthKey?.userInfo?.id;
+
+  String? get jwt => _userAuthKey?.jwt;
+
+  String get activeHost => activeKey.url;
 
   Map<String, dynamic> toJson() => _$LemmyAuthRepositoryToJson(this);
 
   @override
   List<Object?> get props => [
         keys,
-        selectedKey,
+        activeKeyIndex,
       ];
 }
 

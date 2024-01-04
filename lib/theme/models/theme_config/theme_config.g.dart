@@ -1,21 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_look.dart';
+part of 'theme_config.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-AppLookModel _$AppLookModelFromJson(Map<String, dynamic> json) =>
-    $checkedCreate(
-      'AppLookModel',
+ThemeConfig _$ThemeConfigFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'ThemeConfig',
       json,
       ($checkedConvert) {
-        final val = AppLookModel(
+        final val = ThemeConfig(
           colorSchemeMode: $checkedConvert(
               'color_scheme_mode', (v) => $enumDecode(_$ThemeModeEnumMap, v)),
           seedColor: $checkedConvert(
-              'seed_color', (v) => AppLookModel._colorFromInt(v as int)),
+              'seed_color', (v) => ThemeConfig._colorFromInt(v as int)),
           wallBasedColorScheme:
               $checkedConvert('wall_based_color_scheme', (v) => v as bool),
           bodyTextScaleFactor: $checkedConvert(
@@ -37,11 +36,11 @@ AppLookModel _$AppLookModelFromJson(Map<String, dynamic> json) =>
       },
     );
 
-Map<String, dynamic> _$AppLookModelToJson(AppLookModel instance) =>
+Map<String, dynamic> _$ThemeConfigToJson(ThemeConfig instance) =>
     <String, dynamic>{
       'color_scheme_mode': _$ThemeModeEnumMap[instance.colorSchemeMode]!,
       'wall_based_color_scheme': instance.wallBasedColorScheme,
-      'seed_color': AppLookModel._colorToInt(instance.seedColor),
+      'seed_color': ThemeConfig._colorToInt(instance.seedColor),
       'body_text_scale_factor': instance.bodyTextScaleFactor,
       'label_text_scale_factor': instance.labelTextScaleFactor,
       'title_text_scale_factor': instance.titleTextScaleFactor,

@@ -35,7 +35,7 @@ LemmyAuthRepository _$LemmyAuthRepositoryFromJson(Map<String, dynamic> json) =>
               (v) => (v as List<dynamic>)
                   .map((e) => LemmyAuthKey.fromJson(e as Map<String, dynamic>))
                   .toList()),
-          selectedKey: $checkedConvert('selected_key', (v) => v as int),
+          activeKeyIndex: $checkedConvert('selected_key', (v) => v as int),
         );
         return val;
       },
@@ -46,7 +46,7 @@ Map<String, dynamic> _$LemmyAuthRepositoryToJson(
         LemmyAuthRepository instance) =>
     <String, dynamic>{
       'keys': instance.keys.map((e) => e.toJson()).toList(),
-      'selected_key': instance.selectedKey,
+      'selected_key': instance.activeKeyIndex,
     };
 
 LemmyAuthKey _$LemmyAuthKeyFromJson(Map<String, dynamic> json) =>

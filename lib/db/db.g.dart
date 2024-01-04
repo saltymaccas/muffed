@@ -18,19 +18,19 @@ DBModel _$DBModelFromJson(Map<String, dynamic> json) => $checkedCreate(
                       lemmy: LemmyAuthRepository(keys: [
                       LemmyAnonAuthKey(
                           url: 'sh.itjust.works', name: 'Anonymous', id: 0)
-                    ], selectedKey: 0))
+                    ], activeKeyIndex: 0))
                   : AuthRepository.fromJson(v as Map<String, dynamic>)),
           look: $checkedConvert(
               'look',
               (v) => v == null
-                  ? const AppLookModel(
+                  ? const ThemeConfig(
                       bodyTextScaleFactor: 1,
                       labelTextScaleFactor: 1,
                       titleTextScaleFactor: 1,
                       colorSchemeMode: ThemeMode.system,
                       seedColor: Colors.greenAccent,
                       wallBasedColorScheme: true)
-                  : AppLookModel.fromJson(v as Map<String, dynamic>)),
+                  : ThemeConfig.fromJson(v as Map<String, dynamic>)),
         );
         return val;
       },
