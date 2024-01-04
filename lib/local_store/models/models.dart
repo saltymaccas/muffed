@@ -1,7 +1,7 @@
-part of 'local_store.dart';
+part of '../local_store.dart';
 
-final class GlobalState extends Equatable {
-  const GlobalState({
+final class LocalStoreModel extends Equatable {
+  const LocalStoreModel({
     this.themeMode = ThemeMode.system,
     this.lemmyAccounts = const [],
     this.lemmySelectedAccount = -1,
@@ -64,7 +64,7 @@ final class GlobalState extends Equatable {
   /// if the content the app gets may be different
   ///
   /// Used in content scroll view to see whether the posts should be reloaded
-  bool lemmyRequestEndPointDifferent(GlobalState state) {
+  bool lemmyRequestEndPointDifferent(LocalStoreModel state) {
     if (state.lemmyBaseUrl != lemmyBaseUrl ||
         state.selectedLemmyAccount?.jwt != selectedLemmyAccount?.jwt) {
       return true;
@@ -88,7 +88,7 @@ final class GlobalState extends Equatable {
         titleTextScaleFactor,
       ];
 
-  GlobalState copyWith({
+  LocalStoreModel copyWith({
     List<LemmyAccountData>? lemmyAccounts,
     int? lemmySelectedAccount,
     String? lemmyDefaultHomeServer,
@@ -102,7 +102,7 @@ final class GlobalState extends Equatable {
     double? labelTextScaleFactor,
     double? titleTextScaleFactor,
   }) {
-    return GlobalState(
+    return LocalStoreModel(
       lemmyDefaultHomeServer:
           lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
       lemmyAccounts: lemmyAccounts ?? this.lemmyAccounts,

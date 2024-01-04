@@ -17,7 +17,7 @@ class _SettingsContentFiltersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, GlobalState>(
+    return BlocBuilder<LocalStore, LocalStoreModel>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

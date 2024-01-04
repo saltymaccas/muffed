@@ -11,7 +11,7 @@ void showAccountSwitcher(BuildContext context) {
     useRootNavigator: true,
     context: context,
     builder: (context) {
-      return BlocBuilder<LocalStore, GlobalState>(
+      return BlocBuilder<LocalStore, LocalStoreModel>(
         builder: (context, state) {
           return Column(
             mainAxisSize: MainAxisSize.min,

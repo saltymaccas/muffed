@@ -29,7 +29,7 @@ class ProfilePage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, GlobalState>(
+    return BlocBuilder<LocalStore, LocalStoreModel>(
       builder: (context, state) {
         if (state.isLoggedIn) {
           return const _LoggedInProfileView();
@@ -90,7 +90,7 @@ class _LoggedInProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final globalBloc = context.read<LocalStore>();
 
-    return BlocBuilder<LocalStore, GlobalState>(
+    return BlocBuilder<LocalStore, LocalStoreModel>(
       builder: (context, state) {
         return BlocProvider(
           create: (context) => ContentScrollBloc(

@@ -170,7 +170,7 @@ class HomePage extends MPage<void> {
                   builder: (context) {
                     return MultiBlocListener(
                       listeners: [
-                        BlocListener<LocalStore, GlobalState>(
+                        BlocListener<LocalStore, LocalStoreModel>(
                           listenWhen: (previous, current) {
                             return previous.currentLemmyEndPointIdentifyer !=
                                 current.currentLemmyEndPointIdentifyer;

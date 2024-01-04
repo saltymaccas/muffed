@@ -53,7 +53,7 @@ class _AppTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, GlobalState>(
+    return BlocBuilder<LocalStore, LocalStoreModel>(
       buildWhen: (previous, current) {
         if (previous.useDynamicColorScheme != current.useDynamicColorScheme) {
           return true;

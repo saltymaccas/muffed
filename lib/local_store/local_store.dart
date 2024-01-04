@@ -6,21 +6,22 @@ import 'package:logging/logging.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/repo/lemmy/models/models.dart';
 
-part 'models.dart';
+part 'models/models.dart';
 part 'models.g.dart';
 
 final _log = Logger('GlobalBloc');
 
 /// The bloc that controls the global app state
-class LocalStore extends HydratedCubit<GlobalState> {
-  LocalStore() : super(const GlobalState());
+class LocalStore extends HydratedCubit<LocalStoreModel> {
+  LocalStore() : super(const LocalStoreModel());
 
   static LocalStore of(BuildContext context) =>
       BlocProvider.of<LocalStore>(context);
 
   @override
-  GlobalState fromJson(Map<String, dynamic> json) => GlobalState.fromMap(json);
+  LocalStoreModel fromJson(Map<String, dynamic> json) =>
+      LocalStoreModel.fromMap(json);
 
   @override
-  Map<String, dynamic> toJson(GlobalState state) => state.toMap();
+  Map<String, dynamic> toJson(LocalStoreModel state) => state.toMap();
 }

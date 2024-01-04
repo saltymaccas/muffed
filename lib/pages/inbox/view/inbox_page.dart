@@ -12,7 +12,7 @@ class InboxPage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocalStore, GlobalState>(
+    return BlocBuilder<LocalStore, LocalStoreModel>(
       builder: (context, state) {
         if (!state.isLoggedIn) {
           return const Center(
