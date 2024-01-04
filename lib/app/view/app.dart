@@ -2,6 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/db/models/app_look.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
@@ -55,132 +56,84 @@ class _AppTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DB, DBModel>(
       buildWhen: (previous, current) {
-        if (previous.useDynamicColorScheme != current.useDynamicColorScheme) {
-          return true;
-        }
-        if (previous.seedColor != current.seedColor) {
-          return true;
-        }
-        if (previous.themeMode != current.themeMode) {
-          return true;
-        }
-        if (previous.titleTextScaleFactor != current.titleTextScaleFactor) {
-          return true;
-        }
-        if (previous.labelTextScaleFactor != current.labelTextScaleFactor) {
-          return true;
-        }
-        if (previous.bodyTextScaleFactor != current.bodyTextScaleFactor) {
-          return true;
-        }
-        if (previous.useDynamicColorScheme != current.useDynamicColorScheme) {
-          return true;
-        }
-        if (previous.seedColor != current.seedColor) {
-          return true;
-        }
-        if (previous.themeMode != current.themeMode) {
+        if (previous.appLook != current.appLook) {
           return true;
         }
         return false;
       },
       builder: (context, state) {
-        /// TODO: improve how text is made (probably use tapography.material contructor)
-
         return DynamicColorBuilder(
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-            final textTheme = Theme.of(context).textTheme;
-            // Changes the sizes of the text to match the user preferences
-            final adjustedTextTheme = textTheme.copyWith(
-              titleLarge: textTheme.titleLarge!.apply(
-                fontSizeFactor: state.titleTextScaleFactor,
-              ),
-              titleMedium: textTheme.titleMedium!.apply(
-                fontSizeFactor: state.titleTextScaleFactor,
-              ),
-              titleSmall: textTheme.titleSmall!.apply(
-                fontSizeFactor: state.titleTextScaleFactor,
-              ),
-              labelLarge: textTheme.labelLarge!.apply(
-                fontSizeFactor: state.labelTextScaleFactor,
-              ),
-              labelMedium: textTheme.labelMedium!.apply(
-                fontSizeFactor: state.labelTextScaleFactor,
-              ),
-              labelSmall: textTheme.labelSmall!.apply(
-                fontSizeFactor: state.labelTextScaleFactor,
-              ),
-              bodyLarge: textTheme.bodyLarge!.apply(
-                fontSizeFactor: state.bodyTextScaleFactor,
-              ),
-              bodyMedium: textTheme.bodyMedium!.apply(
-                fontSizeFactor: state.bodyTextScaleFactor,
-              ),
-              bodySmall: textTheme.bodySmall!.apply(
-                fontSizeFactor: state.bodyTextScaleFactor,
-              ),
+            final lightColorScheme = lightDynamic ??
+                ColorScheme.fromSeed(
+                  seedColor: state.appLook.seedColor,
+                );
+
+            final darkColorScheme = darkDynamic ??
+                ColorScheme.fromSeed(
+                  seedColor: state.appLook.seedColor,
+                  brightness: Brightness.dark,
+                );
+
+            final lightTextTheme = Typography.material2021(
+              colorScheme: lightColorScheme,
+            ).englishLike;
+            final darkTextTheme =
+                Typography.material2021(colorScheme: darkColorScheme)
+                    .englishLike;
+
+            final lightTheme = ThemeData.from(
+              colorScheme: lightColorScheme,
+              textTheme: _adjustTextTheme(lightTextTheme, state.appLook),
+              useMaterial3: true,
             );
 
-            final lightColorScheme = ColorScheme.fromSeed(
-              seedColor: state.seedColor,
+            final darkTheme = ThemeData.from(
+              colorScheme: darkColorScheme,
+              textTheme: darkTextTheme,
+              useMaterial3: true,
             );
 
-            final lightTheme = lightDynamic != null
-                ? ThemeData.from(
-                    colorScheme: lightDynamic,
-                    useMaterial3: true,
-                    textTheme: adjustedTextTheme.apply(
-                      bodyColor: lightDynamic.onSurface,
-                      displayColor: lightDynamic.onSurface,
-                    ),
-                  )
-                : ThemeData.from(
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: state.seedColor,
-                    ),
-                    useMaterial3: true,
-                    textTheme: adjustedTextTheme.apply(
-                      bodyColor: lightColorScheme.onSurface,
-                      displayColor: lightColorScheme.onSurface,
-                    ),
-                  ).copyWith(
-                    extensions: [
-                      const AnimationThemeData(),
-                    ],
-                  );
-
-            final darkColorScheme = ColorScheme.fromSeed(
-              seedColor: state.seedColor,
-              brightness: Brightness.dark,
+            return _AppView(
+              lightTheme,
+              darkTheme,
+              state.appLook.colorSchemeMode,
             );
-
-            final darkTheme = (darkDynamic != null
-                    ? ThemeData.from(
-                        colorScheme: darkDynamic,
-                        useMaterial3: true,
-                        textTheme: adjustedTextTheme.apply(
-                          bodyColor: darkDynamic.onSurface,
-                          displayColor: darkDynamic.onSurface,
-                        ),
-                      )
-                    : ThemeData.from(
-                        colorScheme: darkColorScheme,
-                        textTheme: adjustedTextTheme.apply(
-                          bodyColor: darkColorScheme.onSurface,
-                          displayColor: darkColorScheme.onSurface,
-                        ),
-                        useMaterial3: true,
-                      ))
-                .copyWith(
-              extensions: [
-                const AnimationThemeData(),
-              ],
-            );
-
-            return _AppView(lightTheme, darkTheme, state.themeMode);
           },
         );
       },
     );
   }
+}
+
+TextTheme _adjustTextTheme(TextTheme textTheme, AppLookModel config) {
+  return textTheme.copyWith(
+    titleLarge: textTheme.titleLarge!.apply(
+      fontSizeFactor: config.titleTextScaleFactor,
+    ),
+    titleMedium: textTheme.titleMedium!.apply(
+      fontSizeFactor: config.titleTextScaleFactor,
+    ),
+    titleSmall: textTheme.titleSmall!.apply(
+      fontSizeFactor: config.titleTextScaleFactor,
+    ),
+    labelLarge: textTheme.labelLarge!.apply(
+      fontSizeFactor: config.labelTextScaleFactor,
+    ),
+    labelMedium: textTheme.labelMedium!.apply(
+      fontSizeFactor: config.labelTextScaleFactor,
+    ),
+    labelSmall: textTheme.labelSmall!.apply(
+      fontSizeFactor: config.labelTextScaleFactor,
+    ),
+    bodyLarge: textTheme.bodyLarge!.apply(
+      fontSizeFactor: config.bodyTextScaleFactor,
+    ),
+    bodyMedium: textTheme.bodyMedium!.apply(
+      fontSizeFactor: config.bodyTextScaleFactor,
+    ),
+    bodySmall: textTheme.bodySmall!.apply(
+      fontSizeFactor: config.bodyTextScaleFactor,
+    ),
+  );
 }
