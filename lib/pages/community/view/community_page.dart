@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
+import 'package:muffed/interfaces/lemmy/models/extenstion.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/create_post/views/create_post_page.dart';
 import 'package:muffed/pages/search/search.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/models.dart';
 import 'package:muffed/widgets/content_scroll/bloc/bloc.dart';
 import 'package:muffed/widgets/popup_menu/popup_menu.dart';
@@ -13,11 +14,11 @@ class CommunityPage extends MPage<void> {
   CommunityPage({
     int? communityId,
     String? communityName,
-    this.community,
-  })  : communityId = communityId ?? community?.id,
-        communityName = communityName ?? community?.name,
+    this.communityView,
+  })  : communityId = communityId ?? communityView?.community.id,
+        communityName = communityName ?? communityView?.community.name,
         assert(
-          communityId != null || communityName != null || community != null,
+          communityId != null || communityName != null || communityView != null,
           'No community defined',
         );
 
@@ -32,7 +33,7 @@ class CommunityPage extends MPage<void> {
   /// If this is set to null the information will be loaded from the API.
   /// Setting the value will mean the community information can be shown
   /// instantly
-  final LemmyCommunity? community;
+  final CommunityView? communityView;
 
   @override
   Widget build(BuildContext context) {
@@ -41,33 +42,25 @@ class CommunityPage extends MPage<void> {
         BlocProvider<CommunityScreenBloc>(
           create: (context) => CommunityScreenBloc(
             communityId: communityId,
-            community: community,
+            communityView: communityView,
             communityName: communityName,
-            repo: context.read<ServerRepo>(),
+            lemClient: context.lemmy,
           )..add(InitialiseCommunityScreen()),
-        ),
-        BlocProvider<ContentScrollBloc<LemmyPost>>(
-          create: (context) => ContentScrollBloc(
-            contentRetriever: CommunityScreenPostRetrieverDelegate(
-              sortType: LemmySortType.hot,
-              repo: context.read<ServerRepo>(),
-              communityId: communityId,
-            ),
-          )..add(LoadInitialItems()),
         ),
       ],
       child: Builder(
         builder: (context) {
           final contentScrollBloc =
-              context.read<ContentScrollBloc<LemmyPost>>();
+              context.read<ContentScrollBloc<Post>>();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            void changeSortType(LemmySortType sortType) {
-              context.read<ContentScrollBloc<LemmyPost>>().add(
+            void changeSortType(SortType sortType) {
+              // FIXME:
+              context.read<ContentScrollBloc<Post>>().add(
                     RetrieveContentDelegateChanged(
                       (contentScrollBloc.state.contentDelegate
-                              as CommunityScreenPostRetrieverDelegate)
-                          .copyWith(sortType: sortType),
+                              )
+                          ,
                     ),
                   );
             }
@@ -87,34 +80,32 @@ class CommunityPage extends MPage<void> {
                 icon: const Icon(Icons.search),
                 visualDensity: VisualDensity.compact,
               ),
-              BlocBuilder<ContentScrollBloc<LemmyPost>,
-                  ContentScrollState<LemmyPost>>(
+              BlocBuilder<ContentScrollBloc<Post>,
+                  ContentScrollState<Post>>(
                 bloc: contentScrollBloc,
                 builder: (context, state) {
                   return MuffedPopupMenuButton(
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(Icons.sort),
-                    selectedValue: (state.contentDelegate
-                            as CommunityScreenPostRetrieverDelegate)
-                        .sortType,
+                    selectedValue: SortType.hot,
                     items: [
                       MuffedPopupMenuItem(
                         title: 'Hot',
                         icon: const Icon(Icons.local_fire_department),
-                        value: LemmySortType.hot,
-                        onTap: () => changeSortType(LemmySortType.hot),
+                        value: SortType.hot,
+                        onTap: () => changeSortType(SortType.hot),
                       ),
                       MuffedPopupMenuItem(
                         title: 'Active',
                         icon: const Icon(Icons.rocket_launch),
-                        value: LemmySortType.active,
-                        onTap: () => changeSortType(LemmySortType.active),
+                        value: SortType.active,
+                        onTap: () => changeSortType(SortType.active),
                       ),
                       MuffedPopupMenuItem(
                         title: 'New',
                         icon: const Icon(Icons.auto_awesome),
-                        value: LemmySortType.latest,
-                        onTap: () => changeSortType(LemmySortType.latest),
+                        value: SortType.new_,
+                        onTap: () => changeSortType(SortType.new_),
                       ),
                       MuffedPopupMenuExpandableItem(
                         title: 'Top',
@@ -122,52 +113,52 @@ class CommunityPage extends MPage<void> {
                           MuffedPopupMenuItem(
                             title: 'All Time',
                             icon: const Icon(Icons.military_tech),
-                            value: LemmySortType.topAll,
-                            onTap: () => changeSortType(LemmySortType.topAll),
+                            value: SortType.topAll,
+                            onTap: () => changeSortType(SortType.topAll),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Year',
                             icon: const Icon(Icons.calendar_today),
-                            value: LemmySortType.topYear,
-                            onTap: () => changeSortType(LemmySortType.topYear),
+                            value: SortType.topYear,
+                            onTap: () => changeSortType(SortType.topYear),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Month',
                             icon: const Icon(Icons.calendar_month),
-                            value: LemmySortType.topMonth,
-                            onTap: () => changeSortType(LemmySortType.topMonth),
+                            value: SortType.topMonth,
+                            onTap: () => changeSortType(SortType.topMonth),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Week',
                             icon: const Icon(Icons.view_week),
-                            value: LemmySortType.topWeek,
-                            onTap: () => changeSortType(LemmySortType.topWeek),
+                            value: SortType.topWeek,
+                            onTap: () => changeSortType(SortType.topWeek),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Day',
                             icon: const Icon(Icons.view_day),
-                            value: LemmySortType.topDay,
-                            onTap: () => changeSortType(LemmySortType.topDay),
+                            value: SortType.topDay,
+                            onTap: () => changeSortType(SortType.topDay),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Twelve Hours',
                             icon: const Icon(Icons.schedule),
-                            value: LemmySortType.topTwelveHour,
+                            value: SortType.topTwelveHour,
                             onTap: () =>
-                                changeSortType(LemmySortType.topTwelveHour),
+                                changeSortType(SortType.topTwelveHour),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Six Hours',
                             icon: const Icon(Icons.view_module_outlined),
-                            value: LemmySortType.topSixHour,
+                            value: SortType.topSixHour,
                             onTap: () =>
-                                changeSortType(LemmySortType.topSixHour),
+                                changeSortType(SortType.topSixHour),
                           ),
                           MuffedPopupMenuItem(
                             title: 'Hour',
                             icon: const Icon(Icons.hourglass_bottom),
-                            value: LemmySortType.topHour,
-                            onTap: () => changeSortType(LemmySortType.topHour),
+                            value: SortType.topHour,
+                            onTap: () => changeSortType(SortType.topHour),
                           ),
                         ],
                       ),
@@ -177,16 +168,16 @@ class CommunityPage extends MPage<void> {
                           MuffedPopupMenuItem(
                             title: 'Most Comments',
                             icon: const Icon(Icons.comment_bank),
-                            value: LemmySortType.mostComments,
+                            value: SortType.mostComments,
                             onTap: () =>
-                                changeSortType(LemmySortType.mostComments),
+                                changeSortType(SortType.mostComments),
                           ),
                           MuffedPopupMenuItem(
                             title: 'New Comments',
                             icon: const Icon(Icons.add_comment),
-                            value: LemmySortType.newComments,
+                            value: SortType.newComments,
                             onTap: () =>
-                                changeSortType(LemmySortType.newComments),
+                                changeSortType(SortType.newComments),
                           ),
                         ],
                       ),
@@ -199,7 +190,7 @@ class CommunityPage extends MPage<void> {
                   onPressed: () {
                     context.pushPage(
                       CreatePostPage(
-                        communityId: communityId ?? community!.id,
+                        communityId: communityId ?? communityView!.community.id,
                       ),
                     );
                   },
@@ -208,7 +199,7 @@ class CommunityPage extends MPage<void> {
                 ),
             ]);
           });
-          return const CommunityView();
+          return const CommunityDisplay();
         },
       ),
     );

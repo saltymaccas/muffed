@@ -2,7 +2,6 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/theme_config/theme_config.dart';
 
@@ -18,10 +17,7 @@ class App extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) {
-          return RepositoryProvider(
-            create: (context) => ServerRepo(context.read<DB>()),
-            child: const _AppTheme(),
-          );
+          return const _AppTheme();
         },
       ),
     );

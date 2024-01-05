@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:lemmy_api_client/pictrs.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/db/models/auth.dart';
 

@@ -9,11 +9,11 @@ class CommentState extends Equatable {
     this.loadingChildren = false,
   });
 
-  final List<LemmyComment> children;
-  final LemmyComment comment;
+  final List<CommentView> children;
+  final CommentView comment;
   final MException? error;
   final bool loadingChildren;
-  final LemmyCommentSortType sortType;
+  final CommentSortType sortType;
 
   @override
   List<Object?> get props => [
@@ -25,9 +25,9 @@ class CommentState extends Equatable {
       ];
 
   CommentState copyWith({
-    LemmyCommentSortType? sortType,
-    List<LemmyComment>? children,
-    LemmyComment? comment,
+    CommentSortType? sortType,
+    List<CommentView>? children,
+    CommentView? comment,
     MException? error,
     bool? loadingChildren,
   }) {

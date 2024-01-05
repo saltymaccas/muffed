@@ -32,11 +32,11 @@ class _CardCommentView extends StatelessWidget {
                           InkWell(
                             onTap: () => context.pushPage(
                               PostPage(
-                                postId: state.comment.postId,
+                                postId: state.comment.comment.postId,
                               ),
                             ),
                             child: Text(
-                              state.comment.postTitle,
+                              state.comment.post.name,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ),
@@ -59,14 +59,14 @@ class _CardCommentView extends StatelessWidget {
                                 onTap: () {
                                   context.pushPage(
                                     CommunityPage(
-                                      communityId: state.comment.communityId,
+                                      communityId: state.comment.community.id,
                                       communityName:
-                                          state.comment.communityName,
+                                          state.comment.community.name,
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  state.comment.communityName,
+                                  state.comment.community.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!

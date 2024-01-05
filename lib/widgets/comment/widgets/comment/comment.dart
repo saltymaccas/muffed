@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/models/extenstion.dart';
 import 'package:muffed/pages/community/community.dart';
 import 'package:muffed/pages/post_page/view/post_page.dart';
 import 'package:muffed/pages/user/user.dart';
@@ -19,15 +21,15 @@ part 'tree_view.dart';
 class CommentCardWidget extends StatelessWidget {
   const CommentCardWidget({
     required this.comment,
-    this.sortType = LemmyCommentSortType.hot,
+    this.sortType = CommentSortType.hot,
     this.children = const [],
     this.trailingPostTitle,
     super.key,
   });
 
-  final LemmyComment comment;
-  final List<LemmyComment> children;
-  final LemmyCommentSortType sortType;
+  final CommentView comment;
+  final List<CommentView> children;
+  final CommentSortType sortType;
   final Widget? trailingPostTitle;
 
   @override
@@ -38,8 +40,8 @@ class CommentCardWidget extends StatelessWidget {
         comment: comment,
         children: children,
         sortType: sortType,
-        repo: context.read<ServerRepo>(),
-        globalBloc: context.read<DB>(),
+        lemmy: context.lemmy,
+        globalBloc: context.db,
       ),
       child: Builder(
         builder: (context) {
@@ -64,9 +66,9 @@ class CommentTreeItemWidget extends StatelessWidget {
     super.key,
   });
 
-  final LemmyComment comment;
-  final List<LemmyComment> children;
-  final LemmyCommentSortType sortType;
+  final CommentView comment;
+  final List<CommentView> children;
+  final CommentSortType sortType;
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +78,8 @@ class CommentTreeItemWidget extends StatelessWidget {
         comment: comment,
         children: children,
         sortType: sortType,
-        repo: context.read<ServerRepo>(),
-        globalBloc: context.read<DB>(),
+        lemmy: context.lemmy,
+        globalBloc: context.db, 
       ),
       child: Builder(
         builder: (context) {

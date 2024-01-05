@@ -1,9 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
 
+part 'bloc.freezed.dart';
 part 'event.dart';
 part 'state.dart';
 
@@ -13,111 +14,71 @@ final _log = Logger('CommunityScreenBloc');
 class CommunityScreenBloc
     extends Bloc<CommunityScreenEvent, CommunityScreenState> {
   CommunityScreenBloc({
-    required this.repo,
-    LemmyCommunity? community,
+    required this.lemClient,
+    CommunityView? communityView,
     String? communityName,
     int? communityId,
-  })  : communityName = communityName ?? community?.name,
-        communityId = communityId ?? community?.id,
+  })  : communityName = communityName ?? communityView?.community.name,
+        communityId = communityId ?? communityView?.community.id,
         assert(
-          communityName != null || communityId != null || community != null,
+          communityName != null || communityId != null,
           'No community defined',
         ),
-        super(
-          CommunityScreenState(
-            community: community,
-          ),
-        ) {
+        super(CommunityScreenState(
+          communityStatus: CommunityStatus.initial,
+          isLoading: false,
+          communityView: communityView,
+        )) {
     on<InitialiseCommunityScreen>((event, emit) async {
-      // get community info if none were passed in
-      if (state.community == null) {
-        emit(
-          state.copyWith(
-            communityStatus: CommunityStatus.loading,
-            fullCommunityInfoStatus: CommunityStatus.loading,
-          ),
+      emit(
+        state.copyWith(
+          communityStatus: CommunityStatus.loading,
+        ),
+      );
+
+      try {
+        final response = await lemClient.getCommunity(
+          id: communityId,
+          name: communityName,
         );
 
-        try {
-          final community = await repo.lemmyRepo
-              .getCommunity(id: communityId, name: communityName);
-
-          emit(
-            state.copyWith(
-              community: community,
-              communityStatus: CommunityStatus.success,
-            ),
-          );
-        } catch (exc, stackTrace) {
-          final exception = MException(exc, stackTrace)..log(_log);
-          emit(
-            state.copyWith(
-              communityStatus: CommunityStatus.failure,
-              exception: exception,
-            ),
-          );
-        }
-      } else {
-        emit(state.copyWith(communityStatus: CommunityStatus.success));
-      }
-
-      // if community is loaded check if it is fully loaded, if not fully load
-      // it
-      if (state.communityStatus == CommunityStatus.success) {
-        if (!state.community!.isFullyLoaded) {
-          emit(
-            state.copyWith(fullCommunityInfoStatus: CommunityStatus.loading),
-          );
-
-          try {
-            final community = await repo.lemmyRepo.getCommunity(
-              id: state.community!.id,
-              name: state.community!.name,
-            );
-
-            emit(
-              state.copyWith(
-                community: community,
-                fullCommunityInfoStatus: CommunityStatus.success,
-              ),
-            );
-          } catch (err, stackTrace) {
-            final exception = MException(err, stackTrace)..log(_log);
-            emit(
-              state.copyWith(
-                fullCommunityInfoStatus: CommunityStatus.failure,
-                exception: exception,
-              ),
-            );
-          }
-        } else {
-          emit(
-            state.copyWith(fullCommunityInfoStatus: CommunityStatus.success),
-          );
-        }
+        emit(
+          state.copyWith(
+            communityView: response.communityView,
+            discussionLanguages: response.discussionLanguages,
+            moderators: response.moderators,
+            site: response.site,
+            communityStatus: CommunityStatus.success,
+          ),
+        );
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
+        emit(
+          state.copyWith(
+            communityStatus: CommunityStatus.failure,
+            exception: exception,
+          ),
+        );
       }
     });
     on<ToggledSubscribe>((event, emit) async {
-      final lastSubscribedType = state.community!.subscribed;
+      final lastSubscribedType = state.communityView!.subscribed;
+      final newSubscribedType = lastSubscribedType == SubscribedType.subscribed
+          ? SubscribedType.notSubscribed
+          : SubscribedType.pending;
       emit(
-        state.copyWith(
-          community: state.community!.copyWith(
-            subscribed: (state.community!.subscribed ==
-                    LemmySubscribedType.notSubscribed)
-                ? LemmySubscribedType.pending
-                : LemmySubscribedType.notSubscribed,
-          ),
-        ),
+        state.copyWith.communityView!(subscribed: newSubscribedType),
       );
       try {
-        final result = await repo.lemmyRepo.followCommunity(
-          communityId: state.community!.id,
+        final response = await lemClient.followCommunity(
+          communityId: state.communityView!.community.id,
           follow:
-              state.community!.subscribed != LemmySubscribedType.notSubscribed,
+              state.communityView!.subscribed != SubscribedType.notSubscribed,
         );
         emit(
           state.copyWith(
-            community: state.community!.copyWith(subscribed: result),
+            communityView: response.communityView,
+            discussionLanguages: response.discussionLanguages,
           ),
         );
       } catch (exc, stackTrace) {
@@ -125,50 +86,34 @@ class CommunityScreenBloc
         emit(
           state.copyWith(
             exception: exception,
-            community:
-                state.community!.copyWith(subscribed: lastSubscribedType),
+            communityView: state.communityView!.copyWith(
+              subscribed: lastSubscribedType,
+            ),
           ),
         );
       }
     });
     on<BlockToggled>((event, emit) async {
-      if (state.community!.blocked != null) {
-        emit(
-          state.copyWith(
-            community:
-                state.community!.copyWith(blocked: !state.community!.blocked!),
-          ),
+      final lastBlocked = state.communityView!.blocked;
+      final newBlocked = !lastBlocked;
+
+      emit(
+        state.copyWith.communityView!(blocked: newBlocked),
+      );
+      try {
+        final response = await lemClient.blockCommunity(
+          communityId: state.communityView!.community.id,
+          block: newBlocked,
         );
-        try {
-          final response = await repo.lemmyRepo.BlockCommunity(
-            id: state.community!.id,
-            block: state.community!.blocked!,
-          );
-          emit(
-            state.copyWith(
-              community: state.community!.copyWith(blocked: response),
-            ),
-          );
-        } catch (exc, stackTrace) {
-          final exception = MException(exc, stackTrace)..log(_log);
-          emit(
-            state.copyWith(
-              community: state.community!
-                  .copyWith(blocked: !state.community!.blocked!),
-              exception: exception,
-            ),
-          );
-        }
-      } else {
-        final exception = MException(
-          Exception(
-            'Tried to toggle block when block = null',
-          ),
-          StackTrace.current,
-        )..log(_log);
+        emit(
+          state.copyWith(communityView: response.communityView),
+        );
+      } catch (exc, stackTrace) {
+        final exception = MException(exc, stackTrace)..log(_log);
         emit(
           state.copyWith(
             exception: exception,
+            communityView: state.communityView!.copyWith(blocked: lastBlocked),
           ),
         );
       }
@@ -181,5 +126,5 @@ class CommunityScreenBloc
   /// Used get the community if it is not provided
   final int? communityId;
 
-  final ServerRepo repo;
+  final LemmyClient lemClient;
 }

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -14,10 +14,10 @@ final _log = Logger('CommentBloc');
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   ///
   CommentBloc({
-    required LemmyComment comment,
-    required List<LemmyComment> children,
-    required LemmyCommentSortType sortType,
-    required this.repo,
+    required CommentView comment,
+    required List<CommentView> children,
+    required CommentSortType sortType,
+    required this.lemmy,
     required this.globalBloc,
   }) : super(
           CommentState(
@@ -30,13 +30,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       emit(state.copyWith(loadingChildren: true));
 
       try {
-        final response = await repo.lemmyRepo.getComments(
-          postId: comment.postId,
-          parentId: comment.id,
-          sortType: state.sortType,
+        final response = await lemmy.getComments(
+          postId: state.comment.comment.postId,
+          parentId: state.comment.comment.postId,
+          sort: state.sortType,
         );
 
-        emit(state.copyWith(children: response, loadingChildren: false));
+        emit(state.copyWith(
+            children: response.comments, loadingChildren: false));
       } catch (exc, stackTrace) {
         final exception = MException(exc, stackTrace)..log(_log);
         emit(state.copyWith(error: exception, loadingChildren: false));
@@ -45,81 +46,61 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     on<UpvotePressed>(
       (event, emit) {
         if (globalBloc.state.auth.lemmy.loggedIn) {
-          switch (state.comment.myVote) {
-            case (LemmyVoteType.none):
+          if (globalBloc.state.auth.lemmy.loggedIn) {
+            final lastVote = state.comment.myVote;
+            final lastDownVoteCount = state.comment.counts.downvotes;
+            final lastUpVoteCount = state.comment.counts.downvotes;
+
+            late final int newVote;
+            late final int newDownVoteCount;
+            late final int newUpVoteCount;
+
+            switch (state.comment.myVote) {
+              case 0:
+                newVote = 1;
+                newDownVoteCount = lastDownVoteCount;
+                newUpVoteCount = lastUpVoteCount + 1;
+              case 1:
+                newVote = 0;
+                newDownVoteCount = lastDownVoteCount;
+                newUpVoteCount = lastUpVoteCount - 1;
+              case -1:
+                newVote = 1;
+                newDownVoteCount = lastDownVoteCount - 1;
+                newUpVoteCount = lastUpVoteCount + 1;
+            }
+
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  myVote: newVote,
+                  counts: state.comment.counts.copyWith(
+                    downvotes: newDownVoteCount,
+                    upvotes: newUpVoteCount,
+                  ),
+                ),
+              ),
+            );
+            try {
+              lemmy.createCommentLike(
+                commentId: state.comment.comment.id,
+                score: newVote,
+              );
+            } catch (exc, stackTrace) {
+              final exception = MException(exc, stackTrace)..log(_log);
               emit(
                 state.copyWith(
                   comment: state.comment.copyWith(
-                    myVote: LemmyVoteType.upVote,
-                    upVotes: state.comment.upVotes + 1,
+                    myVote: lastVote,
+                    counts: state.comment.counts.copyWith(
+                      downvotes: lastDownVoteCount,
+                      upvotes: lastUpVoteCount,
+                    ),
                   ),
+                  error: exception,
                 ),
               );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.upVote);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      myVote: LemmyVoteType.none,
-                      upVotes: state.comment.upVotes - 1,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
-            case (LemmyVoteType.upVote):
-              emit(
-                state.copyWith(
-                  comment: state.comment.copyWith(
-                    myVote: LemmyVoteType.none,
-                    upVotes: state.comment.upVotes - 1,
-                  ),
-                ),
-              );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.none);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      myVote: LemmyVoteType.upVote,
-                      score: state.comment.upVotes + 1,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
-            case (LemmyVoteType.downVote):
-              emit(
-                state.copyWith(
-                  comment: state.comment.copyWith(
-                    downVotes: state.comment.downVotes - 1,
-                    upVotes: state.comment.upVotes + 1,
-                    myVote: LemmyVoteType.upVote,
-                  ),
-                ),
-              );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.upVote);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      myVote: LemmyVoteType.downVote,
-                      downVotes: state.comment.downVotes + 1,
-                      upVotes: state.comment.upVotes - 1,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
+            }
           }
         }
       },
@@ -128,81 +109,57 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     on<DownvotePressed>(
       (event, emit) {
         if (globalBloc.state.auth.lemmy.loggedIn) {
+          final lastVote = state.comment.myVote;
+          final lastDownVoteCount = state.comment.counts.downvotes;
+          final lastUpVoteCount = state.comment.counts.downvotes;
+
+          late final int newVote;
+          late final int newDownVoteCount;
+          late final int newUpVoteCount;
+
           switch (state.comment.myVote) {
-            case LemmyVoteType.none:
-              emit(
-                state.copyWith(
-                  comment: state.comment.copyWith(
-                    downVotes: state.comment.downVotes + 1,
-                    myVote: LemmyVoteType.downVote,
+            case 0:
+              newVote = -1;
+              newDownVoteCount = lastDownVoteCount + 1;
+              newUpVoteCount = lastUpVoteCount;
+            case 1:
+              newVote = -1;
+              newDownVoteCount = lastDownVoteCount + 1;
+              newUpVoteCount = lastUpVoteCount - 1;
+            case -1:
+              newVote = 0;
+              newDownVoteCount = lastDownVoteCount - 1;
+              newUpVoteCount = lastUpVoteCount;
+          }
+
+          emit(
+            state.copyWith(
+              comment: state.comment.copyWith(
+                counts: state.comment.counts.copyWith(
+                  downvotes: newDownVoteCount,
+                  upvotes: newUpVoteCount,
+                ),
+                myVote: newVote,
+              ),
+            ),
+          );
+          try {
+            lemmy.createCommentLike(
+                commentId: state.comment.comment.id, score: newVote);
+          } catch (exc, stackTrace) {
+            final exception = MException(exc, stackTrace)..log(_log);
+            emit(
+              state.copyWith(
+                comment: state.comment.copyWith(
+                  myVote: lastVote,
+                  counts: state.comment.counts.copyWith(
+                    downvotes: lastDownVoteCount,
+                    upvotes: lastUpVoteCount,
                   ),
                 ),
-              );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.downVote);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      myVote: LemmyVoteType.none,
-                      downVotes: state.comment.downVotes - 1,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
-            case LemmyVoteType.upVote:
-              emit(
-                state.copyWith(
-                  comment: state.comment.copyWith(
-                    downVotes: state.comment.downVotes + 1,
-                    upVotes: state.comment.upVotes - 1,
-                    myVote: LemmyVoteType.downVote,
-                  ),
-                ),
-              );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.downVote);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      upVotes: state.comment.upVotes + 1,
-                      downVotes: state.comment.downVotes - 1,
-                      myVote: LemmyVoteType.upVote,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
-            case LemmyVoteType.downVote:
-              emit(
-                state.copyWith(
-                  comment: state.comment.copyWith(
-                    myVote: LemmyVoteType.none,
-                    downVotes: state.comment.downVotes - 1,
-                  ),
-                ),
-              );
-              try {
-                repo.lemmyRepo
-                    .voteComment(state.comment.id, LemmyVoteType.none);
-              } catch (exc, stackTrace) {
-                final exception = MException(exc, stackTrace)..log(_log);
-                emit(
-                  state.copyWith(
-                    comment: state.comment.copyWith(
-                      downVotes: state.comment.downVotes + 1,
-                      myVote: LemmyVoteType.downVote,
-                    ),
-                    error: exception,
-                  ),
-                );
-              }
+                error: exception,
+              ),
+            );
           }
         }
       },
@@ -210,6 +167,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     );
   }
 
-  final ServerRepo repo;
+  final LemmyClient lemmy;
   final DB globalBloc;
 }

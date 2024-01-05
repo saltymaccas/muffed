@@ -13,7 +13,7 @@ class _BareCommentWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _CommentHeader(),
-            MuffedMarkdownBody(data: state.comment.content),
+            MuffedMarkdownBody(data: state.comment.comment.content),
             const _CommentFooter(),
             if (buildChildren)
               _CommentChildrenInColumn(
@@ -21,7 +21,7 @@ class _BareCommentWidget extends StatelessWidget {
                 state.children,
                 state.sortType,
               ),
-            if (state.comment.childCount > 0 && state.children.isEmpty)
+            if (state.comment.counts.childCount > 0 && state.children.isEmpty)
               const _CommentLoadChildrenButton(),
           ],
         );
@@ -37,9 +37,9 @@ class _CommentChildrenInColumn extends StatelessWidget {
     this.sortType,
   );
 
-  final LemmyComment comment;
-  final List<LemmyComment> children;
-  final LemmyCommentSortType sortType;
+  final CommentView comment;
+  final List<CommentView> children;
+  final CommentSortType sortType;
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +49,22 @@ class _CommentChildrenInColumn extends StatelessWidget {
   }
 
   List<Widget> childrenWidgets() {
-    final organisedComments = organiseCommentsWithChildren(
-      comment.level + 1,
-      children,
-    );
+    // FIXME:
 
-    return List.generate(organisedComments.length, (index) {
-      return CommentTreeItemWidget(
-        sortType: sortType,
-        comment: organisedComments[index].comment,
-        children: organisedComments[index].children,
-      );
-    });
+    return [];
+
+    // final organisedComments = organiseCommentsWithChildren(
+    //   comment. + 1,
+    //   children,
+    // );
+
+    // return List.generate(organisedComments.length, (index) {
+    //   return CommentTreeItemWidget(
+    //     sortType: sortType,
+    //     comment: organisedComments[index].comment,
+    //     children: organisedComments[index].children,
+    //   );
+    // });
   }
 }
 
@@ -95,7 +99,7 @@ class _CommentLoadChildrenButton extends StatelessWidget {
               child: Text(
                 state.loadingChildren
                     ? 'Loading...'
-                    : 'Load ${state.comment.childCount} more',
+                    : 'Load ${state.comment.counts.childCount} more',
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: Theme.of(context).colorScheme.secondary,
                     ),
@@ -124,26 +128,24 @@ class _CommentFooter extends StatelessWidget {
               },
               icon: Icon(
                 Icons.arrow_upward_rounded,
-                color: (state.comment.myVote == LemmyVoteType.upVote)
-                    ? Colors.deepOrange
-                    : null,
+                color: (state.comment.myVote == 1) ? Colors.deepOrange : null,
               ),
               visualDensity: VisualDensity.compact,
             ),
-            Text(state.comment.upVotes.toString()),
+            Text('${state.comment.counts.upvotes}'),
             IconButton(
               onPressed: () {
                 context.read<CommentBloc>().add(DownvotePressed());
               },
               icon: Icon(
                 Icons.arrow_downward_rounded,
-                color: (state.comment.myVote == LemmyVoteType.downVote)
+                color: (state.comment.myVote == -1)
                     ? Colors.purple
                     : null,
               ),
               visualDensity: VisualDensity.compact,
             ),
-            Text(state.comment.downVotes.toString()),
+            Text('${state.comment.counts.downvotes}'),
             const SizedBox(
               width: 10,
             ),
@@ -151,8 +153,8 @@ class _CommentFooter extends StatelessWidget {
               onPressed: () {
                 showCreateCommentDialog(
                   context: context,
-                  postId: state.comment.postId,
-                  parentId: state.comment.id,
+                  postId: state.comment.post.id,
+                  parentId: state.comment.post.id,
                 );
               },
               icon: const Icon(Icons.reply),
@@ -168,7 +170,7 @@ class _CommentFooter extends StatelessWidget {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (state.comment.creatorId ==
+                        if (state.comment.creator.id ==
                             context.db.state.auth.lemmy.activeUserId)
                           ListTile(
                             title: const Text('Edit Comment'),
@@ -177,7 +179,7 @@ class _CommentFooter extends StatelessWidget {
                               context.pop();
                               showCreateCommentDialog(
                                 context: context,
-                                postId: state.comment.postId,
+                                postId: state.comment.post.id,
                                 commentBeingEdited: state.comment,
                               );
                             },
@@ -191,8 +193,8 @@ class _CommentFooter extends StatelessWidget {
                                 ..pop()
                                 ..pushPage(
                                   UserPage(
-                                    userId: state.comment.creatorId,
-                                    username: state.comment.creatorName,
+                                    userId: state.comment.creator.id,
+                                    username: state.comment.creator.name,
                                   ),
                                 );
                             },
@@ -222,7 +224,7 @@ class _CommentFooter extends StatelessWidget {
 class _RawCommentPage extends MPage<void> {
   _RawCommentPage(this.comment);
 
-  final LemmyComment comment;
+  final CommentView comment;
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +238,7 @@ class _RawCommentPage extends MPage<void> {
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: SelectableText(
-            comment.content,
+            comment.comment.content,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontFamily: GoogleFonts.jetBrainsMono().fontFamily,
                 ),
@@ -260,13 +262,13 @@ class _CommentHeader extends StatelessWidget {
               onTap: () {
                 context.pushPage(
                   UserPage(
-                    userId: state.comment.creatorId,
-                    username: state.comment.creatorName,
+                    userId: state.comment.creator.id,
+                    username: state.comment.creator.name,
                   ),
                 );
               },
               child: Text(
-                state.comment.creatorName,
+                state.comment.creator.name,
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -277,7 +279,7 @@ class _CommentHeader extends StatelessWidget {
             ),
             Text(
               formattedPostedAgo(
-                state.comment.timePublished,
+                state.comment.comment.published,
               ),
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Theme.of(context).colorScheme.outline,
@@ -285,7 +287,7 @@ class _CommentHeader extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             // Signal if the comment is from op
-            if (state.comment.postCreatorId == state.comment.creatorId) ...[
+            if (state.comment.post.creatorId == state.comment.creator.id) ...[
               Text(
                 'OP',
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
@@ -298,7 +300,7 @@ class _CommentHeader extends StatelessWidget {
             // displays if the user created the comment
 
             if (context.db.state.auth.lemmy.activeUserId != null)
-              if (state.comment.creatorId ==
+              if (state.comment.creator.id ==
                   context.db.state.auth.lemmy.activeUserId)
                 Text(
                   'YOU',

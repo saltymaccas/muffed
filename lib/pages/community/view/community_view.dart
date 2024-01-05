@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/models/placeholders.dart';
 import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
@@ -15,9 +15,11 @@ import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../interfaces/lemmy/lemmy.dart';
+
 /// Displays a specified community and its posts
-class CommunityView extends StatelessWidget {
-  const CommunityView({super.key});
+class CommunityDisplay extends StatelessWidget {
+  const CommunityDisplay({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class CommunityView extends StatelessWidget {
             headerSlivers: [
               SliverPersistentHeader(
                 delegate: _TopBarDelegate(
-                  community: state.community,
+                  communityView: state.communityView,
                   bloc: communityBloc,
                 ),
                 pinned: true,
@@ -61,11 +63,11 @@ class CommunityView extends StatelessWidget {
 class _TopBarDelegate extends SliverPersistentHeaderDelegate {
   _TopBarDelegate({
     required this.bloc,
-    LemmyCommunity? community,
-  })  : usingPlaceholder = community == null,
-        community = community ?? LemmyCommunity.placeHolder();
+    CommunityView? communityView,
+  })  : usingPlaceholder = communityView == null,
+        communityView = communityView ?? communityViewPlaceHolder;
 
-  final LemmyCommunity community;
+  final CommunityView communityView;
 
   final bool usingPlaceholder;
 
@@ -133,13 +135,13 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                           );
                         },
                         blendMode: BlendMode.dstIn,
-                        child: (community.banner != null)
+                        child: (communityView.community.banner != null)
                             ? MuffedImage(
                                 height: (headerMaxHeight - shrinkOffset) *
                                     bannerEnd,
                                 width: double.maxFinite,
                                 fit: BoxFit.cover,
-                                imageUrl: community.banner!,
+                                imageUrl: communityView.community.banner!,
                               )
                             : placeholderBanner,
                       ),
@@ -164,8 +166,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                   Row(
                                     children: [
                                       MuffedAvatar(
-                                        url: community.icon,
-                                        identiconID: community.name,
+                                        url: communityView.community.icon,
+                                        identiconID: communityView.community.name,
                                         radius: 34,
                                       ),
                                       const SizedBox(width: 8),
@@ -177,7 +179,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              community.title,
+                                              communityView.community .title,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
                                               style: Theme.of(context)
@@ -185,7 +187,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                                   .titleLarge,
                                             ),
                                             Text(
-                                              community.tag,
+                                            // replace with tag
+                                            communityView.community.name,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall!
@@ -199,7 +202,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: community.subscribers
+                                                    text: communityView.counts.subscribers
                                                         .toString(),
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -238,7 +241,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                                         ),
                                                   ),
                                                   TextSpan(
-                                                    text: community
+                                                    text:communityView .counts
                                                         .usersActiveDay
                                                         .toString(),
                                                     style: Theme.of(context)
@@ -273,17 +276,17 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                       ),
                                     ],
                                   ),
-                                  if (community.description != null)
+                                  if (communityView.community.description != null)
                                     Builder(
                                       builder: (context) {
                                         // gets only the first paragraph
                                         final matches = RegExp(
                                           r'^.*?\n',
                                           dotAll: true,
-                                        ).firstMatch(community.description!);
+                                        ).firstMatch(communityView.community.description!);
 
                                         final text = matches?.group(0) ??
-                                            community.description!;
+                                            communityView.community.description!;
 
                                         return MuffedMarkdownBody(
                                           maxHeight: 104,
@@ -299,7 +302,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         onPressed: () {
                                           context.pushPage(
                                             CommunityInfoPage(
-                                              community: community,
+                                              communityView: communityView,
                                             ),
                                           );
                                         },
@@ -312,8 +315,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                                 .read<CommunityScreenBloc>()
                                                 .add(ToggledSubscribe());
                                           },
-                                          style: (community.subscribed ==
-                                                  LemmySubscribedType
+                                          style: (communityView.subscribed ==
+                                                  SubscribedType
                                                       .notSubscribed)
                                               ? TextButton.styleFrom(
                                                   backgroundColor:
@@ -335,12 +338,12 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                                           .colorScheme
                                                           .outlineVariant,
                                                 ),
-                                          child: (community.subscribed ==
-                                                  LemmySubscribedType
+                                          child: (communityView.subscribed ==
+                                                  SubscribedType
                                                       .subscribed)
                                               ? const Text('Unsubscribe')
-                                              : (community.subscribed ==
-                                                      LemmySubscribedType
+                                              : (communityView.subscribed ==
+                                                      SubscribedType
                                                           .notSubscribed)
                                                   ? const Text('Subscribe')
                                                   : const Text('Pending'),
@@ -396,15 +399,15 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                               child: Row(
                                 children: [
                                   MuffedAvatar(
-                                    url: community.icon,
-                                    identiconID: community.name,
+                                    url: communityView.community.icon,
+                                    identiconID: communityView.community.name,
                                     radius: 16,
                                   ),
                                   const SizedBox(
                                     width: 8,
                                   ),
                                   Text(
-                                    community.title,
+                                    communityView.community.title,
                                     style:
                                         Theme.of(context).textTheme.titleLarge,
                                   ),
