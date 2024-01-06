@@ -1,13 +1,19 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/db/models/auth.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
 
 final class LemmyClient {
   LemmyClient(BuildContext context) : _db = DB.of(context);
 
   final DB _db;
+
+  String get host => _db.state.auth.lemmy.activeHost;
 
   LemmyApiV3 get lem => LemmyApiV3(_db.state.auth.lemmy.activeHost);
   PictrsApi get pic => PictrsApi(_db.state.auth.lemmy.activeHost);
@@ -305,17 +311,75 @@ final class LemmyClient {
     int? languageId,
     String? auth,
   }) =>
-      lem.run(EditComment(
-        auth: jwt,
-        commentId: commentId,
-        content: content,
-        languageId: languageId,
-      ));
+      lem.run(
+        EditComment(
+          auth: jwt,
+          commentId: commentId,
+          content: content,
+          languageId: languageId,
+        ),
+      );
 
-  Future<PictrsUpload> uploadImage({
+  Stream<ImageUploadState> uploadImage({
     required String filePath,
-  }) =>
-      pic.upload(filePath: filePath);
+    int? id,
+  }) async* {
+    if (jwt == null) {
+      throw Exception('Not logged in');
+    }
 
-      Future<void> deleteImage(PictrsUploadFile pictrsFile) => pic.delete(pictrsFile);
+    final streamController = StreamController<ImageUploadState>();
+
+    await Dio()
+        .post<Map<String, dynamic>>(
+          '$host/pictrs/image',
+          data: FormData.fromMap({
+            'images[]': await MultipartFile.fromFile(filePath),
+          }),
+          options: Options(
+            headers: {
+              'Cookie': 'jwt=${jwt}',
+            },
+          ),
+          onSendProgress: (int sent, int total) {
+            final progress = sent / total;
+            streamController
+                .add(ImageUploadState(uploadProgress: progress, id: id));
+          },
+        )
+        .then((response) {
+          streamController.add(
+            ImageUploadState(
+              id: id,
+              deleteToken: response.data!['files'][0]['delete_token'],
+              uploadProgress: 1,
+              remoteImageName: response.data!['files'][0]['file'],
+              path: '/pictrs/image/',
+              host: host,
+            ),
+          );
+        })
+        .catchError(streamController.addError)
+        .whenComplete(streamController.close);
+
+    yield* streamController.stream;
+  }
+
+  // Future<PictrsUpload> uploadImage({
+  //   required String filePath,
+  // }) =>
+  //     pic.upload(filePath: filePath);
+
+  Future<void> deleteImage({
+    required String deleteToken,
+    required String fileName,
+    required String host,
+  }) async {
+    await Dio().get<Map<String, dynamic>>(
+      '$host/pictrs/image/delete/$deleteToken/$fileName',
+    );
+  }
+
+  // Future<void> deleteImage(PictrsUploadFile pictrsFile) =>
+  //     pic.delete(PictrsUploadFile());
 }

@@ -5,13 +5,14 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/exception/exception.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
 import 'package:muffed/pages/create_post/create_post.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/models/extensions.dart';
 import 'package:muffed/router/models/page.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/image.dart';
-import 'package:muffed/widgets/image_upload_view.dart';
+import 'package:muffed/widgets/.image_upload_view.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/snackbars.dart';
 import 'package:muffed/widgets/url_view.dart';
@@ -31,11 +32,11 @@ class CreatePostPage extends MPage<void> {
   final int? communityId;
 
   /// The community of the community the post will be posted to.
-  final LemmyCommunity? community;
+  final CommunityView? community;
 
   /// If the screen is editing a post rather then creating one set this as
   /// the post being edited.
-  final LemmyPost? postBeingEdited;
+  final PostView? postBeingEdited;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class CreatePostPage extends MPage<void> {
         recipientCommunityId: communityId,
         recipientCommunity: community,
         postBeingEdited: postBeingEdited,
-        repo: context.read<ServerRepo>(),
+        lem: context.lemmy,
       ),
       child: const CreatePostView(),
     );
@@ -239,7 +240,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                               ),
                             )
                           else if (state.image != null)
-                            if (state.image!.imageLink != null)
+                            if (state.image!.imageUrl != null)
                               Stack(
                                 children: [
                                   Container(
@@ -249,7 +250,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                                     child: Center(
                                       child: MuffedImage(
                                         fullScreenable: true,
-                                        imageUrl: state.image!.imageLink!,
+                                        imageUrl: state.image!.imageUrl!,
                                       ),
                                     ),
                                   ),

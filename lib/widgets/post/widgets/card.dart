@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/pages/user/user.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
+import 'package:muffed/pages/.community/community.dart';
+import 'package:muffed/pages/.user/user.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/utils/time.dart';
@@ -26,17 +27,17 @@ class PostViewCard extends StatelessWidget {
 
   /// Creates a card post as a skeleton and with placeholder data
   PostViewCard.loading({
-    LemmyPost? placeHolderData,
+    PostView? placeHolderData,
     PostDisplayType? displayType,
     super.key,
   })  : displayType = displayType ?? PostDisplayType.list,
-        post = placeHolderData ?? LemmyPost.placeHolder(),
+        post = placeHolderData ?? postPlaceHolder,
         openPostCallback = null,
         openMoreMenuCallback = null,
         skeletonise = true;
 
   /// The lemmy post
-  final LemmyPost post;
+  final PostView post;
 
   final PostDisplayType displayType;
 
@@ -72,8 +73,8 @@ class PostViewCard extends StatelessWidget {
                       onTap: () {
                         context.pushPage(
                           CommunityPage(
-                            communityId: post.communityId,
-                            communityName: post.communityName,
+                            communityId: post.community.id,
+                            communityName: post.community.name,
                           ),
                         );
                       },
@@ -83,15 +84,15 @@ class PostViewCard extends StatelessWidget {
                           Row(
                             children: [
                               MuffedAvatar(
-                                url: post.communityIcon,
-                                identiconID: post.communityName,
+                                url: post.community.icon,
+                                identiconID: post.community.name,
                                 radius: 12,
                               ),
                               const SizedBox(
                                 width: 6,
                               ),
                               Text(
-                                post.communityName,
+                                post.community.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelLarge!
@@ -107,12 +108,12 @@ class PostViewCard extends StatelessWidget {
                                 onTap: () {
                                   context.pushPage(
                                     UserPage(
-                                      userId: post.creatorId,
+                                      userId: post.creator.id,
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  post.creatorName,
+                                  post.creator.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
@@ -126,7 +127,7 @@ class PostViewCard extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            '${formattedPostedAgo(post.timePublished)} ago',
+                            '${formattedPostedAgo(post.post.published)} ago',
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge!
@@ -141,7 +142,7 @@ class PostViewCard extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      post.name,
+                      post.post.name,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -149,15 +150,15 @@ class PostViewCard extends StatelessWidget {
               ),
               Column(
                 children: [
-                  if (post.url != null) ...[
+                  if (post.post.url != null) ...[
                     UrlView(
-                      url: post.url!,
-                      nsfw: post.nsfw,
+                      url: post.post.url!,
+                      nsfw: post.post.nsfw,
                       imageFullScreenable:
                           displayType == PostDisplayType.comments,
                     ),
                   ],
-                  if (post.body != '' && post.body != null) ...[
+                  if (post.post.body != '' && post.post.body != null) ...[
                     Padding(
                       padding: const EdgeInsets.all(4),
                       child: Container(
@@ -177,7 +178,7 @@ class PostViewCard extends StatelessWidget {
                             bottom: displayType == PostDisplayType.list ? 0 : 4,
                           ),
                           child: MuffedMarkdownBody(
-                            data: post.body!,
+                            data: post.post.body!,
                             maxHeight: displayType == PostDisplayType.list
                                 ? 300
                                 : null,
@@ -205,7 +206,7 @@ class PostViewCard extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                        Text('${post.commentCount}'),
+                        Text('${post.counts.comments}'),
                       ],
                     ),
                     Row(
@@ -234,7 +235,7 @@ class PostViewCard extends StatelessWidget {
                           ),
                         IconButton(
                           icon: const Icon(Icons.arrow_upward_outlined),
-                          color: (post.myVote == LemmyVoteType.upVote)
+                          color: (post.myVote == 1)
                               ? Colors.deepOrange
                               : null,
                           onPressed: () {
@@ -242,10 +243,10 @@ class PostViewCard extends StatelessWidget {
                           },
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(post.upVotes.toString()),
+                        Text(post.counts.upvotes.toString()),
                         IconButton(
                           icon: const Icon(Icons.arrow_downward_outlined),
-                          color: (post.myVote == LemmyVoteType.downVote)
+                          color: (post.myVote == -1)
                               ? Colors.purple
                               : null,
                           onPressed: () {
@@ -253,7 +254,7 @@ class PostViewCard extends StatelessWidget {
                           },
                           visualDensity: VisualDensity.compact,
                         ),
-                        Text(post.downVotes.toString()),
+                        Text(post.counts.downvotes.toString()),
                         IconButton(
                           onPressed: openMoreMenuCallback,
                           icon: const Icon(Icons.more_vert),

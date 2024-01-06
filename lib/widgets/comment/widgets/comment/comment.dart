@@ -4,14 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/interfaces/lemmy/models/extenstion.dart';
-import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/.community/community.dart';
 import 'package:muffed/pages/post_page/view/post_page.dart';
-import 'package:muffed/pages/user/user.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/pages/.user/user.dart';
 import 'package:muffed/router/models/models.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/widgets/comment/comment.dart';
-import 'package:muffed/widgets/create_comment/create_comment_dialog.dart';
+import 'package:muffed/widgets/.create_comment/create_comment_dialog.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 
 part 'card_view.dart';

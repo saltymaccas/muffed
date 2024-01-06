@@ -30,11 +30,12 @@ class _CardCommentView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           InkWell(
-                            onTap: () => context.pushPage(
-                              PostPage(
-                                postId: state.comment.comment.postId,
-                              ),
-                            ),
+                            // onTap: () => context.pushPage(
+                            //   // FIXME:
+                            //   PostPage(
+                            //     postId: state.comment.comment.postId,
+                            //   ),
+                            // ),
                             child: Text(
                               state.comment.post.name,
                               style: Theme.of(context).textTheme.titleMedium,

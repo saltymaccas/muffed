@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/models/models.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/client/client.dart';
 import 'package:muffed/models/url.dart';
-import 'package:muffed/repo/server_repo.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -15,8 +15,7 @@ final _log = Logger('LoginPageBloc');
 /// when the user gets logged in it will add the credentials to the
 /// [DB]
 class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
-  /// initializes the bloc
-  LoginPageBloc(this.repo, this.globalBloc) : super(const LoginPageState()) {
+  LoginPageBloc(this.lem, this.globalBloc) : super(const LoginPageState()) {
     on<RevealPasswordToggled>((event, emit) {
       emit(state.copyWith(revealPassword: !state.revealPassword));
     });
@@ -28,14 +27,13 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
       emit(state.copyWith(loading: true));
 
       try {
-        final login = await repo.lemmyRepo
-            .login(event.password, totp, event.username, event.serverAddress);
-
-        final getPerson = await repo.lemmyRepo.getPersonWithJwt(
-          jwt: login.jwt,
-          serverAddress: event.serverAddress,
+        final login = await lem.login(
+          usernameOrEmail: event.username,
+          password: event.password,
+          totp2faToken: totp,
         );
-        /// FIXME
+
+  // FIXME:
         // globalBloc.add(
         //   AccountLoggedIn(
         //     LemmyAccountData(
@@ -46,6 +44,11 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
         //     ),
         //   ),
         // );
+
+        final getPerson = await lem.getSite(
+
+        );
+
 
         emit(state.copyWith(loading: false));
 
@@ -58,7 +61,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
   }
 
   /// the server repo used to log the user in
-  final ServerRepo repo;
+  final LemmyClient lem;
 
   /// the global bloc used to add the user credentials when logged in
   final DB globalBloc;

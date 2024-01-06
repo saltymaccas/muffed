@@ -86,7 +86,7 @@ class _CommentLoadChildrenButton extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border(
-                left: (state.comment.path.isNotEmpty)
+                left: (state.comment.comment.path.isNotEmpty)
                     ? BorderSide(
                         color: Theme.of(context).colorScheme.outline,
                         width: 1,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/pages/user/user.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
+import 'package:muffed/pages/.community/community.dart';
+import 'package:muffed/pages/.user/user.dart';
 import 'package:muffed/widgets/comment/comment.dart';
 import 'package:muffed/widgets/post/post.dart';
 
@@ -23,12 +23,10 @@ class ContentBuilderDelegate<Data> {
   }
 }
 
-class LemmyPostContentBuilderDelegate
-    extends ContentBuilderDelegate<LemmyPost> {
+class LemmyPostContentBuilderDelegate extends ContentBuilderDelegate<PostView> {
   @override
-  Widget itemBuilder(BuildContext context, int index, List<LemmyPost> content) {
+  Widget itemBuilder(BuildContext context, int index, List<PostView> content) {
     return PostWidget(
-      key: ValueKey(content[index].id),
       post: content[index],
       form: PostViewForm.card,
       displayType: PostDisplayType.list,
@@ -37,29 +35,32 @@ class LemmyPostContentBuilderDelegate
 }
 
 class LemmyCommentTreeContentBuilderDelegate
-    extends ContentBuilderDelegate<LemmyComment> {
+    extends ContentBuilderDelegate<CommentView> {
   LemmyCommentTreeContentBuilderDelegate(this.sortType);
 
-  final LemmyCommentSortType sortType;
+  final CommentSortType sortType;
 
   @override
   Widget buildSliverList(
     BuildContext context,
-    List<LemmyComment> content, {
+    List<CommentView> content, {
     Key? key,
   }) {
-    final organisedComments = organiseCommentsWithChildren(0, content);
+    // FIXME
+    final organisedComments =
+        content; //organiseCommentsWithChildren(0, content);
 
     return SliverList.builder(
       key: key,
       itemCount: organisedComments.length,
       itemBuilder: (context, index) {
-        return CommentTreeItemWidget(
-          key: ValueKey(organisedComments[index].comment.id),
-          comment: organisedComments[index].comment,
-          children: organisedComments[index].children,
-          sortType: sortType,
-        );
+        // FIXME
+        // return CommentTreeItemWidget(
+        //   key: ValueKey(organisedComments[index].comment.id),
+        //   comment: organisedComments[index].comment,
+        //   children: organisedComments[index].children,
+        //   sortType: sortType,
+        // );
       },
     );
   }

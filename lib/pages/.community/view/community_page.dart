@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/interfaces/lemmy/lemmy.dart';
 import 'package:muffed/interfaces/lemmy/models/extenstion.dart';
-import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/.community/community.dart';
 import 'package:muffed/pages/create_post/views/create_post_page.dart';
 import 'package:muffed/pages/search/search.dart';
 import 'package:muffed/router/models/models.dart';

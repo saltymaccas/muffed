@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/pages/inbox/inbox.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/pages/.inbox/inbox.dart';
 import 'package:muffed/router/models/models.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
@@ -100,55 +99,40 @@ class _RepliesScrollViewState extends State<_RepliesScrollView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider(
-      create: (context) => ContentScrollBloc(
-        contentRetriever: InboxRepliesRetrieverDelegate(
-          repo: context.read<ServerRepo>(),
-          unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
-        ),
-      )..add(LoadInitialItems()),
-      child: Builder(
-        builder: (context) {
-          return BlocListener<InboxBloc, InboxState>(
-            listener: (context, state) {
-              final scrollBloc =
-                  context.read<ContentScrollBloc<LemmyInboxReply>>();
+    return Placeholder();
+    // return BlocProvider(
+    //   create: (context) => ContentScrollBloc(
+    //     contentRetriever: InboxRepliesRetrieverDelegate(
+    //       repo: context.read<ServerRepo>(),
+    //       unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
+    //     ),
+    //   )..add(LoadInitialItems()),
+    //   child: Builder(
+    //     builder: (context) {
+    //       return BlocListener<InboxBloc, InboxState>(
+    //         listener: (context, state) {
+    //           final scrollBloc =
+    //               context.read<ContentScrollBloc<LemmyInboxReply>>();
 
-              scrollBloc.add(
-                RetrieveContentDelegateChanged(
-                  (scrollBloc.state.contentDelegate
-                          as InboxRepliesRetrieverDelegate)
-                      .copyWith(unreadOnly: state.showUnreadOnly),
-                ),
-              );
-            },
-            child: const ContentScrollView(
-              builderDelegate: _RepliesBuilderDelegate(),
-            ),
-          );
-        },
-      ),
-    );
+    //           scrollBloc.add(
+    //             RetrieveContentDelegateChanged(
+    //               (scrollBloc.state.contentDelegate
+    //                       as InboxRepliesRetrieverDelegate)
+    //                   .copyWith(unreadOnly: state.showUnreadOnly),
+    //             ),
+    //           );
+    //         },
+    //         child: const ContentScrollView(
+    //           builderDelegate: _RepliesBuilderDelegate(),
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class _RepliesBuilderDelegate extends ContentBuilderDelegate<LemmyInboxReply> {
-  const _RepliesBuilderDelegate();
-
-  @override
-  Widget itemBuilder(
-    BuildContext context,
-    int index,
-    List<LemmyInboxReply> items,
-  ) {
-    return InboxReplyItem(
-      item: items[index],
-      sortType: LemmyCommentSortType.hot,
-    );
-  }
 }
 
 class _MentionsScrollView extends StatefulWidget {
@@ -163,54 +147,55 @@ class _MentionsScrollViewState extends State<_MentionsScrollView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider(
-      create: (context) => ContentScrollBloc(
-        contentRetriever: InboxMentionsRetrieverDelegate(
-          repo: context.read<ServerRepo>(),
-          unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
-        ),
-      )..add(LoadInitialItems()),
-      child: Builder(
-        builder: (context) {
-          return BlocListener<InboxBloc, InboxState>(
-            listener: (context, state) {
-              final scrollBloc =
-                  context.read<ContentScrollBloc<LemmyInboxMention>>();
+    return Placeholder();
+    // return BlocProvider(
+    //   create: (context) => ContentScrollBloc(
+    //     contentRetriever: InboxMentionsRetrieverDelegate(
+    //       repo: context.read<ServerRepo>(),
+    //       unreadOnly: context.read<InboxBloc>().state.showUnreadOnly,
+    //     ),
+    //   )..add(LoadInitialItems()),
+    //   child: Builder(
+    //     builder: (context) {
+    //       return BlocListener<InboxBloc, InboxState>(
+    //         listener: (context, state) {
+    //           final scrollBloc =
+    //               context.read<ContentScrollBloc<LemmyInboxMention>>();
 
-              scrollBloc.add(
-                RetrieveContentDelegateChanged(
-                  (scrollBloc.state.contentDelegate
-                          as InboxMentionsRetrieverDelegate)
-                      .copyWith(unreadOnly: state.showUnreadOnly),
-                ),
-              );
-            },
-            child: const ContentScrollView(
-              builderDelegate: _MentionsBuilderDelegate(),
-            ),
-          );
-        },
-      ),
-    );
+    //           scrollBloc.add(
+    //             RetrieveContentDelegateChanged(
+    //               (scrollBloc.state.contentDelegate
+    //                       as InboxMentionsRetrieverDelegate)
+    //                   .copyWith(unreadOnly: state.showUnreadOnly),
+    //             ),
+    //           );
+    //         },
+    //         child: const ContentScrollView(
+    //           builderDelegate: _MentionsBuilderDelegate(),
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 
   @override
   bool get wantKeepAlive => true;
 }
 
-class _MentionsBuilderDelegate
-    extends ContentBuilderDelegate<LemmyInboxMention> {
-  const _MentionsBuilderDelegate();
+// class _MentionsBuilderDelegate
+//     extends ContentBuilderDelegate<LemmyInboxMention> {
+//   const _MentionsBuilderDelegate();
 
-  @override
-  Widget itemBuilder(
-    BuildContext context,
-    int index,
-    List<LemmyInboxMention> items,
-  ) {
-    return InboxMentionItem(
-      item: items[index],
-      sortType: LemmyCommentSortType.hot,
-    );
-  }
-}
+//   @override
+//   Widget itemBuilder(
+//     BuildContext context,
+//     int index,
+//     List<LemmyInboxMention> items,
+//   ) {
+//     return InboxMentionItem(
+//       item: items[index],
+//       sortType: LemmyCommentSortType.hot,
+//     );
+//   }
+// }

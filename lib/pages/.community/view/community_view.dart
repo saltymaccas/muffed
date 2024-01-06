@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/interfaces/lemmy/models/placeholders.dart';
-import 'package:muffed/pages/community/community.dart';
+import 'package:muffed/pages/.community/community.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';

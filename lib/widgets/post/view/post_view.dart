@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/exception/exception.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/pages/post_page/post_page.dart';
-import 'package:muffed/pages/user/user.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/exception/exception.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
+import 'package:muffed/pages/.community/community.dart';
+import 'package:muffed/pages/.user/user.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/widgets/post/post.dart';
@@ -27,7 +27,7 @@ class PostWidget extends StatelessWidget {
   final PostBloc? bloc;
   final PostViewForm? form;
   final PostDisplayType? displayType;
-  final LemmyPost? post;
+  final PostView? post;
   final int? postId;
 
   @override
@@ -35,7 +35,7 @@ class PostWidget extends StatelessWidget {
     if (bloc != null) {
       return BlocProvider.value(
         value: bloc!,
-        child: PostView(
+        child: _PostWidgetView(
           form: form,
           displayType: displayType,
         ),
@@ -43,14 +43,14 @@ class PostWidget extends StatelessWidget {
     } else {
       return BlocProvider(
         create: (context) => PostBloc(
-          repo: context.read<ServerRepo>(),
-          globalBloc: context.read<DB>(),
+          lem: context.lemmy, 
+          globalBloc: context.db,
           post: post,
           postId: postId,
         )..add(
             Initialize(),
           ),
-        child: PostView(form: form, displayType: displayType),
+        child: _PostWidgetView(form: form, displayType: displayType),
       );
     }
   }
@@ -58,8 +58,8 @@ class PostWidget extends StatelessWidget {
 
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
-class PostView extends StatelessWidget {
-  const PostView({
+class _PostWidgetView extends StatelessWidget {
+  const _PostWidgetView({
     PostViewForm? form,
     PostDisplayType? displayType,
     super.key,
@@ -113,13 +113,14 @@ class PostView extends StatelessWidget {
                 state.post!,
                 displayType: displayType,
                 openPostCallback: () {
-                  context.pushPage(
-                    PostPage(
-                      postId: state.post!.id,
-                      postBloc: context.read<PostBloc>(),
-                      post: state.post,
-                    ),
-                  );
+                  // FIXME:
+                  // context.pushPage(
+                  //   PostPage(
+                  //     postId: state.post!.id,
+                  //     postBloc: context.read<PostBloc>(),
+                  //     post: state.post,
+                  //   ),
+                  // );
                 },
                 openMoreMenuCallback: () {
                   _openMoreMenu(
@@ -177,8 +178,8 @@ void _openMoreMenu({required BuildContext context, required PostBloc bloc}) {
                     ..pop()
                     ..pushPage(
                       CommunityPage(
-                        communityId: state.post!.communityId,
-                        communityName: state.post!.communityName,
+                        communityId: state.post!.community.id,
+                        communityName: state.post!.community.name,
                       ),
                     );
                 },
@@ -189,7 +190,7 @@ void _openMoreMenu({required BuildContext context, required PostBloc bloc}) {
                 onTap: () => context
                   ..pop()
                   ..pushPage(
-                    UserPage(userId: state.post!.creatorId),
+                    UserPage(userId: state.post!.creator.id),
                   ),
               ),
             ],

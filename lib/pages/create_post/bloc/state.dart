@@ -15,13 +15,13 @@ class CreatePostState extends Equatable {
   }) : bodyImages = images ?? SplayTreeMap<int, ImageUploadState>();
 
   final bool isPosting;
-  final LemmyCommunity? recipientCommunityInfo;
+  final GetCommunityResponse? recipientCommunityInfo;
   final CommunityInfoStatus recipientCommunityInfoStatus;
 
   final MException? exception;
 
   /// The resulting post, set when the post gets successfully posted.
-  final LemmyPost? successfullyPostedPost;
+  final PostResponse? successfullyPostedPost;
 
   /// The image that gets attached to the post.
   final ImageUploadState? image;
@@ -49,10 +49,10 @@ class CreatePostState extends Equatable {
 
   CreatePostState copyWith({
     bool? isPosting,
-    LemmyCommunity? recipientCommunityInfo,
+    GetCommunityResponse? recipientCommunityInfo,
     CommunityInfoStatus? recipientCommunityInfoStatus,
     MException? exception,
-    LemmyPost? successfullyPosted,
+    PostResponse? successfullyPosted,
     SplayTreeMap<int, ImageUploadState>? images,
     ImageUploadState? image,
     bool setImageToNull = false,

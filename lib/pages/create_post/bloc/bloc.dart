@@ -2,10 +2,11 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/exception.dart';
-import 'package:muffed/repo/pictrs/models.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/interfaces/lemmy/client/client.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
 import 'package:muffed/utils/url.dart';
 
 part 'event.dart';
@@ -15,32 +16,30 @@ final _log = Logger('CreatePostBloc');
 
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   CreatePostBloc({
-    required this.repo,
+    required this.lem,
     int? recipientCommunityId,
-    LemmyCommunity? recipientCommunity,
-    LemmyPost? postBeingEdited,
+    CommunityView? recipientCommunity,
+    PostView? postBeingEdited,
   })  : assert(
           recipientCommunity != null || recipientCommunityId != null,
           'no community given',
         ),
-        idOfPostBeingEdited = postBeingEdited?.id,
-        communityId = recipientCommunityId ?? recipientCommunity!.id,
-        super(
-          CreatePostState(
-            recipientCommunityInfo: recipientCommunity,
-            recipientCommunityInfoStatus: (recipientCommunity == null)
-                ? CommunityInfoStatus.initial
-                : CommunityInfoStatus.success,
-          ),
+        idOfPostBeingEdited = postBeingEdited?.post.id,
+        communityId = recipientCommunityId ?? recipientCommunity!.community.id,
+        super(CreatePostState(),
+          
         ) {
     on<Initalize>((event, emit) async {
       if (state.recipientCommunityInfoStatus == CommunityInfoStatus.initial ||
           state.recipientCommunityInfoStatus == CommunityInfoStatus.failure) {
-        emit(state.copyWith(
-            recipientCommunityInfoStatus: CommunityInfoStatus.loading,),);
+        emit(
+          state.copyWith(
+            recipientCommunityInfoStatus: CommunityInfoStatus.loading,
+          ),
+        );
 
         try {
-          final response = await repo.lemmyRepo.getCommunity(id: communityId);
+          final response = await lem.getCommunity(id: communityId);
 
           emit(
             state.copyWith(
@@ -64,26 +63,26 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
 
       try {
         if (idOfPostBeingEdited != null) {
-          final response = await repo.lemmyRepo.editPost(
-            id: idOfPostBeingEdited!,
+          final response = await lem.editPost(
+            postId: idOfPostBeingEdited!,
             name: event.title,
             body: event.body,
             url: (state.enteredUrl == null || state.enteredUrl == '')
                 ? (state.image == null)
                     ? null
-                    : state.image!.baseUrl
+                    : state.image!.host
                 : cleanseUrl(state.enteredUrl!),
           );
           emit(state.copyWith(successfullyPosted: response, isPosting: false));
         } else {
-          final response = await repo.lemmyRepo.createPost(
+          final response = await lem.createPost(
             name: event.title,
             body: event.body,
             communityId: communityId,
             url: (state.enteredUrl == null || state.enteredUrl == '')
                 ? (state.image == null)
                     ? null
-                    : state.image!.baseUrl
+                    : state.image!.host
                 : cleanseUrl(state.enteredUrl!),
           );
           emit(state.copyWith(successfullyPosted: response, isPosting: false));
@@ -111,8 +110,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       );
 
       final stream =
-          repo.pictrsRepo.uploadImage(filePath: event.filePath, id: id);
-
+          lem.uploadImage(filePath: event.filePath,);
       try {
         await for (final data in stream) {
           emit(
@@ -139,9 +137,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           image: const ImageUploadState(),
         ),
       );
-
-      final stream = repo.pictrsRepo.uploadImage(filePath: event.filePath);
-
+    
+      final stream = lem.uploadImage(filePath: event.filePath);
+    
       try {
         await for (final data in stream) {
           emit(
@@ -172,10 +170,10 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       );
 
       try {
-        await repo.pictrsRepo.deleteImage(
-          removedImage.deleteToken!,
-          removedImage.imageName!,
-          removedImage.baseUrl!,
+        await lem.deleteImage(
+          deleteToken: removedImage.deleteToken!,
+          fileName: removedImage.remoteImageName!,
+          host: removedImage.host!,
         );
       } catch (exc, stackTrace) {
         final exception = MException(exc, stackTrace)..log(_log);
@@ -198,10 +196,10 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
       );
 
       try {
-        await repo.pictrsRepo.deleteImage(
-          removedImage.deleteToken!,
-          removedImage.imageName!,
-          removedImage.baseUrl!,
+        await lem.deleteImage(
+          deleteToken: removedImage.deleteToken!,
+          fileName: removedImage.remoteImageName!,
+          host: removedImage.host!,
         );
       } catch (exc, stackTrace) {
         final exception = MException(exc, stackTrace)..log(_log);
@@ -222,7 +220,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
 
   final int communityId;
 
-  final ServerRepo repo;
+  final LemmyClient lem;
 
   /// Set this if the user is editing a post rather then creating a new one.
   final int? idOfPostBeingEdited;

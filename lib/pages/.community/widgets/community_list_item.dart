@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/pages/community/community.dart';
-import 'package:muffed/repo/lemmy/models/models.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:muffed/pages/.community/community.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';
@@ -13,13 +13,13 @@ class CommunityListTile extends StatelessWidget {
   });
 
   factory CommunityListTile.compact(
-    LemmyCommunity community, {
+    CommunityView community, {
     Key? key,
   }) {
     return _CompactCommunityListTile(community, key: key);
   }
 
-  final LemmyCommunity community;
+  final CommunityView community;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class CommunityListTile extends StatelessWidget {
       onTap: () {
         context.pushPage(
           CommunityPage(
-            community: community,
+            communityView: community,
           ),
         );
       },
@@ -44,7 +44,7 @@ class CommunityListTile extends StatelessWidget {
                     16,
                   ),
                   child: MuffedAvatar(
-                    url: community.icon,
+                    url: community.community.icon,
                     radius: 16,
                   ),
                 ),
@@ -53,14 +53,14 @@ class CommunityListTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        community.title,
+                        community.community.title,
                         style: context.textTheme.titleMedium,
                       ),
                       RichText(
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '${community.subscribers}',
+                              text: '${community.counts.subscribers}',
                               style: context.textTheme.bodySmall!.copyWith(
                                 color: Theme.of(
                                   context,
@@ -81,9 +81,9 @@ class CommunityListTile extends StatelessWidget {
                       const SizedBox(
                         height: 4,
                       ),
-                      if (community.description != null)
+                      if (community.community.description != null)
                         Text(
-                          community.description!,
+                          community.community.description!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.textTheme.bodySmall!.copyWith(
@@ -115,7 +115,7 @@ class _CompactCommunityListTile extends CommunityListTile {
         InkWell(
           onTap: () {
             Navigator.pop(context);
-            context.pushPage(CommunityPage(community: community));
+            context.pushPage(CommunityPage(communityView: community));
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -124,8 +124,8 @@ class _CompactCommunityListTile extends CommunityListTile {
             child: Row(
               children: [
                 MuffedAvatar(
-                  url: community.icon,
-                  identiconID: community.name,
+                  url: community.community.icon,
+                  identiconID: community.community.name,
                   radius: 12,
                 ),
                 const SizedBox(
@@ -135,10 +135,10 @@ class _CompactCommunityListTile extends CommunityListTile {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      community.name,
+                      community.community.name,
                     ),
                     Text(
-                      '${community.subscribers} members',
+                      '${community.counts.subscribers} members',
                       style: TextStyle(
                         fontSize: 10,
                         color: context.colorScheme.outline,

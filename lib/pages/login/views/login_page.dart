@@ -5,9 +5,9 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:muffed/exception/exception.dart';
 import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
 import 'package:muffed/models/url.dart';
 import 'package:muffed/pages/login/bloc/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router/router.dart';
 
 class LoginPage extends MPage<void> {
@@ -19,7 +19,7 @@ class LoginPage extends MPage<void> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          LoginPageBloc(context.read<ServerRepo>(), context.read<DB>()),
+          LoginPageBloc(context.lemmy, context.read<DB>()),
       child: _LoginView(
         onSuccessfulLogin: onSuccessfulLogin,
       ),
@@ -117,7 +117,7 @@ class _LoginViewState extends State<_LoginView> {
                           },
                           itemBuilder: (context, value) {
                             return ListTile(
-                              title: Text(value),
+                              title: Text(value.toString()),
                             );
                           },
                           onSelected: (value) {

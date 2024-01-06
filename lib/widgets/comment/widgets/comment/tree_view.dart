@@ -12,7 +12,8 @@ class _TreeCommentView extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  left: (state.comment.level != 0)
+                  //FIXME:
+                  left: (state.comment.comment.path.length > 2)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                         )
@@ -24,7 +25,8 @@ class _TreeCommentView extends StatelessWidget {
                 child: _BareCommentWidget(),
               ),
             ),
-            if (state.comment.level == 0) const Divider(),
+            // FIXME
+            if (true) const Divider(),
           ],
         );
       },
