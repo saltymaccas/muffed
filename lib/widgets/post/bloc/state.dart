@@ -11,14 +11,14 @@ class PostState extends Equatable {
 
   final PostStatus status;
   final PostView? post;
-  final MException? exception;
+  final Object? exception;
 
   @override
   List<Object?> get props => [post, exception, status];
 
   PostState copyWith({
     PostView? post,
-    MException? exception,
+    Object? exception,
     PostStatus? status,
   }) {
     return PostState(

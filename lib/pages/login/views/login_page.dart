@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
-import 'package:muffed/exception/exception.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/interfaces/lemmy/models/models.dart';
 import 'package:muffed/models/url.dart';
@@ -18,8 +17,7 @@ class LoginPage extends MPage<void> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          LoginPageBloc(context.lemmy, context.read<DB>()),
+      create: (context) => LoginPageBloc(context.lemmy, context.read<DB>()),
       child: _LoginView(
         onSuccessfulLogin: onSuccessfulLogin,
       ),
@@ -216,8 +214,8 @@ class _LoginViewState extends State<_LoginView> {
                     ),
                   ),
                 ),
-                if (state.exception != null)
-                  ExceptionWidget(exception: state.exception!),
+                // if (state.exception != null)
+                  //ExceptionWidget(exception: state.exception!),
               ],
             ),
           ),

@@ -22,7 +22,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           'No post provided in PostBloc constructuctor',
         ),
         super(PostState(post: post)) {
-    on<Initialize>((event, emit) async {
+    on<Created>((event, emit) async {
       if (post != null) {
         emit(state.copyWith(status: PostStatus.success, post: post));
       } else {
@@ -68,8 +68,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             emit(
               state.copyWith(
                 post: state.post!.copyWith(
-                
-
                   myVote: newVote,
                   counts: state.post!.counts.copyWith(
                     downvotes: newDownVoteCount,
@@ -169,8 +167,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         ),
       );
       try {
-        final result = await lem.
-            savePost(postId: state.post!.post.id, save: state.post!.saved);
+        final result = await lem.savePost(
+            postId: state.post!.post.id, save: state.post!.saved);
         emit(state.copyWith(post: result.postView));
       } catch (exc, stackTrace) {
         final exception = MException(exc, stackTrace)..log(_log);

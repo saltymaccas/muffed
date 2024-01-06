@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/exception/exception.dart';
 
-class ExceptionWidget extends StatelessWidget {
-  const ExceptionWidget({
+class _ExceptionWidget extends StatelessWidget {
+  const _ExceptionWidget({
     required this.exception,
     this.retryFunction,
     this.showErrorIcon = true,

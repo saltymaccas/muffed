@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/theme_config/theme_config.dart';
+import 'package:muffed/theme/theme.dart';
 
 /// Initialises app providers
 class App extends StatelessWidget {
@@ -81,13 +82,14 @@ class _AppTheme extends StatelessWidget {
               colorScheme: lightColorScheme,
               textTheme: _adjustTextTheme(lightTextTheme, state.look),
               useMaterial3: true,
-            );
+            ).copyWith(extensions: [AnimationThemeData()]);
 
             final darkTheme = ThemeData.from(
               colorScheme: darkColorScheme,
               textTheme: darkTextTheme,
               useMaterial3: true,
-            );
+             
+            ).copyWith(extensions: [AnimationThemeData()]);
 
             return _AppView(
               lightTheme,

@@ -151,11 +151,11 @@ class _CommentFooter extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                showCreateCommentDialog(
-                  context: context,
-                  postId: state.comment.post.id,
-                  parentId: state.comment.post.id,
-                );
+                // showCreateCommentDialog(
+                //   context: context,
+                //   postId: state.comment.post.id,
+                //   parentId: state.comment.post.id,
+                // );
               },
               icon: const Icon(Icons.reply),
               visualDensity: VisualDensity.compact,
@@ -177,11 +177,11 @@ class _CommentFooter extends StatelessWidget {
                             leading: const Icon(Icons.edit),
                             onTap: () {
                               context.pop();
-                              showCreateCommentDialog(
-                                context: context,
-                                postId: state.comment.post.id,
-                                commentBeingEdited: state.comment,
-                              );
+                              // showCreateCommentDialog(
+                              //   context: context,
+                              //   postId: state.comment.post.id,
+                              //   commentBeingEdited: state.comment,
+                              // );
                             },
                           )
                         else
@@ -189,14 +189,14 @@ class _CommentFooter extends StatelessWidget {
                             title: const Text('Go to user'),
                             leading: const Icon(Icons.person),
                             onTap: () {
-                              context
-                                ..pop()
-                                ..pushPage(
-                                  UserPage(
-                                    userId: state.comment.creator.id,
-                                    username: state.comment.creator.name,
-                                  ),
-                                );
+                              // context
+                              //   ..pop()
+                              //   ..pushPage(
+                              //     UserPage(
+                              //       userId: state.comment.creator.id,
+                              //       username: state.comment.creator.name,
+                              //     ),
+                              //   );
                             },
                           ),
                         ListTile(
@@ -260,12 +260,12 @@ class _CommentHeader extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.pushPage(
-                  UserPage(
-                    userId: state.comment.creator.id,
-                    username: state.comment.creator.name,
-                  ),
-                );
+              //  context.pushPage(
+                  // UserPage(
+                  //   userId: state.comment.creator.id,
+                  //   username: state.comment.creator.name,
+                  // ),
+                //);
               },
               child: Text(
                 state.comment.creator.name,

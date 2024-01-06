@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
-import 'package:muffed/pages/.community/view/community_page.dart';
 import 'package:muffed/pages/profile/profile.dart';
-import 'package:muffed/pages/.user/models/content_retriever.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/theme.dart';
-import 'package:muffed/widgets/content_scroll/bloc/bloc.dart';
-import 'package:muffed/widgets/content_scroll/models/content_builder_delegate.dart';
-import 'package:muffed/widgets/content_scroll/models/content_retriever_delegate.dart';
-import 'package:muffed/widgets/content_scroll/widgets/content_scroll_view.dart';
+import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/image.dart';
 import 'package:muffed/widgets/markdown_body.dart';
 import 'package:muffed/widgets/muffed_avatar.dart';

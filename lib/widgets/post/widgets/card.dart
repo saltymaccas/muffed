@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/db/db.dart';
 import 'package:muffed/interfaces/lemmy/lemmy.dart';
 import 'package:muffed/interfaces/lemmy/models/models.dart';
-import 'package:muffed/pages/.community/community.dart';
-import 'package:muffed/pages/.user/user.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/theme/models/extentions.dart';
 import 'package:muffed/utils/time.dart';
@@ -16,11 +14,14 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 /// Displays a Lemmy post in card format
 class PostViewCard extends StatelessWidget {
-  const PostViewCard(
-    this.post, {
+  const PostViewCard({
+    required this.post,
     PostDisplayType? displayType,
     this.openPostCallback,
     this.openMoreMenuCallback,
+    this.onDownvotePressed,
+    this.onUpvotePressed,
+    this.onSavePressed,
     super.key,
   })  : displayType = displayType ?? PostDisplayType.list,
         skeletonise = false;
@@ -33,7 +34,7 @@ class PostViewCard extends StatelessWidget {
   })  : displayType = displayType ?? PostDisplayType.list,
         post = placeHolderData ?? postPlaceHolder,
         openPostCallback = null,
-        openMoreMenuCallback = null,
+        openMoreMenuCallback = null, onDownvotePressed = null, onSavePressed = null, onUpvotePressed = null,
         skeletonise = true;
 
   /// The lemmy post
@@ -45,11 +46,16 @@ class PostViewCard extends StatelessWidget {
 
   final void Function()? openMoreMenuCallback;
 
+  final void Function()? onDownvotePressed;
+
+  final void Function()? onUpvotePressed;
+
+  final void Function()? onSavePressed;
+
   final bool skeletonise;
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       clipBehavior: Clip.hardEdge,
       child: Skeletonizer(
@@ -71,12 +77,13 @@ class PostViewCard extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        context.pushPage(
-                          CommunityPage(
-                            communityId: post.community.id,
-                            communityName: post.community.name,
-                          ),
-                        );
+                        // context.pushPage(
+                          // FIXME:
+                          // CommunityPage(
+                          //   communityId: post.community.id,
+                          //   communityName: post.community.name,
+                          // ),
+                       // );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,11 +113,11 @@ class PostViewCard extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  context.pushPage(
-                                    UserPage(
-                                      userId: post.creator.id,
-                                    ),
-                                  );
+                                  // context.pushPage(
+                                  //   UserPage(
+                                  //     userId: post.creator.id,
+                                  //   ),
+                                  // );
                                 },
                                 child: Text(
                                   post.creator.name,
@@ -213,9 +220,9 @@ class PostViewCard extends StatelessWidget {
                       children: [
                         if (context.db.state.auth.lemmy.loggedIn)
                           IconButton(
-                            onPressed: () {
-                              context.read<PostBloc>().add(SavePostToggled());
-                            },
+                            onPressed:
+                              onSavePressed
+                            ,
                             icon: AnimatedCrossFade(
                               crossFadeState: post.saved
                                   ? CrossFadeState.showFirst
@@ -235,23 +242,15 @@ class PostViewCard extends StatelessWidget {
                           ),
                         IconButton(
                           icon: const Icon(Icons.arrow_upward_outlined),
-                          color: (post.myVote == 1)
-                              ? Colors.deepOrange
-                              : null,
-                          onPressed: () {
-                            context.read<PostBloc>().add(UpvotePressed());
-                          },
+                          color: (post.myVote == 1) ? Colors.deepOrange : null,
+                          onPressed: onUpvotePressed,
                           visualDensity: VisualDensity.compact,
                         ),
                         Text(post.counts.upvotes.toString()),
                         IconButton(
                           icon: const Icon(Icons.arrow_downward_outlined),
-                          color: (post.myVote == -1)
-                              ? Colors.purple
-                              : null,
-                          onPressed: () {
-                            context.read<PostBloc>().add(DownvotePressed());
-                          },
+                          color: (post.myVote == -1) ? Colors.purple : null,
+                          onPressed: onDownvotePressed,
                           visualDensity: VisualDensity.compact,
                         ),
                         Text(post.counts.downvotes.toString()),

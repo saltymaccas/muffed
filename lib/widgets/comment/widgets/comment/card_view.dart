@@ -58,13 +58,14 @@ class _CardCommentView extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  context.pushPage(
-                                    CommunityPage(
-                                      communityId: state.comment.community.id,
-                                      communityName:
-                                          state.comment.community.name,
-                                    ),
-                                  );
+                                  //FIXME:
+                                  //context.pushPage(
+                                    // CommunityPage(
+                                    //   communityId: state.comment.community.id,
+                                    //   communityName:
+                                    //       state.comment.community.name,
+                                    // ),
+                                  //);
                                 },
                                 child: Text(
                                   state.comment.community.name,

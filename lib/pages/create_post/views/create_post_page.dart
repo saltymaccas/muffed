@@ -86,7 +86,7 @@ class _CreatePostViewState extends State<CreatePostView> {
     return BlocConsumer<CreatePostBloc, CreatePostState>(
       listener: (context, state) {
         if (state.exception != null) {
-          showExceptionSnackBar(context, state.exception!);
+          //showExceptionSnackBar(context, state.exception!);
         }
         if (state.successfullyPostedPost != null) {
           context.popPageFromCurrentBranch();
@@ -141,10 +141,10 @@ class _CreatePostViewState extends State<CreatePostView> {
                 IconButton(
                   onPressed: () {
                     if (titleTextController.text.isEmpty) {
-                      showExceptionSnackBar(
-                        context,
-                        MException('Title must not be empty', null),
-                      );
+                      // showExceptionSnackBar(
+                      //   context,
+                      //   MException('Title must not be empty', null),
+                      // );
                     } else {
                       context.read<CreatePostBloc>().add(
                             PostSubmitted(

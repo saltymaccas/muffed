@@ -1,20 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/db/db.dart';
-import 'package:muffed/pages/home/home.dart';
-import 'package:muffed/pages/search/view/search_dialog.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:muffed/interfaces/lemmy/models/models.dart';
+import 'package:muffed/pages/home/bloc/bloc.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
-import 'package:muffed/widgets/popup_menu/popup_menu.dart';
+import 'package:muffed/widgets/exception_snackbar.dart';
+import 'package:muffed/widgets/post/post.dart';
 
 class HomePage extends MPage<void> {
-  HomePage();
+  HomePage() : super(pageActions: PageActions([]));
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return BlocProvider(
+      create: (context) => HomeBloc(lem: context.lemmy)..add(HomeCreated()),
+      child: const _HomePage(),
+    );
   }
 }
+
+class _HomePage extends StatefulWidget {
+  const _HomePage({super.key});
+
+  @override
+  State<_HomePage> createState() => __HomePageState();
+}
+
+class __HomePageState extends State<_HomePage> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final homeBloc = context.read<HomeBloc>();
+    return MultiBlocListener(
+      listeners: [
+        // jump scroll to top when pages have been replaced
+        BlocListener<HomeBloc, HomeState>(
+          listenWhen: (previous, current) => previous.sort != current.sort,
+          listener: (context, state) {
+            scrollController.jumpTo(0);
+          },
+        ),
+        BlocListener<HomeBloc, HomeState>(listenWhen: (previous, current) => previous.error == null, listener: (context, state) {
+          
+          if (state.error != null) {
+            showExceptionSnackBar(context: context, exception: state.error);
+          }
+        },),
+      ],
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return Scaffold(
+            body: ContentScroll<PostView>(
+              scrollController: scrollController,
+              content: state.posts,
+              onNearScrollEnd: () => homeBloc.add(ReachedNearScrollEnd()),
+              itemBuilder: (context, item) => PostWidget(
+                post: item,
+              ),
+              onPullDownRefresh: () async {
+                context.read<HomeBloc>().add(PullDownReload());
+                await homeBloc.stream.firstWhere((state) {
+                  return !state.reloading;
+                });
+              },
+              allPagesLoaded: state.loadedAllPages,
+              isLoading: state.loading,
+              isLoadingMore: state.loadingMore,
+              error: state.error,
+              onRetriedFromError: () => homeBloc.add(RetriedFromError()),
+              headerSlivers: [],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
 //     return BlocProvider(
 //       create: (context) => HomePageBloc()
 //         ..add(

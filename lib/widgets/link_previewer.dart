@@ -100,10 +100,11 @@ class _LinkPreviewerState extends State<LinkPreviewer> {
               case _LinkPreviewerStatus.loading:
                 return const Text('Loading url data...');
               case _LinkPreviewerStatus.error:
-                return ExceptionWidget(
-                  exception: exception!,
-                  showErrorIcon: false,
-                );
+                return Placeholder();
+                // _ExceptionWidget(
+                //   exception: exception!,
+                //   showErrorIcon: false,
+                // );
               case _LinkPreviewerStatus.success:
                 if (metadata == null) {
                   return Text(widget.link);
