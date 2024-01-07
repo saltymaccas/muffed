@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/router/router.dart';
+import 'package:provider/provider.dart';
 
 /// Base class for creating pages which wraps a widget to be pushed onto the
 /// page stack
@@ -28,7 +29,10 @@ abstract class MPage<T> extends Page<T> {
     // }
     return MaterialPageRoute<T>(
       settings: this,
-      builder: build,
+      builder: (context) => ChangeNotifierProvider.value(
+        value: pageActions,
+        child: Builder(builder: build),
+      ),
     );
   }
 }
