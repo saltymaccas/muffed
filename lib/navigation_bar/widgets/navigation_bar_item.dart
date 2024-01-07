@@ -26,7 +26,6 @@ class NavigationBarItem extends StatelessWidget {
         final onBranch = navState.currentBranchIndex == relatedBranchIndex;
         final pageActions =
             navState.branches[relatedBranchIndex].top.pageActions;
-            // FIXME:
         return Builder(
           builder: (context) {
             final actions = pageActions.actions;
@@ -58,7 +57,7 @@ class NavigationBarItem extends StatelessWidget {
                         },
                         visualDensity: VisualDensity.compact,
                       ),
-                      if (false)
+                      if (onBranch)
                       Align(
                         alignment: Alignment.centerLeft,
                         widthFactor: onBranch ? 1 : 0,

@@ -9,12 +9,14 @@ class ContentScroll<ContentType> extends StatelessWidget {
     required this.itemBuilder,
     required this.onPullDownRefresh,
     this.scrollController,
+    this.nextPageError,
+    this.onRetriedFromNextPageError,
     this.headerSlivers = const [],
     this.allPagesLoaded = false,
     this.isLoading = false,
-    this.isLoadingMore = false,
-    this.error,
-    this.onRetriedFromError,
+    this.loadingNextPage = false,
+    this.initialLoadError,
+    this.onRetriedFromInitialLoadError,
     super.key,
   });
 
@@ -29,12 +31,15 @@ class ContentScroll<ContentType> extends StatelessWidget {
 
   final bool isLoading;
 
-  final bool isLoadingMore;
+  final bool loadingNextPage;
 
-  // Will only be displayed if there is no content
-  final Object? error;
+  final Object? initialLoadError;
 
-  final void Function()? onRetriedFromError;
+  final Object? nextPageError;
+
+  final void Function()? onRetriedFromNextPageError;
+
+  final void Function()? onRetriedFromInitialLoadError;
 
   final Widget Function(BuildContext context, ContentType item) itemBuilder;
 
@@ -43,7 +48,7 @@ class ContentScroll<ContentType> extends StatelessWidget {
   final Future<void> Function() onPullDownRefresh;
 
   bool get hasContent => content != null && content!.isNotEmpty;
-  bool get hasError => error != null;
+  bool get hasError => initialLoadError != null;
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +89,8 @@ class ContentScroll<ContentType> extends StatelessWidget {
                 if (!hasContent && hasError)
                   SliverFillRemaining(
                     child: ExceptionWidget(
-                      exception: error!,
-                      retryCallback: onRetriedFromError,
+                      exception: initialLoadError!,
+                      retryCallback: onRetriedFromInitialLoadError,
                     ),
                   ),
                 if (hasContent)
@@ -96,18 +101,12 @@ class ContentScroll<ContentType> extends StatelessWidget {
                     itemCount: content!.length,
                   ),
                 if (hasContent)
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 50,
-                      child: Center(
-                        child: isLoadingMore
-                            ? const CircularProgressIndicator()
-                            : allPagesLoaded
-                                ? const Text('Reached End')
-                                : null,
-                      ),
-                    ),
-                  ),
+                  InfiniteContentScrollFooter(
+                    loadingNextPage: loadingNextPage,
+                    reachedEnd: allPagesLoaded,
+                    retryLoadNextPageCallback: onRetriedFromNextPageError,
+                    nextPageLoadError: nextPageError,
+                  )
               ],
             ),
           ),
@@ -121,6 +120,48 @@ class ContentScroll<ContentType> extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class InfiniteContentScrollFooter extends StatelessWidget {
+  const InfiniteContentScrollFooter({
+    this.loadingNextPage = false,
+    this.reachedEnd = false,
+    this.retryLoadNextPageCallback,
+    this.nextPageLoadError,
+    super.key,
+  });
+
+  final Object? nextPageLoadError;
+  final void Function()? retryLoadNextPageCallback;
+  final bool loadingNextPage;
+  final bool reachedEnd;
+
+  @override
+  Widget build(BuildContext context) {
+    late final Widget? child;
+
+    if (nextPageLoadError != null) {
+      child = ExceptionWidget(
+        exception: nextPageLoadError!,
+        retryCallback: retryLoadNextPageCallback,
+      );
+    } else if (loadingNextPage) {
+      child = const CircularProgressIndicator();
+    } else if (reachedEnd) {
+      child = const Text('Reached End');
+    } else {
+      child = null;
+    }
+
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 50,
+        child: Center(
+          child: child,
+        ),
+      ),
     );
   }
 }

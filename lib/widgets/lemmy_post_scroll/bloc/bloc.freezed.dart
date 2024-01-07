@@ -16,38 +16,39 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$HomeState {
-  bool get loading => throw _privateConstructorUsedError;
-  bool get reloading => throw _privateConstructorUsedError;
-  bool get loadingMore => throw _privateConstructorUsedError;
+  HomeStateStatus get status => throw _privateConstructorUsedError;
   bool get loadedAllPages => throw _privateConstructorUsedError;
-  SortType get sort => throw _privateConstructorUsedError;
+  SortType get selectedSort => throw _privateConstructorUsedError;
+  SortType get loadedSort => throw _privateConstructorUsedError;
   int get pagesLoaded => throw _privateConstructorUsedError;
+  Object? get exception => throw _privateConstructorUsedError;
+  LemmyPostScrollEvent? get lastEvent => throw _privateConstructorUsedError;
   List<PostView>? get posts => throw _privateConstructorUsedError;
-  Object? get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $HomeStateCopyWith<HomeState> get copyWith =>
+  $HomeStateCopyWith<LemmyPostScrollState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $HomeStateCopyWith<$Res> {
-  factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
-      _$HomeStateCopyWithImpl<$Res, HomeState>;
+  factory $HomeStateCopyWith(LemmyPostScrollState value,
+          $Res Function(LemmyPostScrollState) then) =
+      _$HomeStateCopyWithImpl<$Res, LemmyPostScrollState>;
   @useResult
   $Res call(
-      {bool loading,
-      bool reloading,
-      bool loadingMore,
+      {HomeStateStatus status,
       bool loadedAllPages,
-      SortType sort,
+      SortType selectedSort,
+      SortType loadedSort,
       int pagesLoaded,
-      List<PostView>? posts,
-      Object? error});
+      Object? exception,
+      LemmyPostScrollEvent? lastEvent,
+      List<PostView>? posts});
 }
 
 /// @nodoc
-class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
+class _$HomeStateCopyWithImpl<$Res, $Val extends LemmyPostScrollState>
     implements $HomeStateCopyWith<$Res> {
   _$HomeStateCopyWithImpl(this._value, this._then);
 
@@ -59,45 +60,45 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? loading = null,
-    Object? reloading = null,
-    Object? loadingMore = null,
+    Object? status = null,
     Object? loadedAllPages = null,
-    Object? sort = null,
+    Object? selectedSort = null,
+    Object? loadedSort = null,
     Object? pagesLoaded = null,
+    Object? exception = freezed,
+    Object? lastEvent = freezed,
     Object? posts = freezed,
-    Object? error = freezed,
   }) {
     return _then(_value.copyWith(
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      reloading: null == reloading
-          ? _value.reloading
-          : reloading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      loadingMore: null == loadingMore
-          ? _value.loadingMore
-          : loadingMore // ignore: cast_nullable_to_non_nullable
-              as bool,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as HomeStateStatus,
       loadedAllPages: null == loadedAllPages
           ? _value.loadedAllPages
           : loadedAllPages // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: null == sort
-          ? _value.sort
-          : sort // ignore: cast_nullable_to_non_nullable
+      selectedSort: null == selectedSort
+          ? _value.selectedSort
+          : selectedSort // ignore: cast_nullable_to_non_nullable
+              as SortType,
+      loadedSort: null == loadedSort
+          ? _value.loadedSort
+          : loadedSort // ignore: cast_nullable_to_non_nullable
               as SortType,
       pagesLoaded: null == pagesLoaded
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
+      exception: freezed == exception ? _value.exception : exception,
+      lastEvent: freezed == lastEvent
+          ? _value.lastEvent
+          : lastEvent // ignore: cast_nullable_to_non_nullable
+              as LemmyPostScrollEvent?,
       posts: freezed == posts
           ? _value.posts
           : posts // ignore: cast_nullable_to_non_nullable
               as List<PostView>?,
-      error: freezed == error ? _value.error : error,
     ) as $Val);
   }
 }
@@ -111,14 +112,14 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool loading,
-      bool reloading,
-      bool loadingMore,
+      {HomeStateStatus status,
       bool loadedAllPages,
-      SortType sort,
+      SortType selectedSort,
+      SortType loadedSort,
       int pagesLoaded,
-      List<PostView>? posts,
-      Object? error});
+      Object? exception,
+      LemmyPostScrollEvent? lastEvent,
+      List<PostView>? posts});
 }
 
 /// @nodoc
@@ -132,75 +133,78 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? loading = null,
-    Object? reloading = null,
-    Object? loadingMore = null,
+    Object? status = null,
     Object? loadedAllPages = null,
-    Object? sort = null,
+    Object? selectedSort = null,
+    Object? loadedSort = null,
     Object? pagesLoaded = null,
+    Object? exception = freezed,
+    Object? lastEvent = freezed,
     Object? posts = freezed,
-    Object? error = freezed,
   }) {
     return _then(_$HomeStateImpl(
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      reloading: null == reloading
-          ? _value.reloading
-          : reloading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      loadingMore: null == loadingMore
-          ? _value.loadingMore
-          : loadingMore // ignore: cast_nullable_to_non_nullable
-              as bool,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as HomeStateStatus,
       loadedAllPages: null == loadedAllPages
           ? _value.loadedAllPages
           : loadedAllPages // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: null == sort
-          ? _value.sort
-          : sort // ignore: cast_nullable_to_non_nullable
+      selectedSort: null == selectedSort
+          ? _value.selectedSort
+          : selectedSort // ignore: cast_nullable_to_non_nullable
+              as SortType,
+      loadedSort: null == loadedSort
+          ? _value.loadedSort
+          : loadedSort // ignore: cast_nullable_to_non_nullable
               as SortType,
       pagesLoaded: null == pagesLoaded
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
+      exception: freezed == exception ? _value.exception : exception,
+      lastEvent: freezed == lastEvent
+          ? _value.lastEvent
+          : lastEvent // ignore: cast_nullable_to_non_nullable
+              as LemmyPostScrollEvent?,
       posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
               as List<PostView>?,
-      error: freezed == error ? _value.error : error,
     ));
   }
 }
 
 /// @nodoc
 
-class _$HomeStateImpl implements _HomeState {
+class _$HomeStateImpl extends _HomeState {
   const _$HomeStateImpl(
-      {required this.loading,
-      required this.reloading,
-      required this.loadingMore,
+      {required this.status,
       required this.loadedAllPages,
-      required this.sort,
+      required this.selectedSort,
+      required this.loadedSort,
       required this.pagesLoaded,
-      final List<PostView>? posts,
-      this.error = null})
-      : _posts = posts;
+      this.exception,
+      this.lastEvent,
+      final List<PostView>? posts})
+      : _posts = posts,
+        super._();
 
   @override
-  final bool loading;
-  @override
-  final bool reloading;
-  @override
-  final bool loadingMore;
+  final HomeStateStatus status;
   @override
   final bool loadedAllPages;
   @override
-  final SortType sort;
+  final SortType selectedSort;
+  @override
+  final SortType loadedSort;
   @override
   final int pagesLoaded;
+  @override
+  final Object? exception;
+  @override
+  final LemmyPostScrollEvent? lastEvent;
   final List<PostView>? _posts;
   @override
   List<PostView>? get posts {
@@ -212,12 +216,8 @@ class _$HomeStateImpl implements _HomeState {
   }
 
   @override
-  @JsonKey()
-  final Object? error;
-
-  @override
   String toString() {
-    return 'HomeState(loading: $loading, reloading: $reloading, loadingMore: $loadingMore, loadedAllPages: $loadedAllPages, sort: $sort, pagesLoaded: $pagesLoaded, posts: $posts, error: $error)';
+    return 'HomeState(status: $status, loadedAllPages: $loadedAllPages, selectedSort: $selectedSort, loadedSort: $loadedSort, pagesLoaded: $pagesLoaded, exception: $exception, lastEvent: $lastEvent, posts: $posts)';
   }
 
   @override
@@ -225,31 +225,32 @@ class _$HomeStateImpl implements _HomeState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$HomeStateImpl &&
-            (identical(other.loading, loading) || other.loading == loading) &&
-            (identical(other.reloading, reloading) ||
-                other.reloading == reloading) &&
-            (identical(other.loadingMore, loadingMore) ||
-                other.loadingMore == loadingMore) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.loadedAllPages, loadedAllPages) ||
                 other.loadedAllPages == loadedAllPages) &&
-            (identical(other.sort, sort) || other.sort == sort) &&
+            (identical(other.selectedSort, selectedSort) ||
+                other.selectedSort == selectedSort) &&
+            (identical(other.loadedSort, loadedSort) ||
+                other.loadedSort == loadedSort) &&
             (identical(other.pagesLoaded, pagesLoaded) ||
                 other.pagesLoaded == pagesLoaded) &&
-            const DeepCollectionEquality().equals(other._posts, _posts) &&
-            const DeepCollectionEquality().equals(other.error, error));
+            const DeepCollectionEquality().equals(other.exception, exception) &&
+            (identical(other.lastEvent, lastEvent) ||
+                other.lastEvent == lastEvent) &&
+            const DeepCollectionEquality().equals(other._posts, _posts));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      loading,
-      reloading,
-      loadingMore,
+      status,
       loadedAllPages,
-      sort,
+      selectedSort,
+      loadedSort,
       pagesLoaded,
-      const DeepCollectionEquality().hash(_posts),
-      const DeepCollectionEquality().hash(error));
+      const DeepCollectionEquality().hash(exception),
+      lastEvent,
+      const DeepCollectionEquality().hash(_posts));
 
   @JsonKey(ignore: true)
   @override
@@ -258,33 +259,34 @@ class _$HomeStateImpl implements _HomeState {
       __$$HomeStateImplCopyWithImpl<_$HomeStateImpl>(this, _$identity);
 }
 
-abstract class _HomeState implements HomeState {
+abstract class _HomeState extends LemmyPostScrollState {
   const factory _HomeState(
-      {required final bool loading,
-      required final bool reloading,
-      required final bool loadingMore,
+      {required final HomeStateStatus status,
       required final bool loadedAllPages,
-      required final SortType sort,
+      required final SortType selectedSort,
+      required final SortType loadedSort,
       required final int pagesLoaded,
-      final List<PostView>? posts,
-      final Object? error}) = _$HomeStateImpl;
+      final Object? exception,
+      final LemmyPostScrollEvent? lastEvent,
+      final List<PostView>? posts}) = _$HomeStateImpl;
+  const _HomeState._() : super._();
 
   @override
-  bool get loading;
-  @override
-  bool get reloading;
-  @override
-  bool get loadingMore;
+  HomeStateStatus get status;
   @override
   bool get loadedAllPages;
   @override
-  SortType get sort;
+  SortType get selectedSort;
+  @override
+  SortType get loadedSort;
   @override
   int get pagesLoaded;
   @override
-  List<PostView>? get posts;
+  Object? get exception;
   @override
-  Object? get error;
+  LemmyPostScrollEvent? get lastEvent;
+  @override
+  List<PostView>? get posts;
   @override
   @JsonKey(ignore: true)
   _$$HomeStateImplCopyWith<_$HomeStateImpl> get copyWith =>

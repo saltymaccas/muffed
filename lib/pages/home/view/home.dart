@@ -1,11 +1,15 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/interfaces/lemmy/models/models.dart';
-import 'package:muffed/pages/home/bloc/bloc.dart';
+import 'package:muffed/widgets/lemmy_post_scroll/bloc/bloc.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
 import 'package:muffed/widgets/exception_snackbar.dart';
+import 'package:muffed/widgets/lem_sort_menu_button.dart';
+import 'package:muffed/widgets/lemmy_post_scroll/view/view.dart';
 import 'package:muffed/widgets/post/post.dart';
 
 class HomePage extends MPage<void> {
@@ -13,77 +17,60 @@ class HomePage extends MPage<void> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeBloc(lem: context.lemmy)..add(HomeCreated()),
-      child: const _HomePage(),
+    return Builder(
+      builder: (context) {
+        return _HomePage(
+          pageActions: pageActions,
+        );
+      },
     );
   }
 }
 
 class _HomePage extends StatefulWidget {
-  const _HomePage({super.key});
+  const _HomePage({required this.pageActions, super.key});
+
+  final PageActions pageActions;
 
   @override
   State<_HomePage> createState() => __HomePageState();
 }
 
 class __HomePageState extends State<_HomePage> {
-  final scrollController = ScrollController();
+  ValueNotifier<SortType> sortType = ValueNotifier(SortType.hot);
 
   @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    widget.pageActions.setActions(
+      [
+        ValueListenableBuilder<SortType>(
+          valueListenable: sortType,
+          builder: (context, sort, child) {
+            return LemSortMenuButton(
+              selectedValue: sort,
+              onChanged: (newSort) => sortType.value = newSort,
+            );
+          },
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.read<HomeBloc>();
-    return MultiBlocListener(
-      listeners: [
-        // jump scroll to top when pages have been replaced
-        BlocListener<HomeBloc, HomeState>(
-          listenWhen: (previous, current) => previous.sort != current.sort,
-          listener: (context, state) {
-            scrollController.jumpTo(0);
-          },
-        ),
-        BlocListener<HomeBloc, HomeState>(listenWhen: (previous, current) => previous.error == null, listener: (context, state) {
-          
-          if (state.error != null) {
-            showExceptionSnackBar(context: context, exception: state.error);
-          }
-        },),
-      ],
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return Scaffold(
-            body: ContentScroll<PostView>(
-              scrollController: scrollController,
-              content: state.posts,
-              onNearScrollEnd: () => homeBloc.add(ReachedNearScrollEnd()),
-              itemBuilder: (context, item) => PostWidget(
-                post: item,
-              ),
-              onPullDownRefresh: () async {
-                context.read<HomeBloc>().add(PullDownReload());
-                await homeBloc.stream.firstWhere((state) {
-                  return !state.reloading;
-                });
-              },
-              allPagesLoaded: state.loadedAllPages,
-              isLoading: state.loading,
-              isLoadingMore: state.loadingMore,
-              error: state.error,
-              onRetriedFromError: () => homeBloc.add(RetriedFromError()),
-              headerSlivers: [],
-            ),
-          );
-        },
-      ),
+    return ValueListenableBuilder(
+      valueListenable: sortType,
+      builder: (context, sort, child) {
+        return LemmyPostScroll(
+          sortType: sort,
+        );
+      },
     );
   }
 }
+
+
 
 
 //     return BlocProvider(

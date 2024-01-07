@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/exception/models/models.dart';
 import 'package:muffed/interfaces/lemmy/lemmy.dart';
+import 'package:muffed/widgets/post/post.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -13,20 +14,19 @@ part 'bloc.freezed.dart';
 
 final _log = Logger('HomeBloc');
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc({required this.lem})
+class LemmyPostScrollBloc
+    extends Bloc<LemmyPostScrollEvent, LemmyPostScrollState> {
+  LemmyPostScrollBloc({required this.lem,required SortType initialSort})
       : super(
-          const HomeState(
-            sort: SortType.hot,
+          LemmyPostScrollState(
+            selectedSort: initialSort,
+            loadedSort: initialSort,
             loadedAllPages: false,
-            loading: false,
-            loadingMore: false,
-            reloading: false,
             pagesLoaded: 0,
+            status: HomeStateStatus.idle,
           ),
         ) {
-    on<HomeCreated>(_loadInitial, transformer: restartable());
-    on<RetriedFromError>(_loadInitial, transformer: restartable());
+    on<HomeCreated>(_homeCreated, transformer: restartable());
     on<SortChanged>(
       _onSortChanged,
       transformer: restartable(),
@@ -36,99 +36,130 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       transformer: droppable(),
     );
     on<PullDownReload>(_onPullDownReload, transformer: droppable());
+    on<Retry>((event, emit) => add(state.lastEvent!));
   }
 
-  Future<void> _loadInitial(HomeEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(loading: true, error: null));
+  Future<void> _homeCreated(
+      LemmyPostScrollEvent event, Emitter<LemmyPostScrollState> emit) async {
+    emit(
+      state.copyWith(
+        status: HomeStateStatus.loading,
+        lastEvent: event,
+      ),
+    );
     try {
       final response = await _getPosts(page: initialPage);
       emit(
         state.copyWith(
-          loading: false,
+          status: HomeStateStatus.idle,
           posts: response.posts,
           pagesLoaded: initialPage,
+          loadedSort: state.selectedSort,
         ),
       );
     } catch (error, stackTrace) {
       _log.warning('Error while loading initial posts', error, stackTrace);
-      emit(state.copyWith(error: error, loading: false));
+      emit(
+        state.copyWith(
+          status: HomeStateStatus.failure,
+          exception: error,
+        ),
+      );
     }
   }
 
   Future<void> _onSortChanged(
     SortChanged event,
-    Emitter<HomeState> emit,
+    Emitter<LemmyPostScrollState> emit,
   ) async {
-    final lastSort = state.sort;
     emit(
       state.copyWith(
-        sort: event.sort,
-        loading:  true,
-        error: null,
-      ),
+          selectedSort: event.sort,
+          status: HomeStateStatus.loading,
+          lastEvent: event),
     );
     try {
-      final response = await _getPosts(page: initialPage, sort: event.sort);
+      final response =
+          await _getPosts(page: initialPage, sort: state.selectedSort);
       emit(
         state.copyWith(
-          loading: false,
+          status: HomeStateStatus.idle,
           posts: response.posts,
           pagesLoaded: initialPage,
+          loadedSort: state.selectedSort,
         ),
       );
     } catch (error, stackTrace) {
       _log.warning('Error while loading initial posts', error, stackTrace);
-      emit(state.copyWith(
-          sort: lastSort, loading: false, error: error));
+      emit(
+        state.copyWith(
+          selectedSort: state.loadedSort,
+          status: HomeStateStatus.failure,
+          exception: error,
+        ),
+      );
     }
   }
 
   Future<void> _onReachedNearScrollEnd(
     ReachedNearScrollEnd event,
-    Emitter<HomeState> emit,
+    Emitter<LemmyPostScrollState> emit,
   ) async {
     if (state.loadedAllPages) return;
+    if (state.status.isFailure && state.lastEvent is ReachedNearScrollEnd) {
+      return;
+    }
 
-    emit(state.copyWith(loadingMore: true, error: null));
+    emit(state.copyWith(status: HomeStateStatus.loadingMore, lastEvent: event));
     try {
       final response = await _getPosts(page: nextPage);
       emit(
         state.copyWith(
-          loadingMore: true,
           posts: [...state.posts ?? [], ...response.posts],
           pagesLoaded: nextPage,
           loadedAllPages: response.posts.isEmpty,
+          status: HomeStateStatus.idle,
         ),
       );
     } catch (error, stackTrace) {
       _log.warning('Error while loading more posts', error, stackTrace);
-      emit(state.copyWith(error: error, loadingMore: false));
+      emit(
+        state.copyWith(
+          exception: error,
+          status: HomeStateStatus.failure,
+        ),
+      );
     }
   }
 
   Future<void> _onPullDownReload(
     PullDownReload event,
-    Emitter<HomeState> emit,
+    Emitter<LemmyPostScrollState> emit,
   ) async {
-    emit(state.copyWith(reloading: true, error: null));
+    emit(
+      state.copyWith(
+        status: HomeStateStatus.reloading,
+        lastEvent: event,
+      ),
+    );
     try {
       final response = await _getPosts(page: initialPage);
       emit(
         state.copyWith(
-          reloading: false,
+          status: HomeStateStatus.idle,
           posts: response.posts,
           pagesLoaded: initialPage,
         ),
       );
     } catch (error, stackTrace) {
       _log.warning('Error while loading initial posts', error, stackTrace);
-      emit(state.copyWith(error: error, reloading: false));
+      emit(state.copyWith(exception: error, status: HomeStateStatus.failure));
     }
   }
 
   Future<GetPostsResponse> _getPosts({required int page, SortType? sort}) =>
       lem.getPosts(
-        sort: sort ?? state.sort,
+        sort: sort ?? state.selectedSort,
         page: page,
       );
 
