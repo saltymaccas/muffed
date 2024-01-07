@@ -21,18 +21,13 @@ final class LemmyClient {
   LemmyAuthRepository get key => _db.state.auth.lemmy;
   String? get jwt => key.jwt;
 
-  Future<T> run<T>(LemmyApiQuery<T> query) async {
-    var req = GetPost();
-
-    GetPost(auth: jwt).auth;
-
-    if (query is LemmyApiAuthenticatedQuery) {
-      var request = query as LemmyApiAuthenticatedQuery;
-      request.auth;
-    }
-    return lem.run(query);
+  Future<T> run<T>(
+    LemmyApiQuery<T> query,
+  ) async {
+    return lem.run(query, authToken: jwt);
   }
 
+  @deprecated
   Future<GetPostsResponse> getPosts({
     ListingType? type,
     SortType? sort,
@@ -60,7 +55,7 @@ final class LemmyClient {
           type: type,
         ),
       );
-
+  @deprecated
   Future<GetCommentsResponse> getComments({
     CommentSortType? sort,
     int? maxDepth,
@@ -90,7 +85,7 @@ final class LemmyClient {
           maxDepth: maxDepth,
         ),
       );
-
+  @deprecated
   Future<GetPersonDetailsResponse> getPersonDetails({
     int? personId,
     String? username,
@@ -112,7 +107,7 @@ final class LemmyClient {
           savedOnly: savedOnly,
         ),
       );
-
+  @deprecated
   Future<SearchResponse> search({
     required String q,
     String? query,
@@ -139,7 +134,7 @@ final class LemmyClient {
           limit: limit,
         ),
       );
-
+  @deprecated
   Future<GetCommunityResponse> getCommunity({
     int? id,
     String? name,
@@ -151,7 +146,7 @@ final class LemmyClient {
           name: name,
         ),
       );
-
+  @deprecated
   Future<LoginResponse> login({
     required String usernameOrEmail,
     required String password,
@@ -164,7 +159,7 @@ final class LemmyClient {
           totp2faToken: totp2faToken,
         ),
       );
-
+  @deprecated
   Future<PostResponse> createPostLike({
     required int postId,
     required num score,
@@ -176,13 +171,13 @@ final class LemmyClient {
           postId: 1,
         ),
       );
-
+  @deprecated
   Future<CommentResponse> createCommentLike({
     required int commentId,
     required num score,
   }) =>
       lem.run(CreateCommentLike(auth: jwt, commentId: commentId, score: score));
-
+  @deprecated
   Future<CommentResponse> createComment({
     required String content,
     required int postId,
@@ -195,38 +190,38 @@ final class LemmyClient {
           postId: postId,
           parentId: parentId,
           languageId: languageId));
-
+  @deprecated
   Future<CommunityResponse> followCommunity({
     required int communityId,
     required bool follow,
   }) =>
       lem.run(
           FollowCommunity(auth: jwt, communityId: communityId, follow: follow));
-
+  @deprecated
   Future<BlockPersonResponse> blockPerson({
     required int personId,
     required bool block,
   }) =>
       lem.run(BlockPerson(auth: jwt, personId: personId, block: block));
-
+  @deprecated
   Future<BlockCommunityResponse> blockCommunity({
     required int communityId,
     required bool block,
   }) =>
       lem.run(
           BlockCommunity(auth: jwt, communityId: communityId, block: block));
-
+  @deprecated
   Future<PostResponse> savePost({
     required int postId,
     required bool save,
   }) =>
       lem.run(SavePost(auth: jwt, postId: postId, save: save));
-
+  @deprecated
   Future<GetSiteResponse> getSite() => lem.run(GetSite(auth: jwt));
-
+  @deprecated
   Future<GetSiteMetadataResponse> getSiteMetadata({required String url}) =>
       lem.run(GetSiteMetadata(url: url));
-
+  @deprecated
   Future<PostResponse> createPost({
     required String name,
     required int communityId,
@@ -249,7 +244,7 @@ final class LemmyClient {
           languageId: languageId,
         ),
       );
-
+  @deprecated
   Future<GetRepliesResponse> getReplies({
     CommentSortType? sort,
     int? page,
@@ -265,7 +260,7 @@ final class LemmyClient {
           sort: sort,
         ),
       );
-
+  @deprecated
   Future<GetPersonMentionsResponse> getPersonMentions({
     CommentSortType? sort,
     int? page,
@@ -279,26 +274,27 @@ final class LemmyClient {
         limit: limit,
         sort: sort,
       ));
-
+  @deprecated
   Future<CommentReplyResponse> markCommentReplyAsRead({
     required int commentReplyId,
     required bool read,
   }) =>
       markCommentReplyAsRead(commentReplyId: commentReplyId, read: read);
 
+  @deprecated
   Future<PersonMentionResponse> markPersonMentionAsRead({
     required int personMentionId,
     required bool read,
   }) =>
       lem.run(MarkPersonMentionAsRead(
           personMentionId: personMentionId, read: read));
-
+  @deprecated
   Future<GetPostResponse> getPost({
     int? id,
     int? commentId,
   }) =>
       lem.run(GetPost(auth: jwt, id: id, commentId: commentId));
-
+  @deprecated
   Future<PostResponse> editPost({
     required int postId,
     String? name,
@@ -316,7 +312,7 @@ final class LemmyClient {
           body: body,
           nsfw: nsfw,
           languageId: languageId));
-
+  @deprecated
   Future<CommentResponse> editComment({
     required int commentId,
     String? content,

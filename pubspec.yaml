@@ -36,8 +36,8 @@ dependencies:
 
   lemmy_api_client:
     git:
-      url: https://github.com/thunder-app/lemmy_api_client.git
-      ref: 001271f
+      url: https://github.com/freshfieldreds/lemmy_api_client
+      ref: 5224007fbf960f2fe2c67249f2577f798f101c3a
   cross_file: ^0.3.3+6
   image_picker: ^1.0.4
   google_fonts: ^6.1.0
