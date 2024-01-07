@@ -21,6 +21,18 @@ final class LemmyClient {
   LemmyAuthRepository get key => _db.state.auth.lemmy;
   String? get jwt => key.jwt;
 
+  Future<T> run<T>(LemmyApiQuery<T> query) async {
+    var req = GetPost();
+
+    GetPost(auth: jwt).auth;
+
+    if (query is LemmyApiAuthenticatedQuery) {
+      var request = query as LemmyApiAuthenticatedQuery;
+      request.auth;
+    }
+    return lem.run(query);
+  }
+
   Future<GetPostsResponse> getPosts({
     ListingType? type,
     SortType? sort,

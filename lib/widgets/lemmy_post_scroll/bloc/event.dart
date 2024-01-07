@@ -4,7 +4,7 @@ final class LemmyPostScrollEvent {
   const LemmyPostScrollEvent();
 }
 
-final class HomeCreated extends LemmyPostScrollEvent {}
+final class Initialised extends LemmyPostScrollEvent {}
 
 final class SortChanged extends LemmyPostScrollEvent {
   const SortChanged(this.sort);

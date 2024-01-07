@@ -13,7 +13,7 @@ import 'package:muffed/widgets/lemmy_post_scroll/view/view.dart';
 import 'package:muffed/widgets/post/post.dart';
 
 class HomePage extends MPage<void> {
-  HomePage() : super(pageActions: PageActions([]));
+  HomePage();
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +37,25 @@ class _HomePage extends StatefulWidget {
 }
 
 class __HomePageState extends State<_HomePage> {
-  ValueNotifier<SortType> sortType = ValueNotifier(SortType.hot);
+  @override
+  Widget build(BuildContext context) {
+    return _LemmyPostTabView();
+  }
+}
 
+class _LemmyPostTabView extends StatefulWidget {
+  const _LemmyPostTabView({super.key});
+
+  @override
+  State<_LemmyPostTabView> createState() => __LemmyPostTabViewState();
+}
+
+class __LemmyPostTabViewState extends State<_LemmyPostTabView> {
+  ValueNotifier<SortType> sortType = ValueNotifier(SortType.hot);
   @override
   void initState() {
     super.initState();
-    widget.pageActions.setActions(
+    context.read<PageActions>().setActions(
       [
         ValueListenableBuilder<SortType>(
           valueListenable: sortType,
@@ -69,6 +82,10 @@ class __HomePageState extends State<_HomePage> {
     );
   }
 }
+
+
+
+
 
 
 

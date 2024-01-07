@@ -16,7 +16,7 @@ final _log = Logger('HomeBloc');
 
 class LemmyPostScrollBloc
     extends Bloc<LemmyPostScrollEvent, LemmyPostScrollState> {
-  LemmyPostScrollBloc({required this.lem,required SortType initialSort})
+  LemmyPostScrollBloc({required this.lem, required SortType initialSort})
       : super(
           LemmyPostScrollState(
             selectedSort: initialSort,
@@ -26,7 +26,7 @@ class LemmyPostScrollBloc
             status: HomeStateStatus.idle,
           ),
         ) {
-    on<HomeCreated>(_homeCreated, transformer: restartable());
+    on<Initialised>(_initialised, transformer: restartable());
     on<SortChanged>(
       _onSortChanged,
       transformer: restartable(),
@@ -39,7 +39,7 @@ class LemmyPostScrollBloc
     on<Retry>((event, emit) => add(state.lastEvent!));
   }
 
-  Future<void> _homeCreated(
+  Future<void> _initialised(
       LemmyPostScrollEvent event, Emitter<LemmyPostScrollState> emit) async {
     emit(
       state.copyWith(
@@ -161,6 +161,7 @@ class LemmyPostScrollBloc
       lem.getPosts(
         sort: sort ?? state.selectedSort,
         page: page,
+
       );
 
   int get initialPage => 1;

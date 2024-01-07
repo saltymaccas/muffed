@@ -7,33 +7,16 @@ import 'package:muffed/widgets/exception_snackbar.dart';
 import 'package:muffed/widgets/lemmy_post_scroll/bloc/bloc.dart';
 import 'package:muffed/widgets/post/view/post.dart';
 
-
-// Used to retrieve and inject the LemmyClient
-class LemmyPostScroll extends StatelessWidget {
+class LemmyPostScroll extends StatefulWidget {
   const LemmyPostScroll({required this.sortType, super.key});
 
   final SortType sortType;
 
   @override
-  Widget build(BuildContext context) {
-    return _LemmyPostScroll(
-      sort: sortType,
-      lem: context.lemmy,
-    );
-  }
+  State<LemmyPostScroll> createState() => _LemmyPostScrollState();
 }
 
-class _LemmyPostScroll extends StatefulWidget {
-  const _LemmyPostScroll({required this.sort, required this.lem, super.key});
-
-  final SortType sort;
-  final LemmyClient lem;
-
-  @override
-  State<_LemmyPostScroll> createState() => _LemmyPostScrollState();
-}
-
-class _LemmyPostScrollState extends State<_LemmyPostScroll> {
+class _LemmyPostScrollState extends State<LemmyPostScroll> {
   late final ScrollController scrollController;
   late final LemmyPostScrollBloc postScrollBloc;
 
@@ -42,13 +25,14 @@ class _LemmyPostScrollState extends State<_LemmyPostScroll> {
     super.initState();
     scrollController = ScrollController();
     postScrollBloc =
-        LemmyPostScrollBloc(lem: widget.lem, initialSort: widget.sort)..add(HomeCreated());
+        LemmyPostScrollBloc(lem: context.lemmy, initialSort: widget.sortType)
+          ..add(Initialised());
   }
 
   @override
-  void didUpdateWidget(covariant _LemmyPostScroll oldWidget) {
-    if (oldWidget.sort != widget.sort) {
-      postScrollBloc.add(SortChanged(widget.sort));
+  void didUpdateWidget(covariant LemmyPostScroll oldWidget) {
+    if (oldWidget.sortType != widget.sortType) {
+      postScrollBloc.add(SortChanged(widget.sortType));
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -66,8 +50,7 @@ class _LemmyPostScrollState extends State<_LemmyPostScroll> {
       value: postScrollBloc,
       child: Builder(
         builder: (context) {
-
-    final homeBloc = context.read<LemmyPostScrollBloc>();
+          final homeBloc = context.read<LemmyPostScrollBloc>();
           return MultiBlocListener(
             listeners: [
               // jump scroll to top when pages have been replaced
@@ -109,7 +92,7 @@ class _LemmyPostScrollState extends State<_LemmyPostScroll> {
                     initialLoadError:
                         !state.hasLoadedContent ? state.exception : null,
                     onRetriedFromInitialLoadError: () =>
-                        homeBloc.add(HomeCreated()),
+                        homeBloc.add(Initialised()),
                     isLoading: state.status.isLoading,
                     loadingNextPage: state.status.isLoadingMore,
                     nextPageError: state.status.isFailure &&
