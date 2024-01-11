@@ -732,8 +732,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5224007fbf960f2fe2c67249f2577f798f101c3a"
-      resolved-ref: "5224007fbf960f2fe2c67249f2577f798f101c3a"
+      ref: d28e5063896e261666404eb98a342fb12b4d288a
+      resolved-ref: d28e5063896e261666404eb98a342fb12b4d288a
       url: "https://github.com/freshfieldreds/lemmy_api_client"
     source: git
     version: "0.21.0"

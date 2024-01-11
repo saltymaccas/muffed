@@ -15,17 +15,17 @@ enum HomeStateStatus {
 }
 
 @freezed
-class LemmyPostScrollState with _$HomeState {
+class LemmyPostScrollState with _$LemmyPostScrollState {
   const factory LemmyPostScrollState({
     required HomeStateStatus status,
-    required bool loadedAllPages,
-    required SortType selectedSort,
-    required SortType loadedSort,
+    required bool allPagesLoaded,
+    required GetPosts selectedQuery,
+    required GetPosts? loadedQuery,
     required int pagesLoaded,
     Object? exception,
     LemmyPostScrollEvent? lastEvent,
     List<PostView>? posts,
-  }) = _HomeState;
+  }) = _LemmyPostScrollState;
 
   const LemmyPostScrollState._();
 

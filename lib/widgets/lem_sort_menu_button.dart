@@ -7,7 +7,7 @@ import 'package:muffed/widgets/popup_menu/popup_menu.dart';
 class LemSortMenuButton extends StatelessWidget {
   const LemSortMenuButton({required this.selectedValue, required this.onChanged,super.key});
 
-  final SortType selectedValue;
+  final SortType? selectedValue;
   final void Function(SortType) onChanged;
 
   @override

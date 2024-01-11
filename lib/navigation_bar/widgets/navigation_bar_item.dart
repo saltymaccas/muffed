@@ -173,7 +173,7 @@ class _ActionsRowFactoryState extends State<_ActionsRowFactory> {
 
   @override
   void didUpdateWidget(covariant _ActionsRowFactory oldWidget) {
-    if (oldWidget.actions != widget.actions &&
+    if (
         widget.actions != null &&
         // Only runs if on branch as a quick fix to it animating when branch
         // changes, this should be changed to identify if the actions are

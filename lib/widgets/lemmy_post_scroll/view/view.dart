@@ -8,8 +8,13 @@ import 'package:muffed/widgets/lemmy_post_scroll/bloc/bloc.dart';
 import 'package:muffed/widgets/post/view/post.dart';
 
 class LemmyPostScroll extends StatefulWidget {
-  const LemmyPostScroll({required this.sortType, super.key});
+  const LemmyPostScroll({
+    required this.sortType,
+    required this.listingType,
+    super.key,
+  });
 
+  final ListingType listingType;
   final SortType sortType;
 
   @override
@@ -19,21 +24,26 @@ class LemmyPostScroll extends StatefulWidget {
 class _LemmyPostScrollState extends State<LemmyPostScroll> {
   late final ScrollController scrollController;
   late final LemmyPostScrollBloc postScrollBloc;
+  late final GetPosts currentQuery;
 
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
+    currentQuery = GetPosts(
+      type: widget.listingType,
+      sort: widget.sortType,
+    );
     postScrollBloc =
-        LemmyPostScrollBloc(lem: context.lemmy, initialSort: widget.sortType)
+        LemmyPostScrollBloc(lem: context.lemmy, listingType: widget.listingType, sortType: widget.sortType)
           ..add(Initialised());
   }
 
   @override
   void didUpdateWidget(covariant LemmyPostScroll oldWidget) {
-    if (oldWidget.sortType != widget.sortType) {
-      postScrollBloc.add(SortChanged(widget.sortType));
-    }
+    currentQuery = GetPosts(type: widget.listingType, sort: widget.sortType);
+    postScrollBloc.add(QueryChanged(currentQuery));
+    
     super.didUpdateWidget(oldWidget);
   }
 
@@ -56,7 +66,7 @@ class _LemmyPostScrollState extends State<LemmyPostScroll> {
               // jump scroll to top when pages have been replaced
               BlocListener<LemmyPostScrollBloc, LemmyPostScrollState>(
                 listenWhen: (previous, current) =>
-                    previous.loadedSort != current.loadedSort,
+                    previous.loadedQuery != current.loadedQuery,
                 listener: (context, state) {
                   scrollController.jumpTo(0);
                 },
@@ -88,7 +98,7 @@ class _LemmyPostScrollState extends State<LemmyPostScroll> {
                         return state.status != HomeStateStatus.reloading;
                       });
                     },
-                    allPagesLoaded: state.loadedAllPages,
+                    allPagesLoaded: state.allPagesLoaded,
                     initialLoadError:
                         !state.hasLoadedContent ? state.exception : null,
                     onRetriedFromInitialLoadError: () =>

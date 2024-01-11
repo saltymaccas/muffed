@@ -37,7 +37,7 @@ dependencies:
   lemmy_api_client:
     git:
       url: https://github.com/freshfieldreds/lemmy_api_client
-      ref: 5224007fbf960f2fe2c67249f2577f798f101c3a
+      ref: d28e5063896e261666404eb98a342fb12b4d288a 
   cross_file: ^0.3.3+6
   image_picker: ^1.0.4
   google_fonts: ^6.1.0

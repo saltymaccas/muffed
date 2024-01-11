@@ -1,9 +1,12 @@
-import 'dart:ffi';
-
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:muffed/components/paged_content.dart/paged_content.dart';
+import 'package:muffed/db/db.dart';
+import 'package:muffed/interfaces/lemmy/lemmy.dart';
 import 'package:muffed/interfaces/lemmy/models/models.dart';
+import 'package:muffed/pages/home/home.dart';
 import 'package:muffed/widgets/lemmy_post_scroll/bloc/bloc.dart';
 import 'package:muffed/router/router.dart';
 import 'package:muffed/widgets/content_scroll/content_scroll.dart';
@@ -27,6 +30,16 @@ class HomePage extends MPage<void> {
   }
 }
 
+final class TabModel extends Equatable {
+  const TabModel(this.title, this.view);
+
+  final String title;
+  final Widget view;
+
+  @override
+  List<Object?> get props => [title, view];
+}
+
 class _HomePage extends StatefulWidget {
   const _HomePage({required this.pageActions, super.key});
 
@@ -37,49 +50,148 @@ class _HomePage extends StatefulWidget {
 }
 
 class __HomePageState extends State<_HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return _LemmyPostTabView();
-  }
-}
+  int selectedTabIndex = 0;
 
-class _LemmyPostTabView extends StatefulWidget {
-  const _LemmyPostTabView({super.key});
+  late bool authenticated;
 
-  @override
-  State<_LemmyPostTabView> createState() => __LemmyPostTabViewState();
-}
-
-class __LemmyPostTabViewState extends State<_LemmyPostTabView> {
-  ValueNotifier<SortType> sortType = ValueNotifier(SortType.hot);
   @override
   void initState() {
     super.initState();
-    context.read<PageActions>().setActions(
-      [
-        ValueListenableBuilder<SortType>(
-          valueListenable: sortType,
-          builder: (context, sort, child) {
-            return LemSortMenuButton(
-              selectedValue: sort,
-              onChanged: (newSort) => sortType.value = newSort,
-            );
-          },
+    authenticated = context.db.state.auth.lemmy.loggedIn;
+    context.db.stream.listen((event) {
+      if (event.auth.lemmy.loggedIn != authenticated) {
+        setState(() {
+          authenticated = event.auth.lemmy.loggedIn;
+        });
+      }
+    });
+
+    selectedTabIndex = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tabs = [
+      if (authenticated)
+        TabModel(
+            'Subscribed',
+            _LemmyPostScrollTabView(
+              listingType: ListingType.subscribed,
+            )),
+      TabModel(
+          'Popular',
+          _LemmyPostScrollTabView(
+            listingType: ListingType.all,
+          )),
+      TabModel(
+          'Local',
+          _LemmyPostScrollTabView(
+            listingType: ListingType.local,
+          ))
+    ];
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          clipBehavior: Clip.hardEdge,
+          toolbarHeight: 50,
+          floating: true,
+          snap: true,
+          flexibleSpace: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).padding.top,
+              ),
+              Row(
+                children: List.generate(
+                  tabs.length,
+                  (index) => PageTab(
+                    onTap: () {
+                      setState(() {
+                        selectedTabIndex = index;
+                      });
+                    },
+                    name: tabs[index].title,
+                    selected: index == selectedTabIndex,
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 0.5,
+              ),
+            ],
+          ),
+        ),
+        SliverFillRemaining(
+          child: tabs[selectedTabIndex].view,
         ),
       ],
     );
   }
+}
+
+class _LemmyPostScrollTabView extends StatefulWidget {
+  const _LemmyPostScrollTabView({required this.listingType, super.key});
+
+  final ListingType listingType;
+
+  @override
+  State<_LemmyPostScrollTabView> createState() =>
+      _LemmyPostScrollTabViewState();
+}
+
+class _LemmyPostScrollTabViewState extends State<_LemmyPostScrollTabView> {
+  late ListingType type;
+  late final PostPagedScrollBloc postScrollBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    type = widget.listingType;
+    postScrollBloc = PostPagedScrollBloc(
+      LemmyClient(context),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<PageActions>().setActions(
+        [
+          BlocBuilder<PostPagedScrollBloc, PagedContentState>(
+            bloc: postScrollBloc,
+            builder: (context, state) {
+              return LemSortMenuButton(
+                selectedValue: state.loadingState != null
+                    ? state.loadingState!.query.sort
+                    : state.loadedState!.query.sort,
+                onChanged: (newSort) => postScrollBloc.add(
+                  LoadNewQueryRequested(
+                    state.loadedState!.query.copyWith(sort: newSort),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _LemmyPostScrollTabView oldWidget) {
+    if (oldWidget != widget) {
+      type = widget.listingType;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: sortType,
-      builder: (context, sort, child) {
-        return LemmyPostScroll(
-          sortType: sort,
-        );
-      },
-    );
+    return Placeholder();
   }
 }
 

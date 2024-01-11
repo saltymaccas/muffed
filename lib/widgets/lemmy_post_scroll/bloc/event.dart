@@ -6,10 +6,10 @@ final class LemmyPostScrollEvent {
 
 final class Initialised extends LemmyPostScrollEvent {}
 
-final class SortChanged extends LemmyPostScrollEvent {
-  const SortChanged(this.sort);
+final class QueryChanged extends LemmyPostScrollEvent {
+  const QueryChanged(this.query);
 
-  final SortType sort;
+  final GetPosts query;
 }
 
 final class ReachedNearScrollEnd extends LemmyPostScrollEvent {}

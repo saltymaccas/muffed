@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/exception/models/models.dart';
 import 'package:muffed/interfaces/lemmy/lemmy.dart';
-import 'package:muffed/widgets/post/post.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -16,19 +14,24 @@ final _log = Logger('HomeBloc');
 
 class LemmyPostScrollBloc
     extends Bloc<LemmyPostScrollEvent, LemmyPostScrollState> {
-  LemmyPostScrollBloc({required this.lem, required SortType initialSort})
-      : super(
+  LemmyPostScrollBloc({
+    required this.lem,
+    required ListingType listingType, required SortType sortType, required,
+  }) : super(
           LemmyPostScrollState(
-            selectedSort: initialSort,
-            loadedSort: initialSort,
-            loadedAllPages: false,
+            selectedQuery: GetPosts(
+              type: listingType,
+              sort: sortType,
+            ),
+            loadedQuery: null,
+            allPagesLoaded: false,
             pagesLoaded: 0,
             status: HomeStateStatus.idle,
           ),
         ) {
     on<Initialised>(_initialised, transformer: restartable());
-    on<SortChanged>(
-      _onSortChanged,
+    on<QueryChanged>(
+      _onQueryChanged,
       transformer: restartable(),
     );
     on<ReachedNearScrollEnd>(
@@ -54,7 +57,7 @@ class LemmyPostScrollBloc
           status: HomeStateStatus.idle,
           posts: response.posts,
           pagesLoaded: initialPage,
-          loadedSort: state.selectedSort,
+          loadedQuery: state.selectedQuery,
         ),
       );
     } catch (error, stackTrace) {
@@ -68,32 +71,33 @@ class LemmyPostScrollBloc
     }
   }
 
-  Future<void> _onSortChanged(
-    SortChanged event,
+  Future<void> _onQueryChanged(
+    QueryChanged event,
     Emitter<LemmyPostScrollState> emit,
   ) async {
+    final lastSelectedQuery = state.selectedQuery;
     emit(
       state.copyWith(
-          selectedSort: event.sort,
-          status: HomeStateStatus.loading,
-          lastEvent: event),
+        selectedQuery: event.query,
+        status: HomeStateStatus.loading,
+        lastEvent: event,
+      ),
     );
     try {
-      final response =
-          await _getPosts(page: initialPage, sort: state.selectedSort);
+      final response = await _getPosts(page: initialPage);
       emit(
         state.copyWith(
           status: HomeStateStatus.idle,
           posts: response.posts,
           pagesLoaded: initialPage,
-          loadedSort: state.selectedSort,
+          loadedQuery: event.query,
         ),
       );
     } catch (error, stackTrace) {
       _log.warning('Error while loading initial posts', error, stackTrace);
       emit(
         state.copyWith(
-          selectedSort: state.loadedSort,
+          selectedQuery: state.loadedQuery ?? lastSelectedQuery,
           status: HomeStateStatus.failure,
           exception: error,
         ),
@@ -105,7 +109,7 @@ class LemmyPostScrollBloc
     ReachedNearScrollEnd event,
     Emitter<LemmyPostScrollState> emit,
   ) async {
-    if (state.loadedAllPages) return;
+    if (state.allPagesLoaded) return;
     if (state.status.isFailure && state.lastEvent is ReachedNearScrollEnd) {
       return;
     }
@@ -117,7 +121,7 @@ class LemmyPostScrollBloc
         state.copyWith(
           posts: [...state.posts ?? [], ...response.posts],
           pagesLoaded: nextPage,
-          loadedAllPages: response.posts.isEmpty,
+          allPagesLoaded: response.posts.isEmpty,
           status: HomeStateStatus.idle,
         ),
       );
@@ -158,11 +162,7 @@ class LemmyPostScrollBloc
   }
 
   Future<GetPostsResponse> _getPosts({required int page, SortType? sort}) =>
-      lem.getPosts(
-        sort: sort ?? state.selectedSort,
-        page: page,
-
-      );
+      lem.run(state.selectedQuery.copyWith(page: page));
 
   int get initialPage => 1;
   int get nextPage => state.pagesLoaded + 1;

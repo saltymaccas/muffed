@@ -7,9 +7,7 @@ class PageActions extends ChangeNotifier {
   List<Widget>? actions;
 
   void setActions(List<Widget> items) {
-    if (items != actions) {
       actions = items;
       notifyListeners();
-    }
   }
 }
