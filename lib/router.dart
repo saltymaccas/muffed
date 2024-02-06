@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/pages/home_page/home_page.dart';
-import 'package:muffed/pages/home_page/screens/community_screen/community_screen.dart';
-import 'package:muffed/pages/home_page/screens/create_post_screen/create_post_screen.dart';
-import 'package:muffed/pages/home_page/screens/post_screen/post_screen.dart';
-import 'package:muffed/pages/home_page/screens/search/search_screen.dart';
-import 'package:muffed/pages/home_page/screens/user_screen/user_screen.dart';
-import 'package:muffed/pages/inbox_page/inbox_page.dart';
-import 'package:muffed/pages/profile_page/profile_page.dart';
-import 'package:muffed/pages/profile_page/screens/anon_settings_screen/anon_settings_screen.dart';
-import 'package:muffed/pages/profile_page/screens/login_screen/login_screen.dart';
-import 'package:muffed/pages/profile_page/screens/saved_posts_screen/saved_posts_screen.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/about/about.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/content_filters/content_filters.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/defaults/defaults.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/look/look.dart';
-import 'package:muffed/pages/profile_page/screens/settings_screen/settings_screen.dart';
+import 'package:muffed/view/pages/home_page/home_page.dart';
+import 'package:muffed/view/pages/home_page/screens/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/home_page/screens/create_post_screen/create_post_screen.dart';
+import 'package:muffed/view/pages/home_page/screens/post_screen/post_screen.dart';
+import 'package:muffed/view/pages/home_page/screens/search/search_screen.dart';
+import 'package:muffed/view/pages/home_page/screens/user_screen/user_screen.dart';
+import 'package:muffed/view/pages/inbox_page/inbox_page.dart';
+import 'package:muffed/view/pages/profile_page/profile_page.dart';
+import 'package:muffed/view/pages/profile_page/screens/anon_settings_screen/anon_settings_screen.dart';
+import 'package:muffed/view/pages/profile_page/screens/login_screen/login_screen.dart';
+import 'package:muffed/view/pages/profile_page/screens/saved_posts_screen/saved_posts_screen.dart';
+import 'package:muffed/view/pages/profile_page/screens/settings_screen/about/about.dart';
+import 'package:muffed/view/pages/profile_page/screens/settings_screen/content_filters/content_filters.dart';
+import 'package:muffed/view/pages/profile_page/screens/settings_screen/defaults/defaults.dart';
+import 'package:muffed/view/pages/profile_page/screens/settings_screen/look/look.dart';
+import 'package:muffed/view/pages/profile_page/screens/settings_screen/settings_screen.dart';
 import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/widgets/create_comment/create_comment_screen.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
+import 'package:muffed/view/widgets/create_comment/create_comment_screen.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 extension NumberParsing on String {
   int parseInt() {

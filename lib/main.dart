@@ -8,7 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:muffed/global_state/bloc.dart';
 import 'package:muffed/repo/server_repo.dart';
 import 'package:muffed/router.dart';
-import 'package:muffed/widgets/dynamic_navigation_bar/bloc/bloc.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
