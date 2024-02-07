@@ -7,7 +7,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/router.dart';
+import 'package:muffed/view/router/router.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 

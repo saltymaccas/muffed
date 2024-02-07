@@ -137,7 +137,8 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'All Time',
                                                 icon: const Icon(
-                                                    Icons.military_tech,),
+                                                  Icons.military_tech,
+                                                ),
                                                 value: LemmySortType.topAll,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -150,7 +151,8 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Year',
                                                 icon: const Icon(
-                                                    Icons.calendar_today,),
+                                                  Icons.calendar_today,
+                                                ),
                                                 value: LemmySortType.topYear,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -163,7 +165,8 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Month',
                                                 icon: const Icon(
-                                                    Icons.calendar_month,),
+                                                  Icons.calendar_month,
+                                                ),
                                                 value: LemmySortType.topMonth,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -249,7 +252,8 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Most Comments',
                                                 icon: const Icon(
-                                                    Icons.comment_bank,),
+                                                  Icons.comment_bank,
+                                                ),
                                                 value:
                                                     LemmySortType.mostComments,
                                                 onTap: () => bloc.add(
@@ -263,7 +267,8 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'New Comments',
                                                 icon: const Icon(
-                                                    Icons.add_comment,),
+                                                  Icons.add_comment,
+                                                ),
                                                 value:
                                                     LemmySortType.newComments,
                                                 onTap: () => bloc.add(

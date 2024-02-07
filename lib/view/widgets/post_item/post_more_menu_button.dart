@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/router.dart';
+import 'package:muffed/view/router/router.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 
