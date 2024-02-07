@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/domain/lemmy/models.dart';
 
 import 'package:muffed/view/widgets/nothing_to_show.dart';
 import 'package:muffed/view/pages/inbox_page/replies_screen/bloc/bloc.dart';

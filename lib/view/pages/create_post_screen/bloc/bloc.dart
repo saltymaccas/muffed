@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:muffed/repo/pictrs/models.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/pictrs/models.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/utils/url.dart';
 
 part 'event.dart';

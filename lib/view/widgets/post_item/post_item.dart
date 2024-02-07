@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/view/widgets/post_item/post_view_modes/post_view_modes.dart';

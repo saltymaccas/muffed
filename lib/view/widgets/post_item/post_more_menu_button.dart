@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/view/pages/home_page/screens/community_screen/community_screen.dart';
-import 'package:muffed/repo/lemmy/models.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/router.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 

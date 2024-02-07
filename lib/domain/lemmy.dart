@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/utils/url.dart';
 
 final _log = Logger('LemmyRepo');

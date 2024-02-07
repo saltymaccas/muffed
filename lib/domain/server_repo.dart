@@ -1,7 +1,7 @@
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/pictrs.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/pictrs.dart';
 
-import 'package:muffed/repo/lemmy.dart';
+import 'package:muffed/domain/lemmy.dart';
 
 export 'lemmy/models.dart';
 

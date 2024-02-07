@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 
-import 'package:muffed/view/pages/profile_page/screens/anon_settings_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/anon_settings/bloc/bloc.dart';
 
 class AnonSettingsScreen extends StatelessWidget {
   const AnonSettingsScreen({super.key});
@@ -68,10 +68,11 @@ class AnonSettingsScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        context.read<AnonSettingsBloc>().add(SaveRequested());
-                      },
-                      child: const Text('Save'),),
+                    onPressed: () {
+                      context.read<AnonSettingsBloc>().add(SaveRequested());
+                    },
+                    child: const Text('Save'),
+                  ),
                 ],
               ),
             ),

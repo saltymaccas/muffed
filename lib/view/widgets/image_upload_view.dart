@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:muffed/view/widgets/icon_button.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
-import 'package:muffed/repo/pictrs/models.dart';
+import 'package:muffed/domain/pictrs/models.dart';
 
 /// A widget that displays uploaded images and their upload progress.
 class ImageUploadView extends StatelessWidget {

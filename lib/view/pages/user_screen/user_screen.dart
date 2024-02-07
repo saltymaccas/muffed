@@ -12,8 +12,8 @@ import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/view/pages/home_page/screens/user_screen/bloc/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
 
 const _headerMaxHeight = 300.0;

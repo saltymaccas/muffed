@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/view/pages/profile_page/screens/saved_posts_screen/bloc/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/view/pages/saved_posts/bloc/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';

@@ -9,7 +9,7 @@ import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/server_repo.dart';
 
 import 'package:muffed/view/widgets/create_comment/bloc/bloc.dart';
 

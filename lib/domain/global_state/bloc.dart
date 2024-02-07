@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/repo/lemmy/models.dart';
+import 'package:muffed/domain/lemmy/models.dart';
 
 part 'event.dart';
 part 'state.dart';

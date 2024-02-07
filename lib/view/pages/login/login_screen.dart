@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/global_state/bloc.dart';
-import 'package:muffed/repo/server_repo.dart';
+import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 
-import 'package:muffed/view/pages/profile_page/screens/login_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/login_screen/bloc/bloc.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
