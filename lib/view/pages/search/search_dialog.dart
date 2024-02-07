@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/search/bloc/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
 void openSearchDialog(BuildContext context) {
   showDialog<void>(
-    barrierDismissible: true,
     context: context,
     builder: (context) {
       final textFocusNode = FocusNode();
@@ -42,7 +41,6 @@ void openSearchDialog(BuildContext context) {
                         Flexible(
                           child: ListView.builder(
                             reverse: true,
-                            clipBehavior: Clip.hardEdge,
                             itemCount: state.communities.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {

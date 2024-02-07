@@ -14,7 +14,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
       emit(state.copyWith(inboxStatus: RepliesStatus.loading));
       try {
         final response = await repo.lemmyRepo
-            .getReplies(unreadOnly: !state.showAll, page: 1);
+            .getReplies(unreadOnly: !state.showAll);
         emit(
           state.copyWith(
             inboxStatus: RepliesStatus.success,
@@ -60,7 +60,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
         emit(state.copyWith(isLoading: true, showAll: !state.showAll));
         try {
           final response = await repo.lemmyRepo
-              .getReplies(page: 1, unreadOnly: !state.showAll);
+              .getReplies(unreadOnly: !state.showAll);
           emit(
             state.copyWith(
               isLoading: false,
@@ -77,7 +77,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
       emit(state.copyWith(isRefreshing: true));
       try {
         final response = await repo.lemmyRepo
-            .getReplies(page: 1, unreadOnly: !state.showAll);
+            .getReplies(unreadOnly: !state.showAll);
 
         emit(
           state.copyWith(

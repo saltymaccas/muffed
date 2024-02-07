@@ -8,13 +8,12 @@ part 'state.dart';
 
 class SavedPostsBloc extends Bloc<SavedPostsEvent, SavedPostsState> {
   ///
-  SavedPostsBloc({required this.repo}) : super(SavedPostsState()) {
+  SavedPostsBloc({required this.repo}) : super(const SavedPostsState()) {
     on<Initialize>((event, emit) async {
       emit(state.copyWith(status: SavedPostsStatus.loading));
       final result = await repo.lemmyRepo.getPosts(
         sortType: state.sortType,
         savedOnly: true,
-        page: 1,
       );
 
       emit(

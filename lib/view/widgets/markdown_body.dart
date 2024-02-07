@@ -40,7 +40,6 @@ class MuffedMarkdownBody extends StatelessWidget {
         imageBuilder: (uri, title, alt) {
           return MuffedImage(
             imageUrl: uri.toString(),
-            animateSizeChange: false,
             adjustableHeight: true,
           );
         },
@@ -112,7 +111,6 @@ class MuffedMarkdownBody extends StatelessWidget {
           }
         },
         onTapText: onTapText,
-        selectable: false,
         inlineSyntaxes: [LemmyLinkSyntax()],
         styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
           blockquoteDecoration: BoxDecoration(

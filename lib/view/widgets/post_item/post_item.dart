@@ -61,7 +61,6 @@ class _PostItemState extends State<PostItem>
       return Skeletonizer(
         ignoreContainers: false,
         justifyMultiLineText: false,
-        ignorePointers: true,
         child: CardLemmyPostItem(
           placeholderPost,
           displayType: widget.displayType,
@@ -137,8 +136,6 @@ Lorem ipsum dolor sit amet.
   creatorId: 123,
   communityId: 123,
   nsfw: false,
-  thumbnailUrl: null,
-  url: null,
   score: 123,
   communityName: 'placeholder',
   creatorName: 'placeholder',
@@ -149,6 +146,5 @@ Lorem ipsum dolor sit amet.
   commentCount: 21,
   downVotes: 11,
   upVotes: 11,
-  myVote: LemmyVoteType.none,
   communityIcon: null,
 );

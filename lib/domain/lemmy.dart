@@ -371,7 +371,6 @@ interface class LemmyRepo {
         'block': block,
         'person_id': personId,
       },
-      mustBeLoggedIn: true,
     );
     return response['blocked'];
   }
@@ -394,7 +393,6 @@ interface class LemmyRepo {
     final response = await postRequest(
       path: '/community/block',
       data: {'community_id': id, 'block': block},
-      mustBeLoggedIn: true,
     );
     return response['blocked'];
   }
@@ -525,7 +523,6 @@ interface class LemmyRepo {
   Future<void> markReplyAsRead({required int id, bool read = true}) async {
     await postRequest(
       path: '/comment/mark_as_read',
-      mustBeLoggedIn: true,
       data: {'comment_reply_id': id, 'read': read},
     );
   }
@@ -533,7 +530,6 @@ interface class LemmyRepo {
   Future<void> markMentionAsRead({required int id, bool read = true}) async {
     await postRequest(
       path: '/user/mention/mark_as_read',
-      mustBeLoggedIn: true,
       data: {'person_mention_id': id, 'read': read},
     );
   }

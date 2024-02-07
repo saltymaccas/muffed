@@ -139,7 +139,6 @@ class CreateCommentDialog extends StatelessWidget {
                       : Container(),
                 ),
                 Flexible(
-                  flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(4),
                     child: IndexedStack(
@@ -152,7 +151,6 @@ class CreateCommentDialog extends StatelessWidget {
                         TextField(
                           controller: textFieldController,
                           autofocus: true,
-                          autocorrect: true,
                           keyboardType: TextInputType.multiline,
                           minLines: 5,
                           maxLines: null,

@@ -2,8 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/shorthands.dart';
+import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/block_dialog/block_dialog.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/icon_button.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -11,10 +15,6 @@ import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/shorthands.dart';
 
 const _headerMaxHeight = 300.0;
 const _headerMinHeight = 130.0;
@@ -156,7 +156,6 @@ class _UserScreenSuccess extends StatelessWidget {
         return true;
       },
       child: NestedScrollView(
-        floatHeaderSlivers: false,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           // These are the slivers that show up in the "outer" scroll view.
           return <Widget>[
@@ -165,7 +164,6 @@ class _UserScreenSuccess extends StatelessWidget {
               sliver: SliverPersistentHeader(
                 delegate: _HeaderDelegate(user),
                 pinned: true,
-                floating: false,
               ),
             ),
           ];
@@ -180,13 +178,12 @@ class _UserScreenSuccess extends StatelessWidget {
                       height: _headerMinHeight,
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: Row(
                         children: [
                           Flexible(
                             child: Center(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     user.postCount.toString(),
@@ -203,7 +200,6 @@ class _UserScreenSuccess extends StatelessWidget {
                           Flexible(
                             child: Center(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     user.commentCount.toString(),
@@ -223,10 +219,10 @@ class _UserScreenSuccess extends StatelessWidget {
                     const Divider(),
                     if (user.bio != null)
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: MuffedMarkdownBody(data: user.bio!),
                       ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Container(
@@ -293,7 +289,6 @@ class _UserScreenSuccess extends StatelessWidget {
                 return CommentItem(
                   displayMode: CommentItemDisplayMode.single,
                   comment: comments[index - 1],
-                  children: const [],
                   sortType: LemmyCommentSortType.hot,
                 );
               },
@@ -383,7 +378,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -426,11 +420,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
             SafeArea(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {

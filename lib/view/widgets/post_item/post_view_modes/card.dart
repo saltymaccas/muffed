@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
-import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/utils/time.dart';
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/post_item/bloc/bloc.dart';
@@ -196,7 +196,7 @@ class CardLemmyPostItem extends StatelessWidget {
               },
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

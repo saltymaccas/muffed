@@ -23,7 +23,6 @@ class ErrorComponentTransparent extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showErrorIcon)
           Icon(

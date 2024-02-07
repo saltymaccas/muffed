@@ -5,13 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/widgets/create_comment/bloc/bloc.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/domain/server_repo.dart';
-
-import 'package:muffed/view/widgets/create_comment/bloc/bloc.dart';
 
 class CreateCommentScreen extends StatelessWidget {
   const CreateCommentScreen({
@@ -107,7 +106,6 @@ class CreateCommentScreen extends StatelessWidget {
                     ],
                   ),
                   body: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: SingleChildScrollView(
@@ -136,7 +134,6 @@ class CreateCommentScreen extends StatelessWidget {
                                       focusNode: textFocusNode,
                                       label: 'Comment...',
                                       minLines: 8,
-                                      maxLines: null,
                                     ),
                                   ],
                                 ),

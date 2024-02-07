@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -72,7 +72,6 @@ class _CommunityInfoSuccess extends StatelessWidget {
               const Divider(),
               SizedBox(
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Flexible(

@@ -5,8 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
-import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
@@ -145,7 +145,7 @@ class CreatePostScreen extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50)),
+                            fixedSize: const Size(500, 50),),
                         child: const Text('Add Url'),
                       ),
                     ),
@@ -157,7 +157,7 @@ class CreatePostScreen extends StatelessWidget {
                           await openImagePickerForImageUpload();
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50)),
+                            fixedSize: const Size(500, 50),),
                         child: const Text('Add Image'),
                       ),
                     ),
@@ -201,7 +201,6 @@ class CreatePostScreen extends StatelessWidget {
                   ],
                 ),
                 body: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
@@ -333,7 +332,6 @@ class CreatePostScreen extends StatelessWidget {
                                       focusNode: bodyTextFocusNode,
                                       label: 'Body',
                                       minLines: 5,
-                                      maxLines: null,
                                     ),
                                   ),
                                 ],

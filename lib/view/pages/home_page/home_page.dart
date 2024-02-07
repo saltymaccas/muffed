@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/home_page/bloc/bloc.dart';
 import 'package:muffed/view/pages/search/search_dialog.dart';
-import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'All Time',
                                                 icon: const Icon(
-                                                    Icons.military_tech),
+                                                    Icons.military_tech,),
                                                 value: LemmySortType.topAll,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Year',
                                                 icon: const Icon(
-                                                    Icons.calendar_today),
+                                                    Icons.calendar_today,),
                                                 value: LemmySortType.topYear,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Month',
                                                 icon: const Icon(
-                                                    Icons.calendar_month),
+                                                    Icons.calendar_month,),
                                                 value: LemmySortType.topMonth,
                                                 onTap: () => bloc.add(
                                                   SortTypeChanged(
@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'Most Comments',
                                                 icon: const Icon(
-                                                    Icons.comment_bank),
+                                                    Icons.comment_bank,),
                                                 value:
                                                     LemmySortType.mostComments,
                                                 onTap: () => bloc.add(
@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                                               MuffedPopupMenuItem(
                                                 title: 'New Comments',
                                                 icon: const Icon(
-                                                    Icons.add_comment),
+                                                    Icons.add_comment,),
                                                 value:
                                                     LemmySortType.newComments,
                                                 onTap: () => bloc.add(
@@ -309,7 +309,6 @@ class _HomePageState extends State<HomePage> {
                                 height: MediaQuery.of(context).padding.top,
                               ),
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: List.generate(
                                   state.scrollViewConfigs.length,
                                   (index) => _PageTab(

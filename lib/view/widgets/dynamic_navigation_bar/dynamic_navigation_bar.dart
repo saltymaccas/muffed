@@ -188,7 +188,6 @@ class _DynamicNavigationBarItemState extends State<_DynamicNavigationBarItem> {
             curve: _animCurve,
             duration: _animDur,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 widget.icon,
                 AnimatedSize(

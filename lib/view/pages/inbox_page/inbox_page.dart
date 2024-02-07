@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/view/pages/inbox_page/replies_screen/replies_screen.dart';
 import 'package:muffed/domain/server_repo.dart';
-
 import 'package:muffed/view/pages/inbox_page/mentions_screen/bloc/bloc.dart' as m;
 import 'package:muffed/view/pages/inbox_page/mentions_screen/mentions_screen.dart';
 import 'package:muffed/view/pages/inbox_page/replies_screen/bloc/bloc.dart' as r;
+import 'package:muffed/view/pages/inbox_page/replies_screen/replies_screen.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 class InboxPage extends StatelessWidget {
   const InboxPage({super.key});

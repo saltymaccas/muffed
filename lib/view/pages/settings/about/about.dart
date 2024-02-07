@@ -14,8 +14,6 @@ class AboutScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
             Text('Muffed', style: Theme.of(context).textTheme.titleLarge),

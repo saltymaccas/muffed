@@ -28,7 +28,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final search = await repo.lemmyRepo.search(
             query: event.searchQuery,
             sortType: state.sortType,
-            searchType: LemmySearchType.all,
             communityId: state.communityId,
           );
 
@@ -93,7 +92,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final searchResponse = await repo.lemmyRepo.search(
             query: state.loadedSearchQuery,
             sortType: state.sortType,
-            searchType: LemmySearchType.all,
             page: state.pagesLoaded + 1,
             communityId: state.communityId,
           );

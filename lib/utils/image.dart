@@ -14,7 +14,7 @@ bool isImageUrl(String url) {
     '.gif',
     '.bmp',
     '.svg',
-    '.webp'
+    '.webp',
   ];
 
   final uri = Uri.parse(url);
@@ -31,7 +31,7 @@ bool isImageUrl(String url) {
 
 Future<Size> retrieveImageDimensions(String imageUrl) async {
   try {
-    bool isImage = isImageUrl(imageUrl);
+    final bool isImage = isImageUrl(imageUrl);
     if (!isImage) throw Exception('The URL provided was not an image');
 
     final uri = Uri.parse(imageUrl);
@@ -106,11 +106,11 @@ Size getJPEGImageDimensions(Uint8List bytes) {
       throw Exception('Invalid marker');
     }
 
-    int marker = bytes[offset + 1];
+    final int marker = bytes[offset + 1];
 
     if (marker == 0xC0 || marker == 0xC2) {
-      int height = (bytes[offset + 5] << 8) | bytes[offset + 6];
-      int width = (bytes[offset + 7] << 8) | bytes[offset + 8];
+      final int height = (bytes[offset + 5] << 8) | bytes[offset + 6];
+      final int width = (bytes[offset + 7] << 8) | bytes[offset + 8];
 
       return Size(width.toDouble(), height.toDouble());
     } else {
@@ -126,11 +126,11 @@ Size getGIFImageDimensions(Uint8List bytes) {
     throw Exception('Invalid GIF file');
   }
   if (identical(bytes.sublist(0, 6), [0x47, 0x49, 0x46, 0x38, 0x39, 0x61])) {
-    throw Exception("Invalid Header");
+    throw Exception('Invalid Header');
   }
 
-  int width = (bytes[7] << 8) | bytes[6];
-  int height = (bytes[9] << 8) | bytes[8];
+  final int width = (bytes[7] << 8) | bytes[6];
+  final int height = (bytes[9] << 8) | bytes[8];
   return Size(width.toDouble(), height.toDouble());
 }
 
@@ -147,7 +147,7 @@ Size getWEBPImageDimensions(Uint8List bytes) {
     throw Exception('Invalid WEBP file');
   }
 
-  int width = (bytes[27] << 8) | bytes[26];
-  int height = (bytes[29] << 8) | bytes[28];
+  final int width = (bytes[27] << 8) | bytes[26];
+  final int height = (bytes[29] << 8) | bytes[28];
   return Size(width.toDouble(), height.toDouble());
 }

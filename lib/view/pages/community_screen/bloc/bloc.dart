@@ -153,7 +153,7 @@ class CommunityScreenBloc
         emit(
           state.copyWith(
             error: Exception(
-                'Tried to toggle block when block = null, please report this error to the developers'),
+                'Tried to toggle block when block = null, please report this error to the developers',),
           ),
         );
         _log.warning('Tried to toggle block when block = null');

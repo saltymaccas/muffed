@@ -512,7 +512,7 @@ class LemmyCommunity extends Equatable {
       jsonType = JsonTypes.community;
     } else {
       throw Exception(
-          'Json parsed into community does not appear to be a community');
+          'Json parsed into community does not appear to be a community',);
     }
 
     late final Map<String, dynamic> community;
@@ -534,7 +534,7 @@ class LemmyCommunity extends Equatable {
         getCommunityResponse = null;
       case _:
         throw Exception(
-            'Json parsed into community does not appear to be a community');
+            'Json parsed into community does not appear to be a community',);
     }
 
     return LemmyCommunity(
@@ -799,7 +799,7 @@ class LemmyPerson extends Equatable {
         person = json;
       case _:
         throw Exception(
-            'Json parsed into person does not appear to be a person');
+            'Json parsed into person does not appear to be a person',);
     }
 
     late final Map<String, dynamic>? personView;

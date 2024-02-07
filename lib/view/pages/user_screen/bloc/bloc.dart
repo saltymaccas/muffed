@@ -16,7 +16,6 @@ class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
         final response = await repo.lemmyRepo.getPersonDetails(
           username: state.username,
           id: state.userId,
-          page: 1,
         );
 
         emit(

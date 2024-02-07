@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/view/widgets/muffed_avatar.dart';
-import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-
 import 'package:muffed/view/pages/anon_settings/bloc/bloc.dart';
+import 'package:muffed/view/widgets/muffed_avatar.dart';
+import 'package:muffed/view/widgets/muffed_page.dart';
 
 class AnonSettingsScreen extends StatelessWidget {
   const AnonSettingsScreen({super.key});

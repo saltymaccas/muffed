@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
-import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/widgets/comment_item/bloc/bloc.dart';
 import 'package:muffed/view/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/bloc/bloc.dart';
@@ -129,7 +129,6 @@ class _CommentItemState extends State<CommentItem>
                           widget.displayMode == CommentItemDisplayMode.tree)
                       ? BorderSide(
                           color: Theme.of(context).colorScheme.outline,
-                          width: 1,
                         )
                       : BorderSide.none,
                 ),
@@ -241,7 +240,6 @@ class _CommentItemState extends State<CommentItem>
                           ),
                           MuffedMarkdownBody(data: widget.comment.content),
                           Row(
-                            mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               IconButton(
@@ -372,7 +370,6 @@ class _CommentItemState extends State<CommentItem>
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .outline,
-                                            width: 1,
                                           )
                                         : BorderSide.none,
                                   ),
@@ -419,7 +416,6 @@ class _CommentItemState extends State<CommentItem>
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
                                       child: Column(

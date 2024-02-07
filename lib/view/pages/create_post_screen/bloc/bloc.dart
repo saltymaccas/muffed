@@ -97,7 +97,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             ..addAll(
               {
                 ...state.bodyImages,
-                id: const ImageUploadState(uploadProgress: 0)
+                id: const ImageUploadState(),
               },
             ),
         ),
@@ -128,7 +128,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
     on<ImageToUploadSelected>((event, emit) async {
       emit(
         state.copyWith(
-          image: const ImageUploadState(uploadProgress: 0),
+          image: const ImageUploadState(),
         ),
       );
 

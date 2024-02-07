@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
-
 import 'package:muffed/view/pages/profile_page/account_switcher.dart';
+import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

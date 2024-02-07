@@ -14,7 +14,7 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
       emit(state.copyWith(inboxStatus: MentionsStatus.loading));
       try {
         final response = await repo.lemmyRepo
-            .getMention(unreadOnly: !state.showAll, page: 1);
+            .getMention(unreadOnly: !state.showAll);
         emit(
           state.copyWith(
             inboxStatus: MentionsStatus.success,
@@ -63,7 +63,7 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
         emit(state.copyWith(isLoading: true, showAll: !state.showAll));
         try {
           final response = await repo.lemmyRepo
-              .getMention(page: 1, unreadOnly: !state.showAll);
+              .getMention(unreadOnly: !state.showAll);
           emit(
             state.copyWith(
               isLoading: false,
@@ -80,7 +80,7 @@ class MentionsBloc extends Bloc<MentionsEvent, MentionsState> {
       emit(state.copyWith(isRefreshing: true));
       try {
         final response = await repo.lemmyRepo
-            .getMention(page: 1, unreadOnly: !state.showAll);
+            .getMention(unreadOnly: !state.showAll);
 
         emit(
           state.copyWith(

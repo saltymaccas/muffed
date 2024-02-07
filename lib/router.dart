@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muffed/view/pages/home_page/home_page.dart';
+import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/view/pages/anon_settings/anon_settings_screen.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/create_post_screen/create_post_screen.dart';
-import 'package:muffed/view/pages/post_screen/post_screen.dart';
-import 'package:muffed/view/pages/search/search_screen.dart';
-import 'package:muffed/view/pages/user_screen/user_screen.dart';
+import 'package:muffed/view/pages/home_page/home_page.dart';
 import 'package:muffed/view/pages/inbox_page/inbox_page.dart';
-import 'package:muffed/view/pages/profile_page/profile_page.dart';
-import 'package:muffed/view/pages/anon_settings/anon_settings_screen.dart';
 import 'package:muffed/view/pages/login/login_screen.dart';
+import 'package:muffed/view/pages/post_screen/post_screen.dart';
+import 'package:muffed/view/pages/profile_page/profile_page.dart';
 import 'package:muffed/view/pages/saved_posts/saved_posts_screen.dart';
+import 'package:muffed/view/pages/search/search_screen.dart';
 import 'package:muffed/view/pages/settings/about/about.dart';
 import 'package:muffed/view/pages/settings/content_filters/content_filters.dart';
 import 'package:muffed/view/pages/settings/defaults/defaults.dart';
 import 'package:muffed/view/pages/settings/look/look.dart';
 import 'package:muffed/view/pages/settings/settings_screen.dart';
-import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/widgets/create_comment/create_comment_screen.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
@@ -71,7 +71,6 @@ final router = GoRouter(
 
                 navigationShell.goBranch(
                   index,
-                  initialLocation: false,
                 );
               }
             },

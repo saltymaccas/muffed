@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/view/pages/inbox_page/replies_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/domain/lemmy/models.dart';
-
 import 'package:muffed/view/widgets/nothing_to_show.dart';
-import 'package:muffed/view/pages/inbox_page/replies_screen/bloc/bloc.dart';
 
 class RepliesScreen extends StatelessWidget {
   const RepliesScreen({super.key});
@@ -91,7 +90,6 @@ class RepliesScreen extends StatelessWidget {
                                     },
                                     read: state.replies[index].read,
                                     comment: state.replies[index].comment,
-                                    isOrphan: true,
                                     displayMode: CommentItemDisplayMode.single,
                                     sortType: state.sortType,
                                     ableToLoadChildren: false,

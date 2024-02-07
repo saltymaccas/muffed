@@ -132,7 +132,6 @@ class ContentScrollView extends StatelessWidget {
                           if (item is LemmyPost) {
                             return PostItem(
                               post: item,
-                              displayType: PostDisplayType.list,
                             );
                           } else if (item is LemmyComment) {
                             return CommentItem(
@@ -151,7 +150,7 @@ class ContentScrollView extends StatelessWidget {
                             child: (state.isLoadingMore)
                                 ? const CircularProgressIndicator()
                                 : (state.reachedEnd)
-                                    ? Text('Reached End')
+                                    ? const Text('Reached End')
                                     : null,
                           ),
                         ),

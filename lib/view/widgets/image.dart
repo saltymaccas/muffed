@@ -102,7 +102,6 @@ class _MuffedImageState extends State<MuffedImage> {
             },
             retries: widget.numOfRetries,
             handleLoadingProgress: true,
-            alignment: Alignment.center,
           ),
         );
       },
@@ -176,7 +175,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
   bool downloaded = false;
 
   double slideTransparency = 0.92;
-  double imageTransparency = 1.0;
+  double imageTransparency = 1;
 
   bool maybeSlideZooming = false;
   bool slideZooming = false;
@@ -203,7 +202,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
 
   @override
   Widget build(BuildContext context) {
-    AnimationController animationController = AnimationController(
+    final AnimationController animationController = AnimationController(
       duration: const Duration(milliseconds: 140),
       vsync: this,
     );
@@ -225,11 +224,11 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                 shadows: fullscreen
                     ? null
                     : <Shadow>[
-                        const Shadow(color: Colors.black, blurRadius: 50.0)
+                        const Shadow(blurRadius: 50),
                       ],
               ),
               backgroundColor: Colors.transparent,
-              toolbarHeight: 70.0,
+              toolbarHeight: 70,
             ),
             backgroundColor: Colors.black.withOpacity(slideTransparency),
             body: Column(
@@ -265,11 +264,11 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                         ? (details) {
                             // Need to catch the drag during "maybe" phase or it wont activate fast enough
                             if (slideZooming) {
-                              double newScale = max(
+                              final double newScale = max(
                                   gestureKey.currentState!.gestureDetails!
                                           .totalScale! *
                                       (1 + (details.delta.dy / 150)),
-                                  1);
+                                  1,);
                               gestureKey.currentState?.handleDoubleTap(
                                 scale: newScale,
                                 doubleTapPosition: gestureKey
@@ -296,8 +295,6 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                       },
                       child: ExtendedImageSlidePage(
                         key: slidePagekey,
-                        slideAxis: SlideAxis.both,
-                        slideType: SlideType.onlyImage,
                         slidePageBackgroundHandler: (offset, pageSize) {
                           return Colors.transparent;
                         },
@@ -346,15 +343,10 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                             initGestureConfigHandler:
                                 (ExtendedImageState state) {
                               return GestureConfig(
-                                minScale: 0.8,
                                 animationMinScale: 0.8,
-                                maxScale: 4.0,
-                                animationMaxScale: 4.0,
-                                speed: 1.0,
-                                inertialSpeed: 250.0,
-                                initialScale: 1.0,
-                                inPageView: false,
-                                initialAlignment: InitialAlignment.center,
+                                maxScale: 4,
+                                animationMaxScale: 4,
+                                inertialSpeed: 250,
                                 reverseMousePointerScrollDirection: true,
                                 gestureDetailsIsChanged:
                                     (GestureDetails? details) {},
@@ -382,7 +374,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
                               animationListener = () {
                                 state.handleDoubleTap(
                                     scale: animation!.value,
-                                    doubleTapPosition: pointerDownPosition);
+                                    doubleTapPosition: pointerDownPosition,);
                               };
                               animation = animationController
                                   .drive(Tween<double>(begin: begin, end: end));

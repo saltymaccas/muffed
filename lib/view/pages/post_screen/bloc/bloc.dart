@@ -19,7 +19,7 @@ class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId: postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, sortType: state.sortType);
 
         final comments = newComments;
 
@@ -27,7 +27,6 @@ class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
           PostScreenState(
             status: PostScreenStatus.success,
             comments: comments,
-            isLoading: false,
             pagesLoaded: 1,
           ),
         );
@@ -106,7 +105,7 @@ class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
 
       try {
         final List<LemmyComment> newComments = await repo.lemmyRepo
-            .getComments(postId: postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, sortType: state.sortType);
 
         final comments = newComments;
 
@@ -129,7 +128,7 @@ class PostScreenBloc extends Bloc<PostScreenEvent, PostScreenState> {
 
       try {
         final newComments = await repo.lemmyRepo
-            .getComments(postId: postId, page: 1, sortType: state.sortType);
+            .getComments(postId: postId, sortType: state.sortType);
 
         final comments = newComments;
 

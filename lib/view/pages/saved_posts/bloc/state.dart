@@ -3,7 +3,7 @@ part of 'bloc.dart';
 enum SavedPostsStatus { initial, loading, success, failure }
 
 class SavedPostsState extends Equatable {
-  SavedPostsState({
+  const SavedPostsState({
     this.posts = const [],
     this.status = SavedPostsStatus.initial,
     this.sortType = LemmySortType.latest,
