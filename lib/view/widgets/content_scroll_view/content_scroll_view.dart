@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
+import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
@@ -39,148 +41,83 @@ class ContentScrollView extends StatelessWidget {
   /// How any comments will be displayed
   final CommentItemDisplayMode commentItemDisplayMode;
 
-  @override
-  Widget build(BuildContext context) {
-    final widget = BlocListener<GlobalBloc, GlobalState>(
-      // resets scroll view if account changes
-      listenWhen: (previous, current) {
-        return previous.requestUrlDifferent(current);
-      },
-      listener: (context, state) {
-        context.read<ContentScrollBloc>().add(Initialise());
-      },
-      child: BlocConsumer<ContentScrollBloc, ContentScrollState>(
-        listener: (context, state) {
-          if (state.error != null) {
-            showErrorSnackBar(context, error: state.error);
-          }
-        },
-        builder: (context, state) {
-          if (state.status == ContentScrollStatus.initial) {
-            return CustomScrollView(
-              slivers: [
-                ...headerSlivers,
-              ],
-            );
-          }
+  Widget contentSliver(List<Object>? content) {
+    final _content = content ?? [];
+    return SliverList.builder(
+      itemCount: _content.length,
+      itemBuilder: (context, index) {
+        final item = _content[index];
 
-          if (state.status == ContentScrollStatus.loading) {
-            return CustomScrollView(
-              slivers: [
-                ...headerSlivers,
-                const SliverFillRemaining(
-                  child: Center(
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-
-          if (state.status == ContentScrollStatus.failure) {
-            return CustomScrollView(
-              slivers: [
-                ...headerSlivers,
-                SliverFillRemaining(
-                  child: ErrorComponentTransparent(error: state.error),
-                ),
-              ],
-            );
-          }
-
-          // **** ON SUCCESS ****
-          return Stack(
-            children: [
-              NotificationListener(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels >=
-                          scrollInfo.metrics.maxScrollExtent - 500 &&
-                      scrollInfo.depth == 0) {
-                    context
-                        .read<ContentScrollBloc>()
-                        .add(ReachedNearEndOfScroll());
-                  }
-                  return true;
-                },
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<ContentScrollBloc>().add(PullDownRefresh());
-                    await context
-                        .read<ContentScrollBloc>()
-                        .stream
-                        .firstWhere((element) {
-                      if (element.isRefreshing == false) {
-                        return true;
-                      }
-                      return false;
-                    });
-                  },
-                  child: CustomScrollView(
-                    key: ValueKey(state.loadedRetrieveContent),
-                    cacheExtent: 500,
-                    slivers: [
-                      ...headerSlivers,
-                      SliverList.builder(
-                        itemCount: state.content!.length,
-                        itemBuilder: (context, index) {
-                          final item = state.content![index];
-
-                          if (item is LemmyPost) {
-                            return PostItem(
-                              post: item,
-                            );
-                          } else if (item is LemmyComment) {
-                            return CommentItem(
-                              comment: item,
-                              displayMode: commentItemDisplayMode,
-                            );
-                          } else {
-                            return const Text('could not display item');
-                          }
-                        },
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 50,
-                          child: Center(
-                            child: (state.isLoadingMore)
-                                ? const CircularProgressIndicator()
-                                : (state.reachedEnd)
-                                    ? const Text('Reached End')
-                                    : null,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (state.isLoading)
-                const Align(
-                  alignment: Alignment.topCenter,
-                  child: LinearProgressIndicator(),
-                ),
-            ],
+        if (item is LemmyPost) {
+          return PostItem(
+            post: item,
           );
-        },
+        } else if (item is LemmyComment) {
+          return CommentItem(
+            comment: item,
+            displayMode: commentItemDisplayMode,
+          );
+        } else {
+          return const Text('could not display item');
+        }
+      },
+    );
+  }
+
+  Widget _contentScrollView(ContentScrollState state) {
+    var footerDisplayMode = ScrollViewFooterMode.hidden;
+    var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
+
+    if (state.reachedEnd) {
+      footerDisplayMode = ScrollViewFooterMode.reachedEnd;
+    } else if (state.isLoading) {
+      footerDisplayMode = ScrollViewFooterMode.loading;
+    }
+
+    switch (state.status) {
+      case ContentScrollStatus.initial:
+        bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
+      case ContentScrollStatus.loading:
+        bodyDisplayMode = ScrollViewBodyDisplayMode.loading;
+      case ContentScrollStatus.success:
+        bodyDisplayMode = ScrollViewBodyDisplayMode.content;
+      case ContentScrollStatus.failure:
+        bodyDisplayMode = ScrollViewBodyDisplayMode.failure;
+    }
+
+    return PagedScrollView(
+      headerSlivers: headerSlivers,
+      body: ContentScrollBodyView(
+        displayMode: bodyDisplayMode,
+        contentSliver: contentSliver(state.content),
+      ),
+      footer: ContentScrollFooter(
+        displayMode: footerDisplayMode,
       ),
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     if (contentScrollBloc == null) {
       return BlocProvider(
-        create: (context) => ContentScrollBloc(
-          retrieveContent: contentRetriever!,
-        )..add(Initialise()),
-        child: widget,
+        create: (context) =>
+            ContentScrollBloc(retrieveContent: contentRetriever!)
+              ..add(Initialise()),
+        child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
+          builder: (context, state) {
+            return _contentScrollView(state);
+          },
+        ),
       );
     } else {
       return BlocProvider.value(
-        value: contentScrollBloc!,
-        child: widget,
+        value: contentScrollBloc!..add(Initialise()),
+        child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
+          builder: (context, state) {
+            return _contentScrollView(state);
+          },
+        ),
       );
     }
   }
