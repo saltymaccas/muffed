@@ -95,6 +95,11 @@ class ContentScrollView extends StatelessWidget {
         displayMode: footerDisplayMode,
       ),
       loadMoreCallback: () => bloc.add(ReachedNearEndOfScroll()),
+      onRefresh: () async {
+        bloc.add(PullDownRefresh());
+        await bloc.stream.firstWhere((element) => !element.isRefreshing);
+        return;
+      },
     );
   }
 

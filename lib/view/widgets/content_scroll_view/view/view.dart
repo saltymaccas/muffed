@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 enum ScrollViewBodyDisplayMode {
@@ -97,6 +98,7 @@ class PagedScrollView extends StatefulWidget {
     this.controller,
     this.loadMoreThreshold = 500,
     this.loadMoreCallback = _defaultLoadMoreCallback,
+    this.onRefresh = _defaultOnRefresh,
     super.key,
   });
 
@@ -108,8 +110,14 @@ class PagedScrollView extends StatefulWidget {
   final double loadMoreThreshold;
   final void Function() loadMoreCallback;
 
+  final Future<void> Function() onRefresh;
+
   static void _defaultLoadMoreCallback() {
     throw UnimplementedError();
+  }
+
+  static Future<void> _defaultOnRefresh() {
+    return SynchronousFuture(null);
   }
 
   @override
@@ -143,13 +151,16 @@ class _PagedScrollViewState extends State<PagedScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        ...widget.headerSlivers,
-        if (widget.body != null) widget.body!,
-        if (widget.footer != null) widget.footer!,
-      ],
+    return RefreshIndicator(
+      onRefresh: widget.onRefresh,
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          ...widget.headerSlivers,
+          if (widget.body != null) widget.body!,
+          if (widget.footer != null) widget.footer!,
+        ],
+      ),
     );
   }
 }
