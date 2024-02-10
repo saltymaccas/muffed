@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
-import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
-import 'package:muffed/view/widgets/snackbars.dart';
 
 abstract class ContentRetriever {
   const ContentRetriever();
@@ -20,7 +16,7 @@ abstract class ContentRetriever {
 typedef RetrieveContent = Future<List<Object>> Function({required int page});
 
 /// Display items retrieved from an API in a paginated scroll view
-class ContentScrollView extends StatelessWidget {
+class ContentScrollView extends StatefulWidget {
   const ContentScrollView({
     this.contentRetriever,
     this.headerSlivers = const [],
@@ -41,30 +37,34 @@ class ContentScrollView extends StatelessWidget {
   /// How any comments will be displayed
   final CommentItemDisplayMode commentItemDisplayMode;
 
-  Widget contentSliver(List<Object>? content) {
-    final _content = content ?? [];
-    return SliverList.builder(
-      itemCount: _content.length,
-      itemBuilder: (context, index) {
-        final item = _content[index];
+  @override
+  State<ContentScrollView> createState() => _ContentScrollViewState();
+}
 
-        if (item is LemmyPost) {
-          return PostItem(
-            post: item,
-          );
-        } else if (item is LemmyComment) {
-          return CommentItem(
-            comment: item,
-            displayMode: commentItemDisplayMode,
-          );
-        } else {
-          return const Text('could not display item');
-        }
-      },
-    );
+class _ContentScrollViewState extends State<ContentScrollView> {
+  late final ContentScrollBloc bloc;
+  late ContentScrollState state;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = widget.contentScrollBloc ??
+        ContentScrollBloc(retrieveContent: widget.contentRetriever!)
+      ..add(Initialise());
+
+    state = bloc.state;
+
+    bloc.stream.listen(blocListener);
   }
 
-  Widget _contentScrollView(ContentScrollBloc bloc, ContentScrollState state) {
+  void blocListener(ContentScrollState element) {
+    setState(() {
+      state = element;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var footerDisplayMode = ScrollViewFooterMode.hidden;
     var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
 
@@ -86,10 +86,10 @@ class ContentScrollView extends StatelessWidget {
     }
 
     return PagedScrollView(
-      headerSlivers: headerSlivers,
+      headerSlivers: widget.headerSlivers,
       body: ContentScrollBodyView(
         displayMode: bodyDisplayMode,
-        contentSliver: contentSliver(state.content),
+        contentSliver: ContentScrollSliver(content: state.content),
       ),
       footer: ContentScrollFooter(
         displayMode: footerDisplayMode,
@@ -102,29 +102,34 @@ class ContentScrollView extends StatelessWidget {
       },
     );
   }
+}
+
+class ContentScrollSliver extends StatelessWidget {
+  const ContentScrollSliver({List<Object>? content, super.key})
+      : content = content ?? const [];
+
+  final List<Object> content;
 
   @override
   Widget build(BuildContext context) {
-    if (contentScrollBloc == null) {
-      return BlocProvider(
-        create: (context) =>
-            ContentScrollBloc(retrieveContent: contentRetriever!)
-              ..add(Initialise()),
-        child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
-          builder: (context, state) {
-            return _contentScrollView(context.read<ContentScrollBloc>(), state);
-          },
-        ),
-      );
-    } else {
-      return BlocProvider.value(
-        value: contentScrollBloc!..add(Initialise()),
-        child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
-          builder: (context, state) {
-            return _contentScrollView(context.read<ContentScrollBloc>(), state);
-          },
-        ),
-      );
-    }
+    return SliverList.builder(
+      itemCount: content.length,
+      itemBuilder: (context, index) {
+        final item = content[index];
+
+        if (item is LemmyPost) {
+          return PostItem(
+            post: item,
+          );
+        } else if (item is LemmyComment) {
+          return CommentItem(
+            comment: item,
+            displayMode: CommentItemDisplayMode.single,
+          );
+        } else {
+          return const Text('could not display item');
+        }
+      },
+    );
   }
 }
