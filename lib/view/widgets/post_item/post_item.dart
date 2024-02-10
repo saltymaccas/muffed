@@ -45,7 +45,7 @@ class PostItem extends StatelessWidget {
               ignoreContainers: false,
               justifyMultiLineText: false,
               child: CardLemmyPostItem(
-                placeholderPost,
+                state.post ?? placeholderPost,
                 displayType: displayType,
               ),
             );

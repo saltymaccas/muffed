@@ -87,6 +87,7 @@ class _ContentScrollViewState extends State<ContentScrollView> {
 
     return PagedScrollView(
       headerSlivers: widget.headerSlivers,
+      indicateLoading: state.isLoading,
       body: ContentScrollBodyView(
         displayMode: bodyDisplayMode,
         contentSliver: ContentScrollSliver(content: state.content),

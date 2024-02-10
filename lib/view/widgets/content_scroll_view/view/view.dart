@@ -99,6 +99,7 @@ class PagedScrollView extends StatefulWidget {
     this.loadMoreThreshold = 500,
     this.loadMoreCallback = _defaultLoadMoreCallback,
     this.onRefresh = _defaultOnRefresh,
+    this.indicateLoading = false,
     super.key,
   });
 
@@ -106,6 +107,7 @@ class PagedScrollView extends StatefulWidget {
   final Widget? body;
   final Widget? footer;
   final ScrollController? controller;
+  final bool indicateLoading;
 
   final double loadMoreThreshold;
   final void Function() loadMoreCallback;
@@ -151,16 +153,28 @@ class _PagedScrollViewState extends State<PagedScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: widget.onRefresh,
-      child: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          ...widget.headerSlivers,
-          if (widget.body != null) widget.body!,
-          if (widget.footer != null) widget.footer!,
-        ],
-      ),
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: widget.onRefresh,
+          child: CustomScrollView(
+            cacheExtent: 1000,
+            controller: scrollController,
+            slivers: [
+              ...widget.headerSlivers,
+              if (widget.body != null) widget.body!,
+              if (widget.footer != null) widget.footer!,
+            ],
+          ),
+        ),
+        if (widget.indicateLoading)
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: LinearProgressIndicator(),
+            ),
+          ),
+      ],
     );
   }
 }
