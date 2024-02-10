@@ -89,25 +89,66 @@ class ContentScrollFooter extends StatelessWidget {
   }
 }
 
-class PagedScrollView extends StatelessWidget {
+class PagedScrollView extends StatefulWidget {
   const PagedScrollView({
     this.body,
     this.footer,
     this.headerSlivers = const [],
+    this.controller,
+    this.loadMoreThreshold = 500,
+    this.loadMoreCallback = _defaultLoadMoreCallback,
     super.key,
   });
 
   final List<Widget> headerSlivers;
   final Widget? body;
   final Widget? footer;
+  final ScrollController? controller;
+
+  final double loadMoreThreshold;
+  final void Function() loadMoreCallback;
+
+  static void _defaultLoadMoreCallback() {
+    throw UnimplementedError();
+  }
+
+  @override
+  State<PagedScrollView> createState() => _PagedScrollViewState();
+}
+
+class _PagedScrollViewState extends State<PagedScrollView> {
+  late final ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = widget.controller ?? ScrollController();
+    scrollController.addListener(scrollControllerListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.removeListener(scrollControllerListener);
+  }
+
+  void scrollControllerListener() {
+    final maxScrollExtent = scrollController.position.maxScrollExtent;
+    final currentScrollExtent = scrollController.offset;
+
+    if (currentScrollExtent < maxScrollExtent - widget.loadMoreThreshold) {
+      widget.loadMoreCallback();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      controller: scrollController,
       slivers: [
-        ...headerSlivers,
-        if (body != null) body!,
-        if (footer != null) footer!,
+        ...widget.headerSlivers,
+        if (widget.body != null) widget.body!,
+        if (widget.footer != null) widget.footer!,
       ],
     );
   }

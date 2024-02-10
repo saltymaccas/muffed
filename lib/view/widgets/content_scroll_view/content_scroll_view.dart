@@ -64,7 +64,7 @@ class ContentScrollView extends StatelessWidget {
     );
   }
 
-  Widget _contentScrollView(ContentScrollState state) {
+  Widget _contentScrollView(ContentScrollBloc bloc, ContentScrollState state) {
     var footerDisplayMode = ScrollViewFooterMode.hidden;
     var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
 
@@ -94,6 +94,7 @@ class ContentScrollView extends StatelessWidget {
       footer: ContentScrollFooter(
         displayMode: footerDisplayMode,
       ),
+      loadMoreCallback: () => bloc.add(ReachedNearEndOfScroll()),
     );
   }
 
@@ -106,7 +107,7 @@ class ContentScrollView extends StatelessWidget {
               ..add(Initialise()),
         child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
           builder: (context, state) {
-            return _contentScrollView(state);
+            return _contentScrollView(context.read<ContentScrollBloc>(), state);
           },
         ),
       );
@@ -115,7 +116,7 @@ class ContentScrollView extends StatelessWidget {
         value: contentScrollBloc!..add(Initialise()),
         child: BlocBuilder<ContentScrollBloc, ContentScrollState>(
           builder: (context, state) {
-            return _contentScrollView(state);
+            return _contentScrollView(context.read<ContentScrollBloc>(), state);
           },
         ),
       );
