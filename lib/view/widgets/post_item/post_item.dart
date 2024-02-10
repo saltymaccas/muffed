@@ -19,27 +19,15 @@ enum PostDisplayType { list, comments }
 
 /// A widget that displays a post, The form the post is displayed in can be
 /// changed with [PostViewForm]
-class PostItem extends StatefulWidget {
+class PostItem extends StatelessWidget {
   PostItem({
     this.post,
     this.postId,
     this.form = PostViewForm.card,
     this.bloc,
     this.displayType = PostDisplayType.list,
-  })  : skeletonize = false,
-        super(key: ValueKey(post));
+  }) : super(key: ValueKey(post));
 
-  /// Shows a skeleton post, used as placeholder when posts are loading
-  const PostItem.skeleton({
-    this.form = PostViewForm.card,
-    this.displayType = PostDisplayType.list,
-    super.key,
-  })  : skeletonize = true,
-        postId = null,
-        post = null,
-        bloc = null;
-
-  final bool skeletonize;
   final int? postId;
   final LemmyPost? post;
   final PostViewForm form;
@@ -47,48 +35,36 @@ class PostItem extends StatefulWidget {
   final PostItemBloc? bloc;
 
   @override
-  State<PostItem> createState() => _PostItemState();
-}
-
-class _PostItemState extends State<PostItem>
-    with AutomaticKeepAliveClientMixin {
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-    /// returns skeleton version of post is [skeletonize] is true
-    if (widget.skeletonize) {
-      return Skeletonizer(
-        ignoreContainers: false,
-        justifyMultiLineText: false,
-        child: CardLemmyPostItem(
-          placeholderPost,
-          displayType: widget.displayType,
-        ),
-      );
-    }
-
     /// The actual post widget
     final postWidget = BlocBuilder<PostItemBloc, PostItemState>(
       builder: (context, state) {
         switch (state.status) {
           case PostItemStatus.initial:
-            return const SizedBox();
+            return Skeletonizer(
+              ignoreContainers: false,
+              justifyMultiLineText: false,
+              child: CardLemmyPostItem(
+                placeholderPost,
+                displayType: displayType,
+              ),
+            );
+
           case PostItemStatus.loading:
             return Skeletonizer(
               ignoreContainers: false,
               justifyMultiLineText: false,
               child: CardLemmyPostItem(
                 placeholderPost,
-                displayType: widget.displayType,
+                displayType: displayType,
               ),
             );
           case PostItemStatus.success:
-            switch (widget.form) {
+            switch (form) {
               case PostViewForm.card:
                 return CardLemmyPostItem(
                   state.post!,
-                  displayType: widget.displayType,
+                  displayType: displayType,
                 );
             }
           case PostItemStatus.failure:
@@ -103,16 +79,16 @@ class _PostItemState extends State<PostItem>
     );
 
     /// Wraps with bloc
-    if (widget.bloc != null) {
+    if (bloc != null) {
       return BlocProvider.value(
-        value: widget.bloc!,
+        value: bloc!,
         child: postWidget,
       );
     } else {
       return BlocProvider(
         create: (context) => PostItemBloc(
-          post: widget.post,
-          postId: widget.postId,
+          post: post,
+          postId: postId,
           repo: context.read<ServerRepo>(),
           globalBloc: context.read<GlobalBloc>(),
         )..add(Initialize()),
@@ -120,9 +96,6 @@ class _PostItemState extends State<PostItem>
       );
     }
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 final placeholderPost = LemmyPost(
