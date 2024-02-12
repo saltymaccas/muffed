@@ -2,9 +2,8 @@ part of 'bloc.dart';
 
 sealed class SearchEvent {}
 
-class SearchQueryChanged extends SearchEvent {
-
-  SearchQueryChanged({required this.searchQuery});
+class SearchRequested extends SearchEvent {
+  SearchRequested({required this.searchQuery});
   final String searchQuery;
 }
 
