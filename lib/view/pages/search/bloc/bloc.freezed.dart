@@ -17,19 +17,20 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SearchState {
   SearchStatus get status => throw _privateConstructorUsedError;
-  String get searchQuery => throw _privateConstructorUsedError;
   LemmySortType get selectedSortType => throw _privateConstructorUsedError;
   LemmySearchType get searchType => throw _privateConstructorUsedError;
   int get pagesLoaded => throw _privateConstructorUsedError;
+  bool get allPagesLoaded => throw _privateConstructorUsedError;
+  String get searchQuery => throw _privateConstructorUsedError;
   List<LemmyPost>? get posts => throw _privateConstructorUsedError;
   List<LemmyComment>? get comments => throw _privateConstructorUsedError;
   List<LemmyCommunity>? get communities => throw _privateConstructorUsedError;
   List<LemmyPerson>? get users => throw _privateConstructorUsedError;
   LemmySortType? get loadedSortType => throw _privateConstructorUsedError;
-  String? get loadedSearchQuery => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
   int? get communityId => throw _privateConstructorUsedError;
   String? get communityName => throw _privateConstructorUsedError;
+  String? get loadedSearchQuery => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SearchStateCopyWith<SearchState> get copyWith =>
@@ -44,19 +45,20 @@ abstract class $SearchStateCopyWith<$Res> {
   @useResult
   $Res call(
       {SearchStatus status,
-      String searchQuery,
       LemmySortType selectedSortType,
       LemmySearchType searchType,
       int pagesLoaded,
+      bool allPagesLoaded,
+      String searchQuery,
       List<LemmyPost>? posts,
       List<LemmyComment>? comments,
       List<LemmyCommunity>? communities,
       List<LemmyPerson>? users,
       LemmySortType? loadedSortType,
-      String? loadedSearchQuery,
       String? errorMessage,
       int? communityId,
-      String? communityName});
+      String? communityName,
+      String? loadedSearchQuery});
 }
 
 /// @nodoc
@@ -73,29 +75,26 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
   @override
   $Res call({
     Object? status = null,
-    Object? searchQuery = null,
     Object? selectedSortType = null,
     Object? searchType = null,
     Object? pagesLoaded = null,
+    Object? allPagesLoaded = null,
+    Object? searchQuery = null,
     Object? posts = freezed,
     Object? comments = freezed,
     Object? communities = freezed,
     Object? users = freezed,
     Object? loadedSortType = freezed,
-    Object? loadedSearchQuery = freezed,
     Object? errorMessage = freezed,
     Object? communityId = freezed,
     Object? communityName = freezed,
+    Object? loadedSearchQuery = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as SearchStatus,
-      searchQuery: null == searchQuery
-          ? _value.searchQuery
-          : searchQuery // ignore: cast_nullable_to_non_nullable
-              as String,
       selectedSortType: null == selectedSortType
           ? _value.selectedSortType
           : selectedSortType // ignore: cast_nullable_to_non_nullable
@@ -108,6 +107,14 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
+      allPagesLoaded: null == allPagesLoaded
+          ? _value.allPagesLoaded
+          : allPagesLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      searchQuery: null == searchQuery
+          ? _value.searchQuery
+          : searchQuery // ignore: cast_nullable_to_non_nullable
+              as String,
       posts: freezed == posts
           ? _value.posts
           : posts // ignore: cast_nullable_to_non_nullable
@@ -128,10 +135,6 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
           ? _value.loadedSortType
           : loadedSortType // ignore: cast_nullable_to_non_nullable
               as LemmySortType?,
-      loadedSearchQuery: freezed == loadedSearchQuery
-          ? _value.loadedSearchQuery
-          : loadedSearchQuery // ignore: cast_nullable_to_non_nullable
-              as String?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -143,6 +146,10 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
       communityName: freezed == communityName
           ? _value.communityName
           : communityName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      loadedSearchQuery: freezed == loadedSearchQuery
+          ? _value.loadedSearchQuery
+          : loadedSearchQuery // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -158,19 +165,20 @@ abstract class _$$SearchStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {SearchStatus status,
-      String searchQuery,
       LemmySortType selectedSortType,
       LemmySearchType searchType,
       int pagesLoaded,
+      bool allPagesLoaded,
+      String searchQuery,
       List<LemmyPost>? posts,
       List<LemmyComment>? comments,
       List<LemmyCommunity>? communities,
       List<LemmyPerson>? users,
       LemmySortType? loadedSortType,
-      String? loadedSearchQuery,
       String? errorMessage,
       int? communityId,
-      String? communityName});
+      String? communityName,
+      String? loadedSearchQuery});
 }
 
 /// @nodoc
@@ -185,29 +193,26 @@ class __$$SearchStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
-    Object? searchQuery = null,
     Object? selectedSortType = null,
     Object? searchType = null,
     Object? pagesLoaded = null,
+    Object? allPagesLoaded = null,
+    Object? searchQuery = null,
     Object? posts = freezed,
     Object? comments = freezed,
     Object? communities = freezed,
     Object? users = freezed,
     Object? loadedSortType = freezed,
-    Object? loadedSearchQuery = freezed,
     Object? errorMessage = freezed,
     Object? communityId = freezed,
     Object? communityName = freezed,
+    Object? loadedSearchQuery = freezed,
   }) {
     return _then(_$SearchStateImpl(
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as SearchStatus,
-      searchQuery: null == searchQuery
-          ? _value.searchQuery
-          : searchQuery // ignore: cast_nullable_to_non_nullable
-              as String,
       selectedSortType: null == selectedSortType
           ? _value.selectedSortType
           : selectedSortType // ignore: cast_nullable_to_non_nullable
@@ -220,6 +225,14 @@ class __$$SearchStateImplCopyWithImpl<$Res>
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
+      allPagesLoaded: null == allPagesLoaded
+          ? _value.allPagesLoaded
+          : allPagesLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      searchQuery: null == searchQuery
+          ? _value.searchQuery
+          : searchQuery // ignore: cast_nullable_to_non_nullable
+              as String,
       posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
@@ -240,10 +253,6 @@ class __$$SearchStateImplCopyWithImpl<$Res>
           ? _value.loadedSortType
           : loadedSortType // ignore: cast_nullable_to_non_nullable
               as LemmySortType?,
-      loadedSearchQuery: freezed == loadedSearchQuery
-          ? _value.loadedSearchQuery
-          : loadedSearchQuery // ignore: cast_nullable_to_non_nullable
-              as String?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -256,6 +265,10 @@ class __$$SearchStateImplCopyWithImpl<$Res>
           ? _value.communityName
           : communityName // ignore: cast_nullable_to_non_nullable
               as String?,
+      loadedSearchQuery: freezed == loadedSearchQuery
+          ? _value.loadedSearchQuery
+          : loadedSearchQuery // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -265,19 +278,20 @@ class __$$SearchStateImplCopyWithImpl<$Res>
 class _$SearchStateImpl implements _SearchState {
   const _$SearchStateImpl(
       {required this.status,
-      required this.searchQuery,
       required this.selectedSortType,
       required this.searchType,
       required this.pagesLoaded,
+      required this.allPagesLoaded,
+      required this.searchQuery,
       final List<LemmyPost>? posts,
       final List<LemmyComment>? comments,
       final List<LemmyCommunity>? communities,
       final List<LemmyPerson>? users,
       this.loadedSortType,
-      this.loadedSearchQuery,
       this.errorMessage,
       this.communityId,
-      this.communityName})
+      this.communityName,
+      this.loadedSearchQuery})
       : _posts = posts,
         _comments = comments,
         _communities = communities,
@@ -286,13 +300,15 @@ class _$SearchStateImpl implements _SearchState {
   @override
   final SearchStatus status;
   @override
-  final String searchQuery;
-  @override
   final LemmySortType selectedSortType;
   @override
   final LemmySearchType searchType;
   @override
   final int pagesLoaded;
+  @override
+  final bool allPagesLoaded;
+  @override
+  final String searchQuery;
   final List<LemmyPost>? _posts;
   @override
   List<LemmyPost>? get posts {
@@ -336,17 +352,17 @@ class _$SearchStateImpl implements _SearchState {
   @override
   final LemmySortType? loadedSortType;
   @override
-  final String? loadedSearchQuery;
-  @override
   final String? errorMessage;
   @override
   final int? communityId;
   @override
   final String? communityName;
+  @override
+  final String? loadedSearchQuery;
 
   @override
   String toString() {
-    return 'SearchState(status: $status, searchQuery: $searchQuery, selectedSortType: $selectedSortType, searchType: $searchType, pagesLoaded: $pagesLoaded, posts: $posts, comments: $comments, communities: $communities, users: $users, loadedSortType: $loadedSortType, loadedSearchQuery: $loadedSearchQuery, errorMessage: $errorMessage, communityId: $communityId, communityName: $communityName)';
+    return 'SearchState(status: $status, selectedSortType: $selectedSortType, searchType: $searchType, pagesLoaded: $pagesLoaded, allPagesLoaded: $allPagesLoaded, searchQuery: $searchQuery, posts: $posts, comments: $comments, communities: $communities, users: $users, loadedSortType: $loadedSortType, errorMessage: $errorMessage, communityId: $communityId, communityName: $communityName, loadedSearchQuery: $loadedSearchQuery)';
   }
 
   @override
@@ -355,14 +371,16 @@ class _$SearchStateImpl implements _SearchState {
         (other.runtimeType == runtimeType &&
             other is _$SearchStateImpl &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.searchQuery, searchQuery) ||
-                other.searchQuery == searchQuery) &&
             (identical(other.selectedSortType, selectedSortType) ||
                 other.selectedSortType == selectedSortType) &&
             (identical(other.searchType, searchType) ||
                 other.searchType == searchType) &&
             (identical(other.pagesLoaded, pagesLoaded) ||
                 other.pagesLoaded == pagesLoaded) &&
+            (identical(other.allPagesLoaded, allPagesLoaded) ||
+                other.allPagesLoaded == allPagesLoaded) &&
+            (identical(other.searchQuery, searchQuery) ||
+                other.searchQuery == searchQuery) &&
             const DeepCollectionEquality().equals(other._posts, _posts) &&
             const DeepCollectionEquality().equals(other._comments, _comments) &&
             const DeepCollectionEquality()
@@ -370,33 +388,34 @@ class _$SearchStateImpl implements _SearchState {
             const DeepCollectionEquality().equals(other._users, _users) &&
             (identical(other.loadedSortType, loadedSortType) ||
                 other.loadedSortType == loadedSortType) &&
-            (identical(other.loadedSearchQuery, loadedSearchQuery) ||
-                other.loadedSearchQuery == loadedSearchQuery) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.communityId, communityId) ||
                 other.communityId == communityId) &&
             (identical(other.communityName, communityName) ||
-                other.communityName == communityName));
+                other.communityName == communityName) &&
+            (identical(other.loadedSearchQuery, loadedSearchQuery) ||
+                other.loadedSearchQuery == loadedSearchQuery));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       status,
-      searchQuery,
       selectedSortType,
       searchType,
       pagesLoaded,
+      allPagesLoaded,
+      searchQuery,
       const DeepCollectionEquality().hash(_posts),
       const DeepCollectionEquality().hash(_comments),
       const DeepCollectionEquality().hash(_communities),
       const DeepCollectionEquality().hash(_users),
       loadedSortType,
-      loadedSearchQuery,
       errorMessage,
       communityId,
-      communityName);
+      communityName,
+      loadedSearchQuery);
 
   @JsonKey(ignore: true)
   @override
@@ -408,30 +427,33 @@ class _$SearchStateImpl implements _SearchState {
 abstract class _SearchState implements SearchState {
   const factory _SearchState(
       {required final SearchStatus status,
-      required final String searchQuery,
       required final LemmySortType selectedSortType,
       required final LemmySearchType searchType,
       required final int pagesLoaded,
+      required final bool allPagesLoaded,
+      required final String searchQuery,
       final List<LemmyPost>? posts,
       final List<LemmyComment>? comments,
       final List<LemmyCommunity>? communities,
       final List<LemmyPerson>? users,
       final LemmySortType? loadedSortType,
-      final String? loadedSearchQuery,
       final String? errorMessage,
       final int? communityId,
-      final String? communityName}) = _$SearchStateImpl;
+      final String? communityName,
+      final String? loadedSearchQuery}) = _$SearchStateImpl;
 
   @override
   SearchStatus get status;
-  @override
-  String get searchQuery;
   @override
   LemmySortType get selectedSortType;
   @override
   LemmySearchType get searchType;
   @override
   int get pagesLoaded;
+  @override
+  bool get allPagesLoaded;
+  @override
+  String get searchQuery;
   @override
   List<LemmyPost>? get posts;
   @override
@@ -443,13 +465,13 @@ abstract class _SearchState implements SearchState {
   @override
   LemmySortType? get loadedSortType;
   @override
-  String? get loadedSearchQuery;
-  @override
   String? get errorMessage;
   @override
   int? get communityId;
   @override
   String? get communityName;
+  @override
+  String? get loadedSearchQuery;
   @override
   @JsonKey(ignore: true)
   _$$SearchStateImplCopyWith<_$SearchStateImpl> get copyWith =>

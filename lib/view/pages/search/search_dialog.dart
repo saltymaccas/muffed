@@ -133,9 +133,7 @@ class SearchDialog extends StatelessWidget {
                     controller: textController,
                     onChanged: (query) {
                       context.read<SearchBloc>().add(
-                            SearchRequested(
-                              searchQuery: query,
-                            ),
+                            SearchRequested(),
                           );
                     },
                     autofocus: true,

@@ -1,5 +1,4 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:muffed/domain/lemmy.dart';
@@ -13,55 +12,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required this.lem,
     required LemmySearchType searchType,
-    SearchState? initialState,
     int? communityId,
   }) : super(
-          initialState ??
-              SearchState(
-                status: SearchStatus.initial,
-                searchQuery: '',
-                selectedSortType: LemmySortType.topAll,
-                searchType: searchType,
-                communityId: communityId,
-                pagesLoaded: 0,
-              ),
+          SearchState(
+            searchQuery: '',
+            status: SearchStatus.initial,
+            selectedSortType: LemmySortType.topAll,
+            searchType: searchType,
+            communityId: communityId,
+            pagesLoaded: 0,
+            allPagesLoaded: false,
+          ),
         ) {
     on<SearchRequested>(
-      (event, emit) async {
-        emit(
-          state.copyWith(
-            status: SearchStatus.loading,
-          ),
-        );
-
-        await lem
-            .search(
-              query: event.searchQuery,
-              sortType: state.selectedSortType,
-              communityId: state.communityId,
-              searchType: state.searchType,
-            )
-            .then(
-              (result) => emit(
-                state.copyWith(
-                  posts: result.lemmyPosts,
-                  users: result.lemmyPersons,
-                  communities: result.lemmyCommunities,
-                  comments: result.lemmyComments,
-                  status: SearchStatus.success,
-                  pagesLoaded: 1,
-                ),
-              ),
-            )
-            .onError((err, stackTrace) {
-          emit(
-            state.copyWith(
-              status: SearchStatus.failure,
-              errorMessage: 'Error of type "${err.runtimeType}" occured',
-            ),
-          );
-        });
-      },
+      _onSearchRequested,
       transformer: restartable(),
     );
     on<SortTypeChanged>(
@@ -89,6 +53,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               communities: result.lemmyCommunities,
               users: result.lemmyPersons,
               status: SearchStatus.success,
+              loadedSortType: state.selectedSortType,
             ),
           );
         }).onError((err, stackTrace) {
@@ -108,6 +73,50 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       transformer: droppable(),
     );
     on<SearchAll>(_onSearchAll);
+    on<SearchQueryChanged>(
+      (event, emit) => emit(state.copyWith(searchQuery: event.newQuery)),
+    );
+  }
+
+  Future<void> _onSearchRequested(
+    SearchRequested event,
+    Emitter<SearchState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: SearchStatus.loading,
+      ),
+    );
+
+    await lem
+        .search(
+          query: state.searchQuery,
+          sortType: state.selectedSortType,
+          communityId: state.communityId,
+          searchType: state.searchType,
+        )
+        .then(
+          (result) => emit(
+            state.copyWith(
+              loadedSearchQuery: state.searchQuery,
+              loadedSortType: state.selectedSortType,
+              posts: result.lemmyPosts,
+              users: result.lemmyPersons,
+              communities: result.lemmyCommunities,
+              comments: result.lemmyComments,
+              status: SearchStatus.success,
+              pagesLoaded: 1,
+            ),
+          ),
+        )
+        .onError((err, stackTrace) {
+      emit(
+        state.copyWith(
+          status: SearchStatus.failure,
+          errorMessage: 'Error of type "${err.runtimeType}" occured',
+        ),
+      );
+    });
   }
 
   Future<void> _onReachedNearEndOfPage(
@@ -116,6 +125,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) async {
     if (state.loadedSearchQuery == null) return;
     if (state.loadedSortType == null) return;
+    if (state.allPagesLoaded) return;
 
     emit(state.copyWith(status: SearchStatus.loadingMore));
 
@@ -129,10 +139,34 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     )
         .then(
       (result) {
+        bool allPagesLoaded = false;
+
+        if (state.searchType == LemmySearchType.communities) {
+          if (result.lemmyCommunities != null &&
+              result.lemmyCommunities!.isEmpty) allPagesLoaded = true;
+        }
+        if (state.searchType == LemmySearchType.posts) {
+          if (result.lemmyPosts != null && result.lemmyPosts!.isEmpty) {
+            allPagesLoaded = true;
+          }
+        }
+        if (state.searchType == LemmySearchType.users) {
+          if (result.lemmyPersons != null && result.lemmyPersons!.isEmpty) {
+            allPagesLoaded = true;
+          }
+        }
+
+        if (state.searchType == LemmySearchType.comments) {
+          if (result.lemmyComments != null && result.lemmyComments!.isEmpty) {
+            allPagesLoaded = true;
+          }
+        }
+
         emit(
           state.copyWith(
             status: SearchStatus.success,
             pagesLoaded: state.pagesLoaded + 1,
+            allPagesLoaded: allPagesLoaded,
             posts: [
               if (state.posts != null) ...state.posts!,
               if (result.lemmyPosts != null) ...result.lemmyPosts!,

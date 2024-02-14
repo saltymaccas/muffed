@@ -14,18 +14,19 @@ enum SearchStatus {
 class SearchState with _$SearchState {
   const factory SearchState({
     required SearchStatus status,
-    required String searchQuery,
     required LemmySortType selectedSortType,
     required LemmySearchType searchType,
     required int pagesLoaded,
+    required bool allPagesLoaded,
+    required String searchQuery,
     List<LemmyPost>? posts,
     List<LemmyComment>? comments,
     List<LemmyCommunity>? communities,
     List<LemmyPerson>? users,
     LemmySortType? loadedSortType,
-    String? loadedSearchQuery,
     String? errorMessage,
     int? communityId,
     String? communityName,
+    String? loadedSearchQuery,
   }) = _SearchState;
 }
