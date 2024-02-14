@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
-import 'package:muffed/view/pages/search/bloc/bloc.dart';
+import 'package:muffed/view/pages/search/controller/controller.dart';
+import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
 void openSearchDialog(BuildContext context) {
@@ -19,24 +20,31 @@ void openSearchDialog(BuildContext context) {
   );
 }
 
-class SearchDialog extends StatelessWidget {
-  SearchDialog({super.key});
+class SearchDialog extends StatefulWidget {
+  const SearchDialog({super.key});
 
+  @override
+  State<SearchDialog> createState() => _SearchDialogState();
+}
+
+class _SearchDialogState extends State<SearchDialog> {
   final textFocusNode = FocusNode();
   final textController = TextEditingController();
+
+  final sortType = LemmySortType.topAll;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SearchBloc(
-        searchType: LemmySearchType.communities,
-        lem: context.read<ServerRepo>().lemmyRepo,
+      create: (context) => SearchCubit(
+        searchType: SearchType.communities,
+        lemmyRepo: context.read<ServerRepo>().lemmyRepo,
       ),
       child: Dialog(
         clipBehavior: Clip.hardEdge,
         alignment: Alignment.bottomCenter,
         insetPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        child: BlocConsumer<SearchBloc, SearchState>(
+        child: BlocConsumer<SearchCubit, SearchModel>(
           listener: (context, state) {
             if (state.status == SearchStatus.failure &&
                 state.errorMessage != null) {
@@ -52,79 +60,18 @@ class SearchDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (state.communities != null)
-                    Flexible(
-                      child: ListView.builder(
-                        reverse: true,
-                        itemCount: state.communities!.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              if (state.communities!.length - 1 == index)
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  CommunityScreenRouter(
-                                    community: state.communities![index],
-                                  ).push(context);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 12,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(45),
-                                          child:
-                                              (state.communities![index].icon !=
-                                                      null)
-                                                  ? Image.network(
-                                                      '${state.communities![index].icon!}?thumbnail=50',
-                                                    )
-                                                  : Image.asset(
-                                                      'assets/logo.png',
-                                                    ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.communities![index].name,
-                                          ),
-                                          Text(
-                                            '${state.communities![index].subscribers} subscribers',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .outline,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        },
-                      ),
+                  Flexible(
+                    child: ListView.builder(
+                      reverse: true,
+                      itemCount: state.items.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return CommunityListTile(
+                          state.items[index] as LemmyCommunity,
+                        );
+                      },
                     ),
+                  ),
                   const SizedBox(
                     height: 2,
                   ),
@@ -132,8 +79,9 @@ class SearchDialog extends StatelessWidget {
                     focusNode: textFocusNode,
                     controller: textController,
                     onChanged: (query) {
-                      context.read<SearchBloc>().add(
-                            SearchRequested(),
+                      context.read<SearchCubit>().search(
+                            query: textController.text,
+                            sortType: sortType,
                           );
                     },
                     autofocus: true,
