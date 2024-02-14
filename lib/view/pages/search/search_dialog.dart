@@ -68,6 +68,8 @@ class _SearchDialogState extends State<SearchDialog> {
                       itemBuilder: (context, index) {
                         return CommunityListTile(
                           state.items[index] as LemmyCommunity,
+                          showDescription: false,
+                          compact: true,
                         );
                       },
                     ),

@@ -6,10 +6,15 @@ import 'package:muffed/view/widgets/muffed_avatar.dart';
 class CommunityListTile extends StatelessWidget {
   const CommunityListTile(
     this.community, {
+    this.showDescription = true,
+    bool compact = false,
     super.key,
-  });
+  }) : paddingModifier = compact ? 0.5 : 1;
 
   final LemmyCommunity community;
+  final bool showDescription;
+
+  final double paddingModifier;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +28,14 @@ class CommunityListTile extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
+            padding: EdgeInsets.symmetric(
+              vertical: 8 * paddingModifier,
             ),
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(
-                    16,
+                  padding: EdgeInsets.all(
+                    16 * paddingModifier,
                   ),
                   child: MuffedAvatar(
                     url: community.icon,
@@ -76,7 +81,7 @@ class CommunityListTile extends StatelessWidget {
                       const SizedBox(
                         height: 4,
                       ),
-                      if (community.description != null)
+                      if (community.description != null && showDescription)
                         Text(
                           community.description!,
                           maxLines: 1,
