@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
+import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
+
+export 'widgets/widgets.dart';
+
+/// A function for retrieving content
+typedef RetrieveContent = Future<List<Object>> Function({required int page});
 
 abstract class ContentRetriever {
   const ContentRetriever();
@@ -12,19 +17,38 @@ abstract class ContentRetriever {
   Future<List<Object>> call({required int page});
 }
 
-/// A function for retrieving content
-typedef RetrieveContent = Future<List<Object>> Function({required int page});
+class ContentScrollSliver extends StatelessWidget {
+  final List<Object> content;
+
+  const ContentScrollSliver({List<Object>? content, super.key})
+      : content = content ?? const [];
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList.builder(
+      itemCount: content.length,
+      itemBuilder: (context, index) {
+        final item = content[index];
+
+        if (item is LemmyPost) {
+          return PostItem(
+            post: item,
+          );
+        } else if (item is LemmyComment) {
+          return CommentItem(
+            comment: item,
+            displayMode: CommentItemDisplayMode.single,
+          );
+        } else {
+          return const Text('could not display item');
+        }
+      },
+    );
+  }
+}
 
 /// Display items retrieved from an API in a paginated scroll view
 class ContentScrollView extends StatefulWidget {
-  const ContentScrollView({
-    this.contentRetriever,
-    this.headerSlivers = const [],
-    this.contentScrollBloc,
-    this.commentItemDisplayMode = CommentItemDisplayMode.single,
-    super.key,
-  });
-
   /// The function used to retrieve the content
   final ContentRetriever? contentRetriever;
 
@@ -37,6 +61,14 @@ class ContentScrollView extends StatefulWidget {
   /// How any comments will be displayed
   final CommentItemDisplayMode commentItemDisplayMode;
 
+  const ContentScrollView({
+    this.contentRetriever,
+    this.headerSlivers = const [],
+    this.contentScrollBloc,
+    this.commentItemDisplayMode = CommentItemDisplayMode.single,
+    super.key,
+  });
+
   @override
   State<ContentScrollView> createState() => _ContentScrollViewState();
 }
@@ -44,18 +76,6 @@ class ContentScrollView extends StatefulWidget {
 class _ContentScrollViewState extends State<ContentScrollView> {
   late final ContentScrollBloc bloc;
   late ContentScrollState state;
-
-  @override
-  void initState() {
-    super.initState();
-    bloc = widget.contentScrollBloc ??
-        ContentScrollBloc(retrieveContent: widget.contentRetriever!)
-      ..add(Initialise());
-
-    state = bloc.state;
-
-    bloc.stream.listen(blocListener);
-  }
 
   void blocListener(ContentScrollState element) {
     setState(() {
@@ -103,34 +123,16 @@ class _ContentScrollViewState extends State<ContentScrollView> {
       },
     );
   }
-}
-
-class ContentScrollSliver extends StatelessWidget {
-  const ContentScrollSliver({List<Object>? content, super.key})
-      : content = content ?? const [];
-
-  final List<Object> content;
 
   @override
-  Widget build(BuildContext context) {
-    return SliverList.builder(
-      itemCount: content.length,
-      itemBuilder: (context, index) {
-        final item = content[index];
+  void initState() {
+    super.initState();
+    bloc = widget.contentScrollBloc ??
+        ContentScrollBloc(retrieveContent: widget.contentRetriever!)
+      ..add(Initialise());
 
-        if (item is LemmyPost) {
-          return PostItem(
-            post: item,
-          );
-        } else if (item is LemmyComment) {
-          return CommentItem(
-            comment: item,
-            displayMode: CommentItemDisplayMode.single,
-          );
-        } else {
-          return const Text('could not display item');
-        }
-      },
-    );
+    state = bloc.state;
+
+    bloc.stream.listen(blocListener);
   }
 }

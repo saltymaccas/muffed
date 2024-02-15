@@ -5,6 +5,7 @@ import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/community/community.dart';
+import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';

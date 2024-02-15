@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/home_page/bloc/bloc.dart';
-import 'package:muffed/view/pages/search/search_dialog.dart';
 import 'package:muffed/view/pages/search/search_screen.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
@@ -18,9 +17,42 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
+  int currentTab = 0;
+
+  late List<String> tabs;
+  late List<Widget> tabViews;
+
+  @override
+  void initState() {
+    super.initState();
+    final bool loggedIn = context.read<GlobalBloc>().isLoggedIn();
+    tabs = [if (loggedIn) 'Subscribed', 'Popular', 'Local'];
+    tabViews = [];
+  }
 
   @override
   Widget build(BuildContext context) {
+    return SetPageInfo(
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (context) => const SearchScreen(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.search),
+          visualDensity: VisualDensity.compact,
+        ),
+      ],
+      page: Pages.home,
+      child: Scaffold(),
+    );
+  }
+
+  Widget _build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomePageBloc()
         ..add(
