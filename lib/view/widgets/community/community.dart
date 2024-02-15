@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:muffed/domain/lemmy/models.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 
 class CommunityListTile extends StatelessWidget {
   const CommunityListTile(
     this.community, {
+    required this.onTap,
     this.showDescription = true,
     bool compact = false,
     super.key,
@@ -14,17 +14,14 @@ class CommunityListTile extends StatelessWidget {
   final LemmyCommunity community;
   final bool showDescription;
 
+  final void Function() onTap;
+
   final double paddingModifier;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(builder: (context) => CommunityScreen()),
-        );
-      },
+      onTap: onTap,
       child: Column(
         children: [
           Padding(

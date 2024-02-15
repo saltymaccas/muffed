@@ -4,6 +4,7 @@ import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/home_page/bloc/bloc.dart';
 import 'package:muffed/view/pages/search/search_dialog.dart';
+import 'package:muffed/view/pages/search/search_screen.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
@@ -63,7 +64,10 @@ class _HomePageState extends State<HomePage> {
                     final allPageActions = [
                       IconButton(
                         onPressed: () {
-                          openSearchDialog(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                  builder: (context) => SearchScreen()));
                         },
                         icon: const Icon(Icons.search_rounded),
                         visualDensity: VisualDensity.compact,

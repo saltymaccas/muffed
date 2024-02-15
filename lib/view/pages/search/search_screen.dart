@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/community/community.dart';
@@ -57,6 +58,8 @@ class _SearchScreenState extends State<SearchScreen>
       text: widget.searchQuery,
     );
 
+    textFocusNode.requestFocus();
+
     communityCubit = SearchCubit(
       lemmyRepo: context.read<ServerRepo>().lemmyRepo,
       searchType: SearchType.communities,
@@ -93,7 +96,20 @@ class _SearchScreenState extends State<SearchScreen>
     tabController = TabController(vsync: this, length: tabs.length);
   }
 
+  void onBackPressed(BuildContext context) {
+    if (textFocusNode.hasFocus) {
+      textFocusNode.unfocus();
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
   void onSearch() {
+    textFocusNode.unfocus();
+    search();
+  }
+
+  void search() {
     communityCubit.search(query: textController.text, sortType: sortType);
     postsCubit.search(query: textController.text, sortType: sortType);
     commentsCubit.search(query: textController.text, sortType: sortType);
@@ -129,7 +145,7 @@ class _SearchScreenState extends State<SearchScreen>
                   prefixIcon: IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
-                      Navigator.pop(context);
+                      onBackPressed(context);
                     },
                   ),
                   filled: false,
@@ -179,6 +195,38 @@ class _SearchViewState extends State<_SearchView> {
     });
   }
 
+  Widget itemBuilder(Object item) {
+    if (item is LemmyCommunity) {
+      return CommunityListTile(
+        item,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => CommunityScreen(
+                community: item,
+              ),
+            ),
+          );
+        },
+      );
+    } else if (item is LemmyPost) {
+      return PostItem(
+        post: item,
+      );
+    } else if (item is LemmyComment) {
+      return CommentItem(
+        comment: item,
+        displayMode: CommentItemDisplayMode.single,
+      );
+    }
+
+    return const SizedBox(
+      height: 100,
+      child: Text('No correlating item type'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
@@ -223,24 +271,7 @@ class _SearchViewState extends State<_SearchView> {
           itemCount: state.items.length,
           itemBuilder: (context, index) {
             final item = state.items[index];
-
-            if (item is LemmyCommunity) {
-              return CommunityListTile(item);
-            } else if (item is LemmyPost) {
-              return PostItem(
-                post: item,
-              );
-            } else if (item is LemmyComment) {
-              return CommentItem(
-                comment: item,
-                displayMode: CommentItemDisplayMode.single,
-              );
-            }
-
-            return const SizedBox(
-              height: 100,
-              child: Text('No correlating item type'),
-            );
+            return itemBuilder(item);
           },
         ),
       ),

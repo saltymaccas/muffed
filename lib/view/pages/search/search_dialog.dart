@@ -8,12 +8,21 @@ import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
 void openSearchDialog(BuildContext context) {
+  final nContext = context;
   showDialog<void>(
     context: context,
     builder: (context) {
-      return Builder(
-        builder: (context) {
-          return SearchDialog();
+      return SearchDialog(
+        onItemPressed: (community) {
+          Navigator.pop(context);
+          Navigator.push(
+            nContext,
+            MaterialPageRoute<void>(
+              builder: (context) => CommunityScreen(
+                community: community,
+              ),
+            ),
+          );
         },
       );
     },
@@ -21,7 +30,9 @@ void openSearchDialog(BuildContext context) {
 }
 
 class SearchDialog extends StatefulWidget {
-  const SearchDialog({super.key});
+  const SearchDialog({required this.onItemPressed, super.key});
+
+  final void Function(LemmyCommunity) onItemPressed;
 
   @override
   State<SearchDialog> createState() => _SearchDialogState();
@@ -66,10 +77,14 @@ class _SearchDialogState extends State<SearchDialog> {
                       itemCount: state.items.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
+                        final item = state.items[index] as LemmyCommunity;
                         return CommunityListTile(
-                          state.items[index] as LemmyCommunity,
+                          item,
                           showDescription: false,
                           compact: true,
+                          onTap: () {
+                            widget.onItemPressed(item);
+                          },
                         );
                       },
                     ),
