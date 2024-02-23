@@ -8,21 +8,59 @@ part 'controller.freezed.dart';
 
 final _log = Logger('HomeTabViewController');
 
-class HomeTabViewController<T> extends Cubit<HomeTabViewModel<T>> {
+class HomeTabViewController extends Cubit<HomeTabViewModel> {
   HomeTabViewController({required LemmyRepo lemmyRepo})
       : lem = lemmyRepo,
         super(
           const HomeTabViewModel(
-            items: [],
             status: HomeTabViewStatus.idle,
             endReached: false,
             pagesLoaded: 0,
           ),
         );
 
-  Future<void> loadContent({
+  Future<void> loadNextPage() async {
+    if (state.status == HomeTabViewStatus.loadingNext) return;
+    if (state.loadedSortType == null) {
+      _log.warning('load next page fail: loadedSortType == null');
+      return;
+    }
+    if (state.loadedContentType == null) {
+      _log.warning('load next page fail: loadedContentType == null');
+      return;
+    }
+    if (state.items == null) {
+      _log.warning('load next page fail: items == null');
+      return;
+    }
+
+    final pageToLoad = state.pagesLoaded + 1;
+
+    emit(state.copyWith(status: HomeTabViewStatus.loadingNext));
+    try {
+      final result = await _retrieveItems(
+        page: pageToLoad,
+        sortType: state.loadedSortType!,
+        contentType: state.loadedContentType!,
+      );
+      emit(
+        state.copyWith(
+          items: [...state.items!, ...result],
+          pagesLoaded: pageToLoad,
+          status: HomeTabViewStatus.idle,
+        ),
+      );
+    } catch (err, stackTrace) {
+      _log.warning('loading next failed', [err, stackTrace]);
+      emit(
+        state.copyWith(status: HomeTabViewStatus.loadingNextFailure),
+      );
+    }
+  }
+
+  Future<void> loadInitialContent({
     required LemmySortType sortType,
-    required ContentType contentType,
+    required HomeContentType contentType,
   }) async {
     emit(state.copyWith(status: HomeTabViewStatus.loading));
     try {
@@ -55,27 +93,29 @@ class HomeTabViewController<T> extends Cubit<HomeTabViewModel<T>> {
     return 'Error of type "${err.runtimeType}" occured';
   }
 
-  Future<List<T>> _retrieveItems({
+  Future<List<LemmyPost>> _retrieveItems({
     required int page,
     required LemmySortType sortType,
-    required ContentType contentType,
+    required HomeContentType contentType,
   }) async {
     late final LemmyListingType listingType;
 
     switch (contentType) {
-      case (ContentType.popular):
+      case (HomeContentType.popular):
         listingType = LemmyListingType.all;
-      case (ContentType.local):
+      case (HomeContentType.local):
         listingType = LemmyListingType.local;
-      case (ContentType.subscibed):
+      case (HomeContentType.subscibed):
         listingType = LemmyListingType.subscribed;
     }
 
-    return await lem.getPosts(
+    final posts = await lem.getPosts(
       page: page,
       sortType: sortType,
       listingType: listingType,
-    ) as List<T>;
+    );
+
+    return posts;
   }
 
   final LemmyRepo lem;
@@ -89,21 +129,21 @@ enum HomeTabViewStatus {
   loadingNextFailure,
 }
 
-enum ContentType {
+enum HomeContentType {
   popular,
   subscibed,
   local,
 }
 
 @freezed
-class HomeTabViewModel<T> with _$HomeTabViewModel<T> {
+class HomeTabViewModel with _$HomeTabViewModel {
   const factory HomeTabViewModel({
-    required List<T> items,
     required int pagesLoaded,
     required bool endReached,
     required HomeTabViewStatus status,
+    List<LemmyPost>? items,
     String? errorMessage,
     LemmySortType? loadedSortType,
-    ContentType? loadedContentType,
+    HomeContentType? loadedContentType,
   }) = _HomeTabViewModel;
 }

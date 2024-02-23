@@ -230,34 +230,34 @@ class _SearchViewState extends State<_SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
-    var footerDisplayMode = ScrollViewFooterMode.hidden;
+    var bodyDisplayMode = ScrollBodyMode.blank;
+    var footerDisplayMode = ScrollFooterMode.hidden;
     var indicateLoading = false;
 
     final hasContent = state.items.isNotEmpty;
 
     if (hasContent) {
-      bodyDisplayMode = ScrollViewBodyDisplayMode.content;
+      bodyDisplayMode = ScrollBodyMode.content;
       if (state.status == SearchStatus.loading) {
         indicateLoading = true;
       }
     } else {
       if (state.status == SearchStatus.failure) {
-        bodyDisplayMode = ScrollViewBodyDisplayMode.failure;
+        bodyDisplayMode = ScrollBodyMode.failure;
       }
       if (state.status == SearchStatus.loading) {
-        bodyDisplayMode = ScrollViewBodyDisplayMode.loading;
+        bodyDisplayMode = ScrollBodyMode.loading;
       }
     }
 
     if (state.allPagesLoaded) {
-      footerDisplayMode = ScrollViewFooterMode.reachedEnd;
+      footerDisplayMode = ScrollFooterMode.reachedEnd;
     }
     if (state.status == SearchStatus.loadingMore) {
-      footerDisplayMode = ScrollViewFooterMode.loading;
+      footerDisplayMode = ScrollFooterMode.loading;
     }
     if (state.status == SearchStatus.loadMoreFailure) {
-      footerDisplayMode = ScrollViewFooterMode.failure;
+      footerDisplayMode = ScrollFooterMode.failure;
     }
 
     return PagedScrollView(
@@ -266,8 +266,8 @@ class _SearchViewState extends State<_SearchView> {
         widget.cubit.loadNextPage();
       },
       indicateLoading: indicateLoading,
-      body: ContentScrollBodyView(
-        displayMode: bodyDisplayMode,
+      body: ScrollBody(
+        mode: bodyDisplayMode,
         contentSliver: SliverList.builder(
           itemCount: state.items.length,
           itemBuilder: (context, index) {
@@ -276,7 +276,7 @@ class _SearchViewState extends State<_SearchView> {
           },
         ),
       ),
-      footer: ContentScrollFooter(displayMode: footerDisplayMode),
+      footer: ScrollFooter(displayMode: footerDisplayMode),
     );
   }
 }

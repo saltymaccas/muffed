@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 
-enum ScrollViewFooterMode {
+enum ScrollFooterMode {
   loading,
   hidden,
   reachedEnd,
   failure,
 }
 
-class ContentScrollFooter extends StatelessWidget {
-  const ContentScrollFooter({
-    this.displayMode = ScrollViewFooterMode.hidden,
+class ScrollFooter extends StatelessWidget {
+  const ScrollFooter({
+    this.displayMode = ScrollFooterMode.hidden,
     super.key,
   });
 
-  final ScrollViewFooterMode displayMode;
+  final ScrollFooterMode displayMode;
 
   double get height => 40;
 
   @override
   Widget build(BuildContext context) {
     switch (displayMode) {
-      case ScrollViewFooterMode.hidden:
+      case ScrollFooterMode.hidden:
         return SliverToBoxAdapter(
           child: SizedBox(height: height),
         );
-      case ScrollViewFooterMode.reachedEnd:
+      case ScrollFooterMode.reachedEnd:
 
         // TODO: improve end reached message
         return SliverToBoxAdapter(
@@ -33,14 +33,14 @@ class ContentScrollFooter extends StatelessWidget {
             child: const Center(child: Text('End Reached')),
           ),
         );
-      case ScrollViewFooterMode.loading:
+      case ScrollFooterMode.loading:
         return SliverToBoxAdapter(
           child: SizedBox(
             height: height,
             child: const Center(child: CircularProgressIndicator()),
           ),
         );
-      case ScrollViewFooterMode.failure:
+      case ScrollFooterMode.failure:
         return SliverToBoxAdapter(
           child: SizedBox(
             height: height,

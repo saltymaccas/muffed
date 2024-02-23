@@ -1,5 +1,89 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:muffed/view/widgets/content_scroll_view/widgets/widgets.dart';
+
+enum PagedScrollViewStatus {
+  idle,
+  loading,
+  failure,
+  loadingMore,
+  loadingMoreFailure,
+}
+
+class PagedScroll extends StatelessWidget {
+  const PagedScroll({
+    required this.status,
+    required this.items,
+    required this.itemBuilder,
+    this.headerSlivers = const [],
+    this.controller,
+    this.onRefresh = PagedScrollView._defaultOnRefresh,
+    this.loadMoreCallback = PagedScrollView._defaultLoadMoreCallback,
+    this.allPagesLoaded = false,
+    super.key,
+  });
+
+  final PagedScrollViewStatus status;
+  final List<Object>? items;
+  final Widget Function(BuildContext, Object) itemBuilder;
+  final List<Widget> headerSlivers;
+  final ScrollController? controller;
+  final Future<void> Function() onRefresh;
+  final void Function() loadMoreCallback;
+  final bool allPagesLoaded;
+
+  @override
+  Widget build(BuildContext context) {
+    var bodyMode = ScrollBodyMode.content;
+    var footerMode = ScrollFooterMode.hidden;
+    var showLoadingIndicator = false;
+
+    final bool hasItems = items != null && items!.isNotEmpty;
+    final bool itemsEmpty = items != null && items!.isEmpty;
+
+    if (hasItems) {
+      bodyMode = ScrollBodyMode.content;
+      if (status == PagedScrollViewStatus.loading) {
+        showLoadingIndicator = true;
+      }
+    } else {
+      if (status == PagedScrollViewStatus.failure) {
+        bodyMode = ScrollBodyMode.failure;
+      }
+      if (status == PagedScrollViewStatus.loading) {
+        bodyMode = ScrollBodyMode.loading;
+      }
+    }
+
+    if (allPagesLoaded) {
+      footerMode = ScrollFooterMode.reachedEnd;
+    }
+    if (status == PagedScrollViewStatus.loadingMore) {
+      footerMode = ScrollFooterMode.loading;
+    }
+    if (status == PagedScrollViewStatus.loadingMoreFailure) {
+      footerMode = ScrollFooterMode.failure;
+    }
+
+    return PagedScrollView(
+      indicateLoading: showLoadingIndicator,
+      footer: ScrollFooter(
+        displayMode: footerMode,
+      ),
+      body: ScrollBody(
+        contentSliver: SliverList.builder(
+          itemCount: items?.length ?? 0,
+          itemBuilder: (context, index) => itemBuilder(context, items![index]),
+        ),
+        mode: bodyMode,
+      ),
+      headerSlivers: headerSlivers ?? const [],
+      onRefresh: onRefresh,
+      loadMoreCallback: loadMoreCallback,
+      controller: controller,
+    );
+  }
+}
 
 class PagedScrollView extends StatefulWidget {
   const PagedScrollView({

@@ -85,34 +85,34 @@ class _ContentScrollViewState extends State<ContentScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    var footerDisplayMode = ScrollViewFooterMode.hidden;
-    var bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
+    var footerDisplayMode = ScrollFooterMode.hidden;
+    var bodyDisplayMode = ScrollBodyMode.blank;
 
     if (state.reachedEnd) {
-      footerDisplayMode = ScrollViewFooterMode.reachedEnd;
+      footerDisplayMode = ScrollFooterMode.reachedEnd;
     } else if (state.isLoading) {
-      footerDisplayMode = ScrollViewFooterMode.loading;
+      footerDisplayMode = ScrollFooterMode.loading;
     }
 
     switch (state.status) {
       case ContentScrollStatus.initial:
-        bodyDisplayMode = ScrollViewBodyDisplayMode.blank;
+        bodyDisplayMode = ScrollBodyMode.blank;
       case ContentScrollStatus.loading:
-        bodyDisplayMode = ScrollViewBodyDisplayMode.loading;
+        bodyDisplayMode = ScrollBodyMode.loading;
       case ContentScrollStatus.success:
-        bodyDisplayMode = ScrollViewBodyDisplayMode.content;
+        bodyDisplayMode = ScrollBodyMode.content;
       case ContentScrollStatus.failure:
-        bodyDisplayMode = ScrollViewBodyDisplayMode.failure;
+        bodyDisplayMode = ScrollBodyMode.failure;
     }
 
     return PagedScrollView(
       headerSlivers: widget.headerSlivers,
       indicateLoading: state.isLoading,
-      body: ContentScrollBodyView(
-        displayMode: bodyDisplayMode,
+      body: ScrollBody(
+        mode: bodyDisplayMode,
         contentSliver: ContentScrollSliver(content: state.content),
       ),
-      footer: ContentScrollFooter(
+      footer: ScrollFooter(
         displayMode: footerDisplayMode,
       ),
       loadMoreCallback: () => bloc.add(ReachedNearEndOfScroll()),

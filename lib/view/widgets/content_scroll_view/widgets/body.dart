@@ -1,38 +1,47 @@
 import 'package:flutter/material.dart';
 
-enum ScrollViewBodyDisplayMode {
+enum ScrollBodyMode {
   loading,
   content,
+  noContent,
   blank,
   failure,
 }
 
-class ContentScrollBodyView extends StatelessWidget {
-  const ContentScrollBodyView({
+class ScrollBody extends StatelessWidget {
+  const ScrollBody({
     required this.contentSliver,
-    this.displayMode = ScrollViewBodyDisplayMode.blank,
+    this.mode = ScrollBodyMode.blank,
     super.key,
   });
 
   final Widget contentSliver;
-  final ScrollViewBodyDisplayMode displayMode;
+  final ScrollBodyMode mode;
 
   @override
   Widget build(BuildContext context) {
-    switch (displayMode) {
-      case ScrollViewBodyDisplayMode.blank:
+    switch (mode) {
+      case ScrollBodyMode.blank:
         return const SliverFillRemaining();
-      case ScrollViewBodyDisplayMode.loading:
+      case ScrollBodyMode.loading:
         return const SliverFillRemaining(
           child: Center(
             child: CircularProgressIndicator(),
           ),
         );
-      case ScrollViewBodyDisplayMode.content:
+      case ScrollBodyMode.content:
         return contentSliver;
-      case ScrollViewBodyDisplayMode.failure:
+      case ScrollBodyMode.noContent:
+        return const SliverFillRemaining(
+          child: Center(child: Text('nothing to show')),
+        );
+      case ScrollBodyMode.failure:
         // TODO: improve
-        return const Text('error occured');
+        return const SliverFillRemaining(
+          child: Center(
+            child: Text('error occured'),
+          ),
+        );
     }
   }
 }
