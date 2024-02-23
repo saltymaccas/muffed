@@ -24,30 +24,12 @@ class _HomePageState extends State<HomePage> {
 
   late List<String> tabs;
   late List<Widget> tabViews;
+  late bool loggedIn;
 
   @override
   void initState() {
     super.initState();
-    final bool loggedIn = context.read<GlobalBloc>().isLoggedIn();
-    tabs = [if (loggedIn) 'Subscribed', 'Popular', 'Local'];
-    tabViews = [
-      if (loggedIn)
-        HomeTabView(
-          contentType: HomeContentType.subscibed,
-          sortType: LemmySortType.active,
-          lemmyRepo: context.read<ServerRepo>().lemmyRepo,
-        ),
-      HomeTabView(
-        contentType: HomeContentType.popular,
-        sortType: LemmySortType.active,
-        lemmyRepo: context.read<ServerRepo>().lemmyRepo,
-      ),
-      HomeTabView(
-        contentType: HomeContentType.local,
-        sortType: LemmySortType.active,
-        lemmyRepo: context.read<ServerRepo>().lemmyRepo,
-      ),
-    ];
+    loggedIn = context.read<GlobalBloc>().isLoggedIn();
   }
 
   void onTabTap(int index) {
@@ -58,6 +40,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    tabs = [if (loggedIn) 'Subscribed', 'Popular', 'Local'];
+    tabViews = [
+      if (loggedIn)
+        HomeTabView(
+          key: const ValueKey('loggedIn'),
+          contentType: HomeContentType.subscibed,
+          sortType: LemmySortType.active,
+          lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+        ),
+      HomeTabView(
+        key: const ValueKey('popular'),
+        contentType: HomeContentType.popular,
+        sortType: LemmySortType.active,
+        lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+      ),
+      HomeTabView(
+        key: const ValueKey('local'),
+        contentType: HomeContentType.local,
+        sortType: LemmySortType.active,
+        lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+      ),
+    ];
+
     return SetPageInfo(
       actions: [
         IconButton(
