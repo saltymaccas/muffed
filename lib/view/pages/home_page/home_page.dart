@@ -71,6 +71,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void openSearchPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (context) => const SearchScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabViewConfig = tabViews[currentTab];
@@ -78,14 +84,7 @@ class _HomePageState extends State<HomePage> {
     return SetPageInfo(
       actions: [
         IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => const SearchScreen(),
-              ),
-            );
-          },
+          onPressed: () => openSearchPage(context),
           icon: const Icon(Icons.search),
           visualDensity: VisualDensity.compact,
         ),
@@ -106,6 +105,13 @@ class _HomePageState extends State<HomePage> {
                       tabs: tabs,
                       selectedTab: currentTab,
                       tabTapCallback: onTabTap,
+                      suffix: [
+                        IconButton(
+                          onPressed: () => openSearchPage(context),
+                          icon: const Icon(Icons.search),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ],
                     ),
                   ),
                 ),
