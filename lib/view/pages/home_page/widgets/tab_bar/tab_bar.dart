@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
   SliverTabBarDelegate({
@@ -25,14 +24,32 @@ class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: tabs.length,
-      itemBuilder: (context, index) => PageTab(
-        name: tabs[index],
-        selected: selectedTab == index,
-        onTap: () => tabTapCallback(index),
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return SizedBox(
+      height: 40,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 39,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: tabs.length,
+              itemBuilder: (context, index) => PageTab(
+                name: tabs[index],
+                selected: selectedTab == index,
+                onTap: () => tabTapCallback(index),
+              ),
+            ),
+          ),
+          Container(
+            height: 1,
+            width: double.maxFinite,
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          ),
+        ],
       ),
     );
   }
