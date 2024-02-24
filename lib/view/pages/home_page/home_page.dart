@@ -44,12 +44,12 @@ class _HomePageState extends State<HomePage> {
     scrollController = ScrollController();
 
     loggedIn = context.read<GlobalBloc>().isLoggedIn();
-    tabs = [if (loggedIn) 'Subscribed', 'Popular', 'Local'];
+    tabs = [if (loggedIn) 'Subscribed', 'Global', 'Local'];
     tabViews = [
       if (loggedIn)
         TabViewConfig(
           key: const ValueKey('subscribed'),
-          sortType: LemmySortType.active,
+          sortType: LemmySortType.hot,
           contentType: HomeContentType.subscibed,
         ),
       TabViewConfig(
