@@ -122,28 +122,25 @@ class PagedScrollView extends StatefulWidget {
 }
 
 class _PagedScrollViewState extends State<PagedScrollView> {
-  late final ScrollController scrollController;
-
   @override
   void initState() {
     super.initState();
-    scrollController = widget.controller ?? ScrollController();
-    scrollController.addListener(scrollControllerListener);
   }
 
   @override
   void dispose() {
     super.dispose();
-    scrollController.removeListener(scrollControllerListener);
   }
 
-  void scrollControllerListener() {
-    final maxScrollExtent = scrollController.position.maxScrollExtent;
-    final currentScrollExtent = scrollController.offset;
+  bool onScrollNotification(ScrollNotification notification) {
+    final maxScrollExtent = notification.metrics.maxScrollExtent;
+    final currentScrollExtent = notification.metrics.pixels;
 
     if (currentScrollExtent < maxScrollExtent - widget.loadMoreThreshold) {
       widget.loadMoreCallback();
     }
+
+    return true;
   }
 
   @override
@@ -152,14 +149,17 @@ class _PagedScrollViewState extends State<PagedScrollView> {
       children: [
         RefreshIndicator(
           onRefresh: widget.onRefresh,
-          child: CustomScrollView(
-            cacheExtent: 1000,
-            controller: scrollController,
-            slivers: [
-              ...widget.headerSlivers,
-              if (widget.body != null) widget.body!,
-              if (widget.footer != null) widget.footer!,
-            ],
+          child: NotificationListener(
+            onNotification: onScrollNotification,
+            child: CustomScrollView(
+              cacheExtent: 1000,
+              controller: widget.controller,
+              slivers: [
+                ...widget.headerSlivers,
+                if (widget.body != null) widget.body!,
+                if (widget.footer != null) widget.footer!,
+              ],
+            ),
           ),
         ),
         if (widget.indicateLoading)

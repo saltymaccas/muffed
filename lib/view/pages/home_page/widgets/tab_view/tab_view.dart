@@ -11,10 +11,13 @@ class HomeTabView extends StatefulWidget {
     required this.contentType,
     required this.sortType,
     required this.lemmyRepo,
+    this.scrollController,
     super.key,
   });
 
   final HomeContentType contentType;
+
+  final ScrollController? scrollController;
 
   final LemmySortType sortType;
   final LemmyRepo lemmyRepo;
@@ -92,6 +95,7 @@ class _HomeTabViewState extends State<HomeTabView> {
       items: items,
       itemBuilder: itemBuilder,
       loadMoreCallback: controller.loadNextPage,
+      controller: widget.scrollController,
     );
   }
 }
