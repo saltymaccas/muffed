@@ -33,13 +33,14 @@ class _HomeTabViewState extends State<HomeTabView> {
   @override
   void initState() {
     super.initState();
-    controller = HomeTabViewController(lemmyRepo: widget.lemmyRepo);
-    onState(controller.state);
-    sortType = widget.sortType;
-    contentType = widget.contentType;
-    controller.loadInitialContent(sortType: sortType, contentType: contentType);
 
+    contentType = widget.contentType;
+    sortType = widget.sortType;
+
+    controller = HomeTabViewController(lemmyRepo: widget.lemmyRepo);
     controller.stream.listen(onStreamEvent);
+    onState(controller.state);
+    controller.loadInitialContent(sortType: sortType, contentType: contentType);
   }
 
   Widget itemBuilder(BuildContext context, Object item) {
@@ -69,6 +70,15 @@ class _HomeTabViewState extends State<HomeTabView> {
     status = state.status;
   }
 
+  final homeTabToScrollStatus = {
+    HomeTabViewStatus.idle: PagedScrollViewStatus.idle,
+    HomeTabViewStatus.loading: PagedScrollViewStatus.loading,
+    HomeTabViewStatus.failure: PagedScrollViewStatus.failure,
+    HomeTabViewStatus.loadingNext: PagedScrollViewStatus.loadingMore,
+    HomeTabViewStatus.loadingNextFailure:
+        PagedScrollViewStatus.loadingMoreFailure,
+  };
+
   @override
   Widget build(BuildContext context) {
     return PagedScroll(
@@ -78,14 +88,7 @@ class _HomeTabViewState extends State<HomeTabView> {
           contentType: contentType,
         );
       },
-      status: {
-        HomeTabViewStatus.idle: PagedScrollViewStatus.idle,
-        HomeTabViewStatus.loading: PagedScrollViewStatus.loading,
-        HomeTabViewStatus.failure: PagedScrollViewStatus.failure,
-        HomeTabViewStatus.loadingNext: PagedScrollViewStatus.loadingMore,
-        HomeTabViewStatus.loadingNextFailure:
-            PagedScrollViewStatus.loadingMoreFailure,
-      }[status]!,
+      status: homeTabToScrollStatus[status]!,
       items: items,
       itemBuilder: itemBuilder,
       loadMoreCallback: controller.loadNextPage,

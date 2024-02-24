@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/pages/home_page/bloc/bloc.dart';
 import 'package:muffed/view/pages/home_page/widgets/tab_bar/tab_bar.dart';
 import 'package:muffed/view/pages/home_page/widgets/tab_view/controller.dart';
 import 'package:muffed/view/pages/home_page/widgets/tab_view/tab_view.dart';
 import 'package:muffed/view/pages/search/search_screen.dart';
-import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
-import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
