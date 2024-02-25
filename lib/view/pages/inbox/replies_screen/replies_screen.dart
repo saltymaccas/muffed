@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
-import 'package:muffed/view/pages/inbox_page/mentions_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/inbox/replies_screen/bloc/bloc.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/nothing_to_show.dart';
 
-class MentionsScreen extends StatelessWidget {
-  const MentionsScreen({super.key});
+class RepliesScreen extends StatelessWidget {
+  const RepliesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MentionsBloc, MentionsState>(
+    return BlocBuilder<RepliesBloc, RepliesState>(
       builder: (context, state) {
         final blocContext = context;
 
         return Builder(
           builder: (context) {
-            if (state.replyItemsStatus == MentionsStatus.loading) {
+            if (state.replyItemsStatus == RepliesStatus.loading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state.replyItemsStatus == MentionsStatus.failure) {
+            } else if (state.replyItemsStatus == RepliesStatus.failure) {
               return ErrorComponentTransparent(
                 error: state.error,
                 retryFunction: () =>
-                    context.read<MentionsBloc>().add(Initialize()),
+                    context.read<RepliesBloc>().add(Initialize()),
               );
-            } else if (state.replyItemsStatus == MentionsStatus.success) {
+            } else if (state.replyItemsStatus == RepliesStatus.success) {
               late final List<LemmyInboxMention> mentionItems;
 
-              final nothingToShow = state.mentions.isEmpty ||
+              final nothingToShow = state.replies.isEmpty ||
                   !state.showAll &&
-                      state.mentions.every((element) => element.read);
+                      state.replies.every((element) => element.read);
 
               return MuffedPage(
                 isLoading: state.isLoading,
@@ -42,15 +42,15 @@ class MentionsScreen extends StatelessWidget {
                             scrollInfo.metrics.maxScrollExtent - 500 &&
                         scrollInfo.metrics.axis == Axis.vertical &&
                         !nothingToShow) {
-                      context.read<MentionsBloc>().add(ReachedEndOfScroll());
+                      context.read<RepliesBloc>().add(ReachedEndOfScroll());
                     }
                     return true;
                   },
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      context.read<MentionsBloc>().add(Refresh());
+                      context.read<RepliesBloc>().add(Refresh());
                       await context
-                          .read<MentionsBloc>()
+                          .read<RepliesBloc>()
                           .stream
                           .firstWhere((element) {
                         if (element.isRefreshing == false) {
@@ -66,7 +66,7 @@ class MentionsScreen extends StatelessWidget {
                           )
                         : ListView.builder(
                             key: ValueKey(state.showAll),
-                            itemCount: state.mentions.length,
+                            itemCount: state.replies.length,
                             itemBuilder: (context, index) {
                               return AnimatedSize(
                                 duration: const Duration(milliseconds: 500),
@@ -74,22 +74,22 @@ class MentionsScreen extends StatelessWidget {
                                 child: Container(
                                   decoration: const BoxDecoration(),
                                   clipBehavior: Clip.hardEdge,
-                                  height: (state.mentions[index].read &&
+                                  height: (state.replies[index].read &&
                                           !state.showAll)
                                       ? 0
                                       : null,
                                   child: CommentItem(
-                                    key: ValueKey(state.mentions[index].id),
+                                    key: ValueKey(state.replies[index].id),
                                     markedAsReadCallback: () {
-                                      context.read<MentionsBloc>().add(
+                                      context.read<RepliesBloc>().add(
                                             MarkAsReadToggled(
-                                              id: state.mentions[index].id,
+                                              id: state.replies[index].id,
                                               index: index,
                                             ),
                                           );
                                     },
-                                    read: state.mentions[index].read,
-                                    comment: state.mentions[index].comment,
+                                    read: state.replies[index].read,
+                                    comment: state.replies[index].comment,
                                     displayMode: CommentItemDisplayMode.single,
                                     sortType: state.sortType,
                                     ableToLoadChildren: false,

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/pages/home_page/widgets/tab_bar/tab_bar.dart';
-import 'package:muffed/view/pages/home_page/widgets/tab_view/controller.dart';
-import 'package:muffed/view/pages/home_page/widgets/tab_view/tab_view.dart';
+import 'package:muffed/view/pages/home/widgets/tab_bar/tab_bar.dart';
+import 'package:muffed/view/pages/home/widgets/tab_view/controller.dart';
+import 'package:muffed/view/pages/home/widgets/tab_view/tab_view.dart';
 import 'package:muffed/view/pages/search/search_screen.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 
 class TabViewConfig {
   TabViewConfig({
@@ -81,49 +79,38 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final tabViewConfig = tabViews[currentTab];
 
-    return SetPageInfo(
-      actions: [
-        IconButton(
-          onPressed: () => openSearchPage(context),
-          icon: const Icon(Icons.search),
-          visualDensity: VisualDensity.compact,
-        ),
-      ],
-      page: Pages.home,
-      child: Scaffold(
-        body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverSafeArea(
-                  sliver: SliverPersistentHeader(
-                    floating: true,
-                    delegate: SliverTabBarDelegate(
-                      tabs: tabs,
-                      selectedTab: currentTab,
-                      tabTapCallback: onTabTap,
-                      suffix: [
-                        IconButton(
-                          onPressed: () => openSearchPage(context),
-                          icon: const Icon(Icons.search),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ],
-                    ),
+    return Scaffold(
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverSafeArea(
+                sliver: SliverPersistentHeader(
+                  floating: true,
+                  delegate: SliverTabBarDelegate(
+                    tabs: tabs,
+                    selectedTab: currentTab,
+                    tabTapCallback: onTabTap,
+                    suffix: [
+                      IconButton(
+                        onPressed: () => openSearchPage(context),
+                        icon: const Icon(Icons.search),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ];
-          },
-          body: HomeTabView(
-            key: tabViewConfig.key,
-            contentType: tabViewConfig.contentType,
-            sortType: tabViewConfig.sortType,
-            lemmyRepo: context.read<ServerRepo>().lemmyRepo,
-          ),
+            ),
+          ];
+        },
+        body: HomeTabView(
+          key: tabViewConfig.key,
+          contentType: tabViewConfig.contentType,
+          sortType: tabViewConfig.sortType,
+          lemmyRepo: context.read<ServerRepo>().lemmyRepo,
         ),
       ),
     );

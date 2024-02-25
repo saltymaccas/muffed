@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:muffed/domain/lemmy.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/pages/home_page/widgets/tab_view/controller.dart';
+import 'package:muffed/view/pages/home/widgets/tab_view/controller.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 

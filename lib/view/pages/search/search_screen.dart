@@ -7,7 +7,6 @@ import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 
 /// A Screen for search communities comments posts and users
@@ -119,50 +118,46 @@ class _SearchScreenState extends State<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SetPageInfo(
-      actions: const [],
-      page: Pages.home,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 8,
-              ),
-              TabBar(
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                controller: tabController,
-                tabs: tabTitles.map((e) => Text(e)).toList(),
-              ),
-              Expanded(
-                child: TabBarView(controller: tabController, children: tabs),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      onBackPressed(context);
-                    },
-                  ),
-                  filled: false,
-                  border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  hintText: 'Search...',
-                  isDense: false,
-                  suffixIcon: IconButton(
-                    onPressed: onSearch,
-                    icon: const Icon(Icons.search),
-                  ),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 8,
+            ),
+            TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              controller: tabController,
+              tabs: tabTitles.map((e) => Text(e)).toList(),
+            ),
+            Expanded(
+              child: TabBarView(controller: tabController, children: tabs),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            TextField(
+              decoration: InputDecoration(
+                prefixIcon: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    onBackPressed(context);
+                  },
                 ),
-                focusNode: textFocusNode,
-                controller: textController,
+                filled: false,
+                border: const OutlineInputBorder(borderSide: BorderSide.none),
+                hintText: 'Search...',
+                isDense: false,
+                suffixIcon: IconButton(
+                  onPressed: onSearch,
+                  icon: const Icon(Icons.search),
+                ),
               ),
-            ],
-          ),
+              focusNode: textFocusNode,
+              controller: textController,
+            ),
+          ],
         ),
       ),
     );

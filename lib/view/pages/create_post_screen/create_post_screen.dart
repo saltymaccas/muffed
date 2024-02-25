@@ -7,7 +7,6 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/dynamic_navigation_bar.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -145,7 +144,8 @@ class CreatePostScreen extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50),),
+                          fixedSize: const Size(500, 50),
+                        ),
                         child: const Text('Add Url'),
                       ),
                     ),
@@ -157,7 +157,8 @@ class CreatePostScreen extends StatelessWidget {
                           await openImagePickerForImageUpload();
                         },
                         style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(500, 50),),
+                          fixedSize: const Size(500, 50),
+                        ),
                         child: const Text('Add Image'),
                       ),
                     ),
@@ -167,235 +168,231 @@ class CreatePostScreen extends StatelessWidget {
             );
           }
 
-          return SetPageInfo(
-            page: Pages.home,
-            actions: const [],
-            child: MuffedPage(
-              isLoading: state.isLoading,
-              error: state.error,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                    (postBeingEdited == null) ? 'Create post' : 'Edit post',
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        if (titleTextController.text.isEmpty) {
-                          showErrorSnackBar(
-                            context,
-                            error: 'Title must not be empty',
-                          );
-                        } else {
-                          context.read<CreatePostBloc>().add(
-                                PostSubmitted(
-                                  title: titleTextController.text,
-                                  body: bodyTextController.text,
-                                  url: urlTextController.text,
-                                ),
-                              );
-                        }
-                      },
-                      icon: const Icon(Icons.send),
-                    ),
-                  ],
+          return MuffedPage(
+            isLoading: state.isLoading,
+            error: state.error,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  (postBeingEdited == null) ? 'Create post' : 'Edit post',
                 ),
-                body: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ImageUploadView(
-                              images: state.bodyImages,
-                              onDelete: (id) {
-                                context
-                                    .read<CreatePostBloc>()
-                                    .add(UploadedBodyImageRemoved(id: id));
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: titleTextController,
-                                decoration: const InputDecoration(
-                                  hintText: 'Title',
-                                  border: InputBorder.none,
-                                ),
-                                style: Theme.of(context).textTheme.titleLarge,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      if (titleTextController.text.isEmpty) {
+                        showErrorSnackBar(
+                          context,
+                          error: 'Title must not be empty',
+                        );
+                      } else {
+                        context.read<CreatePostBloc>().add(
+                              PostSubmitted(
+                                title: titleTextController.text,
+                                body: bodyTextController.text,
+                                url: urlTextController.text,
                               ),
+                            );
+                      }
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
+                ],
+              ),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ImageUploadView(
+                            images: state.bodyImages,
+                            onDelete: (id) {
+                              context
+                                  .read<CreatePostBloc>()
+                                  .add(UploadedBodyImageRemoved(id: id));
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: TextField(
+                              controller: titleTextController,
+                              decoration: const InputDecoration(
+                                hintText: 'Title',
+                                border: InputBorder.none,
+                              ),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            if (state.url == null && state.image == null)
-                              ElevatedButton(
-                                onPressed: showAddDialog,
-                                child: const Icon(Icons.add),
-                              )
-                            else if (state.url != null)
-                              Material(
-                                elevation: 5,
-                                child: Stack(
-                                  children: [
-                                    UrlView(url: state.url!),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4),
-                                        child: IconButton(
-                                          onPressed: () {
-                                            context
-                                                .read<CreatePostBloc>()
-                                                .add(UrlRemoved());
-                                          },
-                                          style: IconButton.styleFrom(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .primaryContainer
-                                                .withOpacity(0.5),
-                                          ),
-                                          icon: const Icon(Icons.close),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            else if (state.image != null)
-                              if (state.image!.imageLink != null)
-                                Stack(
-                                  children: [
-                                    MuffedImage(
-                                      imageUrl: state.image!.imageLink!,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topRight,
+                          ),
+                          if (state.url == null && state.image == null)
+                            ElevatedButton(
+                              onPressed: showAddDialog,
+                              child: const Icon(Icons.add),
+                            )
+                          else if (state.url != null)
+                            Material(
+                              elevation: 5,
+                              child: Stack(
+                                children: [
+                                  UrlView(url: state.url!),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
                                       child: IconButton(
                                         onPressed: () {
-                                          showDialog<void>(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title:
-                                                    const Text('Delete image?'),
-                                                content: const Text(
-                                                  'Are you sure you want to delete this image from the server?',
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      runImageRemovedEvent();
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text('Delete'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
+                                          context
+                                              .read<CreatePostBloc>()
+                                              .add(UrlRemoved());
                                         },
-                                        icon: const Icon(Icons.delete),
                                         style: IconButton.styleFrom(
                                           backgroundColor: Theme.of(context)
                                               .colorScheme
                                               .primaryContainer
                                               .withOpacity(0.5),
                                         ),
+                                        icon: const Icon(Icons.close),
                                       ),
-                                    ),
-                                  ],
-                                )
-                              else
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: LinearProgressIndicator(
-                                    value: state.image!.uploadProgress,
-                                  ),
-                                ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: IndexedStack(
-                                index: (state.isPreviewingBody ? 0 : 1),
-                                children: [
-                                  SingleChildScrollView(
-                                    child: MuffedMarkdownBody(
-                                      data: bodyTextController.text,
-                                    ),
-                                  ),
-                                  SingleChildScrollView(
-                                    child: MarkdownTextInputField(
-                                      controller: bodyTextController,
-                                      focusNode: bodyTextFocusNode,
-                                      label: 'Body',
-                                      minLines: 5,
                                     ),
                                   ),
                                 ],
                               ),
+                            )
+                          else if (state.image != null)
+                            if (state.image!.imageLink != null)
+                              Stack(
+                                children: [
+                                  MuffedImage(
+                                    imageUrl: state.image!.imageLink!,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDialog<void>(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title:
+                                                  const Text('Delete image?'),
+                                              content: const Text(
+                                                'Are you sure you want to delete this image from the server?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    runImageRemovedEvent();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Delete'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(Icons.delete),
+                                      style: IconButton.styleFrom(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer
+                                            .withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: LinearProgressIndicator(
+                                  value: state.image!.uploadProgress,
+                                ),
+                              ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: IndexedStack(
+                              index: (state.isPreviewingBody ? 0 : 1),
+                              children: [
+                                SingleChildScrollView(
+                                  child: MuffedMarkdownBody(
+                                    data: bodyTextController.text,
+                                  ),
+                                ),
+                                SingleChildScrollView(
+                                  child: MarkdownTextInputField(
+                                    controller: bodyTextController,
+                                    focusNode: bodyTextFocusNode,
+                                    label: 'Body',
+                                    minLines: 5,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Divider(height: 1),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: MarkdownButtons(
-                            controller: bodyTextController,
-                            focusNode: bodyTextFocusNode,
-                            actions: const [
-                              MarkdownType.image,
-                              MarkdownType.link,
-                              MarkdownType.bold,
-                              MarkdownType.italic,
-                              MarkdownType.blockquote,
-                              MarkdownType.strikethrough,
-                              MarkdownType.title,
-                              MarkdownType.list,
-                              MarkdownType.separator,
-                              MarkdownType.code,
-                            ],
-                            customImageButtonAction: () async {
-                              final ImagePicker picker = ImagePicker();
-                              final XFile? file = await picker.pickImage(
-                                source: ImageSource.gallery,
-                              );
+                  ),
+                  const Divider(height: 1),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MarkdownButtons(
+                          controller: bodyTextController,
+                          focusNode: bodyTextFocusNode,
+                          actions: const [
+                            MarkdownType.image,
+                            MarkdownType.link,
+                            MarkdownType.bold,
+                            MarkdownType.italic,
+                            MarkdownType.blockquote,
+                            MarkdownType.strikethrough,
+                            MarkdownType.title,
+                            MarkdownType.list,
+                            MarkdownType.separator,
+                            MarkdownType.code,
+                          ],
+                          customImageButtonAction: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? file = await picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
 
-                              context.read<CreatePostBloc>().add(
-                                    BodyImageToUploadSelected(
-                                      filePath: file!.path,
-                                    ),
-                                  );
+                            context.read<CreatePostBloc>().add(
+                                  BodyImageToUploadSelected(
+                                    filePath: file!.path,
+                                  ),
+                                );
+                          },
+                        ),
+                      ),
+                      Material(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: IconButton(
+                            isSelected: state.isPreviewingBody,
+                            icon: (state.isPreviewingBody)
+                                ? const Icon(Icons.remove_red_eye)
+                                : const Icon(Icons.remove_red_eye_outlined),
+                            onPressed: () {
+                              context
+                                  .read<CreatePostBloc>()
+                                  .add(PreviewToggled());
                             },
                           ),
                         ),
-                        Material(
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: IconButton(
-                              isSelected: state.isPreviewingBody,
-                              icon: (state.isPreviewingBody)
-                                  ? const Icon(Icons.remove_red_eye)
-                                  : const Icon(Icons.remove_red_eye_outlined),
-                              onPressed: () {
-                                context
-                                    .read<CreatePostBloc>()
-                                    .add(PreviewToggled());
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 1),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 1),
+                ],
               ),
             ),
           );
