@@ -63,20 +63,20 @@ class MoreMenuButton extends StatelessWidget {
               );
             },
           ),
-        if (post.creatorId ==
-            context.read<GlobalBloc>().getSelectedLemmyAccount()?.id)
-          MuffedPopupMenuItem(
-            title: 'Edit Post',
-            onTap: () {
-              context.pushNamed(
-                'create_post',
-                queryParameters: {},
-                extra: CreatePostRouteData(
-                  postToBeEdited: post,
-                ),
-              );
-            },
-          ),
+        // if (post.creatorId ==
+        //     context.read<GlobalBloc>().getSelectedLemmyAccount()?.id)
+        //   MuffedPopupMenuItem(
+        //     title: 'Edit Post',
+        //     onTap: () {
+        //       context.pushNamed(
+        //         'create_post',
+        //         queryParameters: {},
+        //         extra: CreatePostRouteData(
+        //           postToBeEdited: post,
+        //         ),
+        //       );
+        //     },
+        //   ),
       ],
     );
   }

@@ -6,9 +6,19 @@ import 'package:muffed/view/pages/inbox/mentions_screen/bloc/bloc.dart' as m;
 import 'package:muffed/view/pages/inbox/mentions_screen/mentions_screen.dart';
 import 'package:muffed/view/pages/inbox/replies_screen/bloc/bloc.dart' as r;
 import 'package:muffed/view/pages/inbox/replies_screen/replies_screen.dart';
+import 'package:muffed/view/router/router.dart';
 
-class InboxPage extends StatelessWidget {
-  const InboxPage({super.key});
+class InboxPage extends MPage {
+  InboxPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const InboxPageView();
+  }
+}
+
+class InboxPageView extends StatelessWidget {
+  const InboxPageView({super.key});
 
   @override
   Widget build(BuildContext context) {

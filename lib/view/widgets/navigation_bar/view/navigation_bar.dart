@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/navigation_bar/navigation_bar.dart';
+import 'package:muffed/view/widgets/navigation_bar/navigation_bar.dart';
 
 class MNavigationBar extends StatelessWidget {
   const MNavigationBar({super.key});

@@ -10,7 +10,6 @@ import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/widgets/comment_item/bloc/bloc.dart';
 import 'package:muffed/view/widgets/create_comment/create_comment_dialog.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
@@ -111,15 +110,7 @@ class _CommentItemState extends State<CommentItem>
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
               } else if (widget.displayMode == CommentItemDisplayMode.single) {
-                if (context
-                        .read<DynamicNavigationBarBloc>()
-                        .state
-                        .selectedItemIndex ==
-                    0) {
-                  PostScreenRoute(postId: widget.comment.postId).push(context);
-                } else {
-                  PostScreenRoute(postId: widget.comment.postId).go(context);
-                }
+                PostScreenRoute(postId: widget.comment.postId).push(context);
               }
             },
             child: Container(
@@ -446,22 +437,10 @@ class _CommentItemState extends State<CommentItem>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (context
-                                                          .read<
-                                                              DynamicNavigationBarBloc>()
-                                                          .state
-                                                          .selectedItemIndex ==
-                                                      0) {
-                                                    CommunityScreenRouter(
-                                                      communityId: widget
-                                                          .comment.communityId,
-                                                    ).push(context);
-                                                  } else {
-                                                    CommunityScreenRouter(
-                                                      communityId: widget
-                                                          .comment.communityId,
-                                                    ).go(context);
-                                                  }
+                                                  CommunityScreenRouter(
+                                                    communityId: widget
+                                                        .comment.communityId,
+                                                  ).push(context);
                                                 },
                                                 child: Text(
                                                   widget.comment.communityName,

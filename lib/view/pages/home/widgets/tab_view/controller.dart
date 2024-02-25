@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/domain/lemmy.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/pages/home/home.dart';
 
 part 'controller.freezed.dart';
 
@@ -127,12 +128,6 @@ enum HomeTabViewStatus {
   failure,
   loadingNext,
   loadingNextFailure,
-}
-
-enum HomeContentType {
-  popular,
-  subscibed,
-  local,
 }
 
 @freezed

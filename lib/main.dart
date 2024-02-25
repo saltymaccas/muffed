@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/router/router.dart';
-import 'package:muffed/view/widgets/dynamic_navigation_bar/bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
@@ -42,7 +41,6 @@ class MyApp extends StatelessWidget {
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => DynamicNavigationBarBloc()),
             BlocProvider(create: (context) => GlobalBloc()),
           ],
           child: BlocBuilder<GlobalBloc, GlobalState>(
@@ -50,7 +48,7 @@ class MyApp extends StatelessWidget {
               return RepositoryProvider(
                 create: (context) => ServerRepo(context.read<GlobalBloc>()),
                 child: MaterialApp.router(
-                  routerConfig: router,
+                  routerConfig: routerConfig,
                   title: 'Muffed',
                   builder: (context, child) {
                     final textTheme = Theme.of(context).textTheme;

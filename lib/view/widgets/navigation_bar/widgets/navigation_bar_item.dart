@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/view/router/router.dart';
-import 'package:muffed/theme/theme.dart';
 
 final _log = Logger('NavigationBarItem');
 
@@ -19,8 +18,13 @@ class NavigationBarItem extends StatelessWidget {
   final IconData selectedIcon;
   final int relatedBranchIndex;
 
+  Duration get _animDur => const Duration(milliseconds: 200);
+  Curve get _animCurve => Curves.easeInOutCubic;
+
   @override
   Widget build(BuildContext context) {
+    final selectedColor = Theme.of(context).colorScheme.primary;
+
     return BlocBuilder<MNavigator, MNavigatorState>(
       builder: (context, navState) {
         final onBranch = navState.currentBranchIndex == relatedBranchIndex;
@@ -36,8 +40,8 @@ class NavigationBarItem extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 40),
                 child: AnimatedSize(
-                  duration: context.animationTheme.durLong,
-                  curve: context.animationTheme.empasizedCurve,
+                  duration: _animDur,
+                  curve: _animCurve,
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
@@ -45,7 +49,7 @@ class NavigationBarItem extends StatelessWidget {
                         icon: Icon(icon),
                         selectedIcon: Icon(
                           selectedIcon,
-                          color: context.colorScheme.primary,
+                          color: selectedColor,
                         ),
                         isSelected: onBranch,
                         onPressed: () {
@@ -58,24 +62,22 @@ class NavigationBarItem extends StatelessWidget {
                         visualDensity: VisualDensity.compact,
                       ),
                       if (onBranch)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        widthFactor: onBranch ? 1 : 0,
-                        child: _ActionsRowFactory(
-                          key: ValueKey(relatedBranchIndex),
-                          onBranch: onBranch,
-                          actions: actions,
+                        Align(
                           alignment: Alignment.centerLeft,
-                          actionInCurve:
-                              context.animationTheme.empasizedDecelerateCurve,
-                          actionInDuration: context.animationTheme.durMed1,
-                          actionOutCurve:
-                              context.animationTheme.empasizedAcelerateCurve,
-                          actionOutDuration: context.animationTheme.durMed1,
-                          sizeAnimCurve: context.animationTheme.empasizedCurve,
-                          sizeAnimDuration: context.animationTheme.durLong,
+                          widthFactor: onBranch ? 1 : 0,
+                          child: _ActionsRowFactory(
+                            key: ValueKey(relatedBranchIndex),
+                            onBranch: onBranch,
+                            actions: actions,
+                            alignment: Alignment.centerLeft,
+                            actionInCurve: _animCurve,
+                            actionInDuration: _animDur,
+                            actionOutCurve: _animCurve,
+                            actionOutDuration: _animDur,
+                            sizeAnimCurve: _animCurve,
+                            sizeAnimDuration: _animDur,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -173,8 +175,7 @@ class _ActionsRowFactoryState extends State<_ActionsRowFactory> {
 
   @override
   void didUpdateWidget(covariant _ActionsRowFactory oldWidget) {
-    if (
-        widget.actions != null &&
+    if (widget.actions != null &&
         // Only runs if on branch as a quick fix to it animating when branch
         // changes, this should be changed to identify if the actions are
         // the same or not

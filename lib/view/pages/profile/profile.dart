@@ -3,9 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/view/pages/profile/account_switcher.dart';
+import 'package:muffed/view/router/models/page.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends MPage<void> {
+  ProfilePage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ProfilePageView();
+  }
+}
+
+class ProfilePageView extends StatelessWidget {
+  const ProfilePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
