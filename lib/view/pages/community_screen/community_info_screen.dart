@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../router/navigator/navigator.dart';
 
 class CommunityInfoScreen extends StatelessWidget {
   const CommunityInfoScreen({required this.bloc, super.key});
@@ -41,6 +43,10 @@ class _CommunityInfoSuccess extends StatelessWidget {
       : assert(community.isFullyLoaded, 'Community is not fully loaded');
 
   final LemmyCommunity community;
+
+  void onModeratorPressed(BuildContext context, int id) {
+    MNavigator.of(context).pushPage(UserPage(userId: id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,12 +194,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                           url: moderator.avatar,
                         ),
                         onPressed: () {
-                          context.pushNamed(
-                            'person',
-                            queryParameters: {
-                              'id': moderator.id.toString(),
-                            },
-                          );
+                          onModeratorPressed(context, moderator.id);
                         },
                       ),
                   ],

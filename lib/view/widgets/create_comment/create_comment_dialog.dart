@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/create_comment/bloc/bloc.dart';
+import 'package:muffed/view/widgets/create_comment/create_comment_screen.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
@@ -91,7 +93,7 @@ class CreateCommentDialog extends StatelessWidget {
         listener: (context, state) {
           // closes the dialog if the comment has been successfully posted
           if (state.successfullyPosted) {
-            context.pop();
+            Navigator.pop(context);
             if (onSuccessfullySubmitted != null) {
               onSuccessfullySubmitted!.call();
             }
@@ -171,7 +173,7 @@ class CreateCommentDialog extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          context.pop();
+                          Navigator.pop(context);
                         },
                         icon: const Icon(Icons.close),
                       ),
@@ -188,19 +190,14 @@ class CreateCommentDialog extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          context
-                            ..push(
-                              Uri(
-                                path: '/home/post/create_comment',
-                                queryParameters: {
-                                  'postId': postId.toString(),
-                                  if (parentId != null)
-                                    'parentCommentId': parentId.toString(),
-                                  'initialValue': textFieldController.text,
-                                },
-                              ).toString(),
-                            )
-                            ..pop();
+                          MNavigator.of(context).pushPage(
+                            CreateCommentPage(
+                              postId: postId,
+                              parentId: parentId,
+                              initialValue: textFieldController.text,
+                            ),
+                          );
+                          Navigator.pop(context);
                         },
                         icon: const Icon(Icons.open_in_new),
                       ),

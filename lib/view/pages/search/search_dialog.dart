@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
@@ -106,10 +106,7 @@ class _SearchDialogState extends State<SearchDialog> {
                       suffixIcon: IconButton(
                         onPressed: () {
                           textFocusNode.unfocus();
-                          context.push(
-                            '/home/search?query=${textController.text}',
-                            extra: state,
-                          );
+
                           Navigator.pop(context);
                         },
                         icon: const Icon(Icons.open_in_new),

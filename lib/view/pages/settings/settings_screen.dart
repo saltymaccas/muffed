@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -15,7 +14,7 @@ class SettingsPage extends StatelessWidget {
             title: const Text('Settings'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: context.pop,
+              onPressed: () => Navigator.pop(context),
             ),
           ),
           body: ListView(
@@ -27,7 +26,7 @@ class SettingsPage extends StatelessWidget {
                 leading: const Icon(Icons.color_lens),
                 subtitle: const Text('Change how Muffed looks'),
                 onTap: () {
-                  context.push('/profile/settings/look');
+                  // TODO: context.push('/profile/settings/look');
                 },
               ),
               ListTile(
@@ -37,7 +36,7 @@ class SettingsPage extends StatelessWidget {
                 leading: const Icon(Icons.filter_list),
                 subtitle: const Text('Filter certain posts'),
                 onTap: () {
-                  context.push('/profile/settings/contentfilters');
+                  // TODO: context.push('/profile/settings/contentfilters');
                 },
               ),
               ListTile(
@@ -46,7 +45,7 @@ class SettingsPage extends StatelessWidget {
                 visualDensity: VisualDensity.comfortable,
                 leading: const Icon(Icons.info),
                 onTap: () {
-                  context.push('/profile/settings/about');
+                  // TODO: context.push('/profile/settings/about');
 
                   // showLicensePage(
                   //   context: context,

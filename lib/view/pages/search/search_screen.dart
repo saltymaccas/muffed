@@ -3,11 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
+import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
+
+class SearchPage extends MPage<void> {
+  SearchPage({this.searchQuery, this.communityId, this.communityName});
+  final String? searchQuery;
+
+  final String? communityName;
+  final int? communityId;
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchScreen(
+      searchQuery: searchQuery,
+      communityId: communityId,
+      communityName: communityName,
+    );
+  }
+}
 
 /// A Screen for search communities comments posts and users
 class SearchScreen extends StatefulWidget {

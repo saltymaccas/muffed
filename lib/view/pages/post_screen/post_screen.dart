@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/view/pages/post_screen/bloc/bloc.dart';
+import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/view/widgets/error.dart';
@@ -15,56 +16,21 @@ import 'package:muffed/view/widgets/post_item/bloc/bloc.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
-/// Defines the route in go router
-class PostScreenRouteDefinition extends GoRoute {
-  PostScreenRouteDefinition({super.routes})
-      : super(
-          path: 'post',
-          name: 'post',
-          builder: (context, state) {
-            final qp = state.uri.queryParameters;
-            final data = state.extra! as PostScreenRoute;
-
-            return PostScreen(
-              post: data.post,
-              postId: qp['postId'].parseInt(),
-              postBloc: data.postBloc,
-            );
-          },
-        );
-}
-
-/// Provides a clean interface for navigating to the post screen.
-class PostScreenRoute extends PostScreenRouteDefinition {
-  PostScreenRoute({
-    this.post,
-    this.postId,
-    this.postBloc,
-  }) : assert(post != null || postId != null, 'No post provided');
-
-  void push(BuildContext context) {
-    context.pushNamed(
-      super.name!,
-      queryParameters: {
-        if (postId != null) 'postId': postId!.toString(),
-      },
-      extra: this,
-    );
-  }
-
-  void go(BuildContext context) {
-    context.goNamed(
-      super.name!,
-      queryParameters: {
-        if (postId != null) 'postId': postId!.toString(),
-      },
-      extra: this,
-    );
-  }
+class PostPage extends MPage<void> {
+  PostPage({this.post, this.postId, this.postBloc});
 
   final LemmyPost? post;
   final int? postId;
   final PostItemBloc? postBloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostScreen(
+      post: post,
+      postId: postId,
+      postBloc: postBloc,
+    );
+  }
 }
 
 /// Displays a screen that shows the post on top and the comments under

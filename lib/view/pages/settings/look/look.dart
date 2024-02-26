@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 
 class SettingsLookPage extends StatelessWidget {
@@ -16,7 +15,7 @@ class SettingsLookPage extends StatelessWidget {
             title: const Text('User Interface'),
             leading: IconButton(
               onPressed: () {
-                context.pop();
+                Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back),
             ),

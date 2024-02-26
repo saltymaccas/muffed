@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
+import 'package:muffed/view/router/models/models.dart';
+import 'package:muffed/view/router/models/page.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/block_dialog/block_dialog.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/error.dart';
@@ -18,6 +22,21 @@ import 'package:muffed/view/widgets/post_item/post_item.dart';
 const _headerMaxHeight = 300.0;
 const _headerMinHeight = 130.0;
 const _bannerEndFraction = 0.6;
+
+class UserPage extends MPage<void> {
+  UserPage({this.userId, this.username});
+
+  final int? userId;
+  final String? username;
+
+  @override
+  Widget build(BuildContext context) {
+    return UserScreen(
+      userId: userId,
+      username: username,
+    );
+  }
+}
 
 /// Displays a users profile
 class UserScreen extends StatelessWidget {
@@ -193,11 +212,15 @@ class _UserScreenSuccess extends StatelessWidget {
                         user.moderates![index].name,
                       ),
                       onTap: () {
-                        context.pushNamed(
-                          'community',
-                          queryParameters: {
-                            'id': user.moderates![index].id.toString(),
-                          },
+                        MNavigator.of(context).pushPage(
+                          CommunityPage(
+                            communityId: user.moderates![index].id,
+                          ),
+                        );
+                        Navigator.of(context).push(
+                          CommunityPage(
+                            communityId: user.moderates![index].id,
+                          ).createRoute(context),
                         );
                       },
                     );
@@ -372,7 +395,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     children: [
                       IconButton(
                         onPressed: () {
-                          context.pop();
+                          Navigator.pop(context);
                         },
                         icon: const Icon(Icons.arrow_back),
                       ),

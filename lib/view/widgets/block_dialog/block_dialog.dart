@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/block_dialog/bloc/bloc.dart';
 import 'package:muffed/view/widgets/error.dart';
@@ -28,33 +28,34 @@ class BlockDialog extends StatelessWidget {
         repo: context.read<ServerRepo>(),
       )..add(InitializeEvent()),
       child: BlocBuilder<BlockDialogBloc, BlockDialogState>(
-          builder: (context, state) {
-        late Widget dialog;
+        builder: (context, state) {
+          late Widget dialog;
 
-        if (state.status == BlockDialogStatus.loading) {
-          dialog = _BlockDialogLoading(
-            name: name,
-          );
-        } else if (state.status == BlockDialogStatus.failure) {
-          dialog = _BlockDialogFailure(
-            state: state,
-          );
-        } else if (state.status == BlockDialogStatus.success) {
-          dialog = _BlockDialogSuccess(state: state, name: name);
+          if (state.status == BlockDialogStatus.loading) {
+            dialog = _BlockDialogLoading(
+              name: name,
+            );
+          } else if (state.status == BlockDialogStatus.failure) {
+            dialog = _BlockDialogFailure(
+              state: state,
+            );
+          } else if (state.status == BlockDialogStatus.success) {
+            dialog = _BlockDialogSuccess(state: state, name: name);
 
-          _BlockDialogSuccess(
-            state: state,
-            name: name,
-          );
-        } else {
-          dialog = Container();
-        }
+            _BlockDialogSuccess(
+              state: state,
+              name: name,
+            );
+          } else {
+            dialog = Container();
+          }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: dialog,
-        );
-      },),
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: dialog,
+          );
+        },
+      ),
     );
   }
 }
@@ -70,10 +71,11 @@ class _BlockDialogLoading extends StatelessWidget {
       title: const LinearProgressIndicator(),
       actions: [
         TextButton(
-            onPressed: () {
-              context.pop();
-            },
-            child: const Text('Cancel'),),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
       ],
     );
   }
@@ -110,11 +112,12 @@ class _BlockDialogSuccess extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-          '$name is currently ${state.isBlocked! ? 'blocked' : 'not blocked'}',),
+        '$name is currently ${state.isBlocked! ? 'blocked' : 'not blocked'}',
+      ),
       actions: [
         TextButton(
           onPressed: () {
-            context.pop();
+            Navigator.pop(context);
           },
           child: const Text('Done'),
         ),

@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/create_comment/bloc/bloc.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
+
+class CreateCommentPage extends MPage<void> {
+  CreateCommentPage({
+    required this.postId,
+    this.initialValue,
+    this.postBlocContext,
+    this.parentId,
+  });
+
+  final int postId;
+  final String? initialValue;
+  final int? parentId;
+  final BuildContext? postBlocContext;
+
+  @override
+  Widget build(BuildContext context) {
+    return CreateCommentScreen(
+      postId: postId,
+      initialValue: initialValue,
+      parentId: parentId,
+      postBlocContext: postBlocContext,
+    );
+  }
+}
 
 class CreateCommentScreen extends StatelessWidget {
   const CreateCommentScreen({
@@ -43,7 +68,7 @@ class CreateCommentScreen extends StatelessWidget {
       child: BlocConsumer<CreateCommentBloc, CreateCommentState>(
         listener: (context, state) {
           if (state.successfullyPosted) {
-            context.pop();
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {

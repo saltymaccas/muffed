@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:markdown/markdown.dart' as md;
+import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/user_screen/user_screen.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,6 +26,56 @@ class MuffedMarkdownBody extends StatelessWidget {
   final bool shrinkWrap;
   final ScrollController? controller;
   final void Function()? onTapText;
+
+  Future<void> onLinkTap(BuildContext context, String url) async {
+    // check if link to community
+    if (url.startsWith('!')) {
+      MNavigator.of(context).pushPage(
+        CommunityPage(communityName: url.substring(1)),
+      );
+      return;
+    }
+
+    // check if link to user
+    if (url.startsWith('@')) {
+      // remove the '@'
+      final username = url.substring(1);
+      MNavigator.of(context).pushPage(
+        UserPage(username: username),
+      );
+      return;
+    }
+
+    final path = Uri.parse(url).path;
+    final spiltPath = path.split('/');
+    final host = Uri.parse(url).host;
+
+    final chonks = url.split('/');
+
+    if (chonks.length == 1) {
+      await launchUrl(Uri.parse(url));
+      return;
+    }
+
+    // check if link to user
+    if (path.startsWith('/u/')) {
+      MNavigator.of(context).pushPage(
+        UserPage(username: '${spiltPath[2]}@$host'),
+      );
+      return;
+    }
+
+    // check if link to community
+    if (path.startsWith('/c/')) {
+      final communityName = '${spiltPath[2]}@$host';
+      MNavigator.of(context).pushPage(
+        CommunityPage(communityName: communityName),
+      );
+      return;
+    }
+
+    await launchUrl(Uri.parse(url));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,68 +100,8 @@ class MuffedMarkdownBody extends StatelessWidget {
           title,
           url,
           destination,
-        ) async {
-          if (url != null) {
-            // check if link to community
-            if (url.startsWith('!')) {
-              await context.push(
-                Uri(
-                  path: '/home/community/',
-                  queryParameters: {'name': url.substring(1)},
-                ).toString(),
-              );
-              return;
-            }
-
-            // check if link to user
-            if (url.startsWith('@')) {
-              // remove the '@'
-              final username = url.substring(1);
-
-              await context.push(
-                Uri(
-                  path: '/home/person/',
-                  queryParameters: {'username': username},
-                ).toString(),
-              );
-              return;
-            }
-
-            final path = Uri.parse(url).path;
-            final spiltPath = path.split('/');
-            final host = Uri.parse(url).host;
-
-            final chonks = url.split('/');
-
-            if (chonks.length == 1) {
-              await launchUrl(Uri.parse(url));
-              return;
-            }
-
-            // check if link to user
-            if (path.startsWith('/u/')) {
-              await context.pushNamed(
-                'person',
-                queryParameters: {
-                  'username': '${spiltPath[2]}@$host',
-                },
-              );
-              return;
-            }
-
-            // check if link to community
-            if (path.startsWith('/c/')) {
-              await context.pushNamed(
-                'community',
-                queryParameters: {
-                  'name': '${spiltPath[2]}@$host',
-                },
-              );
-              return;
-            }
-
-            await launchUrl(Uri.parse(url));
-          }
+        ) {
+          if (url != null) onLinkTap(context, url);
         },
         onTapText: onTapText,
         inlineSyntaxes: [LemmyLinkSyntax()],

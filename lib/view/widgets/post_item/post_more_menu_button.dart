@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/router/router.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
@@ -14,6 +16,15 @@ class MoreMenuButton extends StatelessWidget {
 
   final LemmyPost post;
 
+  void onGoToUserPressed(BuildContext context) {
+    MNavigator.of(context).pushPage(UserPage(userId: post.creatorId));
+  }
+
+  void onGoToCommunityPressed(BuildContext context) {
+    MNavigator.of(context)
+        .pushPage(CommunityPage(communityId: post.communityId));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MuffedPopupMenuButton(
@@ -21,20 +32,11 @@ class MoreMenuButton extends StatelessWidget {
       items: [
         MuffedPopupMenuItem(
           title: 'Go to community',
-          onTap: () {
-            CommunityScreenRouter(
-              communityId: post.communityId,
-              communityName: post.communityName,
-            ).push(context);
-          },
+          onTap: () => onGoToCommunityPressed(context),
         ),
         MuffedPopupMenuItem(
           title: 'Go to user',
-          onTap: () {
-            context.push(
-              '/home/person?id=${post.creatorId}',
-            );
-          },
+          onTap: () => onGoToUserPressed(context),
         ),
         if (post.body != null)
           MuffedPopupMenuItem(

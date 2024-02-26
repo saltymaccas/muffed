@@ -2,12 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
 import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
 import 'package:muffed/view/pages/community_screen/community_info_screen.dart';
+import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/image.dart';
@@ -16,67 +16,6 @@ import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-/// Defines the community screen and parameters in go router
-class CommunityScreenRouterDefinition extends GoRoute {
-  CommunityScreenRouterDefinition({super.routes})
-      : super(
-          name: 'communityScreen',
-          path: 'communityScreen',
-          builder: (context, state) {
-            final qp = state.uri.queryParameters;
-
-            final communityId = qp['communityId']?.parseInt();
-            final communityName = state.uri.queryParameters['communityName'];
-
-            final data = state.extra! as CommunityScreenRouter;
-            return CommunityScreen(
-              communityId: communityId,
-              communityName: communityName,
-              community: data.community,
-            );
-          },
-        );
-}
-
-/// Provides a clean and typed interface for navigating to the community screen
-class CommunityScreenRouter extends CommunityScreenRouterDefinition {
-  CommunityScreenRouter({
-    this.communityId,
-    this.communityName,
-    this.community,
-  })  : assert(
-          communityId != null || communityName != null || community != null,
-          'No community defined.',
-        ),
-        super();
-
-  void go(BuildContext context) {
-    context.goNamed(
-      super.name!,
-      queryParameters: {
-        if (communityId != null) 'communityId': communityId.toString(),
-        if (communityName != null) 'communityName': communityName,
-      },
-      extra: this,
-    );
-  }
-
-  void push(BuildContext context) {
-    context.pushNamed(
-      super.name!,
-      queryParameters: {
-        if (communityId != null) 'communityId': communityId.toString(),
-        if (communityName != null) 'communityName': communityName,
-      },
-      extra: this,
-    );
-  }
-
-  final int? communityId;
-  final String? communityName;
-  final LemmyCommunity? community;
-}
 
 /// Defines the method for retrieving the community posts and retrieves them
 /// when called.
@@ -118,6 +57,27 @@ class CommunityScreenContentRetriever extends ContentRetriever
       sortType: sortType ?? this.sortType,
       context: context ?? this.context,
       communityId: communityId ?? this.communityId,
+    );
+  }
+}
+
+class CommunityPage extends MPage<void> {
+  CommunityPage({
+    this.communityId,
+    this.communityName,
+    this.community,
+  });
+
+  final int? communityId;
+  final String? communityName;
+  final LemmyCommunity? community;
+
+  @override
+  Widget build(BuildContext context) {
+    return CommunityScreen(
+      communityId: communityId,
+      communityName: communityName,
+      community: community,
     );
   }
 }
@@ -527,7 +487,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                             Skeleton.keep(
                               child: IconButton(
                                 onPressed: () {
-                                  context.pop();
+                                  Navigator.pop(context);
                                 },
                                 icon: const Icon(Icons.arrow_back),
                               ),

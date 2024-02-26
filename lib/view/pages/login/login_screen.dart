@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/login/bloc/bloc.dart';
@@ -38,7 +38,7 @@ class LoginPage extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
-                  context.pop();
+                  Navigator.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
@@ -128,7 +128,7 @@ class LoginPage extends StatelessWidget {
                           onPressed: () {
                             context.read<LoginPageBloc>().add(
                               Submitted(() {
-                                context.pop();
+                                Navigator.pop(context);
                               }),
                             );
                           },

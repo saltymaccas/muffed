@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/view/pages/profile/account_switcher.dart';
 import 'package:muffed/view/router/models/page.dart';
@@ -57,7 +57,7 @@ class ProfilePageView extends StatelessWidget {
                     if (context.read<GlobalBloc>().isLoggedIn())
                       ElevatedButton(
                         onPressed: () {
-                          context.go('/profile/saved_posts');
+                          // TODO: context.go('/profile/saved_posts');
                         },
                         child: const Text('Show saved posts'),
                       ),

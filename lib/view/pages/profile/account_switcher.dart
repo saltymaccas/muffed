@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muffed/domain/global_state/bloc.dart';
 
 /// Shows a bottom dialog that allows a user to switch accounts
@@ -32,7 +32,8 @@ void showAccountSwitcher(BuildContext context) {
                           return AlertDialog(
                             title: const Text('Confirm Removal'),
                             content: Text(
-                                'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].name}',),
+                              'Are you sure you want to remove ${globalBloc.state.lemmyAccounts[index].name}',
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -41,13 +42,13 @@ void showAccountSwitcher(BuildContext context) {
                                       index,
                                     ),
                                   );
-                                  context.pop();
+                                  Navigator.pop(context);
                                 },
                                 child: const Text('Remove'),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  context.pop();
+                                  Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -70,7 +71,7 @@ void showAccountSwitcher(BuildContext context) {
                     icon: const Icon(Icons.remove_circle),
                   ),
                   onTap: () {
-                    context.pop();
+                    Navigator.pop(context);
                     globalBloc.add(
                       AccountSwitched(
                         index,
@@ -84,7 +85,7 @@ void showAccountSwitcher(BuildContext context) {
                 selected: !globalBloc.isLoggedIn(),
                 leading: const Icon(Icons.security),
                 onTap: () {
-                  context.pop();
+                  Navigator.pop(context);
                   globalBloc.add(
                     AccountSwitched(-1),
                   );
@@ -92,8 +93,8 @@ void showAccountSwitcher(BuildContext context) {
                 trailing: IconButton(
                   icon: const Icon(Icons.settings),
                   onPressed: () {
-                    context.pop();
-                    context.go('/profile/anon_account_settings');
+                    Navigator.pop(context);
+                    // TODO: context.go('/profile/anon_account_settings');
                   },
                 ),
               ),
@@ -101,9 +102,10 @@ void showAccountSwitcher(BuildContext context) {
                 title: const Text('Add Account'),
                 leading: const Icon(Icons.add),
                 onTap: () {
-                  context
-                    ..pop()
-                    ..go('/profile/login');
+                  // TODO:
+                  // context
+                  //   ..pop()
+                  //   ..go('/profile/login');
                 },
               ),
             ],

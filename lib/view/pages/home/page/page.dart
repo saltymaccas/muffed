@@ -37,6 +37,14 @@ class _HomePageViewState extends State<HomePageView> {
 
     scrollController = ScrollController();
 
+    context.read<PageActions>().setActions([
+      IconButton(
+        visualDensity: VisualDensity.compact,
+        onPressed: () => MNavigator.of(context).pushPage(SearchPage()),
+        icon: const Icon(Icons.search),
+      ),
+    ]);
+
     loggedIn = context.read<GlobalBloc>().isLoggedIn();
     tabs = [if (loggedIn) 'Subscribed', 'Global', 'Local'];
     tabViews = [

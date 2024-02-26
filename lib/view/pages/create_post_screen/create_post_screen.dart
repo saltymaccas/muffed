@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/post_screen/post_screen.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -43,6 +45,11 @@ class CreatePostScreen extends StatelessWidget {
 
   final FocusNode bodyTextFocusNode = FocusNode();
 
+  void onSuccessfullyPosted(BuildContext context, LemmyPost post) {
+    Navigator.pop(context);
+    MNavigator.of(context).pushPage(PostPage(post: post));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -55,14 +62,7 @@ class CreatePostScreen extends StatelessWidget {
       child: BlocConsumer<CreatePostBloc, CreatePostState>(
         listener: (context, state) {
           if (state.successfullyPostedPost != null) {
-            context
-              ..pop()
-              ..push(
-                Uri(
-                  path: '/home/post',
-                ).toString(),
-                extra: (state.successfullyPostedPost, null),
-              );
+            onSuccessfullyPosted(context, state.successfullyPostedPost!);
             showInfoSnackBar(
               context,
               text: (postBeingEdited == null)
@@ -106,7 +106,7 @@ class CreatePostScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () {
-                          context.pop();
+                          Navigator.pop(context);
                           showDialog<void>(
                             context: context,
                             builder: (context) {
@@ -128,7 +128,7 @@ class CreatePostScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(8),
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          context.pop();
+                                          Navigator.pop(context);
                                           runUrlAddedEvent();
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -153,7 +153,7 @@ class CreatePostScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () async {
-                          context.pop();
+                          Navigator.pop(context);
                           await openImagePickerForImageUpload();
                         },
                         style: ElevatedButton.styleFrom(

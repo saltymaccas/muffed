@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
@@ -8,6 +8,8 @@ import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/view/pages/community_screen/community_screen.dart';
 import 'package:muffed/view/pages/post_screen/post_screen.dart';
+import 'package:muffed/view/pages/user_screen/user_screen.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/comment_item/bloc/bloc.dart';
 import 'package:muffed/view/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -110,7 +112,8 @@ class _CommentItemState extends State<CommentItem>
               if (state.minimised) {
                 context.read<CommentItemBloc>().add(MinimiseToggled());
               } else if (widget.displayMode == CommentItemDisplayMode.single) {
-                PostScreenRoute(postId: widget.comment.postId).push(context);
+                MNavigator.of(context)
+                    .pushPage(PostPage(postId: widget.comment.postId));
               }
             },
             child: Container(
@@ -161,8 +164,10 @@ class _CommentItemState extends State<CommentItem>
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  context.push(
-                                    '/home/person?id=${widget.comment.creatorId}',
+                                  MNavigator.of(context).pushPage(
+                                    UserPage(
+                                      userId: widget.comment.creatorId,
+                                    ),
                                   );
                                 },
                                 child: Text(
@@ -285,8 +290,10 @@ class _CommentItemState extends State<CommentItem>
                                   MuffedPopupMenuItem(
                                     title: 'Go to user',
                                     onTap: () {
-                                      context.push(
-                                        '/home/person?id=${widget.comment.creatorId}',
+                                      MNavigator.of(context).pushPage(
+                                        UserPage(
+                                          userId: widget.comment.creatorId,
+                                        ),
                                       );
                                     },
                                   ),
@@ -437,10 +444,13 @@ class _CommentItemState extends State<CommentItem>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  CommunityScreenRouter(
-                                                    communityId: widget
-                                                        .comment.communityId,
-                                                  ).push(context);
+                                                  MNavigator.of(context)
+                                                      .pushPage(
+                                                    CommunityPage(
+                                                      communityId: widget
+                                                          .comment.communityId,
+                                                    ),
+                                                  );
                                                 },
                                                 child: Text(
                                                   widget.comment.communityName,
