@@ -8,7 +8,7 @@ import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/router/router.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 
 class MoreMenuButton extends StatelessWidget {

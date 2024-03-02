@@ -16,7 +16,7 @@ class PagedScroll extends StatelessWidget {
     required this.items,
     required this.itemBuilder,
     this.headerSlivers = const [],
-    this.controller,
+    this.scrollController,
     this.onRefresh = PagedScrollView._defaultOnRefresh,
     this.loadMoreCallback = PagedScrollView._defaultLoadMoreCallback,
     this.allPagesLoaded = false,
@@ -27,7 +27,7 @@ class PagedScroll extends StatelessWidget {
   final List<Object>? items;
   final Widget Function(BuildContext, Object) itemBuilder;
   final List<Widget> headerSlivers;
-  final ScrollController? controller;
+  final ScrollController? scrollController;
   final Future<void> Function() onRefresh;
   final void Function() loadMoreCallback;
   final bool allPagesLoaded;
@@ -80,7 +80,7 @@ class PagedScroll extends StatelessWidget {
       headerSlivers: headerSlivers ?? const [],
       onRefresh: onRefresh,
       loadMoreCallback: loadMoreCallback,
-      controller: controller,
+      controller: scrollController,
     );
   }
 }

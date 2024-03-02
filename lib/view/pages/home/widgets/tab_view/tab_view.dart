@@ -96,7 +96,7 @@ class _HomeTabViewState extends State<HomeTabView> {
       items: items,
       itemBuilder: itemBuilder,
       loadMoreCallback: controller.loadNextPage,
-      controller: widget.scrollController,
+      scrollController: widget.scrollController,
     );
   }
 }

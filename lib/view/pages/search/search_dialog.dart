@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
 import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/snackbars.dart';

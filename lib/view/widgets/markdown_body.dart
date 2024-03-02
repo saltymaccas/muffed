@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:markdown/markdown.dart' as md;
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/image.dart';

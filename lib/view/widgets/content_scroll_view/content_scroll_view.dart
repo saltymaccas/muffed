@@ -7,6 +7,7 @@ import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/post_item/post_item.dart';
 
 export 'widgets/widgets.dart';
+export 'view/view.dart';
 
 /// A function for retrieving content
 typedef RetrieveContent = Future<List<Object>> Function({required int page});

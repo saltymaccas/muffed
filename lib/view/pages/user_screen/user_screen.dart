@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/models.dart';
 import 'package:muffed/view/router/models/page.dart';

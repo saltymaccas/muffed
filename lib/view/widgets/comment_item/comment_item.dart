@@ -6,7 +6,7 @@ import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/utils/time.dart';
-import 'package:muffed/view/pages/community_screen/community_screen.dart';
+import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';

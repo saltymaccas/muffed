@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
-import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
+import 'package:muffed/view/pages/community/bloc/bloc.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
@@ -14,24 +14,15 @@ import '../../router/navigator/navigator.dart';
 class CommunityInfoScreen extends StatelessWidget {
   const CommunityInfoScreen({required this.bloc, super.key});
 
-  final CommunityScreenBloc bloc;
+  final CommunityBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: bloc,
-      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
+      child: BlocBuilder<CommunityBloc, CommunityState>(
         builder: (context, state) {
-          switch (state.fullCommunityInfoStatus) {
-            case CommunityStatus.initial:
-              return const _CommunityInfoInitial();
-            case CommunityStatus.loading:
-              return const _CommunityInfoLoading();
-            case CommunityStatus.failure:
-              return _CommunityInfoError(error: state.errorMessage);
-            case CommunityStatus.success:
-              return _CommunityInfoSuccess(community: state.community!);
-          }
+          return Placeholder();
         },
       ),
     );
@@ -39,10 +30,11 @@ class CommunityInfoScreen extends StatelessWidget {
 }
 
 class _CommunityInfoSuccess extends StatelessWidget {
-  _CommunityInfoSuccess({required this.community})
+  _CommunityInfoSuccess({required this.community, required this.onBlockPressed})
       : assert(community.isFullyLoaded, 'Community is not fully loaded');
 
   final LemmyCommunity community;
+  final void Function() onBlockPressed;
 
   void onModeratorPressed(BuildContext context, int id) {
     MNavigator.of(context).pushPage(UserPage(userId: id));
@@ -208,9 +200,7 @@ class _CommunityInfoSuccess extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<CommunityScreenBloc>().add(
-                            BlockToggled(),
-                          );
+                      onBlockPressed();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.error,
@@ -254,17 +244,16 @@ class _CommunityInfoLoading extends StatelessWidget {
 }
 
 class _CommunityInfoError extends StatelessWidget {
-  const _CommunityInfoError({this.error});
+  const _CommunityInfoError({this.error, this.retryCallback});
 
   final Object? error;
+  final void Function()? retryCallback;
 
   @override
   Widget build(BuildContext context) {
     return ErrorComponentTransparent(
       error: error,
-      retryFunction: () {
-        context.read<CommunityScreenBloc>().add(InitialiseCommunityScreen());
-      },
+      retryFunction: retryCallback,
     );
   }
 }

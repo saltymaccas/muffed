@@ -1,189 +1,56 @@
-import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/shorthands.dart';
-import 'package:muffed/view/pages/community_screen/bloc/bloc.dart';
-import 'package:muffed/view/pages/community_screen/community_info_screen.dart';
-import 'package:muffed/view/router/models/page.dart';
-import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
-import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
+import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
-import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-/// Defines the method for retrieving the community posts and retrieves them
-/// when called.
-class CommunityScreenContentRetriever extends ContentRetriever
-    with EquatableMixin {
-  const CommunityScreenContentRetriever({
-    required this.sortType,
-    required this.context,
-    this.communityId,
-    this.communityName,
-  }) : assert(
-          communityId != null || communityName != null,
-          'No community defined',
-        );
-
-  final LemmySortType sortType;
-  final BuildContext context;
-  final int? communityId;
-  final String? communityName;
-
-  @override
-  Future<List<Object>> call({required int page}) {
-    return context.read<ServerRepo>().lemmyRepo.getPosts(
-          page: page,
-          communityId: communityId,
-          sortType: sortType,
-        );
-  }
-
-  @override
-  List<Object?> get props => [sortType, context, communityId];
-
-  CommunityScreenContentRetriever copyWith({
-    LemmySortType? sortType,
-    BuildContext? context,
-    int? communityId,
-  }) {
-    return CommunityScreenContentRetriever(
-      sortType: sortType ?? this.sortType,
-      context: context ?? this.context,
-      communityId: communityId ?? this.communityId,
-    );
-  }
-}
-
-class CommunityPage extends MPage<void> {
-  CommunityPage({
-    this.communityId,
-    this.communityName,
+class SliverCommunityPageViewHeader extends StatelessWidget {
+  const SliverCommunityPageViewHeader({
     this.community,
+    this.authenticated = false,
+    this.onSubscribeTapped,
+    this.openCommunityInfo,
+    super.key,
   });
 
-  final int? communityId;
-  final String? communityName;
   final LemmyCommunity? community;
+  final bool authenticated;
+  final void Function()? onSubscribeTapped;
+  final void Function()? openCommunityInfo;
 
   @override
   Widget build(BuildContext context) {
-    return CommunityScreen(
-      communityId: communityId,
-      communityName: communityName,
-      community: community,
-    );
-  }
-}
-
-/// Displays a specified community and its posts
-class CommunityScreen extends StatelessWidget {
-  /// initialize
-  CommunityScreen({
-    int? communityId,
-    String? communityName,
-    this.community,
-    super.key,
-  })  : communityId = communityId ?? community?.id,
-        communityName = communityName ?? community?.name,
-        assert(
-          communityId != null || communityName != null || community != null,
-          'No community defined',
-        );
-
-  /// The community ID
-  final int? communityId;
-
-  /// The community name
-  final String? communityName;
-
-  /// The community object which contains the community information.
-  ///
-  /// If this is set to null the information will be loaded from the API.
-  /// Setting the value will mean the community information can be shown
-  /// instantly
-  final LemmyCommunity? community;
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<CommunityScreenBloc>(
-          create: (context) => CommunityScreenBloc(
-            communityId: communityId,
-            community: community,
-            communityName: communityName,
-            repo: context.read<ServerRepo>(),
-          )..add(InitialiseCommunityScreen()),
-        ),
-        BlocProvider<ContentScrollBloc>(
-          create: (context) => ContentScrollBloc(
-            retrieveContent: CommunityScreenContentRetriever(
-              sortType: LemmySortType.hot,
-              context: context,
-              communityId: communityId,
-            ),
-          )..add(Initialise()),
-        ),
-      ],
-      child: BlocBuilder<CommunityScreenBloc, CommunityScreenState>(
-        builder: (context, state) {
-          final blocContext = context;
-
-          final communityBloc =
-              BlocProvider.of<CommunityScreenBloc>(blocContext);
-          final contentScrollBloc =
-              BlocProvider.of<ContentScrollBloc>(blocContext);
-
-          return Scaffold(
-            body: MuffedPage(
-              isLoading: state.isLoading,
-              error: state.errorMessage,
-              child: ContentScrollView(
-                contentScrollBloc: BlocProvider.of<ContentScrollBloc>(
-                  context,
-                ),
-                headerSlivers: [
-                  SliverPersistentHeader(
-                    delegate: _TopBarDelegate(
-                      community: state.community,
-                      bloc: communityBloc,
-                    ),
-                    pinned: true,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _CommunityPageViewHeaderDelegate(
+        community: community,
+        authenticated: authenticated,
+        onSubscribeTapped: onSubscribeTapped,
+        openCommunityInfo: openCommunityInfo,
       ),
     );
   }
 }
 
-class _TopBarDelegate extends SliverPersistentHeaderDelegate {
-  _TopBarDelegate({
-    required this.bloc,
+class _CommunityPageViewHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _CommunityPageViewHeaderDelegate({
     LemmyCommunity? community,
-  })  : usingPlaceholder = community == null,
+    this.authenticated = false,
+    this.onSubscribeTapped,
+    this.openCommunityInfo,
+  })  : isLoading = community == null,
         community = community ?? LemmyCommunity.placeHolder();
 
   final LemmyCommunity community;
-
-  final bool usingPlaceholder;
-
-  final CommunityScreenBloc bloc;
+  final bool isLoading;
+  final bool authenticated;
+  final void Function()? onSubscribeTapped;
+  final void Function()? openCommunityInfo;
 
   double get headerMaxHeight => 400;
-
   double get headerMinHeight => 90;
-
   double get bannerEnd => 0.5;
 
   @override
@@ -213,8 +80,8 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: Skeletonizer(
-        key: ValueKey(usingPlaceholder),
-        enabled: usingPlaceholder,
+        key: ValueKey(isLoading),
+        enabled: isLoading,
         ignoreContainers: true,
         child: Material(
           clipBehavior: Clip.hardEdge,
@@ -227,7 +94,7 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                 child: Stack(
                   children: [
                     // banner
-                    if (!usingPlaceholder)
+                    if (!isLoading)
                       ShaderMask(
                         shaderCallback: (rect) {
                           return const LinearGradient(
@@ -404,28 +271,12 @@ class _TopBarDelegate extends SliverPersistentHeaderDelegate {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute<void>(
-                                              builder: (context) =>
-                                                  CommunityInfoScreen(
-                                                bloc: bloc,
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                        onPressed: openCommunityInfo,
                                         child: const Text('See community info'),
                                       ),
-                                      if (context
-                                          .read<GlobalBloc>()
-                                          .isLoggedIn())
+                                      if (authenticated)
                                         TextButton(
-                                          onPressed: () {
-                                            context
-                                                .read<CommunityScreenBloc>()
-                                                .add(ToggledSubscribe());
-                                          },
+                                          onPressed: onSubscribeTapped,
                                           style: (community.subscribed ==
                                                   LemmySubscribedType
                                                       .notSubscribed)
