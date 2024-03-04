@@ -136,10 +136,12 @@ class _PagedScrollViewState extends State<PagedScrollView> {
     final maxScrollExtent = notification.metrics.maxScrollExtent;
     final currentScrollExtent = notification.metrics.pixels;
 
-    if (currentScrollExtent < maxScrollExtent - widget.loadMoreThreshold) {
+    final isScrollOverThreshold =
+        currentScrollExtent >= maxScrollExtent - widget.loadMoreThreshold;
+
+    if (isScrollOverThreshold) {
       widget.loadMoreCallback();
     }
-
     return true;
   }
 
