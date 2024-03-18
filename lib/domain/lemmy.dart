@@ -129,7 +129,7 @@ class LemmyRepo {
   }
 
   Future<List<LemmyPost>> getPosts({
-    LemmySortType sortType = LemmySortType.hot,
+    sortType = LemmySortType.hot,
     int page = 1,
     int? communityId,
     LemmyListingType listingType = LemmyListingType.all,

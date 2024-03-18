@@ -172,6 +172,54 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   );
                 },
               ),
+              BlocBuilder<CommunityScrollBloc, CommunityScrollState>(
+                bloc: scrollBloc,
+                builder: (context, state) {
+                  return SliverToBoxAdapter(
+                    child: TextButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'post sort: ',
+                            style: theme.textTheme.labelLarge,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: theme.colorScheme.outline,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  child: Text(
+                                    state.sort.name,
+                                    style: theme.textTheme.labelLarge!.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down,
+                                  color: theme.colorScheme.outline,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
             status: state.status,
             items: state.posts,
