@@ -1,11 +1,14 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community/bloc/bloc.dart';
 import 'package:muffed/view/pages/community/bloc/scroll/scroll.dart';
+import 'package:muffed/view/pages/community/community_info_screen.dart';
 import 'package:muffed/view/pages/community/widgets/header.dart';
 import 'package:muffed/view/router/models/page.dart';
+import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
@@ -102,6 +105,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
+  void pushCommunityInfoPage(BuildContext context) {
+    MNavigator.of(context).pushPage(
+      MaterialPage(child: CommunityInfoScreen(bloc: communityBloc)),
+    );
+  }
+
+  void onBackPressed(BuildContext context) {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -116,6 +129,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 bloc: communityBloc,
                 builder: (context, state) {
                   return SliverPersistentHeader(
+                    pinned: true,
                     delegate: CommunityPageViewHeaderDelegate(
                       banner: (state.banner != null)
                           ? ExtendedImage.network(
@@ -141,6 +155,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         subscribers: state.counts?.subscribers,
                         numActive: state.counts?.usersActiveDay,
                         description: state.description,
+                        onViewCommunityInfoPressed: () =>
+                            pushCommunityInfoPage(context),
+                      ),
+                      topBarBuilder: (context, shrinkOffset) => _TopBar(
+                        shrinkOffset: shrinkOffset,
+                        title: state.title,
+                        icon: state.icon,
+                        onBackPressed: () => onBackPressed(context),
                       ),
                     ),
                   );
@@ -171,6 +193,54 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 }
 
+class _TopBar extends StatelessWidget {
+  const _TopBar(
+      {required this.shrinkOffset, this.title, this.icon, this.onBackPressed});
+
+  final double shrinkOffset;
+  final String? title;
+  final String? icon;
+
+  final void Function()? onBackPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SafeArea(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: onBackPressed,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Opacity(
+              opacity: shrinkOffset,
+              child: Row(
+                children: [
+                  NullableBuilder(
+                    value: title,
+                    placeholderValue: 'lorem ipsum',
+                    builder: (context, value) =>
+                        Text(value, style: theme.textTheme.titleMedium),
+                  ),
+                  const SizedBox(width: 8),
+                  MuffedAvatar(
+                    radius: 15,
+                    url: icon,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _HeaderBody extends StatelessWidget {
   const _HeaderBody({
     this.icon,
@@ -181,6 +251,7 @@ class _HeaderBody extends StatelessWidget {
     this.subscribers,
     this.numActive,
     this.description,
+    this.onViewCommunityInfoPressed,
   });
 
   final String? icon;
@@ -191,6 +262,8 @@ class _HeaderBody extends StatelessWidget {
   final int? subscribers;
   final int? numActive;
   final String? description;
+
+  final void Function()? onViewCommunityInfoPressed;
 
   String? get tag {
     if (name == null || siteName == null) return null;
@@ -300,6 +373,18 @@ class _HeaderBody extends StatelessWidget {
                 style: theme.textTheme.bodySmall,
                 overflow: TextOverflow.fade,
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: onViewCommunityInfoPressed,
+              child: const Text('view community info'),
             ),
           ),
         ],

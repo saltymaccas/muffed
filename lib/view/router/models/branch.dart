@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:muffed/view/router/router.dart';
 
 /// Holds a stack of pages and provides methods for manipulating them.
 class Branch extends Equatable {
@@ -8,11 +7,11 @@ class Branch extends Equatable {
       : key = key ?? GlobalKey<NavigatorState>();
 
   /// The stack of pages
-  final List<MPage<Object?>> pages;
+  final List<Page<Object?>> pages;
 
   final GlobalKey<NavigatorState> key;
 
-  MPage<Object?> get top => pages.last;
+  Page<Object?> get top => pages.last;
 
   int get length => pages.length;
 
@@ -23,13 +22,13 @@ class Branch extends Equatable {
     return copyWith(pages: pages);
   }
 
-  Branch push(MPage<Object?> page) {
+  Branch push(Page<Object?> page) {
     pages.add(page);
     return copyWith(pages: pages);
   }
 
   Branch copyWith({
-    List<MPage<Object?>>? pages,
+    List<Page<Object?>>? pages,
     GlobalKey<NavigatorState>? key,
   }) {
     return Branch(

@@ -13,7 +13,7 @@ class CommunityPageViewHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   final Widget? banner;
   final Widget? body;
-  final Widget Function(BuildContext context, double shrinkOffset)?
+  final Widget Function(BuildContext context, double shrinkFaction)?
       topBarBuilder;
 
   final double headerMaxHeight;
@@ -89,7 +89,7 @@ class CommunityPageViewHeaderDelegate extends SliverPersistentHeaderDelegate {
             height: headerMaxHeight - shrinkOffset,
             width: double.maxFinite,
           ),
-          if (topBarBuilder != null) topBarBuilder!(context, shrinkOffset),
+          if (topBarBuilder != null) topBarBuilder!(context, fractionScrolled),
         ],
       ),
     );

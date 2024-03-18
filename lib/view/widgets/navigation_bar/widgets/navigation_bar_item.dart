@@ -28,8 +28,17 @@ class NavigationBarItem extends StatelessWidget {
     return BlocBuilder<MNavigator, MNavigatorState>(
       builder: (context, navState) {
         final onBranch = navState.currentBranchIndex == relatedBranchIndex;
-        final pageActions =
-            navState.branches[relatedBranchIndex].top.pageActions;
+
+        final topPage = navState.branches[relatedBranchIndex].top;
+
+        late final PageActions pageActions;
+
+        if (topPage is MPage) {
+          pageActions = topPage.pageActions;
+        } else {
+          pageActions = PageActions([]);
+        }
+
         return Builder(
           builder: (context) {
             final actions = pageActions.actions;

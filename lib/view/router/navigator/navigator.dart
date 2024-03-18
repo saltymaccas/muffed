@@ -26,7 +26,7 @@ class MNavigator extends Cubit<MNavigatorState> {
   }
 
   /// Adds a page to the top of the current branch
-  void pushPage(MPage<Object?> page) {
+  void pushPage(Page page) {
     emit(state.copyWithPush(page));
   }
 
