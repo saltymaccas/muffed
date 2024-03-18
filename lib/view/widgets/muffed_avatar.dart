@@ -1,6 +1,5 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:muffed/view/widgets/image.dart';
 
 class MuffedAvatar extends StatelessWidget {
   const MuffedAvatar({this.url, super.key, this.radius = 24});
@@ -15,18 +14,10 @@ class MuffedAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: ClipRRect(
-        clipBehavior: Clip.hardEdge,
-        borderRadius: BorderRadius.circular(radius),
-        child: (url != null)
-            ? MuffedImage(
-                fit: BoxFit.cover,
-                imageUrl: url!,
-              )
-            : ExtendedImage.asset(
-                'assets/logo.png',
-                fit: BoxFit.cover,
-              ),
+      foregroundImage:
+          (url != null) ? ExtendedNetworkImageProvider(url!) : null,
+      backgroundImage: const ExtendedAssetImageProvider(
+        'assets/logo.png',
       ),
     );
   }

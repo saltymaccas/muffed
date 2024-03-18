@@ -19,7 +19,7 @@ void openSearchDialog(BuildContext context) {
             nContext,
             MaterialPageRoute<void>(
               builder: (context) => CommunityScreen(
-                community: community,
+                communityId: community.id,
               ),
             ),
           );

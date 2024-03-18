@@ -40,7 +40,6 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
           emit(
             state.copyWith(
               communityInfoStatus: CommunityInfoStatus.success,
-              communityInfo: response,
             ),
           );
         } catch (err) {

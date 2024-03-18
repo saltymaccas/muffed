@@ -218,7 +218,7 @@ class _SearchViewState extends State<_SearchView> {
             context,
             MaterialPageRoute<void>(
               builder: (context) => CommunityScreen(
-                community: item,
+                communityId: item.id,
               ),
             ),
           );

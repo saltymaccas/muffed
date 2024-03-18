@@ -30,3 +30,18 @@ void showInfoSnackBar(BuildContext context, {String text = ''}) {
     ),
   );
 }
+
+class ErrorSnackBar extends SnackBar {
+  ErrorSnackBar({
+    required BuildContext context,
+    String? errorMessage,
+    super.key,
+  }) : super(
+          content: Text(
+            errorMessage ?? 'Error',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
+        );
+}

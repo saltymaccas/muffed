@@ -109,9 +109,7 @@ class PagedScrollView extends StatefulWidget {
 
   final Future<void> Function() onRefresh;
 
-  static void _defaultLoadMoreCallback() {
-    throw UnimplementedError();
-  }
+  static void _defaultLoadMoreCallback() {}
 
   static Future<void> _defaultOnRefresh() {
     return SynchronousFuture(null);

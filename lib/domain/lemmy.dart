@@ -6,10 +6,12 @@ import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/utils/url.dart';
 
+import 'package:lemmy_api_client/v3.dart';
+
 final _log = Logger('LemmyRepo');
 
 /// Used to interact with the lemmy http api
-interface class LemmyRepo {
+class LemmyRepo {
   /// initialize lemmy repo
   LemmyRepo({required this.globalBloc}) : dio = Dio();
 
@@ -18,6 +20,10 @@ interface class LemmyRepo {
 
   /// used to get information such as the home server to use for requests
   final GlobalBloc globalBloc;
+
+  String get lemmyUrl => 'lemmy.ml';
+
+  String? get authToken => globalBloc.getSelectedLemmyAccount()?.jwt;
 
   /// Creates a post request to the lemmy api, If logged in auth parameter will
   /// be added automatically
@@ -270,22 +276,15 @@ interface class LemmyRepo {
     );
   }
 
-  Future<LemmyCommunity> getCommunity({int? id, String? name}) async {
+  Future<GetCommunityResponse> getCommunity({int? id, String? name}) async {
     if (id == null && name == null) {
       throw 'Both community id and name are not provided';
     }
 
-    final response = await getRequest(
-      path: '/community',
-      queryParameters: {
-        if (id != null) 'id': id,
-        if (name != null) 'name': name,
-      },
-    );
+    final response = await LemmyApiV3(lemmyUrl)
+        .run(GetCommunity(id: id, name: name, auth: authToken));
 
-    return LemmyCommunity.fromJson(
-      response,
-    );
+    return response;
   }
 
   Future<LemmyLoginResponse> login(
