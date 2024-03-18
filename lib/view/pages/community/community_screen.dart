@@ -115,6 +115,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
     Navigator.pop(context);
   }
 
+  void loadMoreCallback() {
+    scrollBloc.add(ScrollEndReached());
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -171,6 +175,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ],
             status: state.status,
             items: state.posts,
+            loadMoreCallback: loadMoreCallback,
             itemBuilder: (context, item) {
               if (item is LemmyPost) {
                 return PostItem(post: item);
@@ -208,7 +213,7 @@ class _TopBar extends StatelessWidget {
     final theme = Theme.of(context);
     return SafeArea(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back),

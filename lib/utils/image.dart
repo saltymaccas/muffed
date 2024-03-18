@@ -68,7 +68,7 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
       return getWEBPImageDimensions(imageBytes);
     }
   } catch (e) {
-    throw Exception('Failed to retrieve image dimensions');
+    // throw Exception('Failed to retrieve image dimensions');
   }
 
   throw Exception('Invalid image type: $imageUrl');

@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$CommunityScrollState {
   PagedScrollViewStatus get status => throw _privateConstructorUsedError;
+  int get pagesLoaded => throw _privateConstructorUsedError;
   LemmySortType get sort => throw _privateConstructorUsedError;
   List<LemmyPost>? get posts => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
@@ -34,6 +35,7 @@ abstract class $CommunityScrollStateCopyWith<$Res> {
   @useResult
   $Res call(
       {PagedScrollViewStatus status,
+      int pagesLoaded,
       LemmySortType sort,
       List<LemmyPost>? posts,
       String? errorMessage});
@@ -54,6 +56,7 @@ class _$CommunityScrollStateCopyWithImpl<$Res,
   @override
   $Res call({
     Object? status = null,
+    Object? pagesLoaded = null,
     Object? sort = null,
     Object? posts = freezed,
     Object? errorMessage = freezed,
@@ -63,6 +66,10 @@ class _$CommunityScrollStateCopyWithImpl<$Res,
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PagedScrollViewStatus,
+      pagesLoaded: null == pagesLoaded
+          ? _value.pagesLoaded
+          : pagesLoaded // ignore: cast_nullable_to_non_nullable
+              as int,
       sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
@@ -89,6 +96,7 @@ abstract class _$$CommunityScrollStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {PagedScrollViewStatus status,
+      int pagesLoaded,
       LemmySortType sort,
       List<LemmyPost>? posts,
       String? errorMessage});
@@ -106,6 +114,7 @@ class __$$CommunityScrollStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? pagesLoaded = null,
     Object? sort = null,
     Object? posts = freezed,
     Object? errorMessage = freezed,
@@ -115,6 +124,10 @@ class __$$CommunityScrollStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PagedScrollViewStatus,
+      pagesLoaded: null == pagesLoaded
+          ? _value.pagesLoaded
+          : pagesLoaded // ignore: cast_nullable_to_non_nullable
+              as int,
       sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
@@ -136,6 +149,7 @@ class __$$CommunityScrollStateImplCopyWithImpl<$Res>
 class _$CommunityScrollStateImpl implements _CommunityScrollState {
   const _$CommunityScrollStateImpl(
       {required this.status,
+      required this.pagesLoaded,
       required this.sort,
       final List<LemmyPost>? posts,
       this.errorMessage})
@@ -143,6 +157,8 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
 
   @override
   final PagedScrollViewStatus status;
+  @override
+  final int pagesLoaded;
   @override
   final LemmySortType sort;
   final List<LemmyPost>? _posts;
@@ -160,7 +176,7 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
 
   @override
   String toString() {
-    return 'CommunityScrollState(status: $status, sort: $sort, posts: $posts, errorMessage: $errorMessage)';
+    return 'CommunityScrollState(status: $status, pagesLoaded: $pagesLoaded, sort: $sort, posts: $posts, errorMessage: $errorMessage)';
   }
 
   @override
@@ -169,6 +185,8 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
         (other.runtimeType == runtimeType &&
             other is _$CommunityScrollStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.pagesLoaded, pagesLoaded) ||
+                other.pagesLoaded == pagesLoaded) &&
             (identical(other.sort, sort) || other.sort == sort) &&
             const DeepCollectionEquality().equals(other._posts, _posts) &&
             (identical(other.errorMessage, errorMessage) ||
@@ -176,7 +194,7 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, sort,
+  int get hashCode => Object.hash(runtimeType, status, pagesLoaded, sort,
       const DeepCollectionEquality().hash(_posts), errorMessage);
 
   @JsonKey(ignore: true)
@@ -191,12 +209,15 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
 abstract class _CommunityScrollState implements CommunityScrollState {
   const factory _CommunityScrollState(
       {required final PagedScrollViewStatus status,
+      required final int pagesLoaded,
       required final LemmySortType sort,
       final List<LemmyPost>? posts,
       final String? errorMessage}) = _$CommunityScrollStateImpl;
 
   @override
   PagedScrollViewStatus get status;
+  @override
+  int get pagesLoaded;
   @override
   LemmySortType get sort;
   @override
