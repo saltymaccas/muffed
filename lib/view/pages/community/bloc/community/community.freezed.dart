@@ -78,6 +78,9 @@ abstract class $CommunityStateCopyWith<$Res> {
       SubscribedType? subscribedType,
       bool? blocked,
       CommunityAggregates? counts});
+
+  $SiteCopyWith<$Res>? get site;
+  $CommunityAggregatesCopyWith<$Res>? get counts;
 }
 
 /// @nodoc
@@ -217,6 +220,30 @@ class _$CommunityStateCopyWithImpl<$Res, $Val extends CommunityState>
               as CommunityAggregates?,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SiteCopyWith<$Res>? get site {
+    if (_value.site == null) {
+      return null;
+    }
+
+    return $SiteCopyWith<$Res>(_value.site!, (value) {
+      return _then(_value.copyWith(site: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CommunityAggregatesCopyWith<$Res>? get counts {
+    if (_value.counts == null) {
+      return null;
+    }
+
+    return $CommunityAggregatesCopyWith<$Res>(_value.counts!, (value) {
+      return _then(_value.copyWith(counts: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -252,6 +279,11 @@ abstract class _$$CommunityStateImplCopyWith<$Res>
       SubscribedType? subscribedType,
       bool? blocked,
       CommunityAggregates? counts});
+
+  @override
+  $SiteCopyWith<$Res>? get site;
+  @override
+  $CommunityAggregatesCopyWith<$Res>? get counts;
 }
 
 /// @nodoc
@@ -522,7 +554,7 @@ class _$CommunityStateImpl implements _CommunityState {
                 other.postingRestrictedToMods == postingRestrictedToMods) &&
             (identical(other.instanceId, instanceId) ||
                 other.instanceId == instanceId) &&
-            const DeepCollectionEquality().equals(other.site, site) &&
+            (identical(other.site, site) || other.site == site) &&
             const DeepCollectionEquality()
                 .equals(other._moderators, _moderators) &&
             const DeepCollectionEquality()
@@ -530,7 +562,7 @@ class _$CommunityStateImpl implements _CommunityState {
             (identical(other.subscribedType, subscribedType) ||
                 other.subscribedType == subscribedType) &&
             (identical(other.blocked, blocked) || other.blocked == blocked) &&
-            const DeepCollectionEquality().equals(other.counts, counts));
+            (identical(other.counts, counts) || other.counts == counts));
   }
 
   @override
@@ -554,12 +586,12 @@ class _$CommunityStateImpl implements _CommunityState {
         hidden,
         postingRestrictedToMods,
         instanceId,
-        const DeepCollectionEquality().hash(site),
+        site,
         const DeepCollectionEquality().hash(_moderators),
         const DeepCollectionEquality().hash(_discussionLanguages),
         subscribedType,
         blocked,
-        const DeepCollectionEquality().hash(counts)
+        counts
       ]);
 
   @JsonKey(ignore: true)

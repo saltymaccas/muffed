@@ -25,6 +25,11 @@ class LemmyRepo {
 
   String? get authToken => globalBloc.getSelectedLemmyAccount()?.jwt;
 
+  LemmyApiV3 get lemmyApi => LemmyApiV3(lemmyUrl);
+
+  Future<T> run<T>(LemmyApiQuery<T> query) =>
+      lemmyApi.run(query, authToken: authToken);
+
   /// Creates a post request to the lemmy api, If logged in auth parameter will
   /// be added automatically
   Future<Map<String, dynamic>> postRequest({
@@ -129,7 +134,7 @@ class LemmyRepo {
   }
 
   Future<List<LemmyPost>> getPosts({
-    sortType = LemmySortType.hot,
+    LemmySortType sortType = LemmySortType.hot,
     int page = 1,
     int? communityId,
     LemmyListingType listingType = LemmyListingType.all,

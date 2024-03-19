@@ -5,7 +5,7 @@ import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/home/home.dart';
 import 'package:muffed/view/pages/home/widgets/tab_view/controller.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 
 class HomeTabView extends StatefulWidget {
   const HomeTabView({

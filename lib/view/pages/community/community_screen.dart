@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community/bloc/bloc.dart';
 import 'package:muffed/view/pages/community/bloc/scroll/scroll.dart';
@@ -13,7 +14,7 @@ import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/nullable_builder.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
 export 'models/models.dart';
@@ -225,7 +226,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             items: state.posts,
             loadMoreCallback: loadMoreCallback,
             itemBuilder: (context, item) {
-              if (item is LemmyPost) {
+              if (item is PostView) {
                 return PostItem(post: item);
               } else {
                 return SizedBox(

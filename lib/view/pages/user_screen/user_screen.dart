@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
@@ -9,15 +10,12 @@ import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/models.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';
-import 'package:muffed/view/widgets/block_dialog/block_dialog.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/error.dart';
-import 'package:muffed/view/widgets/icon_button.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/muffed_page.dart';
-import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 
 const _headerMaxHeight = 300.0;
 const _headerMinHeight = 130.0;
@@ -105,7 +103,7 @@ class _UserScreenSuccess extends StatelessWidget {
   });
 
   final LemmyPerson user;
-  final List<LemmyPost> posts;
+  final List<PostView> posts;
   final List<LemmyComment> comments;
   final bool isLoading;
 

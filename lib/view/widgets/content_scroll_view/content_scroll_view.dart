@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 
 export 'widgets/widgets.dart';
 export 'view/view.dart';
@@ -31,7 +32,7 @@ class ContentScrollSliver extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = content[index];
 
-        if (item is LemmyPost) {
+        if (item is PostView) {
           return PostItem(
             post: item,
           );

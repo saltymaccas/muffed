@@ -47,7 +47,6 @@ class CreatePostScreen extends StatelessWidget {
 
   void onSuccessfullyPosted(BuildContext context, LemmyPost post) {
     Navigator.pop(context);
-    MNavigator.of(context).pushPage(PostPage(post: post));
   }
 
   @override

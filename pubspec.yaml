@@ -46,8 +46,8 @@ dependencies:
   json_annotation: ^4.8.1
   lemmy_api_client:
     git:
-      url: https://github.com/thunder-app/lemmy_api_client.git
-      ref: c61289398a20383ea17428a038a47041a3369203
+      url: https://github.com/freshfieldreds/lemmy_api_client
+      ref: 258f2796ad5254eefffc3986f26c991b0da33caf
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart' as lem;
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
@@ -7,8 +8,7 @@ import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
 import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
-import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 
 class SearchPage extends MPage<void> {
   SearchPage({this.searchQuery, this.communityId, this.communityName});
@@ -224,7 +224,7 @@ class _SearchViewState extends State<_SearchView> {
           );
         },
       );
-    } else if (item is LemmyPost) {
+    } else if (item is lem.PostView) {
       return PostItem(
         post: item,
       );

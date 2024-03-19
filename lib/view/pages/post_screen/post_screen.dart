@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
-import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/shorthands.dart';
 import 'package:muffed/utils/comments.dart';
 import 'package:muffed/view/pages/post_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment_item/comment_item.dart';
-import 'package:muffed/view/widgets/create_comment/create_comment_dialog.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/loading.dart';
-import 'package:muffed/view/widgets/popup_menu/popup_menu.dart';
-import 'package:muffed/view/widgets/post_item/bloc/bloc.dart';
-import 'package:muffed/view/widgets/post_item/post_item.dart';
+import 'package:muffed/view/widgets/post/bloc/bloc.dart';
+import 'package:muffed/view/widgets/post/post_item.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 
 class PostPage extends MPage<void> {
   PostPage({this.post, this.postId, this.postBloc});
 
-  final LemmyPost? post;
+  final PostView? post;
   final int? postId;
-  final PostItemBloc? postBloc;
+  final PostBloc? postBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +41,16 @@ class PostScreen extends StatelessWidget {
   }) : assert(post != null || postId != null, 'No post provided');
 
   /// The post that should be shown
-  final LemmyPost? post;
+  final PostView? post;
 
   final int? postId;
 
   /// If a post bloc already exits for the post it should be passed in here
-  final PostItemBloc? postBloc;
+  final PostBloc? postBloc;
 
   @override
   Widget build(BuildContext context) {
-    final postId = this.postId ?? post!.id;
+    final postId = this.postId ?? post!.post.id;
 
     return Scaffold(
       body: BlocProvider(
@@ -100,7 +97,6 @@ class PostScreen extends StatelessWidget {
                     ),
                     SliverToBoxAdapter(
                       child: PostItem(
-                        postId: postId,
                         post: post,
                         bloc: postBloc,
                         displayType: PostDisplayType.comments,

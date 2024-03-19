@@ -1,6 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/server_repo.dart';
 
 part 'event.dart';
@@ -22,7 +23,7 @@ class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
           state.copyWith(
             page: 1,
             comments: response.comments,
-            posts: response.posts,
+            posts: [],
             status: UserStatus.success,
             user: response.person,
           ),
@@ -56,7 +57,6 @@ class UserScreenBloc extends Bloc<UserScreenEvent, UserScreenState> {
                 state.copyWith(
                   loading: false,
                   page: state.page + 1,
-                  posts: {...state.posts, ...response.posts}.toList(),
                   comments: {...state.comments, ...response.comments}.toList(),
                 ),
               );
