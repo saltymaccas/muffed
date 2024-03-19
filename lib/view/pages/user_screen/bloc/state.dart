@@ -22,7 +22,7 @@ final class UserScreenState extends Equatable {
   final LemmyPerson? user;
 
   final List<LemmyComment> comments;
-  final List<LemmyPost> posts;
+  final List<PostView> posts;
 
   final bool loading;
 
@@ -52,7 +52,7 @@ final class UserScreenState extends Equatable {
     UserStatus? status,
     LemmyPerson? user,
     List<LemmyComment>? comments,
-    List<LemmyPost>? posts,
+    List<PostView>? posts,
     bool? loading,
     Object? errorMessage,
     int? page,

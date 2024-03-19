@@ -33,7 +33,7 @@ class ContentScrollSliver extends StatelessWidget {
         final item = content[index];
 
         if (item is PostView) {
-          return PostItem(
+          return PostWidget(
             post: item,
           );
         } else if (item is LemmyComment) {

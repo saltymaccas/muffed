@@ -19,9 +19,9 @@ mixin _$HomeTabViewModel {
   int get pagesLoaded => throw _privateConstructorUsedError;
   bool get endReached => throw _privateConstructorUsedError;
   HomeTabViewStatus get status => throw _privateConstructorUsedError;
-  List<LemmyPost>? get items => throw _privateConstructorUsedError;
+  List<PostView>? get items => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
-  LemmySortType? get loadedSortType => throw _privateConstructorUsedError;
+  SortType? get sortType => throw _privateConstructorUsedError;
   HomeContentType? get loadedContentType => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -39,9 +39,9 @@ abstract class $HomeTabViewModelCopyWith<$Res> {
       {int pagesLoaded,
       bool endReached,
       HomeTabViewStatus status,
-      List<LemmyPost>? items,
+      List<PostView>? items,
       String? errorMessage,
-      LemmySortType? loadedSortType,
+      SortType? sortType,
       HomeContentType? loadedContentType});
 }
 
@@ -63,7 +63,7 @@ class _$HomeTabViewModelCopyWithImpl<$Res, $Val extends HomeTabViewModel>
     Object? status = null,
     Object? items = freezed,
     Object? errorMessage = freezed,
-    Object? loadedSortType = freezed,
+    Object? sortType = freezed,
     Object? loadedContentType = freezed,
   }) {
     return _then(_value.copyWith(
@@ -82,15 +82,15 @@ class _$HomeTabViewModelCopyWithImpl<$Res, $Val extends HomeTabViewModel>
       items: freezed == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<LemmyPost>?,
+              as List<PostView>?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
-      loadedSortType: freezed == loadedSortType
-          ? _value.loadedSortType
-          : loadedSortType // ignore: cast_nullable_to_non_nullable
-              as LemmySortType?,
+      sortType: freezed == sortType
+          ? _value.sortType
+          : sortType // ignore: cast_nullable_to_non_nullable
+              as SortType?,
       loadedContentType: freezed == loadedContentType
           ? _value.loadedContentType
           : loadedContentType // ignore: cast_nullable_to_non_nullable
@@ -111,9 +111,9 @@ abstract class _$$HomeTabViewModelImplCopyWith<$Res>
       {int pagesLoaded,
       bool endReached,
       HomeTabViewStatus status,
-      List<LemmyPost>? items,
+      List<PostView>? items,
       String? errorMessage,
-      LemmySortType? loadedSortType,
+      SortType? sortType,
       HomeContentType? loadedContentType});
 }
 
@@ -133,7 +133,7 @@ class __$$HomeTabViewModelImplCopyWithImpl<$Res>
     Object? status = null,
     Object? items = freezed,
     Object? errorMessage = freezed,
-    Object? loadedSortType = freezed,
+    Object? sortType = freezed,
     Object? loadedContentType = freezed,
   }) {
     return _then(_$HomeTabViewModelImpl(
@@ -152,15 +152,15 @@ class __$$HomeTabViewModelImplCopyWithImpl<$Res>
       items: freezed == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<LemmyPost>?,
+              as List<PostView>?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
-      loadedSortType: freezed == loadedSortType
-          ? _value.loadedSortType
-          : loadedSortType // ignore: cast_nullable_to_non_nullable
-              as LemmySortType?,
+      sortType: freezed == sortType
+          ? _value.sortType
+          : sortType // ignore: cast_nullable_to_non_nullable
+              as SortType?,
       loadedContentType: freezed == loadedContentType
           ? _value.loadedContentType
           : loadedContentType // ignore: cast_nullable_to_non_nullable
@@ -176,9 +176,9 @@ class _$HomeTabViewModelImpl implements _HomeTabViewModel {
       {required this.pagesLoaded,
       required this.endReached,
       required this.status,
-      final List<LemmyPost>? items,
+      final List<PostView>? items,
       this.errorMessage,
-      this.loadedSortType,
+      this.sortType,
       this.loadedContentType})
       : _items = items;
 
@@ -188,9 +188,9 @@ class _$HomeTabViewModelImpl implements _HomeTabViewModel {
   final bool endReached;
   @override
   final HomeTabViewStatus status;
-  final List<LemmyPost>? _items;
+  final List<PostView>? _items;
   @override
-  List<LemmyPost>? get items {
+  List<PostView>? get items {
     final value = _items;
     if (value == null) return null;
     if (_items is EqualUnmodifiableListView) return _items;
@@ -201,13 +201,13 @@ class _$HomeTabViewModelImpl implements _HomeTabViewModel {
   @override
   final String? errorMessage;
   @override
-  final LemmySortType? loadedSortType;
+  final SortType? sortType;
   @override
   final HomeContentType? loadedContentType;
 
   @override
   String toString() {
-    return 'HomeTabViewModel(pagesLoaded: $pagesLoaded, endReached: $endReached, status: $status, items: $items, errorMessage: $errorMessage, loadedSortType: $loadedSortType, loadedContentType: $loadedContentType)';
+    return 'HomeTabViewModel(pagesLoaded: $pagesLoaded, endReached: $endReached, status: $status, items: $items, errorMessage: $errorMessage, sortType: $sortType, loadedContentType: $loadedContentType)';
   }
 
   @override
@@ -223,8 +223,8 @@ class _$HomeTabViewModelImpl implements _HomeTabViewModel {
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
-            (identical(other.loadedSortType, loadedSortType) ||
-                other.loadedSortType == loadedSortType) &&
+            (identical(other.sortType, sortType) ||
+                other.sortType == sortType) &&
             (identical(other.loadedContentType, loadedContentType) ||
                 other.loadedContentType == loadedContentType));
   }
@@ -237,7 +237,7 @@ class _$HomeTabViewModelImpl implements _HomeTabViewModel {
       status,
       const DeepCollectionEquality().hash(_items),
       errorMessage,
-      loadedSortType,
+      sortType,
       loadedContentType);
 
   @JsonKey(ignore: true)
@@ -253,9 +253,9 @@ abstract class _HomeTabViewModel implements HomeTabViewModel {
       {required final int pagesLoaded,
       required final bool endReached,
       required final HomeTabViewStatus status,
-      final List<LemmyPost>? items,
+      final List<PostView>? items,
       final String? errorMessage,
-      final LemmySortType? loadedSortType,
+      final SortType? sortType,
       final HomeContentType? loadedContentType}) = _$HomeTabViewModelImpl;
 
   @override
@@ -265,11 +265,11 @@ abstract class _HomeTabViewModel implements HomeTabViewModel {
   @override
   HomeTabViewStatus get status;
   @override
-  List<LemmyPost>? get items;
+  List<PostView>? get items;
   @override
   String? get errorMessage;
   @override
-  LemmySortType? get loadedSortType;
+  SortType? get sortType;
   @override
   HomeContentType? get loadedContentType;
   @override

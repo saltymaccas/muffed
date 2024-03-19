@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/home/home.dart';
@@ -51,18 +52,18 @@ class _HomePageViewState extends State<HomePageView> {
       if (loggedIn)
         TabViewConfig(
           key: const ValueKey('subscribed'),
-          sortType: LemmySortType.hot,
+          sortType: SortType.hot,
           contentType: HomeContentType.subscibed,
         ),
       TabViewConfig(
         key: const ValueKey('popular'),
-        sortType: LemmySortType.active,
+        sortType: SortType.active,
         contentType: HomeContentType.popular,
       ),
       TabViewConfig(
         contentType: HomeContentType.local,
         key: const ValueKey('subscibed'),
-        sortType: LemmySortType.active,
+        sortType: SortType.active,
       ),
     ];
   }

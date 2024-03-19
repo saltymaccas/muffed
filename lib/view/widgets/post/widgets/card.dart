@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/utils/time.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
@@ -9,18 +10,18 @@ class CardLemmyPostItem extends StatelessWidget {
   const CardLemmyPostItem({
     required this.nsfw,
     required this.name,
-    required this.communityIcon,
     required this.communityName,
     required this.creatorName,
     required this.timePublished,
-    required this.saved,
     required this.vote,
     required this.upvotes,
     required this.downvotes,
     required this.commentCount,
-    required this.url,
-    required this.body,
     required this.isAuthenticated,
+    required this.saved,
+    this.communityIcon,
+    this.url,
+    this.body,
     this.canFullScreenImages = false,
     this.restrictBodyHeight = true,
     this.onTap,
@@ -32,16 +33,42 @@ class CardLemmyPostItem extends StatelessWidget {
     super.key,
   });
 
+  CardLemmyPostItem.fromPostView({
+    required PostView post,
+    required this.isAuthenticated,
+    this.canFullScreenImages = false,
+    this.restrictBodyHeight = true,
+    this.onTap,
+    this.onCommunityTap,
+    this.onCreatorTap,
+    this.onSaveTap,
+    this.onUpvoteTap,
+    this.onDownvoteTap,
+    super.key,
+  })  : nsfw = post.post.nsfw,
+        name = post.post.name,
+        communityIcon = post.community.icon,
+        communityName = post.community.name,
+        creatorName = post.creator.name,
+        timePublished = post.post.published,
+        saved = post.saved,
+        vote = post.myVote,
+        body = post.post.body,
+        commentCount = post.counts.comments,
+        downvotes = post.counts.downvotes,
+        upvotes = post.counts.upvotes,
+        url = post.post.url;
+
   final bool nsfw;
   final String name;
-  final String communityIcon;
+  final String? communityIcon;
   final String communityName;
   final String creatorName;
   final DateTime timePublished;
 
   final bool saved;
 
-  final int vote;
+  final int? vote;
   final int upvotes;
   final int downvotes;
 

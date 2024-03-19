@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/domain/lemmy/models.dart';
-import 'package:muffed/view/pages/home/home.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 class TabViewConfig {
   TabViewConfig({
@@ -11,7 +10,7 @@ class TabViewConfig {
 
   final Key key;
   final HomeContentType contentType;
-  final LemmySortType sortType;
+  final SortType sortType;
 }
 
 enum HomeContentType {

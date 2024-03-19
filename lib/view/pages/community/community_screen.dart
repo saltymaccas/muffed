@@ -227,7 +227,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             loadMoreCallback: loadMoreCallback,
             itemBuilder: (context, item) {
               if (item is PostView) {
-                return PostItem(post: item);
+                return PostWidget(post: item);
               } else {
                 return SizedBox(
                   height: 200,

@@ -225,7 +225,7 @@ class _SearchViewState extends State<_SearchView> {
         },
       );
     } else if (item is lem.PostView) {
-      return PostItem(
+      return PostWidget(
         post: item,
       );
     } else if (item is LemmyComment) {

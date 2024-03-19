@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/lemmy.dart';
 import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/domain/server_repo.dart';
@@ -20,7 +21,7 @@ class HomeTabView extends StatefulWidget {
 
   final ScrollController? scrollController;
 
-  final LemmySortType sortType;
+  final SortType sortType;
   final LemmyRepo lemmyRepo;
 
   @override
@@ -29,8 +30,8 @@ class HomeTabView extends StatefulWidget {
 
 class _HomeTabViewState extends State<HomeTabView> {
   late final HomeTabViewController controller;
-  late List<LemmyPost>? items;
-  LemmySortType sortType = LemmySortType.active;
+  late List<PostView>? items;
+  SortType sortType = SortType.active;
   HomeContentType contentType = HomeContentType.popular;
   HomeTabViewStatus status = HomeTabViewStatus.idle;
 
@@ -48,8 +49,8 @@ class _HomeTabViewState extends State<HomeTabView> {
   }
 
   Widget itemBuilder(BuildContext context, Object item) {
-    if (item is LemmyPost) {
-      return PostItem(
+    if (item is PostView) {
+      return PostWidget(
         post: item,
       );
     } else {

@@ -96,7 +96,7 @@ class PostScreen extends StatelessWidget {
                       floating: true,
                     ),
                     SliverToBoxAdapter(
-                      child: PostItem(
+                      child: PostWidget(
                         post: post,
                         bloc: postBloc,
                         displayType: PostDisplayType.comments,

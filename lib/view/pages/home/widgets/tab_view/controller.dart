@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/domain/lemmy.dart';
 import 'package:muffed/domain/server_repo.dart';
@@ -22,7 +23,7 @@ class HomeTabViewController extends Cubit<HomeTabViewModel> {
 
   Future<void> loadNextPage() async {
     if (state.status == HomeTabViewStatus.loadingNext) return;
-    if (state.loadedSortType == null) {
+    if (state.sortType == null) {
       _log.warning('load next page fail: loadedSortType == null');
       return;
     }
@@ -41,7 +42,7 @@ class HomeTabViewController extends Cubit<HomeTabViewModel> {
     try {
       final result = await _retrieveItems(
         page: pageToLoad,
-        sortType: state.loadedSortType!,
+        sortType: state.sortType!,
         contentType: state.loadedContentType!,
       );
       emit(
@@ -60,7 +61,7 @@ class HomeTabViewController extends Cubit<HomeTabViewModel> {
   }
 
   Future<void> loadInitialContent({
-    required LemmySortType sortType,
+    required SortType sortType,
     required HomeContentType contentType,
   }) async {
     emit(state.copyWith(status: HomeTabViewStatus.loading));
@@ -72,7 +73,7 @@ class HomeTabViewController extends Cubit<HomeTabViewModel> {
       );
       emit(
         state.copyWith(
-          loadedSortType: sortType,
+          sortType: sortType,
           loadedContentType: contentType,
           items: result,
           pagesLoaded: 1,
@@ -94,29 +95,26 @@ class HomeTabViewController extends Cubit<HomeTabViewModel> {
     return 'Error of type "${err.runtimeType}" occured';
   }
 
-  Future<List<LemmyPost>> _retrieveItems({
+  Future<List<PostView>> _retrieveItems({
     required int page,
-    required LemmySortType sortType,
+    required SortType sortType,
     required HomeContentType contentType,
   }) async {
-    late final LemmyListingType listingType;
+    late final ListingType listingType;
 
     switch (contentType) {
       case (HomeContentType.popular):
-        listingType = LemmyListingType.all;
+        listingType = ListingType.all;
       case (HomeContentType.local):
-        listingType = LemmyListingType.local;
+        listingType = ListingType.local;
       case (HomeContentType.subscibed):
-        listingType = LemmyListingType.subscribed;
+        listingType = ListingType.subscribed;
     }
 
-    final posts = await lem.getPosts(
-      page: page,
-      sortType: sortType,
-      listingType: listingType,
-    );
+    final posts = await lem
+        .run(GetPosts(sort: state.sortType, page: page, type: listingType));
 
-    return posts;
+    return posts.posts;
   }
 
   final LemmyRepo lem;
@@ -136,9 +134,9 @@ class HomeTabViewModel with _$HomeTabViewModel {
     required int pagesLoaded,
     required bool endReached,
     required HomeTabViewStatus status,
-    List<LemmyPost>? items,
+    List<PostView>? items,
     String? errorMessage,
-    LemmySortType? loadedSortType,
+    SortType? sortType,
     HomeContentType? loadedContentType,
   }) = _HomeTabViewModel;
 }

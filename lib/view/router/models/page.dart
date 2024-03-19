@@ -36,3 +36,12 @@ abstract class MPage<T> extends Page<T> {
     );
   }
 }
+
+class MuffedPage<T> extends MPage<T> {
+  MuffedPage({required this.builder});
+
+  final Widget Function(BuildContext context) builder;
+
+  @override
+  Widget build(BuildContext context) => builder(context);
+}
