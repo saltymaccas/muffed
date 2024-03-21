@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$PostState {
   PostStatus get status => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError;
   PostView? get post => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -29,7 +30,7 @@ abstract class $PostStateCopyWith<$Res> {
   factory $PostStateCopyWith(PostState value, $Res Function(PostState) then) =
       _$PostStateCopyWithImpl<$Res, PostState>;
   @useResult
-  $Res call({PostStatus status, PostView? post});
+  $Res call({PostStatus status, String? errorMessage, PostView? post});
 
   $PostViewCopyWith<$Res>? get post;
 }
@@ -48,6 +49,7 @@ class _$PostStateCopyWithImpl<$Res, $Val extends PostState>
   @override
   $Res call({
     Object? status = null,
+    Object? errorMessage = freezed,
     Object? post = freezed,
   }) {
     return _then(_value.copyWith(
@@ -55,6 +57,10 @@ class _$PostStateCopyWithImpl<$Res, $Val extends PostState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PostStatus,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
       post: freezed == post
           ? _value.post
           : post // ignore: cast_nullable_to_non_nullable
@@ -83,7 +89,7 @@ abstract class _$$PostStateImplCopyWith<$Res>
       __$$PostStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({PostStatus status, PostView? post});
+  $Res call({PostStatus status, String? errorMessage, PostView? post});
 
   @override
   $PostViewCopyWith<$Res>? get post;
@@ -101,6 +107,7 @@ class __$$PostStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? errorMessage = freezed,
     Object? post = freezed,
   }) {
     return _then(_$PostStateImpl(
@@ -108,6 +115,10 @@ class __$$PostStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PostStatus,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
       post: freezed == post
           ? _value.post
           : post // ignore: cast_nullable_to_non_nullable
@@ -119,16 +130,18 @@ class __$$PostStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$PostStateImpl implements _PostState {
-  const _$PostStateImpl({required this.status, this.post});
+  const _$PostStateImpl({required this.status, this.errorMessage, this.post});
 
   @override
   final PostStatus status;
+  @override
+  final String? errorMessage;
   @override
   final PostView? post;
 
   @override
   String toString() {
-    return 'PostState(status: $status, post: $post)';
+    return 'PostState(status: $status, errorMessage: $errorMessage, post: $post)';
   }
 
   @override
@@ -137,11 +150,13 @@ class _$PostStateImpl implements _PostState {
         (other.runtimeType == runtimeType &&
             other is _$PostStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
             (identical(other.post, post) || other.post == post));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, post);
+  int get hashCode => Object.hash(runtimeType, status, errorMessage, post);
 
   @JsonKey(ignore: true)
   @override
@@ -153,10 +168,13 @@ class _$PostStateImpl implements _PostState {
 abstract class _PostState implements PostState {
   const factory _PostState(
       {required final PostStatus status,
+      final String? errorMessage,
       final PostView? post}) = _$PostStateImpl;
 
   @override
   PostStatus get status;
+  @override
+  String? get errorMessage;
   @override
   PostView? get post;
   @override

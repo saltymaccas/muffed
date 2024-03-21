@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/domain/lemmy.dart';
 import 'package:muffed/domain/server_repo.dart';
@@ -25,7 +26,7 @@ class CommunityScrollBloc
         super(
           const CommunityScrollState(
             status: PagedScrollViewStatus.idle,
-            sort: LemmySortType.active,
+            sort: SortType.active,
             pagesLoaded: 0,
           ),
         ) {
@@ -87,14 +88,13 @@ class CommunityScrollBloc
     }
   }
 
-  Future<List<LemmyPost>> _loadPage(
+  Future<List<PostView>> _loadPage(
     int page,
-  ) =>
-      lem.getPosts(
-        communityId: communityId,
-        sortType: state.sort,
-        page: page,
-      );
+  ) async {
+    final response = await lem
+        .run(GetPosts(sort: state.sort, page: page, communityId: communityId));
+    return response.posts;
+  }
 
   String _toErrorMessage(Object err) {
     return 'Error of type ${err.runtimeType} occurred';
@@ -109,8 +109,8 @@ class CommunityScrollState with _$CommunityScrollState {
   const factory CommunityScrollState({
     required PagedScrollViewStatus status,
     required int pagesLoaded,
-    required LemmySortType sort,
-    List<LemmyPost>? posts,
+    required SortType sort,
+    List<PostView>? posts,
     String? errorMessage,
   }) = _CommunityScrollState;
 }

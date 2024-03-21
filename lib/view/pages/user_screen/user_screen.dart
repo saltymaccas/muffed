@@ -10,7 +10,7 @@ import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/models.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';
-import 'package:muffed/view/widgets/comment_item/comment_item.dart';
+import 'package:muffed/view/widgets/comment/comment.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
@@ -249,11 +249,7 @@ class _UserScreenSuccess extends StatelessWidget {
                     height: _headerMinHeight,
                   );
                 }
-                return CommentItem(
-                  displayMode: CommentItemDisplayMode.single,
-                  comment: comments[index - 1],
-                  sortType: LemmyCommentSortType.hot,
-                );
+                return Placeholder();
               },
             ),
           ],

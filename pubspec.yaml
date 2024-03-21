@@ -48,6 +48,7 @@ dependencies:
     git:
       url: https://github.com/freshfieldreds/lemmy_api_client
       ref: 258f2796ad5254eefffc3986f26c991b0da33caf
+  timeago: ^3.6.1
 
 dev_dependencies:
   flutter_test:

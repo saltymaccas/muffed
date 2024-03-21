@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/server_repo.dart';
-import 'package:muffed/view/widgets/comment_item/comment_item.dart';
+import 'package:muffed/view/widgets/comment/comment.dart';
+import 'package:muffed/view/widgets/comment/models/models.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/content_scroll_view/view/view.dart';
@@ -36,10 +37,9 @@ class ContentScrollSliver extends StatelessWidget {
           return PostWidget(
             post: item,
           );
-        } else if (item is LemmyComment) {
-          return CommentItem(
-            comment: item,
-            displayMode: CommentItemDisplayMode.single,
+        } else if (item is CommentView) {
+          return CommentTreeWidget(
+            commentTree: CommentTree(comment: item, children: []),
           );
         } else {
           return const Text('could not display item');
@@ -60,14 +60,10 @@ class ContentScrollView extends StatefulWidget {
   /// If the bloc is already made it can be provided here
   final ContentScrollBloc? contentScrollBloc;
 
-  /// How any comments will be displayed
-  final CommentItemDisplayMode commentItemDisplayMode;
-
   const ContentScrollView({
     this.contentRetriever,
     this.headerSlivers = const [],
     this.contentScrollBloc,
-    this.commentItemDisplayMode = CommentItemDisplayMode.single,
     super.key,
   });
 

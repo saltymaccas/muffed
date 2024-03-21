@@ -5,7 +5,7 @@ import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/search/controller/controller.dart';
 import 'package:muffed/view/router/models/page.dart';
-import 'package:muffed/view/widgets/comment_item/comment_item.dart';
+import 'package:muffed/view/widgets/comment/comment.dart';
 import 'package:muffed/view/widgets/community/community.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 import 'package:muffed/view/widgets/post/post_item.dart';
@@ -229,10 +229,7 @@ class _SearchViewState extends State<_SearchView> {
         post: item,
       );
     } else if (item is LemmyComment) {
-      return CommentItem(
-        comment: item,
-        displayMode: CommentItemDisplayMode.single,
-      );
+      return const Placeholder();
     }
 
     return const SizedBox(

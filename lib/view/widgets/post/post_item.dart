@@ -55,7 +55,7 @@ class _PostWidgetState extends State<PostWidget> {
     final lemRepo = context.read<ServerRepo>().lemmyRepo;
     isAuthenticated = context.read<GlobalBloc>().state.isLoggedIn();
 
-    bloc = widget.bloc ?? PostBloc(lemmyRepo: lemRepo, post: widget.post!);
+    bloc = widget.bloc ?? PostBloc(lemmyRepo: lemRepo, post: widget.post);
   }
 
   void onTap(BuildContext context) {
@@ -63,6 +63,7 @@ class _PostWidgetState extends State<PostWidget> {
       MuffedPage(
         builder: (context) => PostScreen(
           postBloc: bloc,
+          postId: bloc.state.post?.post.id ?? widget.post?.post.id,
         ),
       ),
     );
@@ -87,7 +88,8 @@ class _PostWidgetState extends State<PostWidget> {
 
     if (creatorId != null) {
       MNavigator.of(context).pushPage(
-          MuffedPage(builder: (context) => UserScreen(userId: creatorId)));
+        MuffedPage(builder: (context) => UserScreen(userId: creatorId)),
+      );
     } else {
       _log.warning('onCreatorTap called when no creator id defined');
     }

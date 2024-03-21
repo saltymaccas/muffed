@@ -56,7 +56,7 @@ final initialNavigatorState = MNavigatorState(
       key: GlobalKey<NavigatorState>(debugLabel: 'home'),
     ),
     Branch(
-      [InboxPage()],
+      [MuffedPage(builder: (context) => Placeholder())],
       key: GlobalKey<NavigatorState>(debugLabel: 'inbox'),
     ),
     Branch(

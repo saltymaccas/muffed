@@ -18,8 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$CommunityScrollState {
   PagedScrollViewStatus get status => throw _privateConstructorUsedError;
   int get pagesLoaded => throw _privateConstructorUsedError;
-  LemmySortType get sort => throw _privateConstructorUsedError;
-  List<LemmyPost>? get posts => throw _privateConstructorUsedError;
+  SortType get sort => throw _privateConstructorUsedError;
+  List<PostView>? get posts => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -36,8 +36,8 @@ abstract class $CommunityScrollStateCopyWith<$Res> {
   $Res call(
       {PagedScrollViewStatus status,
       int pagesLoaded,
-      LemmySortType sort,
-      List<LemmyPost>? posts,
+      SortType sort,
+      List<PostView>? posts,
       String? errorMessage});
 }
 
@@ -73,11 +73,11 @@ class _$CommunityScrollStateCopyWithImpl<$Res,
       sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
-              as LemmySortType,
+              as SortType,
       posts: freezed == posts
           ? _value.posts
           : posts // ignore: cast_nullable_to_non_nullable
-              as List<LemmyPost>?,
+              as List<PostView>?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -97,8 +97,8 @@ abstract class _$$CommunityScrollStateImplCopyWith<$Res>
   $Res call(
       {PagedScrollViewStatus status,
       int pagesLoaded,
-      LemmySortType sort,
-      List<LemmyPost>? posts,
+      SortType sort,
+      List<PostView>? posts,
       String? errorMessage});
 }
 
@@ -131,11 +131,11 @@ class __$$CommunityScrollStateImplCopyWithImpl<$Res>
       sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
-              as LemmySortType,
+              as SortType,
       posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
-              as List<LemmyPost>?,
+              as List<PostView>?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -151,7 +151,7 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
       {required this.status,
       required this.pagesLoaded,
       required this.sort,
-      final List<LemmyPost>? posts,
+      final List<PostView>? posts,
       this.errorMessage})
       : _posts = posts;
 
@@ -160,10 +160,10 @@ class _$CommunityScrollStateImpl implements _CommunityScrollState {
   @override
   final int pagesLoaded;
   @override
-  final LemmySortType sort;
-  final List<LemmyPost>? _posts;
+  final SortType sort;
+  final List<PostView>? _posts;
   @override
-  List<LemmyPost>? get posts {
+  List<PostView>? get posts {
     final value = _posts;
     if (value == null) return null;
     if (_posts is EqualUnmodifiableListView) return _posts;
@@ -210,8 +210,8 @@ abstract class _CommunityScrollState implements CommunityScrollState {
   const factory _CommunityScrollState(
       {required final PagedScrollViewStatus status,
       required final int pagesLoaded,
-      required final LemmySortType sort,
-      final List<LemmyPost>? posts,
+      required final SortType sort,
+      final List<PostView>? posts,
       final String? errorMessage}) = _$CommunityScrollStateImpl;
 
   @override
@@ -219,9 +219,9 @@ abstract class _CommunityScrollState implements CommunityScrollState {
   @override
   int get pagesLoaded;
   @override
-  LemmySortType get sort;
+  SortType get sort;
   @override
-  List<LemmyPost>? get posts;
+  List<PostView>? get posts;
   @override
   String? get errorMessage;
   @override

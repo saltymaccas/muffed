@@ -16,9 +16,6 @@ class MuffedAvatar extends StatelessWidget {
       radius: radius,
       foregroundImage:
           (url != null) ? ExtendedNetworkImageProvider(url!) : null,
-      backgroundImage: const ExtendedAssetImageProvider(
-        'assets/logo.png',
-      ),
     );
   }
 }

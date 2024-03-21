@@ -8,4 +8,4 @@ class DownvotePressed extends PostItemEvent {}
 
 class SavePostToggled extends PostItemEvent {}
 
-class Initialize extends PostItemEvent {}
+class Initialised extends PostItemEvent {}

@@ -6,6 +6,7 @@ enum PostStatus { loading, failure, idle }
 class PostState with _$PostState {
   const factory PostState({
     required PostStatus status,
+    String? errorMessage,
     PostView? post,
   }) = _PostState;
 }

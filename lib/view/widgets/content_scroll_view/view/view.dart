@@ -10,7 +10,7 @@ enum PagedScrollViewStatus {
   loadingMoreFailure,
 }
 
-class PagedScroll extends StatelessWidget {
+class PagedScroll<T> extends StatelessWidget {
   const PagedScroll({
     required this.status,
     required this.items,
@@ -20,17 +20,22 @@ class PagedScroll extends StatelessWidget {
     this.onRefresh = PagedScrollView._defaultOnRefresh,
     this.loadMoreCallback = PagedScrollView._defaultLoadMoreCallback,
     this.allPagesLoaded = false,
+    this.seperatorBuilder = _defaultSeperatorBuilder,
     super.key,
   });
 
   final PagedScrollViewStatus status;
-  final List<Object>? items;
-  final Widget Function(BuildContext, Object) itemBuilder;
+  final List<T>? items;
+  final Widget Function(BuildContext, T) itemBuilder;
   final List<Widget> headerSlivers;
   final ScrollController? scrollController;
   final Future<void> Function() onRefresh;
   final void Function() loadMoreCallback;
   final bool allPagesLoaded;
+  final Widget? Function(BuildContext, int) seperatorBuilder;
+
+  static Widget? _defaultSeperatorBuilder(BuildContext context, int index) =>
+      const SizedBox();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,8 @@ class PagedScroll extends StatelessWidget {
         displayMode: footerMode,
       ),
       body: ScrollBody(
-        contentSliver: SliverList.builder(
+        contentSliver: SliverList.separated(
+          separatorBuilder: seperatorBuilder,
           itemCount: items?.length ?? 0,
           itemBuilder: (context, index) => itemBuilder(context, items![index]),
         ),
