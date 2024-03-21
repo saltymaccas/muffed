@@ -30,8 +30,6 @@ abstract class $CommentStateCopyWith<$Res> {
       _$CommentStateCopyWithImpl<$Res, CommentState>;
   @useResult
   $Res call({CommentTree commentTree});
-
-  $CommentTreeCopyWith<$Res> get commentTree;
 }
 
 /// @nodoc
@@ -56,14 +54,6 @@ class _$CommentStateCopyWithImpl<$Res, $Val extends CommentState>
               as CommentTree,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $CommentTreeCopyWith<$Res> get commentTree {
-    return $CommentTreeCopyWith<$Res>(_value.commentTree, (value) {
-      return _then(_value.copyWith(commentTree: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -75,9 +65,6 @@ abstract class _$$CommentStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({CommentTree commentTree});
-
-  @override
-  $CommentTreeCopyWith<$Res> get commentTree;
 }
 
 /// @nodoc

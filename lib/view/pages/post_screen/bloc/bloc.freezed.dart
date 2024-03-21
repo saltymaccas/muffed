@@ -57,7 +57,7 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
     Object? status = null,
     Object? pagesLoaded = null,
     Object? allPagedLoaded = null,
-    Object? sort = null,
+    Object? sort = freezed,
     Object? comments = freezed,
   }) {
     return _then(_value.copyWith(
@@ -73,7 +73,7 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
           ? _value.allPagedLoaded
           : allPagedLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: null == sort
+      sort: freezed == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
               as CommentSortType,
@@ -115,7 +115,7 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? pagesLoaded = null,
     Object? allPagedLoaded = null,
-    Object? sort = null,
+    Object? sort = freezed,
     Object? comments = freezed,
   }) {
     return _then(_$CommentScrollStateImpl(
@@ -131,7 +131,7 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
           ? _value.allPagedLoaded
           : allPagedLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: null == sort
+      sort: freezed == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
               as CommentSortType,
@@ -187,13 +187,18 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
                 other.pagesLoaded == pagesLoaded) &&
             (identical(other.allPagedLoaded, allPagedLoaded) ||
                 other.allPagedLoaded == allPagedLoaded) &&
-            (identical(other.sort, sort) || other.sort == sort) &&
+            const DeepCollectionEquality().equals(other.sort, sort) &&
             const DeepCollectionEquality().equals(other._comments, _comments));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, pagesLoaded,
-      allPagedLoaded, sort, const DeepCollectionEquality().hash(_comments));
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      pagesLoaded,
+      allPagedLoaded,
+      const DeepCollectionEquality().hash(sort),
+      const DeepCollectionEquality().hash(_comments));
 
   @JsonKey(ignore: true)
   @override

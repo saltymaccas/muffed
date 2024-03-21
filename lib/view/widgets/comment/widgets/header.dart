@@ -39,7 +39,7 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 if (creatorIcon != null)
-                  MuffedAvatar(radius: 10, url: creatorName),
+                  MuffedAvatar(radius: 10, url: creatorIcon),
                 if (creatorIcon != null) const SizedBox(width: 4),
                 Text(
                   creatorName,

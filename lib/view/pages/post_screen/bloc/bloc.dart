@@ -58,9 +58,11 @@ class CommentScrollBloc extends Bloc<CommentScrollEvent, CommentScrollState> {
       page: page,
       postId: postId,
       type: ListingType.all,
+      maxDepth: 8,
     );
     final response = await lem.run(run);
-    return CommentTree.assembleCommentTree(response.comments);
+    final commentTree = CommentTree.assembleCommentTree(response.comments);
+    return commentTree;
   }
 
   final LemmyRepo lem;

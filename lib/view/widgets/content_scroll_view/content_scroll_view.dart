@@ -39,7 +39,7 @@ class ContentScrollSliver extends StatelessWidget {
           );
         } else if (item is CommentView) {
           return CommentTreeWidget(
-            commentTree: CommentTree(comment: item, children: []),
+            commentTree: CommentTree(comment: item, children: [], level: 0),
           );
         } else {
           return const Text('could not display item');
