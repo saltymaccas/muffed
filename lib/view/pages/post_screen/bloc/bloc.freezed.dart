@@ -18,9 +18,10 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$CommentScrollState {
   PagedScrollViewStatus get status => throw _privateConstructorUsedError;
   int get pagesLoaded => throw _privateConstructorUsedError;
-  bool get allPagedLoaded => throw _privateConstructorUsedError;
+  bool get allPagesLoaded => throw _privateConstructorUsedError;
   CommentSortType get sort => throw _privateConstructorUsedError;
   List<CommentTree>? get comments => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CommentScrollStateCopyWith<CommentScrollState> get copyWith =>
@@ -36,9 +37,10 @@ abstract class $CommentScrollStateCopyWith<$Res> {
   $Res call(
       {PagedScrollViewStatus status,
       int pagesLoaded,
-      bool allPagedLoaded,
+      bool allPagesLoaded,
       CommentSortType sort,
-      List<CommentTree>? comments});
+      List<CommentTree>? comments,
+      String? errorMessage});
 }
 
 /// @nodoc
@@ -56,9 +58,10 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
   $Res call({
     Object? status = null,
     Object? pagesLoaded = null,
-    Object? allPagedLoaded = null,
+    Object? allPagesLoaded = null,
     Object? sort = freezed,
     Object? comments = freezed,
+    Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -69,9 +72,9 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
-      allPagedLoaded: null == allPagedLoaded
-          ? _value.allPagedLoaded
-          : allPagedLoaded // ignore: cast_nullable_to_non_nullable
+      allPagesLoaded: null == allPagesLoaded
+          ? _value.allPagesLoaded
+          : allPagesLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
       sort: freezed == sort
           ? _value.sort
@@ -81,6 +84,10 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
           ? _value.comments
           : comments // ignore: cast_nullable_to_non_nullable
               as List<CommentTree>?,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -96,9 +103,10 @@ abstract class _$$CommentScrollStateImplCopyWith<$Res>
   $Res call(
       {PagedScrollViewStatus status,
       int pagesLoaded,
-      bool allPagedLoaded,
+      bool allPagesLoaded,
       CommentSortType sort,
-      List<CommentTree>? comments});
+      List<CommentTree>? comments,
+      String? errorMessage});
 }
 
 /// @nodoc
@@ -114,9 +122,10 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? pagesLoaded = null,
-    Object? allPagedLoaded = null,
+    Object? allPagesLoaded = null,
     Object? sort = freezed,
     Object? comments = freezed,
+    Object? errorMessage = freezed,
   }) {
     return _then(_$CommentScrollStateImpl(
       status: null == status
@@ -127,9 +136,9 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
           ? _value.pagesLoaded
           : pagesLoaded // ignore: cast_nullable_to_non_nullable
               as int,
-      allPagedLoaded: null == allPagedLoaded
-          ? _value.allPagedLoaded
-          : allPagedLoaded // ignore: cast_nullable_to_non_nullable
+      allPagesLoaded: null == allPagesLoaded
+          ? _value.allPagesLoaded
+          : allPagesLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
       sort: freezed == sort
           ? _value.sort
@@ -139,6 +148,10 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
           ? _value._comments
           : comments // ignore: cast_nullable_to_non_nullable
               as List<CommentTree>?,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -149,9 +162,10 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
   const _$CommentScrollStateImpl(
       {required this.status,
       required this.pagesLoaded,
-      required this.allPagedLoaded,
+      required this.allPagesLoaded,
       required this.sort,
-      final List<CommentTree>? comments})
+      final List<CommentTree>? comments,
+      this.errorMessage})
       : _comments = comments;
 
   @override
@@ -159,7 +173,7 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
   @override
   final int pagesLoaded;
   @override
-  final bool allPagedLoaded;
+  final bool allPagesLoaded;
   @override
   final CommentSortType sort;
   final List<CommentTree>? _comments;
@@ -173,8 +187,11 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
   }
 
   @override
+  final String? errorMessage;
+
+  @override
   String toString() {
-    return 'CommentScrollState(status: $status, pagesLoaded: $pagesLoaded, allPagedLoaded: $allPagedLoaded, sort: $sort, comments: $comments)';
+    return 'CommentScrollState(status: $status, pagesLoaded: $pagesLoaded, allPagesLoaded: $allPagesLoaded, sort: $sort, comments: $comments, errorMessage: $errorMessage)';
   }
 
   @override
@@ -185,10 +202,12 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.pagesLoaded, pagesLoaded) ||
                 other.pagesLoaded == pagesLoaded) &&
-            (identical(other.allPagedLoaded, allPagedLoaded) ||
-                other.allPagedLoaded == allPagedLoaded) &&
+            (identical(other.allPagesLoaded, allPagesLoaded) ||
+                other.allPagesLoaded == allPagesLoaded) &&
             const DeepCollectionEquality().equals(other.sort, sort) &&
-            const DeepCollectionEquality().equals(other._comments, _comments));
+            const DeepCollectionEquality().equals(other._comments, _comments) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage));
   }
 
   @override
@@ -196,9 +215,10 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
       runtimeType,
       status,
       pagesLoaded,
-      allPagedLoaded,
+      allPagesLoaded,
       const DeepCollectionEquality().hash(sort),
-      const DeepCollectionEquality().hash(_comments));
+      const DeepCollectionEquality().hash(_comments),
+      errorMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -212,20 +232,23 @@ abstract class _CommentScrollState implements CommentScrollState {
   const factory _CommentScrollState(
       {required final PagedScrollViewStatus status,
       required final int pagesLoaded,
-      required final bool allPagedLoaded,
+      required final bool allPagesLoaded,
       required final CommentSortType sort,
-      final List<CommentTree>? comments}) = _$CommentScrollStateImpl;
+      final List<CommentTree>? comments,
+      final String? errorMessage}) = _$CommentScrollStateImpl;
 
   @override
   PagedScrollViewStatus get status;
   @override
   int get pagesLoaded;
   @override
-  bool get allPagedLoaded;
+  bool get allPagesLoaded;
   @override
   CommentSortType get sort;
   @override
   List<CommentTree>? get comments;
+  @override
+  String? get errorMessage;
   @override
   @JsonKey(ignore: true)
   _$$CommentScrollStateImplCopyWith<_$CommentScrollStateImpl> get copyWith =>

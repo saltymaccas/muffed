@@ -16,7 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CommentState {
-  CommentTree get commentTree => throw _privateConstructorUsedError;
+  CommentView get comment => throw _privateConstructorUsedError;
+  List<CommentTree> get children => throw _privateConstructorUsedError;
+  int get level => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CommentStateCopyWith<CommentState> get copyWith =>
@@ -29,7 +31,7 @@ abstract class $CommentStateCopyWith<$Res> {
           CommentState value, $Res Function(CommentState) then) =
       _$CommentStateCopyWithImpl<$Res, CommentState>;
   @useResult
-  $Res call({CommentTree commentTree});
+  $Res call({CommentView comment, List<CommentTree> children, int level});
 }
 
 /// @nodoc
@@ -45,13 +47,23 @@ class _$CommentStateCopyWithImpl<$Res, $Val extends CommentState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? commentTree = null,
+    Object? comment = freezed,
+    Object? children = null,
+    Object? level = null,
   }) {
     return _then(_value.copyWith(
-      commentTree: null == commentTree
-          ? _value.commentTree
-          : commentTree // ignore: cast_nullable_to_non_nullable
-              as CommentTree,
+      comment: freezed == comment
+          ? _value.comment
+          : comment // ignore: cast_nullable_to_non_nullable
+              as CommentView,
+      children: null == children
+          ? _value.children
+          : children // ignore: cast_nullable_to_non_nullable
+              as List<CommentTree>,
+      level: null == level
+          ? _value.level
+          : level // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -64,7 +76,7 @@ abstract class _$$CommentStateImplCopyWith<$Res>
       __$$CommentStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({CommentTree commentTree});
+  $Res call({CommentView comment, List<CommentTree> children, int level});
 }
 
 /// @nodoc
@@ -78,13 +90,23 @@ class __$$CommentStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? commentTree = null,
+    Object? comment = freezed,
+    Object? children = null,
+    Object? level = null,
   }) {
     return _then(_$CommentStateImpl(
-      commentTree: null == commentTree
-          ? _value.commentTree
-          : commentTree // ignore: cast_nullable_to_non_nullable
-              as CommentTree,
+      comment: freezed == comment
+          ? _value.comment
+          : comment // ignore: cast_nullable_to_non_nullable
+              as CommentView,
+      children: null == children
+          ? _value._children
+          : children // ignore: cast_nullable_to_non_nullable
+              as List<CommentTree>,
+      level: null == level
+          ? _value.level
+          : level // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -92,14 +114,28 @@ class __$$CommentStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$CommentStateImpl implements _CommentState {
-  const _$CommentStateImpl({required this.commentTree});
+  const _$CommentStateImpl(
+      {required this.comment,
+      required final List<CommentTree> children,
+      required this.level})
+      : _children = children;
 
   @override
-  final CommentTree commentTree;
+  final CommentView comment;
+  final List<CommentTree> _children;
+  @override
+  List<CommentTree> get children {
+    if (_children is EqualUnmodifiableListView) return _children;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_children);
+  }
+
+  @override
+  final int level;
 
   @override
   String toString() {
-    return 'CommentState(commentTree: $commentTree)';
+    return 'CommentState(comment: $comment, children: $children, level: $level)';
   }
 
   @override
@@ -107,12 +143,17 @@ class _$CommentStateImpl implements _CommentState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CommentStateImpl &&
-            (identical(other.commentTree, commentTree) ||
-                other.commentTree == commentTree));
+            const DeepCollectionEquality().equals(other.comment, comment) &&
+            const DeepCollectionEquality().equals(other._children, _children) &&
+            (identical(other.level, level) || other.level == level));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, commentTree);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(comment),
+      const DeepCollectionEquality().hash(_children),
+      level);
 
   @JsonKey(ignore: true)
   @override
@@ -122,11 +163,17 @@ class _$CommentStateImpl implements _CommentState {
 }
 
 abstract class _CommentState implements CommentState {
-  const factory _CommentState({required final CommentTree commentTree}) =
-      _$CommentStateImpl;
+  const factory _CommentState(
+      {required final CommentView comment,
+      required final List<CommentTree> children,
+      required final int level}) = _$CommentStateImpl;
 
   @override
-  CommentTree get commentTree;
+  CommentView get comment;
+  @override
+  List<CommentTree> get children;
+  @override
+  int get level;
   @override
   @JsonKey(ignore: true)
   _$$CommentStateImplCopyWith<_$CommentStateImpl> get copyWith =>

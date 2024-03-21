@@ -21,11 +21,12 @@ class CommentScrollBloc extends Bloc<CommentScrollEvent, CommentScrollState> {
           const CommentScrollState(
             status: PagedScrollViewStatus.idle,
             pagesLoaded: 0,
-            allPagedLoaded: false,
+            allPagesLoaded: false,
             sort: CommentSortType.hot,
           ),
         ) {
     on<CommentScrollInitialised>(_onCommentScrollInitalised);
+    on<NearCommentScrollEnd>(_onNearCommentScrollEnd);
   }
 
   Future<void> _onCommentScrollInitalised(
@@ -50,6 +51,43 @@ class CommentScrollBloc extends Bloc<CommentScrollEvent, CommentScrollState> {
         e,
         s,
       );
+      emit(
+        state.copyWith(
+          status: PagedScrollViewStatus.failure,
+          errorMessage: _toErrorMessage(e),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onNearCommentScrollEnd(
+    NearCommentScrollEnd event,
+    Emitter<CommentScrollState> emit,
+  ) async {
+    if (state.allPagesLoaded) return;
+
+    final pageToLoad = state.pagesLoaded + 1;
+
+    emit(state.copyWith(status: PagedScrollViewStatus.loadingMore));
+
+    try {
+      final response = await _loadComments(pageToLoad);
+      emit(
+        state.copyWith(
+          status: PagedScrollViewStatus.idle,
+          pagesLoaded: pageToLoad,
+          comments: [...state.comments ?? [], ...response],
+          allPagesLoaded: response.isEmpty,
+        ),
+      );
+    } catch (e, s) {
+      _log.warning('', e, s);
+      emit(
+        state.copyWith(
+          status: PagedScrollViewStatus.loadingMoreFailure,
+          errorMessage: _toErrorMessage(e),
+        ),
+      );
     }
   }
 
@@ -63,6 +101,10 @@ class CommentScrollBloc extends Bloc<CommentScrollEvent, CommentScrollState> {
     final response = await lem.run(run);
     final commentTree = CommentTree.assembleCommentTree(response.comments);
     return commentTree;
+  }
+
+  String _toErrorMessage(Object e) {
+    return 'error of type ${e.runtimeType} occured';
   }
 
   final LemmyRepo lem;

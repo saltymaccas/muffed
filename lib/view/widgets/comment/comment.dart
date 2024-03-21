@@ -36,8 +36,8 @@ class _CommentTreeWidgetState extends State<CommentTreeWidget> {
     return BlocBuilder<CommentBloc, CommentState>(
       bloc: commentBloc,
       builder: (context, state) {
-        final comment = state.commentTree.comment;
-        final showBorder = state.commentTree.level != 0;
+        final comment = state.comment;
+        final showBorder = state.level != 0;
         return _CommentTreeWidgetScaffold(
           showBorder: showBorder,
           header: CommentHeader(
@@ -52,8 +52,8 @@ class _CommentTreeWidgetState extends State<CommentTreeWidget> {
             upvotes: comment.counts.upvotes,
             downvotes: comment.counts.downvotes,
           ),
-          children: List.generate(state.commentTree.children.length, (index) {
-            final child = state.commentTree.children[index];
+          children: List.generate(state.children.length, (index) {
+            final child = state.children[index];
 
             return CommentTreeWidget(
               commentTree: child,
@@ -84,29 +84,26 @@ class _CommentTreeWidgetScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            left: showBorder
-                ? BorderSide(color: theme.colorScheme.outline)
-                : BorderSide.none,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          left: showBorder
+              ? BorderSide(color: theme.colorScheme.outline)
+              : BorderSide.none,
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Column(
-            children: [
-              if (header != null) header!,
-              const SizedBox(
-                height: 4,
-              ),
-              body,
-              if (footer != null) footer!,
-              ...children,
-            ],
-          ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4),
+        child: Column(
+          children: [
+            if (header != null) header!,
+            const SizedBox(
+              height: 4,
+            ),
+            body,
+            if (footer != null) footer!,
+            ...children,
+          ],
         ),
       ),
     );
