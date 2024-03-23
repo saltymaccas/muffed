@@ -22,3 +22,7 @@ String? errorObjectToString(Object? error) {
     '[auth redacted]',
   );
 }
+
+String objectToErrorMessage(Object e) {
+  return 'Error of type "${e.runtimeType}" occured';
+}

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart' as lem;
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
-import 'package:muffed/view/pages/search/controller/controller.dart';
+import 'package:muffed/view/pages/search/bloc/bloc.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment/comment.dart';
 import 'package:muffed/view/widgets/community/community.dart';
@@ -51,10 +51,10 @@ class _SearchScreenState extends State<SearchScreen>
   final textFocusNode = FocusNode();
   late final TextEditingController textController;
 
-  late final SearchCubit communityCubit;
-  late final SearchCubit usersCubit;
-  late final SearchCubit commentsCubit;
-  late final SearchCubit postsCubit;
+  late final SearchBloc communityBloc;
+  late final SearchBloc usersBloc;
+  late final SearchBloc commentsBloc;
+  late final SearchBloc postsBloc;
 
   late final TabController tabController;
 
@@ -78,36 +78,38 @@ class _SearchScreenState extends State<SearchScreen>
 
     textFocusNode.requestFocus();
 
-    communityCubit = SearchCubit(
-      lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+    final lemmyRepo = context.read<ServerRepo>().lemmyRepo;
+
+    communityBloc = SearchBloc(
+      lem: lemmyRepo,
       searchType: SearchType.communities,
     );
-    postsCubit = SearchCubit(
-      lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+    postsBloc = SearchBloc(
+      lem: lemmyRepo,
       searchType: SearchType.posts,
     );
 
-    commentsCubit = SearchCubit(
-      lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+    commentsBloc = SearchBloc(
+      lem: lemmyRepo,
       searchType: SearchType.comments,
     );
-    usersCubit = SearchCubit(
-      lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+    usersBloc = SearchBloc(
+      lem: lemmyRepo,
       searchType: SearchType.users,
     );
 
     tabs = [
       _SearchView(
-        cubit: communityCubit,
+        bloc: communityBloc,
       ),
       _SearchView(
-        cubit: postsCubit,
+        bloc: postsBloc,
       ),
       _SearchView(
-        cubit: commentsCubit,
+        bloc: commentsBloc,
       ),
       _SearchView(
-        cubit: usersCubit,
+        bloc: usersBloc,
       ),
     ];
 
@@ -128,10 +130,10 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   void search() {
-    communityCubit.search(query: textController.text, sortType: sortType);
-    postsCubit.search(query: textController.text, sortType: sortType);
-    commentsCubit.search(query: textController.text, sortType: sortType);
-    usersCubit.search(query: textController.text, sortType: sortType);
+    communityBloc.add(Searched(query: textController.text));
+    postsBloc.add(Searched(query: textController.text));
+    commentsBloc.add(Searched(query: textController.text));
+    usersBloc.add(Searched(query: textController.text));
   }
 
   @override
@@ -184,32 +186,26 @@ class _SearchScreenState extends State<SearchScreen>
 
 class _SearchView extends StatefulWidget {
   const _SearchView({
-    required this.cubit,
+    required this.bloc,
     super.key,
   });
 
-  final SearchCubit cubit;
+  final SearchBloc bloc;
 
   @override
   State<_SearchView> createState() => _SearchViewState();
 }
 
 class _SearchViewState extends State<_SearchView> {
-  late SearchModel state;
+  late final SearchBloc bloc;
 
   @override
   void initState() {
     super.initState();
-    state = widget.cubit.state;
-
-    widget.cubit.stream.forEach((element) {
-      setState(() {
-        state = element;
-      });
-    });
+    bloc = widget.bloc;
   }
 
-  Widget itemBuilder(Object item) {
+  Widget itemBuilder(BuildContext context, Object item) {
     if (item is LemmyCommunity) {
       return CommunityListTile(
         item,
@@ -224,7 +220,7 @@ class _SearchViewState extends State<_SearchView> {
           );
         },
       );
-    } else if (item is lem.PostView) {
+    } else if (item is PostView) {
       return PostWidget(
         post: item,
       );
@@ -240,53 +236,15 @@ class _SearchViewState extends State<_SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    var bodyDisplayMode = ScrollBodyMode.blank;
-    var footerDisplayMode = ScrollFooterMode.hidden;
-    var indicateLoading = false;
-
-    final hasContent = state.items.isNotEmpty;
-
-    if (hasContent) {
-      bodyDisplayMode = ScrollBodyMode.content;
-      if (state.status == SearchStatus.loading) {
-        indicateLoading = true;
-      }
-    } else {
-      if (state.status == SearchStatus.failure) {
-        bodyDisplayMode = ScrollBodyMode.failure;
-      }
-      if (state.status == SearchStatus.loading) {
-        bodyDisplayMode = ScrollBodyMode.loading;
-      }
-    }
-
-    if (state.allPagesLoaded) {
-      footerDisplayMode = ScrollFooterMode.reachedEnd;
-    }
-    if (state.status == SearchStatus.loadingMore) {
-      footerDisplayMode = ScrollFooterMode.loading;
-    }
-    if (state.status == SearchStatus.loadMoreFailure) {
-      footerDisplayMode = ScrollFooterMode.failure;
-    }
-
-    return PagedScrollView(
-      loadMoreThreshold: 10,
-      loadMoreCallback: () {
-        widget.cubit.loadNextPage();
+    return BlocBuilder<SearchBloc, SearchState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return PagedScroll(
+          status: state.status,
+          items: state.items,
+          itemBuilder: itemBuilder,
+        );
       },
-      indicateLoading: indicateLoading,
-      body: ScrollBody(
-        mode: bodyDisplayMode,
-        contentSliver: SliverList.builder(
-          itemCount: state.items.length,
-          itemBuilder: (context, index) {
-            final item = state.items[index];
-            return itemBuilder(item);
-          },
-        ),
-      ),
-      footer: ScrollFooter(displayMode: footerDisplayMode),
     );
   }
 }
