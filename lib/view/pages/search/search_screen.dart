@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/search/bloc/bloc.dart';
 import 'package:muffed/view/router/models/page.dart';
@@ -58,8 +58,6 @@ class _SearchScreenState extends State<SearchScreen>
 
   late final TabController tabController;
 
-  LemmySortType sortType = LemmySortType.topAll;
-
   List<String> tabTitles = [
     'Communities',
     'Posts',
@@ -78,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen>
 
     textFocusNode.requestFocus();
 
-    final lemmyRepo = context.read<ServerRepo>().lemmyRepo;
+    final lemmyRepo = context.read<LemmyRepo>();
 
     communityBloc = SearchBloc(
       lem: lemmyRepo,
@@ -206,7 +204,7 @@ class _SearchViewState extends State<_SearchView> {
   }
 
   Widget itemBuilder(BuildContext context, Object item) {
-    if (item is LemmyCommunity) {
+    if (item is Community) {
       return CommunityListTile(
         item,
         onTap: () {
@@ -224,7 +222,7 @@ class _SearchViewState extends State<_SearchView> {
       return PostWidget(
         post: item,
       );
-    } else if (item is LemmyComment) {
+    } else if (item is Comment) {
       return const Placeholder();
     }
 

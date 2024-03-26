@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/lemmy.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/utils/error.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 

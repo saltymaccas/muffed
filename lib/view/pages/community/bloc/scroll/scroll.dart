@@ -3,8 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/lemmy.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/view/widgets/content_scroll_view/content_scroll_view.dart';
 
 part 'scroll.freezed.dart';

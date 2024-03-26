@@ -1,4 +1,4 @@
-import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/domain/lemmy/models/models.dart';
 
 /// Organises comments, [level] is the level to organise the comments on
 /// returns a map the key being the parent on the right level and the value

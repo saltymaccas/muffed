@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/link_previewer.dart';
 
@@ -29,7 +28,7 @@ class UrlView extends StatelessWidget {
         urlPath.endsWith('.bmp')) {
       return MuffedImage(
         imageUrl: url,
-        shouldBlur: nsfw && context.read<GlobalBloc>().state.blurNsfw,
+        shouldBlur: false,
         fullScreenable: imageFullScreenable,
         adjustableHeight: true,
         height: 300,

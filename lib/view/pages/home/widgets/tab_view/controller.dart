@@ -2,8 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/lemmy.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/view/pages/home/home.dart';
 
 part 'controller.freezed.dart';

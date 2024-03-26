@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/domain/lemmy/models.dart';
 
 class CommunityPageViewHeaderDelegate extends SliverPersistentHeaderDelegate {
   CommunityPageViewHeaderDelegate({
@@ -92,51 +91,6 @@ class CommunityPageViewHeaderDelegate extends SliverPersistentHeaderDelegate {
           if (topBarBuilder != null) topBarBuilder!(context, fractionScrolled),
         ],
       ),
-    );
-  }
-}
-
-class _SubscribeButton extends StatelessWidget {
-  const _SubscribeButton({
-    required this.subscribedType,
-    required this.onPressed,
-  });
-
-  final LemmySubscribedType subscribedType;
-  final void Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    late final String text;
-    late final ButtonStyle buttonStyle;
-
-    switch (subscribedType) {
-      case LemmySubscribedType.subscribed:
-        text = 'Subscibed';
-        buttonStyle = TextButton.styleFrom(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          foregroundColor: theme.colorScheme.onPrimaryContainer,
-        );
-      case LemmySubscribedType.pending:
-        text = 'Pending';
-        buttonStyle = TextButton.styleFrom(
-          backgroundColor: theme.colorScheme.outline,
-          foregroundColor: theme.colorScheme.outlineVariant,
-        );
-      case LemmySubscribedType.notSubscribed:
-        text = 'Subscribe';
-        buttonStyle = TextButton.styleFrom(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          foregroundColor: theme.colorScheme.onPrimaryContainer,
-        );
-    }
-
-    return TextButton(
-      onPressed: onPressed,
-      style: buttonStyle,
-      child: Text(text),
     );
   }
 }

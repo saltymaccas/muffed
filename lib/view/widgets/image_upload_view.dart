@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:muffed/domain/lemmy/models/image_upload_state.dart';
 import 'package:muffed/domain/pictrs/models.dart';
 import 'package:muffed/view/widgets/icon_button.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
@@ -81,7 +82,8 @@ class ImageUploadView extends StatelessWidget {
                                 return AlertDialog(
                                   title: const Text('Delete image?'),
                                   content: const Text(
-                                      'Are you sure you want to delete this image?',),
+                                    'Are you sure you want to delete this image?',
+                                  ),
                                   actions: [
                                     TextButton(
                                       onPressed: () {

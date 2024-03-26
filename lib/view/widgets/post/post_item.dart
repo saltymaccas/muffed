@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
+import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
@@ -52,8 +52,8 @@ class _PostWidgetState extends State<PostWidget> {
   void initState() {
     super.initState();
 
-    final lemRepo = context.read<ServerRepo>().lemmyRepo;
-    isAuthenticated = context.read<GlobalBloc>().state.isLoggedIn();
+    final lemRepo = context.read<LemmyRepo>();
+    isAuthenticated = context.read<LemmyKeychainBloc>().state.isAuthenticated;
 
     bloc = widget.bloc ?? PostBloc(lemmyRepo: lemRepo, post: widget.post);
   }

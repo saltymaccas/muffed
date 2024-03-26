@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/domain/lemmy/models.dart';
+import 'package:muffed/domain/lemmy/models/models.dart';
+import 'package:muffed/domain/lemmy/models/image_upload_state.dart';
+import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 import 'package:muffed/utils/url.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -13,22 +15,80 @@ final _log = Logger('LemmyRepo');
 /// Used to interact with the lemmy http api
 class LemmyRepo {
   /// initialize lemmy repo
-  LemmyRepo({required this.globalBloc}) : dio = Dio();
+  LemmyRepo({required this.lemmyKeychainBloc}) : dio = Dio();
+
+  final LemmyKeychainBloc lemmyKeychainBloc;
 
   /// The dio client that will be used to send requests
   final Dio dio;
 
-  /// used to get information such as the home server to use for requests
-  final GlobalBloc globalBloc;
+  String get instanceAddress =>
+      lemmyKeychainBloc.state.activeKey.instanceAddress;
 
-  String get lemmyUrl => 'lemmy.ml';
+  String? get authToken => lemmyKeychainBloc.state.activeKey.authToken;
 
-  String? get authToken => globalBloc.getSelectedLemmyAccount()?.jwt;
-
-  LemmyApiV3 get lemmyApi => LemmyApiV3(lemmyUrl);
+  LemmyApiV3 get lemmyApi => LemmyApiV3(instanceAddress);
 
   Future<T> run<T>(LemmyApiQuery<T> query) =>
       lemmyApi.run(query, authToken: authToken);
+
+  Stream<ImageUploadState> uploadImage({
+    required String filePath,
+    int? id,
+  }) async* {
+    if (authToken != null) {
+      throw Exception('Not logged in');
+    }
+
+    final streamController = StreamController<ImageUploadState>();
+
+    final baseUrl = instanceAddress;
+
+    final response = dio
+        .post<Map<String, dynamic>>(
+          '$baseUrl/pictrs/image',
+          data: FormData.fromMap({
+            'images[]': await MultipartFile.fromFile(filePath),
+          }),
+          options: Options(
+            headers: {
+              'Cookie': 'jwt=${authToken}',
+            },
+          ),
+          onSendProgress: (int sent, int total) {
+            final double progress = sent / total;
+            streamController
+                .add(ImageUploadState(uploadProgress: progress, id: id));
+          },
+        )
+        .then((response) {
+          streamController.add(
+            ImageUploadState(
+              id: id,
+              deleteToken: response.data!['files'][0]['delete_token'],
+              uploadProgress: 1,
+              imageName: response.data!['files'][0]['file'],
+              imageLink:
+                  '$baseUrl/pictrs/image/${response.data!['files'][0]['file']}',
+              baseUrl: baseUrl,
+            ),
+          );
+        })
+        .catchError(streamController.addError)
+        .whenComplete(streamController.close);
+
+    yield* streamController.stream;
+  }
+
+  Future<void> deleteImage(
+    String deleteToken,
+    String fileName,
+    String baseUrl,
+  ) async {
+    final response = await dio.get<Map<String, dynamic>>(
+      '$baseUrl/pictrs/image/delete/$deleteToken/$fileName',
+    );
+  }
 
   /// Creates a post request to the lemmy api, If logged in auth parameter will
   /// be added automatically
@@ -38,15 +98,14 @@ class LemmyRepo {
     bool mustBeLoggedIn = true,
     String? serverAddress,
   }) async {
-    if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+    if (authToken != null && mustBeLoggedIn) {
       throw Exception('Not logged in');
     }
 
     final Response<Map<String, dynamic>> response = await dio.post(
-      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      '${serverAddress ?? instanceAddress}/api/v3$path',
       data: {
-        if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
-          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+        if (authToken != null && mustBeLoggedIn) 'auth': authToken,
         ...data,
       },
     );
@@ -65,15 +124,14 @@ class LemmyRepo {
     String? serverAddress,
   }) async {
     try {
-      if (!globalBloc.isLoggedIn() && mustBeLoggedIn) {
+      if (authToken == null && mustBeLoggedIn) {
         throw Exception('Not logged in');
       }
 
       final Response<Map<String, dynamic>> response = await dio.put(
-        '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+        '${serverAddress ?? instanceAddress}/api/v3$path',
         data: {
-          if (globalBloc.getSelectedLemmyAccount() != null && mustBeLoggedIn)
-            'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+          if (authToken != null && mustBeLoggedIn) 'auth': authToken,
           ...data,
         },
       );
@@ -107,21 +165,21 @@ class LemmyRepo {
     /// The jwt to use for the request
     String? jwt,
   }) async {
-    if (mustBeLoggedIn && !globalBloc.isLoggedIn()) {
+    if (mustBeLoggedIn && authToken != null) {
       throw Exception('Not logged in');
     }
 
     _log.info(
-      'Sending get request to ${globalBloc.getLemmyBaseUrl()}, Path: $path, Data: $queryParameters',
+      'Sending get request to ${instanceAddress}, Path: $path, Data: $queryParameters',
     );
 
     final Response<Map<String, dynamic>> response = await dio.get(
-      '${serverAddress ?? globalBloc.getLemmyBaseUrl()}/api/v3$path',
+      '${serverAddress ?? instanceAddress}/api/v3$path',
       queryParameters: {
         if (jwt != null)
           'auth': jwt
-        else if (globalBloc.isLoggedIn())
-          'auth': globalBloc.getSelectedLemmyAccount()!.jwt,
+        else if (authToken != null)
+          'auth': authToken,
         ...queryParameters,
       },
     );
@@ -208,8 +266,7 @@ class LemmyRepo {
         if (id != null) 'person_id': id,
         if (username != null) 'username': username,
         'page': page,
-        'sort':
-            lemmySortTypeToJson[sortType ?? globalBloc.state.defaultSortType],
+        'sort': lemmySortTypeToJson[sortType ?? LemmySortType.hot],
       },
     );
 
@@ -286,7 +343,7 @@ class LemmyRepo {
       throw 'Both community id and name are not provided';
     }
 
-    final response = await LemmyApiV3(lemmyUrl)
+    final response = await LemmyApiV3(instanceAddress)
         .run(GetCommunity(id: id, name: name, auth: authToken));
 
     return response;

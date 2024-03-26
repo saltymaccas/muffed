@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
+import 'package:muffed/domain/lemmy/models/models.dart';
 
-import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/shorthands.dart';
 import 'package:muffed/view/pages/community/community_screen.dart';
 import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
@@ -55,7 +56,7 @@ class UserScreen extends StatelessWidget {
       create: (context) => UserScreenBloc(
         userId: userId,
         username: username,
-        repo: context.read<ServerRepo>(),
+        lemmyRepo: context.read<LemmyRepo>(),
       )..add(InitializeEvent()),
       child: BlocBuilder<UserScreenBloc, UserScreenState>(
         builder: (context, state) {

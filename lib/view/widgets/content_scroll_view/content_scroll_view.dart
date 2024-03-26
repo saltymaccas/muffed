@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/widgets/comment/comment.dart';
 import 'package:muffed/view/widgets/comment/models/models.dart';
 import 'package:muffed/view/widgets/content_scroll_view/bloc/bloc.dart';

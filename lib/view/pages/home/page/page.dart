@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
+import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 import 'package:muffed/view/pages/home/home.dart';
 import 'package:muffed/view/pages/search/search_screen.dart';
 import 'package:muffed/view/router/router.dart';
@@ -46,7 +46,7 @@ class _HomePageViewState extends State<HomePageView> {
     //   ),
     // ]);
 
-    loggedIn = context.read<GlobalBloc>().isLoggedIn();
+    loggedIn = context.read<LemmyKeychainBloc>().state.isAuthenticated;
     tabs = [if (loggedIn) 'Subscribed', 'Global', 'Local'];
     tabViews = [
       if (loggedIn)
@@ -115,7 +115,7 @@ class _HomePageViewState extends State<HomePageView> {
           key: tabViewConfig.key,
           contentType: tabViewConfig.contentType,
           sortType: tabViewConfig.sortType,
-          lemmyRepo: context.read<ServerRepo>().lemmyRepo,
+          lemmyRepo: context.read<LemmyRepo>(),
         ),
       ),
     );

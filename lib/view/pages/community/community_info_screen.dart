@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/domain/lemmy/models.dart';
 import 'package:muffed/view/pages/community/bloc/bloc.dart';
 import 'package:muffed/view/pages/user_screen/user_screen.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';

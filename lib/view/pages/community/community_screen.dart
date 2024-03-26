@@ -2,7 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/view/pages/community/bloc/bloc.dart';
 import 'package:muffed/view/pages/community/bloc/scroll/scroll.dart';
 import 'package:muffed/view/pages/community/community_info_screen.dart';
@@ -15,8 +15,6 @@ import 'package:muffed/view/widgets/muffed_avatar.dart';
 import 'package:muffed/view/widgets/nullable_builder.dart';
 import 'package:muffed/view/widgets/post/post_item.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
-
-export 'models/models.dart';
 
 class CommunityPage extends MPage<void> {
   CommunityPage({
@@ -66,7 +64,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void initState() {
     super.initState();
 
-    final lemmyRepo = context.read<ServerRepo>().lemmyRepo;
+    final lemmyRepo = context.read<LemmyRepo>();
 
     communityBloc = CommunityBloc(
       lemmyRepo: lemmyRepo,

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/global_state/bloc.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
+import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 import 'package:muffed/domain/local_options/bloc.dart';
-import 'package:muffed/domain/server_repo.dart';
 import 'package:muffed/view/router/router.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -42,13 +42,15 @@ class MyApp extends StatelessWidget {
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => GlobalBloc()),
+            BlocProvider(create: (context) => LemmyKeychainBloc()),
             BlocProvider(create: (context) => LocalOptionsBloc()),
           ],
           child: BlocBuilder<LocalOptionsBloc, LocalOptionsState>(
             builder: (context, state) {
               return RepositoryProvider(
-                create: (context) => ServerRepo(context.read<GlobalBloc>()),
+                create: (context) => LemmyRepo(
+                  lemmyKeychainBloc: context.read<LemmyKeychainBloc>(),
+                ),
                 child: MaterialApp.router(
                   routerConfig: routerConfig,
                   title: 'Muffed',

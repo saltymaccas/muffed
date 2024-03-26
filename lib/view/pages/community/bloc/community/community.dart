@@ -1,11 +1,9 @@
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
-import 'package:muffed/domain/lemmy.dart';
-import 'package:muffed/domain/lemmy/models.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 
 part 'community.freezed.dart';
 

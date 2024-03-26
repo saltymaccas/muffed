@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:muffed/domain/server_repo.dart';
+import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/view/pages/post_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/widgets/comment/comment.dart';
@@ -59,7 +59,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
-    final lem = context.read<ServerRepo>().lemmyRepo;
+    final lem = context.read<LemmyRepo>();
 
     postBloc = widget.postBloc ??
         PostBloc(post: widget.post, postId: widget.postId, lemmyRepo: lem)

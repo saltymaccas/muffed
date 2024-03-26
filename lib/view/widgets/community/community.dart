@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muffed/domain/lemmy/models.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
 
 class CommunityListTile extends StatelessWidget {
@@ -11,7 +11,7 @@ class CommunityListTile extends StatelessWidget {
     super.key,
   }) : paddingModifier = compact ? 0.5 : 1;
 
-  final LemmyCommunity community;
+  final Community community;
   final bool showDescription;
 
   final void Function() onTap;
@@ -51,7 +51,7 @@ class CommunityListTile extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '${community.subscribers}',
+                              text: '${community}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
