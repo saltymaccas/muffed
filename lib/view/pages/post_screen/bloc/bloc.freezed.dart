@@ -59,7 +59,7 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
     Object? status = null,
     Object? pagesLoaded = null,
     Object? allPagesLoaded = null,
-    Object? sort = freezed,
+    Object? sort = null,
     Object? comments = freezed,
     Object? errorMessage = freezed,
   }) {
@@ -76,7 +76,7 @@ class _$CommentScrollStateCopyWithImpl<$Res, $Val extends CommentScrollState>
           ? _value.allPagesLoaded
           : allPagesLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: freezed == sort
+      sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
               as CommentSortType,
@@ -123,7 +123,7 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? pagesLoaded = null,
     Object? allPagesLoaded = null,
-    Object? sort = freezed,
+    Object? sort = null,
     Object? comments = freezed,
     Object? errorMessage = freezed,
   }) {
@@ -140,7 +140,7 @@ class __$$CommentScrollStateImplCopyWithImpl<$Res>
           ? _value.allPagesLoaded
           : allPagesLoaded // ignore: cast_nullable_to_non_nullable
               as bool,
-      sort: freezed == sort
+      sort: null == sort
           ? _value.sort
           : sort // ignore: cast_nullable_to_non_nullable
               as CommentSortType,
@@ -204,7 +204,7 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
                 other.pagesLoaded == pagesLoaded) &&
             (identical(other.allPagesLoaded, allPagesLoaded) ||
                 other.allPagesLoaded == allPagesLoaded) &&
-            const DeepCollectionEquality().equals(other.sort, sort) &&
+            (identical(other.sort, sort) || other.sort == sort) &&
             const DeepCollectionEquality().equals(other._comments, _comments) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
@@ -216,7 +216,7 @@ class _$CommentScrollStateImpl implements _CommentScrollState {
       status,
       pagesLoaded,
       allPagesLoaded,
-      const DeepCollectionEquality().hash(sort),
+      sort,
       const DeepCollectionEquality().hash(_comments),
       errorMessage);
 

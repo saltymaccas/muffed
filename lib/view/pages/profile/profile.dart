@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:muffed/domain/global_state/bloc.dart';
-import 'package:muffed/view/pages/profile/account_switcher.dart';
+import 'package:muffed/domain/local_options/bloc.dart';
+import 'package:muffed/view/pages/profile/models/colorscheme_options.dart';
+import 'package:muffed/view/pages/profile/widget/color_scheme_dialog.dart';
+import 'package:muffed/view/pages/profile/widget/theme_mode_dialog.dart';
 import 'package:muffed/view/router/models/page.dart';
 
 class ProfilePage extends MPage<void> {
@@ -14,60 +15,138 @@ class ProfilePage extends MPage<void> {
   }
 }
 
-class ProfilePageView extends StatelessWidget {
+class ProfilePageView extends StatefulWidget {
   const ProfilePageView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final globalBloc = context.read<GlobalBloc>();
+  State<ProfilePageView> createState() => _ProfilePageViewState();
+}
 
-    return BlocBuilder<GlobalBloc, GlobalState>(
-      builder: (context, state) {
-        return SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
+class _ProfilePageViewState extends State<ProfilePageView> {
+  late final LocalOptionsBloc localOptionsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    localOptionsBloc = context.read<LocalOptionsBloc>();
+  }
+
+  void onThemeModeTap(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ThemeModeDialog(
+        setThemeMode: (themeMode) =>
+            localOptionsBloc.add(ThemeModeChanged(themeMode)),
+        initialThemeMode: localOptionsBloc.state.themeMode,
+      ),
+    );
+  }
+
+  void onColorSchemeTap(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ColorSchemeDialog(
+        initalColorScheme:
+            ColorSchemeOptions.fromLocalOptionsState(localOptionsBloc.state),
+        onChanged: (o) {
+          final s = o.toLocalOptionsState();
+          localOptionsBloc.add(
+            ColorSchemeChanged(
+              useSystemColorScheme: s.$1,
+              seedColorScheme: s.$2,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<LocalOptionsBloc, LocalOptionsState>(
+        builder: (context, state) {
+          final theme = Theme.of(context);
+          return SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 8),
+                  child: Text('App Options', style: theme.textTheme.titleLarge),
+                ),
+                Row(
                   children: [
-                    const Icon(
-                      Icons.account_circle,
-                      size: 50,
+                    Flexible(
+                      child: _OptionCard(
+                        title: const Text('Theme Mode'),
+                        subtitle: Text(state.themeMode.toHumaneString()),
+                        onTap: () => onThemeModeTap(context),
+                      ),
                     ),
-                    TextButton(
-                      onPressed: () => showAccountSwitcher(context),
-                      child: Row(
-                        children: [
-                          Text(
-                            globalBloc.getSelectedLemmyAccount()?.name ??
-                                'Anonymous',
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                          const Icon(Icons.arrow_drop_down_outlined),
-                        ],
+                    Flexible(
+                      child: _OptionCard(
+                        title: const Text('Color Scheme'),
+                        subtitle: Text(
+                          ColorSchemeOptions.fromLocalOptionsState(state)
+                              .humaneString,
+                        ),
+                        onTap: () => onColorSchemeTap(context),
                       ),
                     ),
                   ],
                 ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _OptionCard extends StatelessWidget {
+  const _OptionCard({
+    required this.title,
+    this.subtitle,
+    this.onTap,
+    super.key,
+  });
+
+  final Widget title;
+  final Widget? subtitle;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final titleTextStyle = theme.textTheme.titleMedium!;
+    final subtitleTextStyle = theme.textTheme.labelMedium!;
+    return Card(
+      margin: const EdgeInsets.all(8),
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: double.maxFinite,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Align(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DefaultTextStyle(style: titleTextStyle, child: title),
+                  if (subtitle != null)
+                    DefaultTextStyle(
+                      style: subtitleTextStyle,
+                      child: subtitle!,
+                    ),
+                ],
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (context.read<GlobalBloc>().isLoggedIn())
-                      ElevatedButton(
-                        onPressed: () {
-                          // TODO: context.go('/profile/saved_posts');
-                        },
-                        child: const Text('Show saved posts'),
-                      ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

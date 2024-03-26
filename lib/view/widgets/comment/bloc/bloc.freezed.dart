@@ -32,6 +32,8 @@ abstract class $CommentStateCopyWith<$Res> {
       _$CommentStateCopyWithImpl<$Res, CommentState>;
   @useResult
   $Res call({CommentView comment, List<CommentTree> children, int level});
+
+  $CommentViewCopyWith<$Res> get comment;
 }
 
 /// @nodoc
@@ -47,12 +49,12 @@ class _$CommentStateCopyWithImpl<$Res, $Val extends CommentState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? comment = freezed,
+    Object? comment = null,
     Object? children = null,
     Object? level = null,
   }) {
     return _then(_value.copyWith(
-      comment: freezed == comment
+      comment: null == comment
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as CommentView,
@@ -66,6 +68,14 @@ class _$CommentStateCopyWithImpl<$Res, $Val extends CommentState>
               as int,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CommentViewCopyWith<$Res> get comment {
+    return $CommentViewCopyWith<$Res>(_value.comment, (value) {
+      return _then(_value.copyWith(comment: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -77,6 +87,9 @@ abstract class _$$CommentStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({CommentView comment, List<CommentTree> children, int level});
+
+  @override
+  $CommentViewCopyWith<$Res> get comment;
 }
 
 /// @nodoc
@@ -90,12 +103,12 @@ class __$$CommentStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? comment = freezed,
+    Object? comment = null,
     Object? children = null,
     Object? level = null,
   }) {
     return _then(_$CommentStateImpl(
-      comment: freezed == comment
+      comment: null == comment
           ? _value.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as CommentView,
@@ -143,17 +156,14 @@ class _$CommentStateImpl implements _CommentState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CommentStateImpl &&
-            const DeepCollectionEquality().equals(other.comment, comment) &&
+            (identical(other.comment, comment) || other.comment == comment) &&
             const DeepCollectionEquality().equals(other._children, _children) &&
             (identical(other.level, level) || other.level == level));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(comment),
-      const DeepCollectionEquality().hash(_children),
-      level);
+  int get hashCode => Object.hash(runtimeType, comment,
+      const DeepCollectionEquality().hash(_children), level);
 
   @JsonKey(ignore: true)
   @override

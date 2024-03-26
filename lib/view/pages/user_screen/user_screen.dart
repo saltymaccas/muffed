@@ -10,11 +10,9 @@ import 'package:muffed/view/pages/user_screen/bloc/bloc.dart';
 import 'package:muffed/view/router/models/models.dart';
 import 'package:muffed/view/router/models/page.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';
-import 'package:muffed/view/widgets/comment/comment.dart';
 import 'package:muffed/view/widgets/error.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
 import 'package:muffed/view/widgets/muffed_avatar.dart';
-import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/post/post_item.dart';
 
 const _headerMaxHeight = 300.0;

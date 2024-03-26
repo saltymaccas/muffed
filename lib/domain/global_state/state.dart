@@ -3,37 +3,25 @@ part of 'bloc.dart';
 final class GlobalState extends Equatable {
   ///
   const GlobalState({
-    this.themeMode = ThemeMode.system,
     this.lemmyAccounts = const [],
     this.lemmySelectedAccount = -1,
     this.lemmyDefaultHomeServer = 'https://lemmy.ml',
-    this.useDynamicColorScheme = true,
-    this.seedColor = Colors.blueGrey,
     this.showNsfw = false,
     this.blurNsfw = true,
     this.defaultSortType = LemmySortType.active,
-    this.bodyTextScaleFactor = 1.0,
-    this.labelTextScaleFactor = 1.0,
-    this.titleTextScaleFactor = 1.0,
   });
 
   factory GlobalState.fromMap(Map<String, dynamic> map) {
     return GlobalState(
       lemmyAccounts: List.generate(
         (map['lemmyAccounts'] as List).length,
-            (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index]),
+        (index) => LemmyAccountData.fromMap(map['lemmyAccounts'][index]),
       ),
       lemmySelectedAccount: map['lemmySelectedAccount'] as int,
       lemmyDefaultHomeServer: map['lemmyDefaultHomeServer'],
-      themeMode: ThemeMode.values[map['themeMode']],
-      useDynamicColorScheme: map['useDynamicColorScheme'] as bool,
-      seedColor: Color(map['seedColor'] as int),
       showNsfw: map['showNsfw'],
       blurNsfw: map['blurNsfw'],
       defaultSortType: LemmySortType.values[map['defaultSortType']],
-      bodyTextScaleFactor: map['bodyTextScaleFactor'],
-      labelTextScaleFactor: map['labelTextScaleFactor'],
-      titleTextScaleFactor: map['titleTextScaleFactor'],
     );
   }
 
@@ -47,14 +35,6 @@ final class GlobalState extends Equatable {
   /// the home server used if no account selected
   final String lemmyDefaultHomeServer;
 
-  /// Whether the app is in dark or light mode
-  final ThemeMode themeMode;
-
-  final bool useDynamicColorScheme;
-
-  /// The color used to generate the apps color scheme
-  final Color seedColor;
-
   /// whether to show or hide nsfw posts
   final bool showNsfw;
 
@@ -62,10 +42,6 @@ final class GlobalState extends Equatable {
   final bool blurNsfw;
 
   final LemmySortType defaultSortType;
-
-  final double bodyTextScaleFactor;
-  final double labelTextScaleFactor;
-  final double titleTextScaleFactor;
 
   bool isLoggedIn() => lemmySelectedAccount != -1;
 
@@ -85,48 +61,35 @@ final class GlobalState extends Equatable {
   ///
   /// Used in content scroll view to see whether the posts should be reloaded
   bool requestUrlDifferent(GlobalState state) {
-    if (state.getLemmyBaseUrl() != getLemmyBaseUrl() || state
-        .getSelectedLemmyAccount()
-        ?.jwt != getSelectedLemmyAccount()?.jwt) {
+    if (state.getLemmyBaseUrl() != getLemmyBaseUrl() ||
+        state.getSelectedLemmyAccount()?.jwt !=
+            getSelectedLemmyAccount()?.jwt) {
       return true;
     }
     return false;
   }
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         lemmyAccounts,
         lemmySelectedAccount,
         lemmyDefaultHomeServer,
-        themeMode,
-        useDynamicColorScheme,
-        seedColor,
         showNsfw,
         blurNsfw,
         defaultSortType,
-        bodyTextScaleFactor,
-        labelTextScaleFactor,
-        titleTextScaleFactor,
       ];
 
   Map<String, dynamic> toMap() {
     return {
       'lemmyAccounts': List.generate(
         lemmyAccounts.length,
-            (index) => lemmyAccounts[index].toMap(),
+        (index) => lemmyAccounts[index].toMap(),
       ),
       'lemmySelectedAccount': lemmySelectedAccount,
       'lemmyDefaultHomeServer': lemmyDefaultHomeServer,
-      'themeMode': themeMode.index,
-      'useDynamicColorScheme': useDynamicColorScheme,
-      'seedColor': seedColor.value,
       'showNsfw': showNsfw,
       'blurNsfw': blurNsfw,
       'defaultSortType': defaultSortType.index,
-      'bodyTextScaleFactor': bodyTextScaleFactor,
-      'labelTextScaleFactor': labelTextScaleFactor,
-      'titleTextScaleFactor': titleTextScaleFactor,
     };
   }
 
@@ -146,19 +109,12 @@ final class GlobalState extends Equatable {
   }) {
     return GlobalState(
       lemmyDefaultHomeServer:
-      lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
+          lemmyDefaultHomeServer ?? this.lemmyDefaultHomeServer,
       lemmyAccounts: lemmyAccounts ?? this.lemmyAccounts,
       lemmySelectedAccount: lemmySelectedAccount ?? this.lemmySelectedAccount,
-      themeMode: themeMode ?? this.themeMode,
-      useDynamicColorScheme:
-      useDynamicColorScheme ?? this.useDynamicColorScheme,
-      seedColor: seedColor ?? this.seedColor,
       showNsfw: showNsfw ?? this.showNsfw,
       blurNsfw: blurNsfw ?? this.blurNsfw,
       defaultSortType: defaultSortType ?? this.defaultSortType,
-      bodyTextScaleFactor: bodyTextScaleFactor ?? this.bodyTextScaleFactor,
-      labelTextScaleFactor: labelTextScaleFactor ?? this.labelTextScaleFactor,
-      titleTextScaleFactor: titleTextScaleFactor ?? this.titleTextScaleFactor,
     );
   }
 }
@@ -198,8 +154,7 @@ final class LemmyAccountData extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         jwt,
         homeServer,
         name,
