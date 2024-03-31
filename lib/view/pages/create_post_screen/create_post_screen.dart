@@ -5,13 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
-import 'package:muffed/view/pages/create_post_screen/bloc/bloc.dart';
 import 'package:muffed/view/pages/post_screen/post_screen.dart';
 import 'package:muffed/view/router/navigator/navigator.dart';
 import 'package:muffed/view/widgets/image.dart';
 import 'package:muffed/view/widgets/image_upload_view.dart';
 import 'package:muffed/view/widgets/markdown_body.dart';
-import 'package:muffed/view/widgets/muffed_page.dart';
 import 'package:muffed/view/widgets/snackbars.dart';
 import 'package:muffed/view/widgets/url_view.dart';
 

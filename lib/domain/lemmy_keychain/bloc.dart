@@ -1,5 +1,10 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
+
+import 'dart:async';
 
 part 'state.dart';
 part 'event.dart';
@@ -13,7 +18,13 @@ class LemmyKeychainBloc
           LemmyKeychainState(
               keys: [LemmyKey(instanceAddress: 'sh.itjust.works')],
               activeKeyIndex: 0),
-        ) {}
+        ) {
+    on<KeyAdded>(_onKeyAdded);
+  }
+
+  void _onKeyAdded(KeyAdded event, Emitter<LemmyKeychainState> emit) {
+    emit(state.copyWith(keys: [...state.keys, event.key]));
+  }
 
   @override
   LemmyKeychainState fromJson(Map<String, Object?> json) =>

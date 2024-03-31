@@ -188,6 +188,8 @@ LemmyKey _$LemmyKeyFromJson(Map<String, dynamic> json) {
 mixin _$LemmyKey {
   String get instanceAddress => throw _privateConstructorUsedError;
   String? get authToken => throw _privateConstructorUsedError;
+  @_GetSiteResponseConverter()
+  GetSiteResponse? get site => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -200,7 +202,12 @@ abstract class $LemmyKeyCopyWith<$Res> {
   factory $LemmyKeyCopyWith(LemmyKey value, $Res Function(LemmyKey) then) =
       _$LemmyKeyCopyWithImpl<$Res, LemmyKey>;
   @useResult
-  $Res call({String instanceAddress, String? authToken});
+  $Res call(
+      {String instanceAddress,
+      String? authToken,
+      @_GetSiteResponseConverter() GetSiteResponse? site});
+
+  $GetSiteResponseCopyWith<$Res>? get site;
 }
 
 /// @nodoc
@@ -218,6 +225,7 @@ class _$LemmyKeyCopyWithImpl<$Res, $Val extends LemmyKey>
   $Res call({
     Object? instanceAddress = null,
     Object? authToken = freezed,
+    Object? site = freezed,
   }) {
     return _then(_value.copyWith(
       instanceAddress: null == instanceAddress
@@ -228,7 +236,23 @@ class _$LemmyKeyCopyWithImpl<$Res, $Val extends LemmyKey>
           ? _value.authToken
           : authToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      site: freezed == site
+          ? _value.site
+          : site // ignore: cast_nullable_to_non_nullable
+              as GetSiteResponse?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GetSiteResponseCopyWith<$Res>? get site {
+    if (_value.site == null) {
+      return null;
+    }
+
+    return $GetSiteResponseCopyWith<$Res>(_value.site!, (value) {
+      return _then(_value.copyWith(site: value) as $Val);
+    });
   }
 }
 
@@ -240,7 +264,13 @@ abstract class _$$LemmyKeyImplCopyWith<$Res>
       __$$LemmyKeyImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String instanceAddress, String? authToken});
+  $Res call(
+      {String instanceAddress,
+      String? authToken,
+      @_GetSiteResponseConverter() GetSiteResponse? site});
+
+  @override
+  $GetSiteResponseCopyWith<$Res>? get site;
 }
 
 /// @nodoc
@@ -256,6 +286,7 @@ class __$$LemmyKeyImplCopyWithImpl<$Res>
   $Res call({
     Object? instanceAddress = null,
     Object? authToken = freezed,
+    Object? site = freezed,
   }) {
     return _then(_$LemmyKeyImpl(
       instanceAddress: null == instanceAddress
@@ -266,6 +297,10 @@ class __$$LemmyKeyImplCopyWithImpl<$Res>
           ? _value.authToken
           : authToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      site: freezed == site
+          ? _value.site
+          : site // ignore: cast_nullable_to_non_nullable
+              as GetSiteResponse?,
     ));
   }
 }
@@ -273,7 +308,10 @@ class __$$LemmyKeyImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LemmyKeyImpl implements _LemmyKey {
-  const _$LemmyKeyImpl({required this.instanceAddress, this.authToken});
+  const _$LemmyKeyImpl(
+      {required this.instanceAddress,
+      this.authToken,
+      @_GetSiteResponseConverter() this.site});
 
   factory _$LemmyKeyImpl.fromJson(Map<String, dynamic> json) =>
       _$$LemmyKeyImplFromJson(json);
@@ -282,10 +320,13 @@ class _$LemmyKeyImpl implements _LemmyKey {
   final String instanceAddress;
   @override
   final String? authToken;
+  @override
+  @_GetSiteResponseConverter()
+  final GetSiteResponse? site;
 
   @override
   String toString() {
-    return 'LemmyKey(instanceAddress: $instanceAddress, authToken: $authToken)';
+    return 'LemmyKey(instanceAddress: $instanceAddress, authToken: $authToken, site: $site)';
   }
 
   @override
@@ -296,12 +337,14 @@ class _$LemmyKeyImpl implements _LemmyKey {
             (identical(other.instanceAddress, instanceAddress) ||
                 other.instanceAddress == instanceAddress) &&
             (identical(other.authToken, authToken) ||
-                other.authToken == authToken));
+                other.authToken == authToken) &&
+            (identical(other.site, site) || other.site == site));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, instanceAddress, authToken);
+  int get hashCode =>
+      Object.hash(runtimeType, instanceAddress, authToken, site);
 
   @JsonKey(ignore: true)
   @override
@@ -319,8 +362,10 @@ class _$LemmyKeyImpl implements _LemmyKey {
 
 abstract class _LemmyKey implements LemmyKey {
   const factory _LemmyKey(
-      {required final String instanceAddress,
-      final String? authToken}) = _$LemmyKeyImpl;
+          {required final String instanceAddress,
+          final String? authToken,
+          @_GetSiteResponseConverter() final GetSiteResponse? site}) =
+      _$LemmyKeyImpl;
 
   factory _LemmyKey.fromJson(Map<String, dynamic> json) =
       _$LemmyKeyImpl.fromJson;
@@ -329,6 +374,9 @@ abstract class _LemmyKey implements LemmyKey {
   String get instanceAddress;
   @override
   String? get authToken;
+  @override
+  @_GetSiteResponseConverter()
+  GetSiteResponse? get site;
   @override
   @JsonKey(ignore: true)
   _$$LemmyKeyImplCopyWith<_$LemmyKeyImpl> get copyWith =>
