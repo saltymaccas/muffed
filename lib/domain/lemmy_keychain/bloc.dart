@@ -15,15 +15,22 @@ class LemmyKeychainBloc
     extends HydratedBloc<LemmyKeychainEvent, LemmyKeychainState> {
   LemmyKeychainBloc()
       : super(
-          LemmyKeychainState(
-              keys: [LemmyKey(instanceAddress: 'sh.itjust.works')],
-              activeKeyIndex: 0),
+          const LemmyKeychainState(
+            keys: [LemmyKey(instanceAddress: 'https://sh.itjust.works')],
+            activeKeyIndex: 0,
+          ),
         ) {
     on<KeyAdded>(_onKeyAdded);
+    on<ActiveKeyChanged>(_onActiveKeyChanged);
   }
 
   void _onKeyAdded(KeyAdded event, Emitter<LemmyKeychainState> emit) {
     emit(state.copyWith(keys: [...state.keys, event.key]));
+  }
+
+  void _onActiveKeyChanged(
+      ActiveKeyChanged event, Emitter<LemmyKeychainState> emit) {
+    emit(state.copyWith(activeKeyIndex: event.index));
   }
 
   @override

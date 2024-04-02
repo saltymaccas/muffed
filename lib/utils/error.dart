@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 String? errorObjectToString(Object? error) {
   String? errorString;
@@ -24,5 +25,8 @@ String? errorObjectToString(Object? error) {
 }
 
 String objectToErrorMessage(Object e) {
+  if (e is LemmyApiException) {
+    return e.message;
+  }
   return 'Error of type "${e.runtimeType}" occured';
 }

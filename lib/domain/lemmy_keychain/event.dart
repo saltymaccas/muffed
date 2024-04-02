@@ -8,3 +8,9 @@ class KeyAdded extends LemmyKeychainEvent {
   KeyAdded(this.key);
   final LemmyKey key;
 }
+
+class ActiveKeyChanged extends LemmyKeychainEvent {
+  ActiveKeyChanged(this.index);
+
+  final int index;
+}

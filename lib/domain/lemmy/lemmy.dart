@@ -23,7 +23,8 @@ class LemmyRepo {
   final Dio dio;
 
   String get instanceAddress =>
-      lemmyKeychainBloc.state.activeKey.instanceAddress;
+      lemmyKeychainBloc.state.activeKey.instanceAddress
+          .replaceFirst('https://', '');
 
   String? get authToken => lemmyKeychainBloc.state.activeKey.authToken;
 

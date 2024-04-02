@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 import 'package:muffed/view/pages/add_key/bloc/bloc.dart';
+import 'package:muffed/view/widgets/snackbars.dart';
 
 class AddKeyPage extends StatefulWidget {
   const AddKeyPage({super.key});
@@ -22,7 +23,7 @@ class _AddKeyPageState extends State<AddKeyPage> {
     addKeyBloc = AddKeyBloc(
       lem: context.read<LemmyRepo>(),
       keychain: context.read<LemmyKeychainBloc>(),
-    );
+    )..stream.listen((event) => addKeyListener(context, event));
   }
 
   @override
@@ -31,7 +32,29 @@ class _AddKeyPageState extends State<AddKeyPage> {
     instanceAddressController.dispose();
   }
 
-  void onSubmitPressed(BuildContext context) {}
+  void addKeyListener(BuildContext context, AddKeyState event) {
+    if (event.status == AddKeyStatus.confirmed) {
+      Navigator.of(context).pop();
+    }
+
+    if (event.status == AddKeyStatus.failure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        ErrorSnackBar(
+          context: context,
+          errorMessage: event.errorMessage,
+        ),
+      );
+    }
+  }
+
+  void onSubmitPressed(BuildContext context) {
+    addKeyBloc.add(
+      Submitted(
+        instanceAddress: instanceAddressController.text,
+        authenticate: false,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

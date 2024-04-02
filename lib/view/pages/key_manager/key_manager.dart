@@ -14,23 +14,47 @@ class KeyManagerPage extends StatefulWidget {
 
 class _KeyManagerPageState extends State<KeyManagerPage> {
   late final LemmyKeychainBloc lemmyKeychainBloc;
+  late int selectedKeyIndex;
 
   @override
   void initState() {
     super.initState();
     lemmyKeychainBloc = context.read<LemmyKeychainBloc>();
+    selectedKeyIndex = lemmyKeychainBloc.state.activeKeyIndex;
   }
 
-  Widget keycardBuilder(BuildContext context, LemmyKey key) {
+  Widget keycardBuilder(
+    BuildContext context,
+    LemmyKey key,
+    int index, {
+    required bool isSelected,
+  }) {
     return KeyCard(
       slim: true,
       lemKey: key,
+      markAsSelected: isSelected,
+      onTap: () => onKeyCardTap(index),
     );
+  }
+
+  void onKeyCardTap(int index) {
+    setState(() {
+      selectedKeyIndex = index;
+    });
   }
 
   void onAddPressed(BuildContext context) {
     MNavigator.of(context)
         .pushPage(MuffedPage(builder: (context) => AddKeyPage()));
+  }
+
+  void onCancelTap(BuildContext context) {
+    Navigator.of(context).pop();
+  }
+
+  void onApplyTap(BuildContext context) {
+    lemmyKeychainBloc.add(ActiveKeyChanged(selectedKeyIndex));
+    Navigator.of(context).pop();
   }
 
   @override
@@ -39,21 +63,45 @@ class _KeyManagerPageState extends State<KeyManagerPage> {
       bloc: lemmyKeychainBloc,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(title: Text('Key manager')),
-          body: Align(
-            alignment: Alignment.bottomCenter,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                ...List.generate(
-                  state.keys.length,
-                  (index) => keycardBuilder(context, state.keys[index]),
+          appBar: AppBar(title: const Text('Key manager')),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    ...List.generate(
+                      state.keys.length,
+                      (index) => keycardBuilder(
+                        context,
+                        state.keys[index],
+                        index,
+                        isSelected: selectedKeyIndex == index,
+                      ),
+                    ),
+                    _AddButton(
+                      onPressed: () => onAddPressed(context),
+                    ),
+                  ],
                 ),
-                _AddButton(
-                  onPressed: () => onAddPressed(context),
-                ),
-              ],
-            ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    child: Text(
+                      'cancel',
+                    ),
+                    onPressed: () => onCancelTap(context),
+                  ),
+                  TextButton(
+                    child: Text(
+                      'apply',
+                    ),
+                    onPressed: () => onApplyTap(context),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },

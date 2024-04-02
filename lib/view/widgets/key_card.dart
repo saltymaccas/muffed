@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 
 class KeyCard extends StatelessWidget {
-  KeyCard({required LemmyKey lemKey, this.slim = false, super.key})
-      : instanceAddress = lemKey.instanceAddress,
+  KeyCard({
+    required LemmyKey lemKey,
+    this.slim = false,
+    this.markAsSelected = false,
+    super.key,
+    this.onTap,
+  })  : instanceAddress = lemKey.instanceAddress,
         authenticated = lemKey.authToken != null;
 
   final String instanceAddress;
   final bool authenticated;
   final bool slim;
+  final bool markAsSelected;
+  final void Function()? onTap;
 
   double get aspectRatio {
     if (slim) {
@@ -22,18 +29,31 @@ class KeyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      child: AspectRatio(
-        aspectRatio: aspectRatio,
-        child: Builder(
-          builder: (context) {
-            if (authenticated) {
-              return _AuthenticatedCard();
-            } else {
-              return _UnauthenticatedCard(
-                instanceAddress: instanceAddress,
-              );
-            }
-          },
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        side: markAsSelected
+            ? BorderSide(
+                color: theme.primaryColor,
+                width: 4,
+              )
+            : BorderSide.none,
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: InkWell(
+        onTap: onTap,
+        child: AspectRatio(
+          aspectRatio: aspectRatio,
+          child: Builder(
+            builder: (context) {
+              if (authenticated) {
+                return _AuthenticatedCard();
+              } else {
+                return _UnauthenticatedCard(
+                  instanceAddress: instanceAddress,
+                );
+              }
+            },
+          ),
         ),
       ),
     );
