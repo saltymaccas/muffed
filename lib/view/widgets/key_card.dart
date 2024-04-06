@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:muffed/domain/lemmy_keychain/bloc.dart';
 
 class KeyCard extends StatelessWidget {
   KeyCard({
     required LemmyKey lemKey,
+    this.onDeletePressed,
+    this.site,
     this.slim = false,
     this.markAsSelected = false,
     super.key,
@@ -16,6 +19,8 @@ class KeyCard extends StatelessWidget {
   final bool slim;
   final bool markAsSelected;
   final void Function()? onTap;
+  final GetSiteResponse? site;
+  final void Function()? onDeletePressed;
 
   double get aspectRatio {
     if (slim) {
@@ -45,13 +50,14 @@ class KeyCard extends StatelessWidget {
           aspectRatio: aspectRatio,
           child: Builder(
             builder: (context) {
-              if (authenticated) {
-                return _AuthenticatedCard();
-              } else {
-                return _UnauthenticatedCard(
+              if (site == null) {
+                return _UnloadedKeyCard(
                   instanceAddress: instanceAddress,
+                  authenticated: authenticated,
+                  onDeletePressed: onDeletePressed,
                 );
               }
+              return const Placeholder();
             },
           ),
         ),
@@ -60,8 +66,8 @@ class KeyCard extends StatelessWidget {
   }
 }
 
-class _AuthenticatedCard extends StatelessWidget {
-  const _AuthenticatedCard({super.key});
+class _LoadedKeyCard extends StatelessWidget {
+  const _LoadedKeyCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +75,25 @@ class _AuthenticatedCard extends StatelessWidget {
   }
 }
 
-class _UnauthenticatedCard extends StatelessWidget {
-  const _UnauthenticatedCard({required this.instanceAddress, super.key});
+class _UnloadedKeyCard extends StatelessWidget {
+  const _UnloadedKeyCard({
+    required this.instanceAddress,
+    required this.authenticated,
+    required this.onDeletePressed,
+    super.key,
+  });
 
   final String instanceAddress;
+  final bool authenticated;
+  final void Function()? onDeletePressed;
+
+  String get authStatusText {
+    if (authenticated) {
+      return '(authenticated)';
+    } else {
+      return '(not authenticated)';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +102,27 @@ class _UnauthenticatedCard extends StatelessWidget {
         theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold);
     final userTextTheme =
         theme.textTheme.titleSmall!.copyWith(color: theme.colorScheme.outline);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        Text(
-          '(unauthenticated)',
-          style: userTextTheme,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              authStatusText,
+              style: userTextTheme,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(instanceAddress, style: instanceAddressTextStyle),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(instanceAddress, style: instanceAddressTextStyle),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(icon: Icon(Icons.delete), onPressed: onDeletePressed),
+          ],
         ),
       ],
     );

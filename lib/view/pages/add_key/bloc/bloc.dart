@@ -25,6 +25,24 @@ class AddKeyBloc extends Bloc<AddKeyEvent, AddKeyState> {
 
     try {
       if (event.authenticate) {
+        final response = await lem.run(
+          Login(
+            usernameOrEmail: event.username,
+            password: event.password,
+            totp2faToken: (event.twoFA != '') ? event.twoFA : null,
+          ),
+        );
+
+        keychain.add(
+          KeyAdded(
+            LemmyKey(
+              instanceAddress: event.instanceAddress,
+              authToken: response.jwt,
+            ),
+          ),
+        );
+
+        emit(state.copyWith(status: AddKeyStatus.confirmed));
       } else {
         final response = await lem.run(
           GetSiteMetadata(

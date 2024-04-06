@@ -9,7 +9,7 @@ part of 'bloc.dart';
 _$LemmyKeychainStateImpl _$$LemmyKeychainStateImplFromJson(
         Map<String, dynamic> json) =>
     _$LemmyKeychainStateImpl(
-      activeKeyIndex: json['activeKeyIndex'] as int,
+      activeKey: LemmyKey.fromJson(json['activeKey'] as Map<String, dynamic>),
       keys: (json['keys'] as List<dynamic>)
           .map((e) => LemmyKey.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -18,7 +18,7 @@ _$LemmyKeychainStateImpl _$$LemmyKeychainStateImplFromJson(
 Map<String, dynamic> _$$LemmyKeychainStateImplToJson(
         _$LemmyKeychainStateImpl instance) =>
     <String, dynamic>{
-      'activeKeyIndex': instance.activeKeyIndex,
+      'activeKey': instance.activeKey,
       'keys': instance.keys,
     };
 

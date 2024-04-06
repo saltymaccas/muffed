@@ -4,6 +4,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:logging/logging.dart';
 import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/domain/lemmy_keychain/bloc.dart';

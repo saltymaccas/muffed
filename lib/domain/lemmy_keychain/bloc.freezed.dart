@@ -20,7 +20,7 @@ LemmyKeychainState _$LemmyKeychainStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LemmyKeychainState {
-  int get activeKeyIndex => throw _privateConstructorUsedError;
+  LemmyKey get activeKey => throw _privateConstructorUsedError;
   List<LemmyKey> get keys => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +35,9 @@ abstract class $LemmyKeychainStateCopyWith<$Res> {
           LemmyKeychainState value, $Res Function(LemmyKeychainState) then) =
       _$LemmyKeychainStateCopyWithImpl<$Res, LemmyKeychainState>;
   @useResult
-  $Res call({int activeKeyIndex, List<LemmyKey> keys});
+  $Res call({LemmyKey activeKey, List<LemmyKey> keys});
+
+  $LemmyKeyCopyWith<$Res> get activeKey;
 }
 
 /// @nodoc
@@ -51,19 +53,27 @@ class _$LemmyKeychainStateCopyWithImpl<$Res, $Val extends LemmyKeychainState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? activeKeyIndex = null,
+    Object? activeKey = null,
     Object? keys = null,
   }) {
     return _then(_value.copyWith(
-      activeKeyIndex: null == activeKeyIndex
-          ? _value.activeKeyIndex
-          : activeKeyIndex // ignore: cast_nullable_to_non_nullable
-              as int,
+      activeKey: null == activeKey
+          ? _value.activeKey
+          : activeKey // ignore: cast_nullable_to_non_nullable
+              as LemmyKey,
       keys: null == keys
           ? _value.keys
           : keys // ignore: cast_nullable_to_non_nullable
               as List<LemmyKey>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LemmyKeyCopyWith<$Res> get activeKey {
+    return $LemmyKeyCopyWith<$Res>(_value.activeKey, (value) {
+      return _then(_value.copyWith(activeKey: value) as $Val);
+    });
   }
 }
 
@@ -75,7 +85,10 @@ abstract class _$$LemmyKeychainStateImplCopyWith<$Res>
       __$$LemmyKeychainStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int activeKeyIndex, List<LemmyKey> keys});
+  $Res call({LemmyKey activeKey, List<LemmyKey> keys});
+
+  @override
+  $LemmyKeyCopyWith<$Res> get activeKey;
 }
 
 /// @nodoc
@@ -89,14 +102,14 @@ class __$$LemmyKeychainStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? activeKeyIndex = null,
+    Object? activeKey = null,
     Object? keys = null,
   }) {
     return _then(_$LemmyKeychainStateImpl(
-      activeKeyIndex: null == activeKeyIndex
-          ? _value.activeKeyIndex
-          : activeKeyIndex // ignore: cast_nullable_to_non_nullable
-              as int,
+      activeKey: null == activeKey
+          ? _value.activeKey
+          : activeKey // ignore: cast_nullable_to_non_nullable
+              as LemmyKey,
       keys: null == keys
           ? _value._keys
           : keys // ignore: cast_nullable_to_non_nullable
@@ -109,7 +122,7 @@ class __$$LemmyKeychainStateImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LemmyKeychainStateImpl extends _LemmyKeychainState {
   const _$LemmyKeychainStateImpl(
-      {required this.activeKeyIndex, required final List<LemmyKey> keys})
+      {required this.activeKey, required final List<LemmyKey> keys})
       : _keys = keys,
         super._();
 
@@ -117,7 +130,7 @@ class _$LemmyKeychainStateImpl extends _LemmyKeychainState {
       _$$LemmyKeychainStateImplFromJson(json);
 
   @override
-  final int activeKeyIndex;
+  final LemmyKey activeKey;
   final List<LemmyKey> _keys;
   @override
   List<LemmyKey> get keys {
@@ -128,7 +141,7 @@ class _$LemmyKeychainStateImpl extends _LemmyKeychainState {
 
   @override
   String toString() {
-    return 'LemmyKeychainState(activeKeyIndex: $activeKeyIndex, keys: $keys)';
+    return 'LemmyKeychainState(activeKey: $activeKey, keys: $keys)';
   }
 
   @override
@@ -136,15 +149,15 @@ class _$LemmyKeychainStateImpl extends _LemmyKeychainState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LemmyKeychainStateImpl &&
-            (identical(other.activeKeyIndex, activeKeyIndex) ||
-                other.activeKeyIndex == activeKeyIndex) &&
+            (identical(other.activeKey, activeKey) ||
+                other.activeKey == activeKey) &&
             const DeepCollectionEquality().equals(other._keys, _keys));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, activeKeyIndex, const DeepCollectionEquality().hash(_keys));
+      runtimeType, activeKey, const DeepCollectionEquality().hash(_keys));
 
   @JsonKey(ignore: true)
   @override
@@ -163,7 +176,7 @@ class _$LemmyKeychainStateImpl extends _LemmyKeychainState {
 
 abstract class _LemmyKeychainState extends LemmyKeychainState {
   const factory _LemmyKeychainState(
-      {required final int activeKeyIndex,
+      {required final LemmyKey activeKey,
       required final List<LemmyKey> keys}) = _$LemmyKeychainStateImpl;
   const _LemmyKeychainState._() : super._();
 
@@ -171,7 +184,7 @@ abstract class _LemmyKeychainState extends LemmyKeychainState {
       _$LemmyKeychainStateImpl.fromJson;
 
   @override
-  int get activeKeyIndex;
+  LemmyKey get activeKey;
   @override
   List<LemmyKey> get keys;
   @override

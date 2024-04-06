@@ -14,13 +14,38 @@ class KeyManagerPage extends StatefulWidget {
 
 class _KeyManagerPageState extends State<KeyManagerPage> {
   late final LemmyKeychainBloc lemmyKeychainBloc;
-  late int selectedKeyIndex;
+  late LemmyKey selectedKey;
 
   @override
   void initState() {
     super.initState();
     lemmyKeychainBloc = context.read<LemmyKeychainBloc>();
-    selectedKeyIndex = lemmyKeychainBloc.state.activeKeyIndex;
+    selectedKey = lemmyKeychainBloc.state.activeKey;
+  }
+
+  Future<void> onDeletePressed(BuildContext context, int index) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Remove Key?',
+        ),
+        actions: [
+          TextButton(
+            child: const Text('cancel'),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+          TextButton(
+            child: const Text('remove'),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      lemmyKeychainBloc.add(KeyRemoved(index));
+    }
   }
 
   Widget keycardBuilder(
@@ -33,13 +58,14 @@ class _KeyManagerPageState extends State<KeyManagerPage> {
       slim: true,
       lemKey: key,
       markAsSelected: isSelected,
-      onTap: () => onKeyCardTap(index),
+      onDeletePressed: () => onDeletePressed(context, index),
+      onTap: () => onKeyCardTap(key),
     );
   }
 
-  void onKeyCardTap(int index) {
+  void onKeyCardTap(LemmyKey key) {
     setState(() {
-      selectedKeyIndex = index;
+      selectedKey = key;
     });
   }
 
@@ -53,7 +79,7 @@ class _KeyManagerPageState extends State<KeyManagerPage> {
   }
 
   void onApplyTap(BuildContext context) {
-    lemmyKeychainBloc.add(ActiveKeyChanged(selectedKeyIndex));
+    lemmyKeychainBloc.add(ActiveKeyChanged(selectedKey));
     Navigator.of(context).pop();
   }
 
@@ -75,7 +101,7 @@ class _KeyManagerPageState extends State<KeyManagerPage> {
                         context,
                         state.keys[index],
                         index,
-                        isSelected: selectedKeyIndex == index,
+                        isSelected: selectedKey == state.keys[index],
                       ),
                     ),
                     _AddButton(

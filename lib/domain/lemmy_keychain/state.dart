@@ -3,7 +3,7 @@ part of 'bloc.dart';
 @freezed
 class LemmyKeychainState with _$LemmyKeychainState {
   const factory LemmyKeychainState({
-    required int activeKeyIndex,
+    required LemmyKey activeKey,
     required List<LemmyKey> keys,
   }) = _LemmyKeychainState;
 
@@ -12,7 +12,6 @@ class LemmyKeychainState with _$LemmyKeychainState {
 
   const LemmyKeychainState._();
 
-  LemmyKey get activeKey => keys[activeKeyIndex];
   bool get isAuthenticated => activeKey.authToken != null;
 }
 
