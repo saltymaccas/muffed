@@ -48,6 +48,14 @@ class MyApp extends StatelessWidget {
           ],
           child: BlocBuilder<LocalOptionsBloc, LocalOptionsState>(
             builder: (context, state) {
+              final lightTheme = themeGenerator(
+                brightness: Brightness.light,
+                seedColor: state.seedColor,
+              );
+              final darkTheme = themeGenerator(
+                brightness: Brightness.dark,
+                seedColor: state.seedColor,
+              );
               return RepositoryProvider(
                 create: (context) => LemmyRepo(
                   lemmyKeychainBloc: context.read<LemmyKeychainBloc>(),
@@ -55,23 +63,8 @@ class MyApp extends StatelessWidget {
                 child: MaterialApp.router(
                   routerConfig: routerConfig,
                   title: 'Muffed',
-                  theme: ThemeData(
-                    colorScheme:
-                        (state.useSystemSeedColor && lightDynamic != null)
-                            ? lightDynamic
-                            : ColorScheme.fromSeed(seedColor: state.seedColor),
-                    useMaterial3: true,
-                  ),
-                  darkTheme: ThemeData(
-                    colorScheme:
-                        (state.useSystemSeedColor && darkDynamic != null)
-                            ? darkDynamic
-                            : ColorScheme.fromSeed(
-                                seedColor: state.seedColor,
-                                brightness: Brightness.dark,
-                              ),
-                    useMaterial3: true,
-                  ),
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
                   themeMode: state.themeMode,
                 ),
               );
@@ -81,4 +74,29 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+ThemeData themeGenerator({
+  required Brightness brightness,
+  required Color seedColor,
+}) {
+  return ThemeData(
+    brightness: brightness,
+    colorSchemeSeed: seedColor,
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+    ),
+    useMaterial3: true,
+  );
 }

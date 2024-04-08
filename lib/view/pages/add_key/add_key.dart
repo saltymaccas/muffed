@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muffed/domain/lemmy/lemmy.dart';
 import 'package:muffed/domain/lemmy_keychain/bloc.dart';
@@ -12,12 +14,21 @@ class AddKeyPage extends StatefulWidget {
   State<AddKeyPage> createState() => _AddKeyPageState();
 }
 
-class _AddKeyPageState extends State<AddKeyPage> {
+class _AddKeyPageState extends State<AddKeyPage> with TickerProviderStateMixin {
   late final TextEditingController instanceAddressController;
   late final TextEditingController usernameController;
   late final TextEditingController passwordController;
   late final TextEditingController twoFAController;
   late final AddKeyBloc addKeyBloc;
+
+  late final AnimationController authAnimController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: authAnimController,
+    curve: Curves.fastOutSlowIn,
+  );
 
   bool authenticate = false;
   bool obscurePassword = true;
@@ -42,6 +53,7 @@ class _AddKeyPageState extends State<AddKeyPage> {
     usernameController.dispose();
     passwordController.dispose();
     twoFAController.dispose();
+    authAnimController.dispose();
   }
 
   void addKeyListener(BuildContext context, AddKeyState event) {
@@ -64,6 +76,11 @@ class _AddKeyPageState extends State<AddKeyPage> {
       setState(() {
         authenticate = value;
       });
+      if (value) {
+        authAnimController.forward();
+      } else {
+        authAnimController.reverse();
+      }
     }
   }
 
@@ -87,6 +104,7 @@ class _AddKeyPageState extends State<AddKeyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<AddKeyBloc, AddKeyState>(
       bloc: addKeyBloc,
       builder: (context, state) {
@@ -100,82 +118,115 @@ class _AddKeyPageState extends State<AddKeyPage> {
                   )
                 : null,
           ),
-          body: Align(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Instance Address',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: instanceAddressController,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  CheckboxListTile(
-                    title: const Text('Authenticate'),
-                    value: authenticate,
-                    onChanged: onAuthenticateChanged,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextField(
-                    enabled: authenticate,
-                    decoration: const InputDecoration(
-                      labelText: 'username',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    controller: usernameController,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextField(
-                    enabled: authenticate,
-                    decoration: InputDecoration(
-                      labelText: 'password',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                      suffix: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: onObscurePasswordToggled,
-                        icon: (obscurePassword)
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Instance Address',
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        hintStyle: theme.textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.w900),
                       ),
+                      controller: instanceAddressController,
+                      style: theme.textTheme.titleMedium!
+                          .copyWith(fontWeight: FontWeight.w900),
                     ),
-                    obscureText: obscurePassword,
-                    controller: passwordController,
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    enabled: authenticate,
-                    decoration: const InputDecoration(
-                      labelText: '2fa (optional)',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
-                    controller: twoFAController,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton(
-                        onPressed: () => onSubmitPressed(context),
-                        child: const Text('Submit'),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      CheckboxListTile(
+                        title: const Text('Authenticate'),
+                        value: authenticate,
+                        onChanged: onAuthenticateChanged,
+                        contentPadding: const EdgeInsets.only(left: 8),
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      SizeTransition(
+                        sizeFactor: _animation,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              enabled: authenticate,
+                              decoration: const InputDecoration(
+                                labelText: 'Username',
+                              ),
+                              controller: usernameController,
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            TextField(
+                              enabled: authenticate,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                suffixIcon: Align(
+                                  heightFactor: 1,
+                                  widthFactor: 1,
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: onObscurePasswordToggled,
+                                    icon: obscurePassword
+                                        ? const Icon(Icons.visibility)
+                                        : const Icon(Icons.visibility_off),
+                                  ),
+                                ),
+                              ),
+                              obscureText: obscurePassword,
+                              controller: passwordController,
+                            ),
+                            const SizedBox(height: 6),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: FractionallySizedBox(
+                                widthFactor: 0.5,
+                                child: TextField(
+                                  enabled: authenticate,
+                                  decoration: const InputDecoration(
+                                    labelText: '2fa (optional)',
+                                    counterText: '',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 6,
+                                  controller: twoFAController,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                ElevatedButton(
+                  onPressed: () => onSubmitPressed(context),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.maxFinite, 40),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  child: const Text('Submit'),
+                ),
+              ],
             ),
           ),
         );

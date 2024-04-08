@@ -70,8 +70,12 @@ class _KeyManagerPageState extends State<KeyManagerPage> {
   }
 
   void onAddPressed(BuildContext context) {
-    MNavigator.of(context)
-        .pushPage(MuffedPage(builder: (context) => AddKeyPage()));
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute<void>(
+        builder: (context) => const AddKeyPage(),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   void onCancelTap(BuildContext context) {
