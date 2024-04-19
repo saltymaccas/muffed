@@ -1,43 +1,6 @@
-# Muffed
-
-<p align="center">
-  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="200">
-</p>
-
-A decentralised reddit alternative that works on the Lemmy/Activity-pub network.
-
-[Join the Muffed Lemmy community](https://sh.itjust.works/c/muffed)
-
-# Download
-
-<div align="center">
-<a href='https://play.google.com/store/apps/details?id=com.freshfieldreds.muffed&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-    <img src='docs/assets/badges/google-play-badge.png' height="80"/>
-  </a>
-  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.freshfieldreds.muffed/">
-    <img src="docs/assets/badges/IzzyOnDroid.png" height="80">
-  </a>
-<a href="https://github.com/freshfieldreds/muffed/releases/latest">
-    <img src="docs/assets/badges/github.png" height="80">
-  </a>
-
-</div>
-
-
-To easily keep up with the latest verion - [Get it on Obtanium](https://github.com/ImranR98/Obtainium)
-
-## Screenshots
-
-<p align="center">
-  <img src="docs/assets/screenshots/1_dark.png" width="200">
-  <img src="docs/assets/screenshots/2_dark.png" width="200">
-  <img src="docs/assets/screenshots/3_dark.png" width="200">
-</p>
-<p align="center">
-  <img src="docs/assets/screenshots/1_light.png" width="200">
-  <img src="docs/assets/screenshots/2_light.png" width="200">
-  <img src="docs/assets/screenshots/3_light.png" width="200">
-</p>
+---
+Had fun making this, learnt lots from it, but its time to move on to other things.
+---
 
 # Features
 
@@ -66,10 +29,6 @@ wallpaper)
 
 Muffed is currently in **very** early development. It is being actively worked on and may undergo
 significant changes.
-
-## IOS Status
-
-Due to Apples restrictions, the iOS version will not be released until November.
 
 # Contributing
 
